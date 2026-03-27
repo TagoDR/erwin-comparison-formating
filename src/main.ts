@@ -1,29 +1,10 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { StoreController } from '@nanostores/lit';
 import { isLoading$, rawData$, filteredData$ } from './store/data.store';
 
-// Import Global CSS and Web Awesome
+// Import Global CSS
 import './index.css';
-import '@webawesome/webawesome/dist/webawesome.js';
-import '@webawesome/webawesome/dist/themes/default.css';
-
-// Importing icons and assets
-import { icons } from './assets/icons';
-import { registerIconLibrary } from '@webawesome/webawesome/dist/utilities/icon-library.js';
-
-// Registering Tabler icons
-registerIconLibrary('tabler', {
-  resolver: name => {
-    if (icons[name as keyof typeof icons]) {
-      return `data:image/svg+xml;utf8,${encodeURIComponent(icons[name as keyof typeof icons])}`;
-    }
-    return '';
-  }
-});
-
-// Setting Tabler as the default library
-document.documentElement.setAttribute('data-wa-icon-library', 'tabler');
 
 // Importing components
 import './components/app-header';
@@ -37,6 +18,7 @@ export class AppRoot extends LitElement {
     :host {
       display: block;
       min-height: 100vh;
+      background-color: #0f172a;
     }
 
     .main-content {
@@ -49,11 +31,28 @@ export class AppRoot extends LitElement {
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(var(--wa-color-surface-overlay-rgb), 0.5);
+      background: rgba(15, 23, 42, 0.7);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      color: #f8fafc;
+      gap: 1rem;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #334155;
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   `;
 
@@ -67,6 +66,7 @@ export class AppRoot extends LitElement {
       { type: '  Attribute: Name', prop: 'CUSTOMER', change: 'A', view: '', leftModel: 'VARCHAR(100)', rightModel: 'VARCHAR(50)', indent: 2 },
       { type: 'TABLE: ORDERS', prop: 'ORDERS', change: 'I', view: 'L', leftModel: 'Created', rightModel: '', indent: 0, isHeader: true },
       { type: '  Attribute: OrderID', prop: 'ORDERS', change: 'I', view: '', leftModel: 'INT', rightModel: '', indent: 2 },
+      { type: 'TABLE: LOGS', prop: 'LOGS', change: 'E', view: 'P', leftModel: '', rightModel: 'Dropped', indent: 0, isHeader: true },
     ] as any;
     
     rawData$.set(mockData);
@@ -82,7 +82,8 @@ export class AppRoot extends LitElement {
         
         ${this.isLoading.value ? html`
           <div class="loading-overlay">
-            <wa-spinner style="font-size: 3rem;"></wa-spinner>
+            <div class="spinner"></div>
+            <span>Processando arquivo...</span>
           </div>
         ` : ''}
       </div>

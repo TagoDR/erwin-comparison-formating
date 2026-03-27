@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { StoreController } from '@nanostores/lit';
 import { isLoading$ } from '../store/data.store';
 
@@ -7,33 +7,56 @@ import { isLoading$ } from '../store/data.store';
 export class AppHeader extends LitElement {
   private isLoading = new StoreController(this, isLoading$);
 
+  // We rely on PureCSS's base styles via the main index.css
   static styles = css`
     :host {
       display: block;
       position: sticky;
       top: 0;
       z-index: 100;
-      background: var(--wa-color-surface-default);
-      border-bottom: 1px solid var(--wa-color-surface-border);
-      padding: var(--wa-space-s) var(--wa-space-m);
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 0.75rem 1.5rem;
     }
 
-    .header-container {
+    .header-layout {
       display: flex;
       align-items: center;
-      gap: var(--wa-space-m);
+      justify-content: space-between;
+      width: 100%;
     }
 
-    .title {
-      font-size: var(--wa-font-size-m);
-      font-weight: var(--wa-font-weight-bold);
-      margin-right: auto;
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #f8fafc;
+      letter-spacing: -0.025em;
     }
 
-    .controls {
+    .pure-form {
       display: flex;
-      align-items: center;
-      gap: var(--wa-space-s);
+      gap: 1.5rem;
+      align-items: flex-end;
+    }
+
+    .pure-form-stacked {
+      margin-bottom: 0 !important;
+    }
+
+    input[type="file"] {
+      padding: 0.3rem 0.6rem !important;
+      min-width: 250px;
+    }
+
+    select {
+      min-width: 150px;
+    }
+
+    label {
+      font-size: 0.75rem !important;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #94a3b8;
     }
   `;
 
@@ -60,29 +83,40 @@ export class AppHeader extends LitElement {
 
   render() {
     return html`
-      <div class="header-container">
-        <div class="title">Erwin Compare Formatter</div>
+      <div class="header-layout">
+        <div class="brand">Erwin Formatter</div>
         
-        <div class="controls">
-          <wa-input 
-            type="file" 
-            label="Selecione o arquivo HTML do Erwin"
-            @change=${this._handleFileChange}
-            ?disabled=${this.isLoading.value}
-            size="small"
-          ></wa-input>
+        <form class="pure-form pure-form-stacked">
+          <div class="pure-control-group">
+            <label for="erwin-file">Arquivo Erwin</label>
+            <input 
+              id="erwin-file"
+              type="file" 
+              class="pure-input-1"
+              @change=${this._handleFileChange}
+              ?disabled=${this.isLoading.value}
+            />
+          </div>
 
-          <wa-select label="Tipo de Mudança" size="small" multiple clearable>
-            <wa-option value="I">Inclusão (I)</wa-option>
-            <wa-option value="A">Alteração (A)</wa-option>
-            <wa-option value="E">Exclusão (E)</wa-option>
-          </wa-select>
+          <div class="pure-control-group">
+            <label for="change-type">Mudança</label>
+            <select id="change-type">
+              <option value="">Todas</option>
+              <option value="I">Inclusão (I)</option>
+              <option value="A">Alteração (A)</option>
+              <option value="E">Exclusão (E)</option>
+            </select>
+          </div>
 
-          <wa-select label="Tipo de Objeto" size="small" clearable>
-            <wa-option value="table">Tabela</wa-option>
-            <wa-option value="others">Outros</wa-option>
-          </wa-select>
-        </div>
+          <div class="pure-control-group">
+            <label for="obj-type">Objeto</label>
+            <select id="obj-type">
+              <option value="">Todos</option>
+              <option value="table">Tabela</option>
+              <option value="others">Outros</option>
+            </select>
+          </div>
+        </form>
       </div>
     `;
   }

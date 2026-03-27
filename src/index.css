@@ -1,38 +1,68 @@
-:root,
-.wa-theme-default {
-  /* Global spacing and typography */
-  --wa-font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+@import "purecss/build/pure-min.css";
+@import "purecss/build/grids-responsive-min.css";
 
-  /* Dark Mode Overrides (Default) */
-  --wa-color-surface-default: #0f172a;
-  --wa-color-surface-overlay-rgb: 15, 23, 42;
-  --wa-color-text-default: #f8fafc;
-  --wa-color-surface-border: #1e293b;
+/* Project Overrides & Erwin Logic */
+:root {
+  --bg-dark: #0f172a;
+  --bg-header: #1e293b;
+  --text-main: #f8fafc;
+  --border-muted: #334155;
 
-  --wa-color-neutral-fill-faint: #1e293b;
-  --wa-color-neutral-border: #334155;
+  --color-inclusion-bg: rgba(6, 78, 59, 0.4);
+  --color-inclusion-border: #10b981;
 
-  /* Status Colors (Erwin Logic) */
-  --color-inclusion-bg: #064e3b; /* Dark Green */
-  --color-inclusion-text: #6ee7b7;
+  --color-alteration-bg: rgba(76, 29, 149, 0.4);
+  --color-alteration-border: #8b5cf6;
 
-  --color-alteration-bg: #4c1d95; /* Dark Purple */
-  --color-alteration-text: #c4b5fd;
-
-  --color-exclusion-bg: #7f1d1d; /* Dark Red */
-  --color-exclusion-text: #fca5a5;
-
-  --color-column-inclusion-bg: #065f46;
-  --color-column-alteration-bg: #5b21b6;
-  --color-column-exclusion-bg: #991b1b;
-
-  --color-other-object: #9a3412; /* Orange */
+  --color-exclusion-bg: rgba(127, 29, 29, 0.4);
+  --color-exclusion-border: #ef4444;
 }
 
 body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
-  padding: 0;
-  background-color: var(--wa-color-surface-default);
-  color: var(--wa-color-text-default);
-  font-family: var(--wa-font-family-sans);
 }
+
+/* PureCSS Overrides for Dark Mode */
+.pure-table {
+  color: var(--text-main);
+  background: transparent;
+  border: 1px solid var(--border-muted);
+  width: 100%;
+}
+
+.pure-table thead {
+  background-color: var(--bg-header);
+  color: #94a3b8;
+}
+
+.pure-table th {
+  border-bottom: 2px solid var(--border-muted) !important;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.pure-table td {
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.pure-form input, .pure-form select {
+  background-color: #0f172a !important;
+  color: white !important;
+  border: 1px solid var(--border-muted) !important;
+  border-radius: 4px !important;
+}
+
+.pure-form label {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Row Highlighting Logic */
+tr[data-change="I"] { background-color: var(--color-inclusion-bg); border-left: 4px solid var(--color-inclusion-border); }
+tr[data-change="A"] { background-color: var(--color-alteration-bg); border-left: 4px solid var(--color-alteration-border); }
+tr[data-change="E"] { background-color: var(--color-exclusion-bg); border-left: 4px solid var(--color-exclusion-border); }
