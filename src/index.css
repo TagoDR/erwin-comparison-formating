@@ -1,24 +1,38 @@
-:root {
-  color-scheme: light dark;
-  background-color: #ffffff;
-}
+:root,
+.wa-theme-default {
+  /* Global spacing and typography */
+  --wa-font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    background-color: #16171d;
-  }
+  /* Dark Mode Overrides (Default) */
+  --wa-color-surface-default: #0f172a;
+  --wa-color-surface-overlay-rgb: 15, 23, 42;
+  --wa-color-text-default: #f8fafc;
+  --wa-color-surface-border: #1e293b;
+
+  --wa-color-neutral-fill-faint: #1e293b;
+  --wa-color-neutral-border: #334155;
+
+  /* Status Colors (Erwin Logic) */
+  --color-inclusion-bg: #064e3b; /* Dark Green */
+  --color-inclusion-text: #6ee7b7;
+
+  --color-alteration-bg: #4c1d95; /* Dark Purple */
+  --color-alteration-text: #c4b5fd;
+
+  --color-exclusion-bg: #7f1d1d; /* Dark Red */
+  --color-exclusion-text: #fca5a5;
+
+  --color-column-inclusion-bg: #065f46;
+  --color-column-alteration-bg: #5b21b6;
+  --color-column-exclusion-bg: #991b1b;
+
+  --color-other-object: #9a3412; /* Orange */
 }
 
 body {
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 320px;
-  min-height: 100svh;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  padding: 0;
+  background-color: var(--wa-color-surface-default);
+  color: var(--wa-color-text-default);
+  font-family: var(--wa-font-family-sans);
 }
