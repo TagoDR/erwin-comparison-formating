@@ -29,10 +29,14 @@ The interface is divided into two primary sections:
     - **Data Table Panel:** The core enhanced data display as defined in section 3.3.
 
 ### 3.2. Data Processing (Parser Logic)
-- **Indentation Parsing:** Interpret leading spaces in the Erwin "Type" column to build an object hierarchy.
+- **Indentation Parsing:** Interpret leading spaces in the Erwin "Type" column to build an object hierarchy. (Indentation is typically multiples of 4 spaces).
+- **Difference Logic:** The Erwin "Difference" column is unreliable and should be ignored. Status is determined by:
+    - **Inclusion (I):** Right Model is empty.
+    - **Exclusion (E):** Left Model is empty.
+    - **Alteration (A):** Both models have values, but they differ.
 - **Status Hoisting:**
-    - Property-level changes (I/A/E) are hoisted to the parent object (e.g., Table or Column).
-    - Objects inherit the most significant change status of their children/properties.
+    - Property-level changes are hoisted to the parent object (e.g., Table or Column).
+    - Parent objects inherit the "highest" status found in their subtree: `Exclusion > Inclusion > Alteration > No Change`.
 - **View Flags:** "Logical Only" and "Physical Only" properties are hoisted to the identifier row.
 
 ### 3.3. Table Configuration
@@ -55,49 +59,71 @@ The interface is divided into two primary sections:
 - `src/components/`: PureCSS-based Lit components (`app-header`, `app-stats`, `app-table`).
 - `src/store/`: State management for data, filtering, and loading states.
 
-## 6. Input File Structure, sample data
-    The 'Type' Column uses indentation to group information, in the output the indentation level will define collapsable areas, indentation seens to be 4 spaces
-    The 'Difference' Column can and will be ignored, its unreliable, and must be evaluated by the program
-    - Inclusion means Right Column is empty
-    - Exclusion means Left Column is empty
-    - Change means Both sides are filled
+## 6. Input File Structure & Sample Data
 
+### 6.1. Logic Rules
+- **Nesting:** 4 spaces = 1 Level.
+- **Change Detection:**
+  - `Left != "" && Right == ""` -> **Inclusion (I)**
+  - `Left == "" && Right != ""` -> **Exclusion (E)**
+  - `Left != "" && Right != "" && Left != Right` -> **Alteration (A)**
 
-    |Type|Left|Difference|Right|
-    |Model| AAAA| - |AAAB|
-    |    Nome| AAAA| - |AAAB|
-    |    Author| John| - |John A|
-    |Entities/Tables| | - ||
-    |    Entity/Table| CLI| - |CLI|
-    |        Physical Name| GGGGG| - |GGGGG|
-    |        Name| Client| - |Client|
-    |        Description| a...z| - |a...z|
-    |        Logical Only| false| - |false|
-    |        Physical Only| false| - |false|
-    |        Columns| | - ||
-    |            Attribute/Column| NM_CLI| - |NM_CLI|
-    |                Physical Name| NM_CLI| - |NM_CLI|
-    |                Name| Name Client| - |Name Client|
-    |                Logical Datatype| Char(50)| - |Char(30)|
-    |                Physical Datatype| char(50)| - |char(30)|
-    |                Logical Only| false| - |false|
-    |                Physical Only| false| - |false|
-    |            Attribute/Column| CD_CLI| - |CD_CLI|
-    |                Physical Name| CD_CLI| - |CD_CLI|
-    |                Name| Code Client| - |Code Client|
-    |                Logical Datatype| Integer| - |Integer|
-    |                Physical Datatype| int| - |int|
-    |                Logical Only| false| - |false|
-    |                Physical Only| false| - |false|
-    |        Relationships| | - ||
-    |            Relationship|FK_01||FK_01|
-    |                Name|FK_01||FK_01|
-    |            Relationship|FK_02||FK_02|
-    |                Name|FK_02||FK_02|
-    |        Tablespaces| | - ||
-    |            Tablespace| TB_001| - |TB_001|
-    |        Indexes| | - ||
-    |            Index| IFK_001| - |IFK_001|
+### 6.2. Complex Sample Scenarios
 
+#### Scenario A: Table Alteration (Hoisted)
+| Type | Left | Difference | Right | Logic Result |
+| :--- | :--- | :--- | :--- | :--- |
+| Entity/Table | CLI | - | CLI | **A** (Hoisted from Name) |
+| &nbsp;&nbsp;&nbsp;&nbsp;Name | Client | - | Client Info | **A** |
 
+#### Scenario B: New Column (Hoisted)
+| Type | Left | Difference | Right | Logic Result |
+| :--- | :--- | :--- | :--- | :--- |
+| Entity/Table | PROD | - | PROD | **A** (Hoisted from Column) |
+| &nbsp;&nbsp;&nbsp;&nbsp;Columns | | - | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column | SK_PROD | - | | **I** |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name | SK_PROD | - | | **I** |
 
+#### Scenario C: Deleted Relationship
+| Type | Left | Difference | Right | Logic Result |
+| :--- | :--- | :--- | :--- | :--- |
+| Relationship | | - | FK_01 | **E** |
+| &nbsp;&nbsp;&nbsp;&nbsp;Name | | - | FK_01 | **E** |
+
+### 6.3. Extensive Data Sample
+```text
+Model| AAAA| - |AAAB
+    Nome| AAAA| - |AAAB
+    Author| John| - |John A
+Entities/Tables| | - |
+    Entity/Table| CLI| - |CLI
+        Physical Name| GGGGG| - |GGGGG
+        Name| Client| - |Client
+        Description| a...z| - |a...z
+        Logical Only| false| - |false
+        Physical Only| false| - |false
+        Columns| | - |
+            Attribute/Column| NM_CLI| - |NM_CLI
+                Physical Name| NM_CLI| - |NM_CLI
+                Name| Name Client| - |Name Client
+                Logical Datatype| Char(50)| - |Char(30)
+                Physical Datatype| char(50)| - |char(30)
+                Logical Only| false| - |false
+                Physical Only| false| - |false
+            Attribute/Column| CD_CLI| - |CD_CLI
+                Physical Name| CD_CLI| - |CD_CLI
+                Name| Code Client| - |Code Client
+                Logical Datatype| Integer| - |Integer
+                Physical Datatype| int| - |int
+                Logical Only| false| - |false
+                Physical Only| false| - |false
+        Relationships| | - |
+            Relationship|FK_01||FK_01
+                Name|FK_01||FK_01
+            Relationship|FK_02||FK_02
+                Name|FK_02||FK_02
+        Tablespaces| | - |
+            Tablespace| TB_001| - |TB_001
+        Indexes| | - |
+            Index| IFK_001| - |IFK_001
+```
