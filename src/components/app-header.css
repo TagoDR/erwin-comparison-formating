@@ -1,0 +1,88 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #1e293b;
+  border-bottom: 2px solid #334155;
+  padding: 0.5rem 1.5rem;
+  color: #f8fafc;
+}
+
+.header-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2.5rem;
+}
+
+.brand {
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+
+.file-drop-zone {
+  flex: 1;
+  margin: 0 3rem;
+  border: 2px dashed #475569;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.1rem 1rem;
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.file-drop-zone.dragging {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.file-drop-zone input[type="file"] {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-info {
+  flex: 1;
+  margin: 0 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background: #0f172a;
+  padding: 0.3rem 1.5rem;
+  border-radius: 4px;
+  border: 1px solid #334155;
+}
+
+.file-name {
+  color: #3b82f6;
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 0.875rem;
+}
+
+.close-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.close-btn:hover { background: #dc2626; }

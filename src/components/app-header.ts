@@ -1,122 +1,81 @@
-import { LitElement, html, css } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { LitElement, html, unsafeCSS } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
 import { StoreController } from '@nanostores/lit';
-import { isLoading$ } from '../store/data.store';
+import { isLoading$, fileName$, rawData$, filteredData$ } from '../store/data.store';
+import headerStyles from './app-header.css?inline';
 
 @customElement('app-header')
 export class AppHeader extends LitElement {
   private isLoading = new StoreController(this, isLoading$);
+  private fileName = new StoreController(this, fileName$);
 
-  // We rely on PureCSS's base styles via the main index.css
-  static styles = css`
-    :host {
-      display: block;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: #1e293b;
-      border-bottom: 1px solid #334155;
-      padding: 0.75rem 1.5rem;
-    }
+  @state() private isDragging = false;
 
-    .header-layout {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
+  static styles = unsafeCSS(headerStyles);
 
-    .brand {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: #f8fafc;
-      letter-spacing: -0.025em;
-    }
-
-    .pure-form {
-      display: flex;
-      gap: 1.5rem;
-      align-items: flex-end;
-    }
-
-    .pure-form-stacked {
-      margin-bottom: 0 !important;
-    }
-
-    input[type="file"] {
-      padding: 0.3rem 0.6rem !important;
-      min-width: 250px;
-    }
-
-    select {
-      min-width: 150px;
-    }
-
-    label {
-      font-size: 0.75rem !important;
-      text-transform: uppercase;
-      font-weight: 600;
-      color: #94a3b8;
-    }
-  `;
-
-  private async _handleFileChange(e: Event) {
-    const input = e.target as HTMLInputElement;
-    if (!input.files?.length) return;
-    
-    const file = input.files[0];
-    const reader = new FileReader();
-    
+  private _handleFile(file: File) {
+    if (!file) return;
+    fileName$.set(file.name);
     isLoading$.set(true);
-    
-    reader.onload = async (event) => {
-      const content = event.target?.result as string;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
       this.dispatchEvent(new CustomEvent('file-loaded', {
         detail: { content },
         bubbles: true,
         composed: true
       }));
     };
-    
     reader.readAsText(file);
+  }
+
+  private _onDrop(e: DragEvent) {
+    e.preventDefault();
+    this.isDragging = false;
+    const file = e.dataTransfer?.files[0];
+    if (file) this._handleFile(file);
+  }
+
+  private _onDragOver(e: DragEvent) {
+    e.preventDefault();
+    this.isDragging = true;
+  }
+
+  private _onDragLeave() {
+    this.isDragging = false;
+  }
+
+  private _closeFile() {
+    fileName$.set(null);
+    rawData$.set([]);
+    filteredData$.set([]);
   }
 
   render() {
     return html`
       <div class="header-layout">
         <div class="brand">Erwin Formatter</div>
-        
-        <form class="pure-form pure-form-stacked">
-          <div class="pure-control-group">
-            <label for="erwin-file">Arquivo Erwin</label>
-            <input 
-              id="erwin-file"
-              type="file" 
-              class="pure-input-1"
-              @change=${this._handleFileChange}
-              ?disabled=${this.isLoading.value}
-            />
-          </div>
 
-          <div class="pure-control-group">
-            <label for="change-type">Mudança</label>
-            <select id="change-type">
-              <option value="">Todas</option>
-              <option value="I">Inclusão (I)</option>
-              <option value="A">Alteração (A)</option>
-              <option value="E">Exclusão (E)</option>
-            </select>
+        ${this.fileName.value ? html`
+          <div class="file-info">
+            <span class="file-name">${this.fileName.value}</span>
+            <button class="close-btn" @click=${this._closeFile}>FECHAR ARQUIVO</button>
           </div>
+        ` : html`
+          <div 
+            class="file-drop-zone ${this.isDragging ? 'dragging' : ''}"
+            @drop=${this._onDrop}
+            @dragover=${this._onDragOver}
+            @dragleave=${this._onDragLeave}
+          >
+            <span class="icon">📁</span>
+            <span>Selecione ou arraste o arquivo HTML do Erwin aqui</span>
+            <input type="file" @change=${(e: any) => this._handleFile(e.target.files[0])} />
+          </div>
+        `}
 
-          <div class="pure-control-group">
-            <label for="obj-type">Objeto</label>
-            <select id="obj-type">
-              <option value="">Todos</option>
-              <option value="table">Tabela</option>
-              <option value="others">Outros</option>
-            </select>
-          </div>
-        </form>
+        <div style="width: 150px;"></div>
       </div>
     `;
   }
