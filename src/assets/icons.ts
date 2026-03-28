@@ -5,8 +5,8 @@ import IconClipboardList from "./icons/clipboard-list.svg";
 import IconCopy from "./icons/copy.svg";
 import IconFileDiff from "./icons/file-diff.svg";
 import IconFileUpload from "./icons/file-upload.svg";
-import IconFilterOff from "./icons/filter-off.svg";
 import IconFilter from "./icons/filter.svg";
+import IconFilterOff from "./icons/filter-off.svg";
 import IconX from "./icons/x.svg";
 
 export const icons = {

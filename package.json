@@ -5,19 +5,19 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "tsc && vite build && powershell -Command \"Move-Item -Path dist/index.html -Destination dist/Erwin_Formatar_CompleteCompare.html -Force\"",
+		"build": "vite build",
 		"preview": "vite preview",
-		"lint": "biome check --write"
+		"lint": "biome check --write ."
 	},
 	"dependencies": {
 		"@nanostores/lit": "^0.2.3",
 		"bootflat": "^2.0.4",
-		"bootstrap": "^3.3.7",
 		"lit": "^3.3.2",
 		"nanostores": "^1.2.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.9",
+		"@types/node": "^25.5.0",
 		"typescript": "~6.0.2",
 		"vite": "^8.0.3",
 		"vite-plugin-singlefile": "^2.3.2",
