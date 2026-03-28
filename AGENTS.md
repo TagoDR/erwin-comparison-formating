@@ -54,3 +54,50 @@ The interface is divided into two primary sections:
 - `src/parser/`: Erwin HTML processing logic.
 - `src/components/`: PureCSS-based Lit components (`app-header`, `app-stats`, `app-table`).
 - `src/store/`: State management for data, filtering, and loading states.
+
+## 6. Input File Structure, sample data
+    The 'Type' Column uses indentation to group information, in the output the indentation level will define collapsable areas, indentation seens to be 4 spaces
+    The 'Difference' Column can and will be ignored, its unreliable, and must be evaluated by the program
+    - Inclusion means Right Column is empty
+    - Exclusion means Left Column is empty
+    - Change means Both sides are filled
+
+
+    |Type|Left|Difference|Right|
+    |Model| AAAA| - |AAAB|
+    |    Nome| AAAA| - |AAAB|
+    |    Author| John| - |John A|
+    |Entities/Tables| | - ||
+    |    Entity/Table| CLI| - |CLI|
+    |        Physical Name| GGGGG| - |GGGGG|
+    |        Name| Client| - |Client|
+    |        Description| a...z| - |a...z|
+    |        Logical Only| false| - |false|
+    |        Physical Only| false| - |false|
+    |        Columns| | - ||
+    |            Attribute/Column| NM_CLI| - |NM_CLI|
+    |                Physical Name| NM_CLI| - |NM_CLI|
+    |                Name| Name Client| - |Name Client|
+    |                Logical Datatype| Char(50)| - |Char(30)|
+    |                Physical Datatype| char(50)| - |char(30)|
+    |                Logical Only| false| - |false|
+    |                Physical Only| false| - |false|
+    |            Attribute/Column| CD_CLI| - |CD_CLI|
+    |                Physical Name| CD_CLI| - |CD_CLI|
+    |                Name| Code Client| - |Code Client|
+    |                Logical Datatype| Integer| - |Integer|
+    |                Physical Datatype| int| - |int|
+    |                Logical Only| false| - |false|
+    |                Physical Only| false| - |false|
+    |        Relationships| | - ||
+    |            Relationship|FK_01||FK_01|
+    |                Name|FK_01||FK_01|
+    |            Relationship|FK_02||FK_02|
+    |                Name|FK_02||FK_02|
+    |        Tablespaces| | - ||
+    |            Tablespace| TB_001| - |TB_001|
+    |        Indexes| | - ||
+    |            Index| IFK_001| - |IFK_001|
+
+
+
