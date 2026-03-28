@@ -1,6 +1,7 @@
 import { StoreController } from "@nanostores/lit";
 import { html, LitElement, unsafeCSS } from "lit";
 import { customElement } from "lit/decorators.js";
+import { icons } from "./assets/icons";
 import {
 	fileName$,
 	filteredData$,
@@ -78,7 +79,7 @@ export class AppRoot extends LitElement {
 						!this.fileName.value && !this.isLoading.value
 							? html`
             <div class="empty-state">
-              <span class="empty-icon">📂</span>
+              <span class="empty-icon">${icons["file-diff"]}</span>
               <span>Nenhum arquivo carregado. Use a área superior para iniciar.</span>
             </div>
           `

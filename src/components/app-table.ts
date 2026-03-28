@@ -1,6 +1,7 @@
 import { StoreController } from "@nanostores/lit";
 import { html, LitElement, unsafeCSS } from "lit";
 import { customElement } from "lit/decorators.js";
+import { icons } from "../assets/icons";
 import { enrichedData$ } from "../store/data.store";
 import tableStyles from "./app-table.css?inline";
 
@@ -34,21 +35,21 @@ export class AppTable extends LitElement {
 
 		// Using a subtle middle dot (·) for each level without spaces
 		const symbol = "·".repeat(level);
-		return symbol + " " + type.trim();
+		return `${symbol} ${type.trim()}`;
 	}
 
 	render() {
 		if (this.data.value.length === 0) {
 			return html`
         <div class="callout">
-          <span class="callout-icon">📊</span>
+          <span class="callout-icon">${icons["clipboard-list"]}</span>
           Selecione o arquivo HTML gerado pelo Erwin Modeler para análise comparativa.
         </div>
       `;
 		}
 
 		return html`
-      <table class="pure-table pure-table-horizontal table-container">
+      <table class="table table-condensed table-hover table-container">
         <thead>
           <tr>
             <th>Tipo / Objeto</th>
@@ -82,10 +83,10 @@ export class AppTable extends LitElement {
 											isNameRow
 												? html`
                       <button 
-                        class="copy-btn" 
+                        class="btn btn-default btn-xs copy-btn" 
                         title="Copiar nome" 
                         @click=${() => this._copyToClipboard(row.type)}
-                      >📋</button>
+                      >${icons.copy}</button>
                     `
 												: ""
 										}

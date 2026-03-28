@@ -39,10 +39,10 @@ th:nth-child(6) {
 th {
 	position: sticky;
 	top: 4.5rem;
-	background: var(--bg-panel) !important;
-	padding: 0.8rem 1rem !important;
+	background: var(--bg-panel);
+	padding: 0.8rem 1rem;
 	text-align: center; /* Center headers by default */
-	border-bottom: 2px solid var(--border-subtle) !important;
+	border-bottom: 2px solid var(--border-subtle);
 	font-weight: 700;
 	color: var(--text-secondary);
 	text-transform: uppercase;
@@ -66,8 +66,8 @@ th:nth-child(3) {
 } /* Modelo Referência (Right) */
 
 td {
-	padding: 0.6rem 1rem !important;
-	border-bottom: 1px solid var(--border-subtle) !important;
+	padding: 0.6rem 1rem;
+	border-bottom: 1px solid var(--border-subtle);
 	vertical-align: top;
 	font-size: 0.85rem;
 	word-wrap: break-word;
@@ -77,17 +77,17 @@ td {
 
 /* Specific data alignment */
 .row-type {
-	text-align: left !important;
+	text-align: left;
 }
 .row-left {
-	text-align: left !important;
+	text-align: left;
 }
 .row-right {
-	text-align: left !important;
+	text-align: left;
 }
 
 tr:last-child td {
-	border-bottom: none !important;
+	border-bottom: none;
 }
 
 /* Default Text Row */
@@ -138,18 +138,41 @@ tr[data-level="4"] .row-type {
 	color: var(--text-secondary);
 }
 
-/* Status Coloring (Hoisted) */
+/* Status Coloring (Pastels with darker text for readability) */
 tr[data-change="I"] {
 	background-color: var(--status-I-bg);
 	border-left: 4px solid var(--status-I-border);
 }
+tr[data-change="I"] td {
+	color: #2c3e50;
+}
+tr[data-change="I"] .row-left,
+tr[data-change="I"] .row-right {
+	color: #2c3e50;
+}
+
 tr[data-change="A"] {
 	background-color: var(--status-A-bg);
 	border-left: 4px solid var(--status-A-border);
 }
+tr[data-change="A"] td {
+	color: #2c3e50;
+}
+tr[data-change="A"] .row-left,
+tr[data-change="A"] .row-right {
+	color: #2c3e50;
+}
+
 tr[data-change="E"] {
 	background-color: var(--status-E-bg);
 	border-left: 4px solid var(--status-E-border);
+}
+tr[data-change="E"] td {
+	color: #2c3e50;
+}
+tr[data-change="E"] .row-left,
+tr[data-change="E"] .row-right {
+	color: #2c3e50;
 }
 
 /* Custom Overrides for Object vs Column distinction in specific statuses */

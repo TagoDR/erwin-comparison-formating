@@ -76,18 +76,13 @@
 	font-size: 0.875rem;
 }
 
-.close-btn {
-	background: #ef4444;
-	color: white;
-	border: none;
-	padding: 0.2rem 0.6rem;
-	border-radius: 4px;
-	cursor: pointer;
-	font-size: 0.7rem;
-	font-weight: 800;
-	letter-spacing: 0.05em;
-}
-
-.close-btn:hover {
-	background: #dc2626;
+.version-tag {
+	position: absolute;
+	top: 4px;
+	right: 8px;
+	font-size: 10px;
+	color: var(--text-secondary);
+	opacity: 0.7;
+	font-weight: bold;
+	pointer-events: none;
 }

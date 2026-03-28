@@ -1,86 +1,107 @@
-@import "purecss/build/pure-min.css";
-@import "purecss/build/grids-responsive-min.css";
+@import "bootflat/bootflat/css/bootflat.min.css";
 
-/* --- Design System / Theme --- */
+/* --- Design System / Theme (Bootflat Inspired Dark Slate) --- */
 :root {
-	/* Layout Colors */
-	--bg-main: #0f172a;
-	--bg-panel: #1e293b;
-	--text-primary: #f8fafc;
-	--text-secondary: #94a3b8;
-	--border-subtle: #334155;
-	--accent-blue: #3b82f6;
+	/* Layout Colors (Slate/Wet Asphalt) */
+	--bg-main: #34495e;
+	--bg-panel: #2c3e50;
+	--text-primary: #f1f2f2;
+	--text-secondary: #95a5a6;
+	--border-subtle: #465c71;
+	--accent-blue: #3498db; /* Peter River */
 
-	/* Table Status - Inclusion (I) */
-	--status-I-bg: rgba(6, 78, 59, 0.4);
-	--status-I-border: #10b981;
-	--status-I-text: #10b981;
+	/* Table Status (Pastels) */
+	--status-I-bg: #e6f3e6; /* Pastel Green */
+	--status-I-border: #2ecc71; /* Emerald */
+	--status-I-text: #27ae60;
 
-	/* Table Status - Alteration (A) */
-	--status-A-bg: rgba(76, 29, 149, 0.4);
-	--status-A-border: #8b5cf6;
-	--status-A-text: #8b5cf6;
+	/* Table Status (Pastels) */
+	--status-A-bg: #f3e6ff; /* Pastel Purple */
+	--status-A-border: #9b59b6; /* Amethyst */
+	--status-A-text: #8e44ad;
 
-	/* Table Status - Exclusion (E) */
-	--status-E-bg: rgba(127, 29, 29, 0.4);
-	--status-E-border: #ef4444;
-	--status-E-text: #ef4444;
+	/* Table Status (Pastels) */
+	--status-E-bg: #ffe6e6; /* Pastel Red */
+	--status-E-border: #e74c3c; /* Alizarin */
+	--status-E-text: #c0392b;
 
-	/* Object Type Colors (Orange palette for nesting) */
-	--color-obj-l0: #9a3412; /* Deep Orange - Level 0 */
-	--color-obj-l1: #c2410c; /* Lighter Orange - Level 1 */
-	--color-obj-l2: #ea580c; /* Level 2 */
-	--color-obj-l3: #f97316; /* Level 3 */
-	--color-obj-l4: #fb923c; /* Level 4 (Highest) */
+	/* Object Type Colors (Bootflat palette) */
+	--color-obj-l0: #e67e22; /* Carrot */
+	--color-obj-l1: #f39c12; /* Orange */
+	--color-obj-l2: #1abc9c; /* Turquoise */
+	--color-obj-l3: #16a085; /* Green Sea */
+	--color-obj-l4: #3498db; /* Peter River */
 
 	/* Neutral Status */
-	--bg-empty: rgba(15, 23, 42, 0.95);
-	--text-muted: #475569;
+	--bg-empty: rgba(44, 62, 80, 0.95);
+	--text-muted: #7f8c8d;
 }
 
 body {
 	background-color: var(--bg-main);
 	color: var(--text-primary);
-	font-family:
-		-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-		sans-serif;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	margin: 0;
 }
 
-/* PureCSS Overrides for Dark Mode */
-.pure-table {
+/* Bootflat Overrides for Dark Mode */
+.table {
 	color: var(--text-primary);
 	background: transparent;
 	border: 1px solid var(--border-subtle);
 	width: 100%;
 }
 
-.pure-table thead {
+.table thead {
 	background-color: var(--bg-panel);
-	color: var(--text-secondary);
 }
 
-.pure-table th {
-	border-bottom: 2px solid var(--border-subtle) !important;
+.table th {
+	border-bottom: 2px solid var(--border-subtle);
 	text-transform: uppercase;
 	font-size: 0.75rem;
 	letter-spacing: 0.05em;
+	color: var(--text-secondary);
 }
 
-.pure-table td {
-	border-bottom: 1px solid var(--border-subtle);
+.table td {
+	border-top: 1px solid var(--border-subtle);
 }
 
-.pure-form input,
-.pure-form select {
-	background-color: var(--bg-main) !important;
-	color: white !important;
-	border: 1px solid var(--border-subtle) !important;
-	border-radius: 4px !important;
+.table-hover tbody tr:hover {
+	background-color: rgba(255, 255, 255, 0.05);
 }
 
-.pure-form label {
+.form-control {
+	background-color: var(--bg-panel);
+	color: white;
+	border: 1px solid var(--border-subtle);
+	border-radius: 4px;
+}
+
+.form-control:focus {
+	border-color: var(--accent-blue);
+	box-shadow: none;
+}
+
+label {
 	color: var(--text-secondary);
 	font-size: 0.75rem;
 	margin-bottom: 0.25rem;
+}
+
+.btn-primary {
+	background-color: var(--accent-blue);
+	border-color: var(--accent-blue);
+}
+
+.btn-danger {
+	background-color: var(--status-E-border);
+	border-color: var(--status-E-border);
+}
+
+/* Remove Glyphicons dependency */
+@font-face {
+	font-family: "Glyphicons Halflings";
+	src: local("sans-serif");
 }

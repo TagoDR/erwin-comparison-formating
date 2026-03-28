@@ -1,6 +1,7 @@
 import { StoreController } from "@nanostores/lit";
 import { html, LitElement, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
+import { icons } from "../assets/icons";
 import {
 	fileName$,
 	filteredData$,
@@ -11,7 +12,6 @@ import headerStyles from "./app-header.css?inline";
 
 @customElement("app-header")
 export class AppHeader extends LitElement {
-	private isLoading = new StoreController(this, isLoading$);
 	private fileName = new StoreController(this, fileName$);
 
 	@state() private isDragging = false;
@@ -69,7 +69,9 @@ export class AppHeader extends LitElement {
 						? html`
           <div class="file-info">
             <span class="file-name">${this.fileName.value}</span>
-            <button class="close-btn" @click=${this._closeFile}>FECHAR ARQUIVO</button>
+            <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
+               ${icons.x} FECHAR ARQUIVO
+            </button>
           </div>
         `
 						: html`
@@ -79,14 +81,14 @@ export class AppHeader extends LitElement {
             @dragover=${this._onDragOver}
             @dragleave=${this._onDragLeave}
           >
-            <span class="icon">📁</span>
+            <span class="icon">${icons["file-upload"]}</span>
             <span>Selecione ou arraste o arquivo HTML do Erwin aqui</span>
-            <input type="file" @change=${(e: any) => this._handleFile(e.target.files[0])} />
+            <input type="file" @change=${(e: Event) => this._handleFile((e.target as HTMLInputElement).files?.[0] as File)} />
           </div>
         `
 				}
 
-        <div style="width: 150px;"></div>
+        <div class="version-tag">v5</div>
       </div>
     `;
 	}

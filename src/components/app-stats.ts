@@ -1,6 +1,7 @@
 import { StoreController } from "@nanostores/lit";
 import { html, LitElement, unsafeCSS } from "lit";
 import { customElement } from "lit/decorators.js";
+import { icons } from "../assets/icons";
 import {
 	filterChange$,
 	filterObject$,
@@ -52,7 +53,7 @@ export class AppStats extends LitElement {
       <div class="layout-stats">
         <div class="left-stats">
           <div class="stats-container">
-            <table class="stats-table">
+            <table class="table table-condensed stats-table">
               <thead>
                 <tr>
                   <th>Objeto</th>
@@ -81,7 +82,7 @@ export class AppStats extends LitElement {
           <div class="filter-panel">
             <div class="filter-item">
               <label for="change-filter">Tipo de Mudança</label>
-              <select id="change-filter" @change=${this._updateChangeFilter}>
+              <select id="change-filter" class="form-control" @change=${this._updateChangeFilter}>
                 <option value="">Todas</option>
                 <option value="I">Inclusão (I)</option>
                 <option value="A">Alteração (A)</option>
@@ -91,7 +92,7 @@ export class AppStats extends LitElement {
 
             <div class="filter-item">
               <label for="object-filter">Categoria</label>
-              <select id="object-filter" @change=${this._updateObjectFilter}>
+              <select id="object-filter" class="form-control" @change=${this._updateObjectFilter}>
                 <option value="">Todos</option>
                 <option value="table">Tabelas</option>
                 <option value="column">Colunas</option>
@@ -102,8 +103,8 @@ export class AppStats extends LitElement {
         </div>
 
         <div class="action-panel">
-          <button type="button" class="copy-all-btn" @click=${this._copyTablesToClipboard}>
-            <span>📋</span> COPIAR NOMES DAS TABELAS
+          <button type="button" class="btn btn-primary btn-block copy-all-btn" @click=${this._copyTablesToClipboard}>
+            ${icons["clipboard-list"]} COPIAR NOMES DAS TABELAS
           </button>
         </div>
       </div>
