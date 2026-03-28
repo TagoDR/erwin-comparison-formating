@@ -1,40 +1,73 @@
 @import "bootflat/bootflat/css/bootflat.min.css";
 
-/* --- Design System / Theme (Bootflat Inspired Dark Slate) --- */
+/* --- Design System / Theme --- */
 :root {
-	/* Layout Colors (Slate/Wet Asphalt) */
+	/* DARK THEME (Default) */
 	--bg-main: #34495e;
 	--bg-panel: #2c3e50;
 	--text-primary: #f1f2f2;
 	--text-secondary: #95a5a6;
 	--border-subtle: #465c71;
-	--accent-blue: #3498db; /* Peter River */
+	--accent-blue: #3498db;
+    
+	/* Office 2010 Palette */
+	--off-blue-base: #4f81bd;
+	--off-red-base: #c0504d;
+	--off-red-60: #e5b9b7;
+	--off-green-base: #9bbb59;
+	--off-green-60: #d7e3bc;
+	--off-purple-base: #8064a2;
+	--off-purple-60: #ccc1d9;
+	--off-orange-base: #f79646;
+	--off-orange-40: #fac08f;
+	--off-orange-60: #fbd5b5;
+	--off-orange-80: #fde9d9;
 
-	/* Table Status (Pastels) */
-	--status-I-bg: #e6f3e6; /* Pastel Green */
-	--status-I-border: #2ecc71; /* Emerald */
-	--status-I-text: #27ae60;
+	/* Table Status mapping (to be used selectively) */
+	--status-I-bg: var(--off-green-base);
+	--status-I-text: #ffffff;
+	--status-I-bg-light: var(--off-green-60);
+	--status-I-text-light: #2c3e50;
 
-	/* Table Status (Pastels) */
-	--status-A-bg: #f3e6ff; /* Pastel Purple */
-	--status-A-border: #9b59b6; /* Amethyst */
-	--status-A-text: #8e44ad;
+	--status-A-bg: var(--off-purple-base);
+	--status-A-text: #ffffff;
+	--status-A-bg-light: var(--off-purple-60);
+	--status-A-text-light: #2c3e50;
 
-	/* Table Status (Pastels) */
-	--status-E-bg: #ffe6e6; /* Pastel Red */
-	--status-E-border: #e74c3c; /* Alizarin */
-	--status-E-text: #c0392b;
+	--status-E-bg: var(--off-red-base);
+	--status-E-text: #ffffff;
+	--status-E-bg-light: var(--off-red-60);
+	--status-E-text-light: #2c3e50;
 
-	/* Object Type Colors (Bootflat palette) */
-	--color-obj-l0: #e67e22; /* Carrot */
-	--color-obj-l1: #f39c12; /* Orange */
-	--color-obj-l2: #1abc9c; /* Turquoise */
-	--color-obj-l3: #16a085; /* Green Sea */
-	--color-obj-l4: #3498db; /* Peter River */
+	/* Object Type Colors (Orange Scale) */
+	--color-obj-l0: var(--off-orange-base);
+	--color-obj-l1: var(--off-orange-40);
+	--color-obj-l2: var(--off-orange-60);
+	--color-obj-l3: var(--off-orange-80);
+	--color-obj-l4: var(--off-orange-80);
 
-	/* Neutral Status */
 	--bg-empty: rgba(44, 62, 80, 0.95);
 	--text-muted: #7f8c8d;
+    
+    --row-bg-normal: #f8f9fa; /* Off-white for data rows */
+    --row-text-normal: #2c3e50;
+}
+
+[data-theme="light"] {
+	--bg-main: #ecf0f1;
+	--bg-panel: #ffffff;
+	--text-primary: #2c3e50;
+	--text-secondary: #7f8c8d;
+	--border-subtle: #d1d8e0;
+	--accent-blue: #2980b9;
+    
+    --row-bg-normal: #ffffff;
+    --row-text-normal: #2c3e50;
+    
+    --bg-empty: rgba(255, 255, 255, 0.95);
+    
+    /* Slightly different pastels for light theme if needed, 
+       but keeping them consistent for now as they are already light */
 }
 
 body {
@@ -42,9 +75,10 @@ body {
 	color: var(--text-primary);
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	margin: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Bootflat Overrides for Dark Mode */
+/* Bootflat Overrides */
 .table {
 	color: var(--text-primary);
 	background: transparent;
@@ -69,12 +103,16 @@ body {
 }
 
 .table-hover tbody tr:hover {
+	background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .table-hover tbody tr:hover {
 	background-color: rgba(255, 255, 255, 0.05);
 }
 
 .form-control {
 	background-color: var(--bg-panel);
-	color: white;
+	color: var(--text-primary);
 	border: 1px solid var(--border-subtle);
 	border-radius: 4px;
 }

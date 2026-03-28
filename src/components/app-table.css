@@ -129,7 +129,7 @@ tr[data-level="4"] .row-type {
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.8rem;
 	line-height: 1.4;
-	color: #cbd5e1;
+	color: var(--text-secondary);
 }
 
 .row-prop {
@@ -138,41 +138,68 @@ tr[data-level="4"] .row-type {
 	color: var(--text-secondary);
 }
 
-/* Status Coloring (Pastels with darker text for readability) */
-tr[data-change="I"] {
+/* Row Styling - Non-header rows or rows without changes should be the normal row background */
+tr {
+	background-color: var(--row-bg-normal);
+	color: var(--row-text-normal);
+}
+
+tr td {
+	color: var(--row-text-normal);
+}
+
+tr .row-left,
+tr .row-right,
+tr .row-prop,
+tr .row-type,
+tr .row-change,
+tr .row-view {
+	color: var(--row-text-normal);
+}
+
+/* Object Identification Headers with status coloring (Saturated Pastels) */
+tr[data-header="true"][data-change="I"] {
 	background-color: var(--status-I-bg);
 	border-left: 4px solid var(--status-I-border);
 }
-tr[data-change="I"] td {
-	color: #2c3e50;
+tr[data-header="true"][data-change="I"] td {
+	color: var(--status-I-text);
+    font-weight: bold;
 }
-tr[data-change="I"] .row-left,
-tr[data-change="I"] .row-right {
-	color: #2c3e50;
+tr[data-header="true"][data-change="I"] .row-left,
+tr[data-header="true"][data-change="I"] .row-right {
+	color: var(--status-I-text);
 }
 
-tr[data-change="A"] {
+tr[data-header="true"][data-change="A"] {
 	background-color: var(--status-A-bg);
 	border-left: 4px solid var(--status-A-border);
 }
-tr[data-change="A"] td {
-	color: #2c3e50;
+tr[data-header="true"][data-change="A"] td {
+	color: var(--status-A-text);
+    font-weight: bold;
 }
-tr[data-change="A"] .row-left,
-tr[data-change="A"] .row-right {
-	color: #2c3e50;
+tr[data-header="true"][data-change="A"] .row-left,
+tr[data-header="true"][data-change="A"] .row-right {
+	color: var(--status-A-text);
 }
 
-tr[data-change="E"] {
+tr[data-header="true"][data-change="E"] {
 	background-color: var(--status-E-bg);
 	border-left: 4px solid var(--status-E-border);
 }
-tr[data-change="E"] td {
-	color: #2c3e50;
+tr[data-header="true"][data-change="E"] td {
+	color: var(--status-E-text);
+    font-weight: bold;
 }
-tr[data-change="E"] .row-left,
-tr[data-change="E"] .row-right {
-	color: #2c3e50;
+tr[data-header="true"][data-change="E"] .row-left,
+tr[data-header="true"][data-change="E"] .row-right {
+	color: var(--status-E-text);
+}
+
+/* Special Case: Object headers with NO CHANGE should stay normal but bold */
+tr[data-header="true"][data-change=""] {
+	font-weight: 700;
 }
 
 /* Custom Overrides for Object vs Column distinction in specific statuses */
@@ -220,6 +247,6 @@ tr:hover .copy-btn {
 
 .copy-btn:hover {
 	background: var(--border-subtle);
-	color: white;
+	color: var(--text-primary);
 	border-color: var(--accent-blue);
 }

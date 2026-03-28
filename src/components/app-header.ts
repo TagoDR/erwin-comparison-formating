@@ -1,6 +1,7 @@
 import { StoreController } from "@nanostores/lit";
 import { html, LitElement, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
+import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 import { icons } from "../assets/icons";
 import {
 	fileName$,
@@ -8,11 +9,13 @@ import {
 	isLoading$,
 	rawData$,
 } from "../store/data.store";
+import { theme$, toggleTheme } from "../store/theme.store";
 import headerStyles from "./app-header.css?inline";
 
 @customElement("app-header")
 export class AppHeader extends LitElement {
 	private fileName = new StoreController(this, fileName$);
+	private theme = new StoreController(this, theme$);
 
 	@state() private isDragging = false;
 
@@ -81,14 +84,19 @@ export class AppHeader extends LitElement {
             @dragover=${this._onDragOver}
             @dragleave=${this._onDragLeave}
           >
-            <span class="icon">${icons["file-upload"]}</span>
+            <span class="icon">${icons["file-diff"]}</span>
             <span>Selecione ou arraste o arquivo HTML do Erwin aqui</span>
             <input type="file" @change=${(e: Event) => this._handleFile((e.target as HTMLInputElement).files?.[0] as File)} />
           </div>
         `
 				}
 
-        <div class="version-tag">v5</div>
+        <div class="header-controls">
+          <div class="version-tag">v5</div>
+          <button class="theme-toggle" @click=${toggleTheme} title="Alternar Tema">
+            ${this.theme.value === "dark" ? icons.sun : icons.moon}
+          </button>
+        </div>
       </div>
     `;
 	}

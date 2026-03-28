@@ -75,6 +75,7 @@ export class AppTable extends LitElement {
                 data-change="${row.change}" 
                 data-level="${nestingLevel}"
                 data-prop="${row.prop}"
+                data-header="${row.isHeader || false}"
               >
                 <td class="row-type">
                   <div class="name-cell">

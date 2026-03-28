@@ -1,7 +1,7 @@
 :host {
 	display: block;
 	min-height: 100vh;
-	background-color: #0f172a;
+	background-color: var(--bg-main);
 }
 
 .main-content {
@@ -21,21 +21,21 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background: rgba(15, 23, 42, 0.95);
+	background: var(--bg-empty);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	z-index: 2000;
-	color: #f8fafc;
+	color: var(--text-primary);
 	gap: 1.5rem;
 }
 
 .spinner {
 	width: 50px;
 	height: 50px;
-	border: 5px solid #334155;
-	border-top: 5px solid #3b82f6;
+	border: 5px solid var(--border-subtle);
+	border-top: 5px solid var(--accent-blue);
 	border-radius: 50%;
 	animation: spin 1s linear infinite;
 }
@@ -43,7 +43,7 @@
 .loading-text {
 	font-size: 1rem;
 	font-weight: 600;
-	color: #94a3b8;
+	color: var(--text-secondary);
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
 }
@@ -63,10 +63,15 @@
 	align-items: center;
 	justify-content: center;
 	padding-top: 10vh;
-	color: #475569;
+	color: var(--text-muted);
 }
 
 .empty-icon {
 	font-size: 4rem;
 	margin-bottom: 1rem;
+}
+
+.empty-icon svg {
+    width: 64px;
+    height: 64px;
 }
