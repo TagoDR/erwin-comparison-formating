@@ -25,22 +25,22 @@ export class AppTable extends LitElement {
         <thead>
           <tr>
             <th>Tipo / Objeto</th>
+            <th>Modelo Trabalhando (Left)</th>
+            <th>Modelo Referência (Right)</th>
             <th>Propriedade</th>
             <th>Alteração</th>
             <th>Visão</th>
-            <th>Modelo Trabalhando (Left)</th>
-            <th>Modelo Referência (Right)</th>
           </tr>
         </thead>
         <tbody>
           ${this.data.value.map(row => html`
             <tr data-change="${row.change}">
               <td class="row-type">${row.type}</td>
+              <td class="row-left">${row.leftModel}</td>
+              <td class="row-right">${row.rightModel}</td>
               <td class="row-prop">${row.prop}</td>
               <td class="row-change" style="text-align: center;">${row.change}</td>
               <td class="row-view" style="text-align: center;">${row.view}</td>
-              <td class="row-left">${row.leftModel}</td>
-              <td class="row-right">${row.rightModel}</td>
             </tr>
           `)}
         </tbody>

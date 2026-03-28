@@ -2,6 +2,7 @@ import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { StoreController } from '@nanostores/lit';
 import { isLoading$, rawData$, filteredData$, fileName$ } from './store/data.store';
+import { MOCK_ERWIN_DATA } from './store/mock-data';
 
 // Import Global CSS
 import './index.css';
@@ -12,6 +13,9 @@ import './components/app-header';
 import './components/app-stats';
 import './components/app-table';
 
+// FLAG TO ENABLE MOCK DATA IN DEV MODE
+const USE_MOCK = import.meta.env.DEV && true;
+
 @customElement('app-root')
 export class AppRoot extends LitElement {
   private isLoading = new StoreController(this, isLoading$);
@@ -19,24 +23,30 @@ export class AppRoot extends LitElement {
 
   static styles = unsafeCSS(mainStyles);
 
+  firstUpdated() {
+    if (USE_MOCK) {
+      this._loadMockData();
+    }
+  }
+
+  private _loadMockData() {
+    fileName$.set('mock-erwin-report.html');
+    isLoading$.set(true);
+    
+    // Simulate parsing delay for visual verification
+    setTimeout(() => {
+      rawData$.set(MOCK_ERWIN_DATA);
+      filteredData$.set(MOCK_ERWIN_DATA);
+      isLoading$.set(false);
+    }, 800);
+  }
+
   private _onFileLoaded(e: CustomEvent<{ content: string }>) {
     const { content } = e.detail;
     console.log('File content loaded, starting parser...', content.substring(0, 100));
     
-    // Parser Simulation (Real parser will replace this)
-    setTimeout(() => {
-      const mockData = [
-        { type: 'TABLE: CUSTOMER', prop: 'CUSTOMER', change: 'A', view: 'L/P', leftModel: 'Active', rightModel: 'Active', indent: 0, isHeader: true },
-        { type: '  Attribute: Name', prop: 'CUSTOMER', change: 'A', view: '', leftModel: 'VARCHAR(100)', rightModel: 'VARCHAR(50)', indent: 2 },
-        { type: 'TABLE: ORDERS', prop: 'ORDERS', change: 'I', view: 'L', leftModel: 'Created', rightModel: '', indent: 0, isHeader: true },
-        { type: '  Attribute: OrderID', prop: 'ORDERS', change: 'I', view: '', leftModel: 'INT', rightModel: '', indent: 2 },
-        { type: 'TABLE: LOGS', prop: 'LOGS', change: 'E', view: 'P', leftModel: '', rightModel: 'Dropped', indent: 0, isHeader: true },
-      ] as any;
-      
-      rawData$.set(mockData);
-      filteredData$.set(mockData);
-      isLoading$.set(false);
-    }, 1500); // Extended delay for visualization
+    // TODO: Implement actual parser logic in src/parser/
+    isLoading$.set(false);
   }
 
   render() {

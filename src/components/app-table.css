@@ -5,6 +5,7 @@
 
 .table-container {
   width: 100%;
+  table-layout: fixed; /* Freezes column sizes */
   border-collapse: collapse;
   font-family: inherit;
   font-size: 0.8125rem;
@@ -14,6 +15,14 @@
   border-radius: 4px;
   overflow: hidden;
 }
+
+/* Specific Column Widths */
+th:nth-child(1) { width: 25%; } /* Tipo / Objeto */
+th:nth-child(2) { width: 25%; } /* Modelo Trabalhando (Left) */
+th:nth-child(3) { width: 25%; } /* Modelo Referência (Right) */
+th:nth-child(4) { width: 12%; } /* Propriedade */
+th:nth-child(5) { width: 7%; }  /* Alteração */
+th:nth-child(6) { width: 6%; }  /* Visão */
 
 th {
   position: sticky;
@@ -28,6 +37,9 @@ th {
   font-size: 0.75rem;
   letter-spacing: 0.05em;
   z-index: 50;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 td {
@@ -35,6 +47,8 @@ td {
   border-bottom: 1px solid #334155 !important;
   vertical-align: top;
   font-size: 0.85rem;
+  word-wrap: break-word; /* Ensure large texts break within the cell */
+  overflow-wrap: break-word;
 }
 
 tr:last-child td {
@@ -42,9 +56,16 @@ tr:last-child td {
 }
 
 .row-type {
-  white-space: pre;
+  white-space: pre-wrap; /* Allow indent to wrap if needed, while keeping spaces */
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
   color: #3b82f6;
+}
+
+.row-left, .row-right {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: #cbd5e1;
 }
 
 /* Status Coloring (Hoisted) */
