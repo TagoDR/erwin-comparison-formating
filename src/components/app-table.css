@@ -1,90 +1,202 @@
 :host {
-  display: block;
-  padding: 1.5rem;
+	display: block;
+	padding: 1.5rem;
 }
 
 .table-container {
-  width: 100%;
-  table-layout: fixed; /* Freezes column sizes */
-  border-collapse: collapse;
-  font-family: inherit;
-  font-size: 0.8125rem;
-  color: #f8fafc;
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 4px;
-  overflow: hidden;
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+	font-family: inherit;
+	font-size: 0.8125rem;
+	color: var(--text-primary);
+	background: var(--bg-main);
+	border: 1px solid var(--border-subtle);
+	border-radius: 4px;
+	overflow: hidden;
 }
 
 /* Specific Column Widths */
-th:nth-child(1) { width: 25%; } /* Tipo / Objeto */
-th:nth-child(2) { width: 25%; } /* Modelo Trabalhando (Left) */
-th:nth-child(3) { width: 25%; } /* Modelo Referência (Right) */
-th:nth-child(4) { width: 12%; } /* Propriedade */
-th:nth-child(5) { width: 7%; }  /* Alteração */
-th:nth-child(6) { width: 6%; }  /* Visão */
+th:nth-child(1) {
+	width: 15%;
+} /* Tipo / Objeto */
+th:nth-child(2) {
+	width: 35%;
+} /* Modelo Trabalhando (Left) */
+th:nth-child(3) {
+	width: 35%;
+} /* Modelo Referência (Right) */
+th:nth-child(4) {
+	width: 5%;
+} /* Prop */
+th:nth-child(5) {
+	width: 5%;
+} /* Alteração */
+th:nth-child(6) {
+	width: 5%;
+} /* Visão */
 
 th {
-  position: sticky;
-  top: 4.5rem; /* Header height offset */
-  background: #1e293b !important;
-  padding: 0.8rem 1rem !important;
-  text-align: left;
-  border-bottom: 2px solid #334155 !important;
-  font-weight: 700;
-  color: #94a3b8;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  z-index: 50;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	position: sticky;
+	top: 4.5rem;
+	background: var(--bg-panel) !important;
+	padding: 0.8rem 1rem !important;
+	text-align: center; /* Center headers by default */
+	border-bottom: 2px solid var(--border-subtle) !important;
+	font-weight: 700;
+	color: var(--text-secondary);
+	text-transform: uppercase;
+	font-size: 0.75rem;
+	letter-spacing: 0.05em;
+	z-index: 50;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
+/* Specific header alignment */
+th:nth-child(1) {
+	text-align: left;
+} /* Tipo / Objeto */
+th:nth-child(2) {
+	text-align: left;
+} /* Modelo Trabalhando (Left) */
+th:nth-child(3) {
+	text-align: left;
+} /* Modelo Referência (Right) */
+
 td {
-  padding: 0.6rem 1rem !important;
-  border-bottom: 1px solid #334155 !important;
-  vertical-align: top;
-  font-size: 0.85rem;
-  word-wrap: break-word; /* Ensure large texts break within the cell */
-  overflow-wrap: break-word;
+	padding: 0.6rem 1rem !important;
+	border-bottom: 1px solid var(--border-subtle) !important;
+	vertical-align: top;
+	font-size: 0.85rem;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	text-align: center; /* Center data by default */
+}
+
+/* Specific data alignment */
+.row-type {
+	text-align: left !important;
+}
+.row-left {
+	text-align: left !important;
+}
+.row-right {
+	text-align: left !important;
 }
 
 tr:last-child td {
-  border-bottom: none !important;
+	border-bottom: none !important;
 }
 
+/* Default Text Row */
 .row-type {
-  white-space: pre-wrap; /* Allow indent to wrap if needed, while keeping spaces */
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  color: #3b82f6;
+	white-space: pre-wrap;
+	font-family: "JetBrains Mono", "Fira Code", monospace;
+	color: var(--accent-blue);
+	position: relative;
 }
 
-.row-left, .row-right {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8rem;
-  line-height: 1.4;
-  color: #cbd5e1;
+/* Nesting Level Colors (Orange Palette) */
+tr[data-level="0"] .row-type {
+	color: var(--color-obj-l0);
+	font-weight: 700;
+}
+tr[data-level="1"] .row-type {
+	color: var(--color-obj-l1);
+	font-weight: 600;
+}
+tr[data-level="2"] .row-type {
+	color: var(--color-obj-l2);
+}
+tr[data-level="3"] .row-type {
+	color: var(--color-obj-l3);
+}
+tr[data-level="4"] .row-type {
+	color: var(--color-obj-l4);
+}
+
+.name-cell {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.row-left,
+.row-right {
+	font-family: "JetBrains Mono", monospace;
+	font-size: 0.8rem;
+	line-height: 1.4;
+	color: #cbd5e1;
+}
+
+.row-prop {
+	font-family: "JetBrains Mono", monospace;
+	font-weight: 700;
+	color: var(--text-secondary);
 }
 
 /* Status Coloring (Hoisted) */
-tr[data-change="I"] { background-color: rgba(6, 78, 59, 0.4); border-left: 4px solid #10b981; }
-tr[data-change="A"] { background-color: rgba(76, 29, 149, 0.4); border-left: 4px solid #8b5cf6; }
-tr[data-change="E"] { background-color: rgba(127, 29, 29, 0.4); border-left: 4px solid #ef4444; }
+tr[data-change="I"] {
+	background-color: var(--status-I-bg);
+	border-left: 4px solid var(--status-I-border);
+}
+tr[data-change="A"] {
+	background-color: var(--status-A-bg);
+	border-left: 4px solid var(--status-A-border);
+}
+tr[data-change="E"] {
+	background-color: var(--status-E-bg);
+	border-left: 4px solid var(--status-E-border);
+}
+
+/* Custom Overrides for Object vs Column distinction in specific statuses */
+tr[data-prop="Ent"][data-change="I"] {
+	border-left-width: 6px;
+} /* Heavy border for new table */
+tr[data-prop="Atr"][data-change="I"] {
+	border-left-width: 3px;
+} /* Thinner for new column */
 
 .callout {
-  background: #1e293b;
-  border: 1px solid #334155;
-  padding: 3rem;
-  text-align: center;
-  border-radius: 8px;
-  color: #94a3b8;
-  margin-top: 2rem;
+	background: var(--bg-panel);
+	border: 1px solid var(--border-subtle);
+	padding: 3rem;
+	text-align: center;
+	border-radius: 8px;
+	color: var(--text-secondary);
+	margin-top: 2rem;
 }
 
 .callout-icon {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
-  display: block;
+	font-size: 3rem;
+	margin-bottom: 1.5rem;
+	display: block;
+}
+
+/* Inline Copy Button */
+.copy-btn {
+	background: var(--bg-panel);
+	border: 1px solid var(--border-subtle);
+	color: var(--text-secondary);
+	padding: 0.1rem 0.3rem;
+	border-radius: 3px;
+	cursor: pointer;
+	font-size: 0.7rem;
+	opacity: 0;
+	transition:
+		opacity 0.2s,
+		background 0.2s;
+}
+
+tr:hover .copy-btn {
+	opacity: 1;
+}
+
+.copy-btn:hover {
+	background: var(--border-subtle);
+	color: white;
+	border-color: var(--accent-blue);
 }
