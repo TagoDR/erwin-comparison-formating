@@ -65,7 +65,7 @@ export class AppHeader extends LitElement {
 	render() {
 		return html`
       <div class="header-layout">
-        <div class="brand">Erwin Formatter</div>
+        <div class="brand">Erwin Complete Compare</div>
 
         ${
 					this.fileName.value
@@ -73,7 +73,7 @@ export class AppHeader extends LitElement {
           <div class="file-info">
             <span class="file-name">${this.fileName.value}</span>
             <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
-               ${icons.x} FECHAR ARQUIVO
+               ${icons.x} Fechar Arquivo
             </button>
           </div>
         `
