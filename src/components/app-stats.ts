@@ -102,7 +102,7 @@ export class AppStats extends LitElement {
         </div>
 
         <div class="action-panel">
-          <button class="copy-all-btn" @click=${this._copyTablesToClipboard}>
+          <button type="button" class="copy-all-btn" @click=${this._copyTablesToClipboard}>
             <span>📋</span> COPIAR NOMES DAS TABELAS
           </button>
         </div>
