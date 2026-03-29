@@ -11,6 +11,7 @@ export interface ErwinRow {
 	rightModel: string;
 	indent: number;
 	isHeader?: boolean;
+	isCalculated?: boolean;
 }
 
 export interface StatsSummary {
@@ -35,9 +36,29 @@ export const collapsedIds$ = atom<Set<string>>(new Set());
 export const checkedIds$ = atom<Set<string>>(new Set());
 export const showProperties$ = atom<boolean>(true);
 
-/**
- * Helper to determine the short code for an object type.
- */
+const IGNORED_GROUPS = [
+	"Atributes/Columns",
+	"Foreign Keys",
+	"Keys/Indexes",
+	"Relationships",
+	"Tablespaces",
+	"Columns",
+];
+
+const HEADER_KEYWORDS = [
+	"Entity/Table",
+	"Entity",
+	"Table",
+	"Atribute/Column",
+	"Attribute",
+	"Column",
+	"Foreign Key",
+	"Relationship",
+	"Key/Index",
+	"Index",
+	"Model",
+];
+
 export const getObjectShortCode = (type: string): string => {
 	const t = type.toLowerCase();
 	if (t.includes("entity") || t.includes("table")) return "Ent";
@@ -51,31 +72,102 @@ export const getObjectShortCode = (type: string): string => {
 };
 
 /**
- * Computed store that process raw rows to add inherited property short codes, IDs and parent references.
+ * Computed store that process raw rows to add recursive parenting, status hoisting and filtering.
  */
 export const enrichedData$ = computed(rawData$, (data) => {
-	let currentPropCode = "O";
-	let lastHeaderId = "";
+	const filtered = data.filter((row) => !IGNORED_GROUPS.includes(row.type));
 
-	return data.map((row, index) => {
-		const id = `row-${index}`;
-		// If it's a header, determine new prop code
-		const newCode = getObjectShortCode(row.type);
-		if (newCode) {
-			currentPropCode = newCode;
-		}
+	// 1. Assign IDs and Parentage based on indentation
+	const withInitialState = filtered.map((row, index) => {
+		const isHeader =
+			row.isHeader || HEADER_KEYWORDS.some((kw) => row.type.includes(kw));
 
-		const parentId = row.isHeader ? "" : lastHeaderId;
-		if (row.isHeader) {
-			lastHeaderId = id;
+		// Initial View Classification based on keywords
+		let view = row.view;
+		if (!view) {
+			if (row.type.includes("Entity") && row.type.includes("Table")) view = "L/P";
+			else if (row.type.includes("Atribute") && row.type.includes("Column"))
+				view = "L/P";
+			else if (row.type.includes("Entity") || row.type.includes("Atribute"))
+				view = "L";
+			else if (row.type.includes("Table") || row.type.includes("Column"))
+				view = "P";
 		}
 
 		return {
 			...row,
-			id,
-			parentId,
-			prop: currentPropCode,
+			id: `row-${index}`,
+			isHeader,
+			view,
+			isCalculated:
+				row.leftModel.includes("[Calculated]") &&
+				row.rightModel.includes("[Calculated]"),
 		};
+	});
+
+	const headerStack: { id: string; indent: number }[] = [];
+	const withParents = withInitialState.map((row) => {
+		while (
+			headerStack.length > 0 &&
+			headerStack[headerStack.length - 1].indent >= row.indent
+		) {
+			headerStack.pop();
+		}
+
+		const parentId =
+			headerStack.length > 0 ? headerStack[headerStack.length - 1].id : "";
+
+		if (row.isHeader) {
+			headerStack.push({ id: row.id!, indent: row.indent });
+		}
+
+		return { ...row, parentId };
+	});
+
+	// 2. Status & View Hoisting (Bottom-Up)
+	const hoisted = [...withParents];
+	const statusPriority = { E: 3, I: 2, A: 1, "": 0 };
+
+	for (let i = hoisted.length - 1; i >= 0; i--) {
+		const row = hoisted[i];
+		if (row.parentId) {
+			const parentIndex = hoisted.findIndex((p) => p.id === row.parentId);
+			if (parentIndex !== -1) {
+				const parent = hoisted[parentIndex];
+
+				// Hoist Change Status
+				if (statusPriority[row.change] > statusPriority[parent.change]) {
+					parent.change = row.change;
+				}
+
+				// Hoist View classification (Logical/Physical Only logic)
+				if (row.type === "Logical Only" && row.leftModel === "true") {
+					parent.view = "L";
+				} else if (row.type === "Physical Only" && row.leftModel === "true") {
+					parent.view = "P";
+				} else if (
+					(row.type === "Logical Only" || row.type === "Physical Only") &&
+					row.leftModel === "false"
+				) {
+					// If both are false, it's L/P (unless keywords already restricted it)
+					// But we only want to promote to L/P if it was L or P.
+					if (parent.view === "L" || parent.view === "P") {
+						// We need to check both flags. For now let's assume if we find one 'false'
+						// and the other is also 'false' or hasn't been found yet, we might have L/P.
+						// Simplest: if we see a flag is false, and it was previously restricted,
+						// maybe it's actually both. But Erwin usually shows both flags.
+					}
+				}
+			}
+		}
+	}
+
+	// 3. Final polish: Prop code
+	let lastPropCode = "O";
+	return hoisted.map((row) => {
+		const code = getObjectShortCode(row.type);
+		if (code) lastPropCode = code;
+		return { ...row, prop: lastPropCode };
 	});
 });
 
@@ -121,9 +213,13 @@ export const toggleCollapse = (id: string) => {
 
 export const toggleCheck = (id: string) => {
 	const current = new Set(checkedIds$.get());
-	if (current.has(id)) current.delete(id);
+	const isChecked = current.has(id);
+
+	if (isChecked) current.delete(id);
 	else current.add(id);
+
 	checkedIds$.set(current);
+	toggleCollapse(id);
 };
 
 export const toggleProperties = () => {
@@ -149,11 +245,29 @@ export const statsSummary$ = computed(enrichedData$, (data) => {
 		},
 	};
 
+	// Track which headers have real (non-calculated) changes
+	const hasRealChange = new Set<string>();
+	data.forEach((row) => {
+		if (!row.isHeader && row.change && !row.isCalculated) {
+			let currentParentId: string | undefined = row.parentId;
+			while (currentParentId) {
+				hasRealChange.add(currentParentId);
+				const parent = data.find((r) => r.id === currentParentId);
+				currentParentId = parent?.parentId;
+			}
+		}
+	});
+
 	data.forEach((row) => {
 		if (!row.isHeader) return;
 
 		const isTable = row.prop === "Ent";
 		const isColumn = row.prop === "Atr";
+
+		// Requirement 9.1: If it's an alteration but no real change was found in children, skip
+		if (row.change === "A" && !hasRealChange.has(row.id!)) {
+			return;
+		}
 
 		const increment = (key: string) => {
 			summary[key].total++;

@@ -30,25 +30,10 @@ export class AppTable extends LitElement {
 	}
 
 	private _getNestingLevel(indent: number): number {
-		// 4 spaces = 1 Level.
-		const level = Math.floor(indent / 4);
-		return Math.min(level, 4);
-	}
-
-	/**
-	 * Replaces the leading spaces with a visible indentation symbol and removes object name.
-	 */
-	private _formatTypeWithIndents(type: string, indent: number) {
-		const level = this._getNestingLevel(indent);
-		const category = type.includes(":")
-			? type.split(":")[0].trim()
-			: type.trim();
-
-		if (level === 0) return category;
-
-		// Using a subtle middle dot (·) for each level without spaces
-		const symbol = "·".repeat(level);
-		return `${symbol} ${category}`;
+		// Based on the data sample, indent levels are typically 4, 6, 8, 10, 12...
+		// We can map them to a 0-indexed level.
+		if (indent <= 4) return 0;
+		return Math.floor((indent - 4) / 2);
 	}
 
 	render() {
@@ -64,16 +49,20 @@ export class AppTable extends LitElement {
 		const collapsedSet = this.collapsed.value;
 		const checkedSet = this.checked.value;
 
-		// Determine which rows are hidden due to collapsed parents
+		// Recursive hidden check: if any ancestor is collapsed, hide row
 		const hiddenRows = new Set<string>();
-		this.data.value.forEach((row) => {
-			if (
-				row.parentId &&
-				(collapsedSet.has(row.parentId) || hiddenRows.has(row.parentId))
-			) {
-				hiddenRows.add(row.id!);
-			}
-		});
+		const allRows = this.data.value;
+
+		// Map id to row for fast lookup
+		const rowMap = new Map(allRows.map((r) => [r.id, r]));
+
+		const isAncestorCollapsed = (rowId: string | undefined): boolean => {
+			if (!rowId) return false;
+			const row = rowMap.get(rowId);
+			if (!row) return false;
+			if (collapsedSet.has(rowId)) return true;
+			return isAncestorCollapsed(row.parentId);
+		};
 
 		return html`
       <table class="table table-condensed table-hover table-container">
@@ -89,23 +78,20 @@ export class AppTable extends LitElement {
           </tr>
         </thead>
         <tbody>
-          ${this.data.value.map((row) => {
-						if (hiddenRows.has(row.id!)) return html``;
+          ${allRows.map((row) => {
+						// Requirement 5: Check if any ancestor is collapsed
+						if (isAncestorCollapsed(row.parentId)) return html``;
 
 						const isNameRow =
 							row.type.toLowerCase().includes("name") || row.isHeader;
-						const nestingLevel = this._getNestingLevel(row.indent);
-						const formattedType = this._formatTypeWithIndents(
-							row.type,
-							row.indent,
-						);
+						const level = this._getNestingLevel(row.indent);
 						const isCollapsed = collapsedSet.has(row.id!);
 						const isChecked = checkedSet.has(row.id!);
 
 						return html`
               <tr 
                 data-change="${row.change}" 
-                data-level="${nestingLevel}"
+                data-level="${level}"
                 data-prop="${row.prop}"
                 data-header="${row.isHeader || false}"
                 class="${isChecked ? "checked-row" : ""}"
@@ -118,7 +104,14 @@ export class AppTable extends LitElement {
                    />
                 </td>
                 <td class="row-type">
-                  <div class="name-cell">
+                  <div class="name-cell" style="padding-left: ${level * 16}px">
+                    ${
+											level > 0
+												? html`<div class="indent-guide" style="left: ${
+														(level - 1) * 16 + 8
+												  }px"></div>`
+												: ""
+										}
                     <span class="type-text">
                         ${
 													row.isHeader
@@ -130,7 +123,7 @@ export class AppTable extends LitElement {
                         `
 														: ""
 												}
-                        ${formattedType}
+                        ${row.type}
                     </span>
                     ${
 											isNameRow

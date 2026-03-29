@@ -79,7 +79,6 @@ export class AppRoot extends LitElement {
 		// Simulate parsing delay for visual verification
 		setTimeout(() => {
 			rawData$.set(MOCK_ERWIN_DATA);
-			filteredData$.set(MOCK_ERWIN_DATA);
 			isLoading$.set(false);
 		}, 800);
 	}
