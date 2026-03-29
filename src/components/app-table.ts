@@ -68,7 +68,7 @@ export class AppTable extends LitElement {
       <table class="table table-condensed table-hover table-container">
         <thead>
           <tr>
-            <th class="col-check">√</th>
+            <th class="col-check">${icons["square-check"]}</th>
             <th>Tipo / Objeto</th>
             <th>Modelo Trabalhando (Left)</th>
             <th>Modelo Referência (Right)</th>

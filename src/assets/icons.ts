@@ -8,6 +8,7 @@ import IconFileUpload from "./icons/file-upload.svg";
 import IconFilter from "./icons/filter.svg";
 import IconFilterOff from "./icons/filter-off.svg";
 import IconMoon from "./icons/moon.svg";
+import IconSquareCheck from "./icons/square-check.svg";
 import IconSun from "./icons/sun.svg";
 import IconX from "./icons/x.svg";
 
@@ -20,6 +21,7 @@ export const icons = {
 	"filter-off": html`${unsafeSVG(IconFilterOff)}`,
 	filter: html`${unsafeSVG(IconFilter)}`,
 	moon: html`${unsafeSVG(IconMoon)}`,
+	"square-check": html`${unsafeSVG(IconSquareCheck)}`,
 	sun: html`${unsafeSVG(IconSun)}`,
 	x: html`${unsafeSVG(IconX)}`,
 };

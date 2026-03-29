@@ -140,23 +140,11 @@ export const enrichedData$ = computed(rawData$, (data) => {
 					parent.change = row.change;
 				}
 
-				// Hoist View classification (Logical/Physical Only logic)
+				// Hoist View classification
 				if (row.type === "Logical Only" && row.leftModel === "true") {
 					parent.view = "L";
 				} else if (row.type === "Physical Only" && row.leftModel === "true") {
 					parent.view = "P";
-				} else if (
-					(row.type === "Logical Only" || row.type === "Physical Only") &&
-					row.leftModel === "false"
-				) {
-					// If both are false, it's L/P (unless keywords already restricted it)
-					// But we only want to promote to L/P if it was L or P.
-					if (parent.view === "L" || parent.view === "P") {
-						// We need to check both flags. For now let's assume if we find one 'false'
-						// and the other is also 'false' or hasn't been found yet, we might have L/P.
-						// Simplest: if we see a flag is false, and it was previously restricted,
-						// maybe it's actually both. But Erwin usually shows both flags.
-					}
 				}
 			}
 		}
@@ -264,7 +252,6 @@ export const statsSummary$ = computed(enrichedData$, (data) => {
 		const isTable = row.prop === "Ent";
 		const isColumn = row.prop === "Atr";
 
-		// Requirement 9.1: If it's an alteration but no real change was found in children, skip
 		if (row.change === "A" && !hasRealChange.has(row.id!)) {
 			return;
 		}
