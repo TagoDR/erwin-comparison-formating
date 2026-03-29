@@ -30,10 +30,13 @@ export class AppTable extends LitElement {
 	}
 
 	private _getNestingLevel(indent: number): number {
-		// Based on the data sample, indent levels are typically 4, 6, 8, 10, 12...
-		// We can map them to a 0-indexed level.
-		if (indent <= 4) return 0;
-		return Math.floor((indent - 4) / 2);
+		// Based on the data sample:
+		// Entity/Table: 8 spaces -> Level 0
+		// Name/Properties: 12 spaces -> Level 1
+		// Columns Group: 16 spaces -> Level 2
+		// Attribute/Column: 20 spaces -> Level 3
+		if (indent <= 8) return 0;
+		return Math.floor((indent - 8) / 4);
 	}
 
 	render() {
@@ -104,27 +107,28 @@ export class AppTable extends LitElement {
                    />
                 </td>
                 <td class="row-type">
-                  <div class="name-cell" style="padding-left: ${level * 16}px">
-                    ${
-											level > 0
-												? html`<div class="indent-guide" style="left: ${
-														(level - 1) * 16 + 8
-												  }px"></div>`
-												: ""
-										}
-                    <span class="type-text">
-                        ${
-													row.isHeader
-														? html`
-                            <span 
-                                class="collapse-toggle ${isCollapsed ? "collapsed" : ""}" 
-                                @click=${() => toggleCollapse(row.id!)}
-                            ></span>
-                        `
-														: ""
-												}
-                        ${row.type}
-                    </span>
+                  <div class="name-cell">
+                    ${Array.from({ length: level }).map(
+											(_, i) =>
+												html`<div class="indent-guide" style="left: ${
+													i * 16 + 8
+												}px"></div>`,
+										)}
+                    <div class="type-content" style="padding-left: ${
+											level * 16
+										}px">
+                      ${
+												row.isHeader
+													? html`
+                          <button 
+                              class="collapse-toggle ${isCollapsed ? "collapsed" : ""}" 
+                              @click=${() => toggleCollapse(row.id!)}
+                          >${isCollapsed ? "+" : "-"}</button>
+                      `
+													: html`<span class="indent-leaf"></span>`
+											}
+                      <span class="type-text">${row.type}</span>
+                    </div>
                     ${
 											isNameRow
 												? html`

@@ -100,7 +100,7 @@ Todos os outros objetos seguem a escala de Laranja (Ênfase 6):
 
 ### Fase 3: Interatividade e Filtragem (Prioridade Funcional)
 
-- [ ] **Linhas Colapsáveis:** Permitir clicar em linhas de identificação de objeto para ocultar/exibir seu conteúdo.
+- [x] **Linhas Colapsáveis:** Permitir clicar em linhas de identificação de objeto para ocultar/exibir seu conteúdo (estilo Windows Explorer).
 - [ ] **Filtro por Nome:** Adicionar campo de busca no cabeçalho para filtrar tabelas/entidades específicas.
 - [ ] **Coluna de Checklist:** Adicionar coluna à esquerda com checkbox para controle do analista e integração com colapso de linhas.
 

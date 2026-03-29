@@ -32,24 +32,71 @@
 .name-cell {
   display: flex;
   align-items: center;
-  gap: 4px;
   position: relative;
+  min-height: 22px;
 }
 
 .indent-guide {
   position: absolute;
-  top: -10px;
-  bottom: -10px;
+  top: 0;
+  bottom: 0;
   width: 1px;
   background-color: var(--border-color);
-  opacity: 0.6;
+  opacity: 0.4;
   pointer-events: none;
 }
 
-.type-text {
+.type-content {
   display: flex;
   align-items: center;
   gap: 4px;
+  flex: 1;
+}
+
+.indent-leaf {
+  width: 16px;
+  height: 1px;
+  background-color: var(--border-color);
+  opacity: 0.4;
+  margin-right: 4px;
+  position: relative;
+}
+
+.indent-leaf::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -11px;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--border-color);
+}
+
+.collapse-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  cursor: pointer;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
+  font-size: 10px;
+  font-family: monospace;
+  line-height: 1;
+  color: var(--text-color);
+  z-index: 1;
+  padding: 0;
+}
+
+.collapse-toggle:hover {
+  background-color: var(--highlight-bg);
+}
+
+.type-text {
+  white-space: nowrap;
 }
 
 .copy-btn {
@@ -86,31 +133,11 @@ tr[data-header="true"][data-level="0"] { background-color: #F79646; color: white
 tr[data-header="true"][data-level="1"] { background-color: #FAC08F; color: black; }
 tr[data-header="true"][data-level="2"] { background-color: #FBD5B5; color: black; }
 
-/* Checked row state: Requirement 4 & user request */
+/* Checked row state */
 .checked-row {
   opacity: 0.6;
   text-decoration: line-through;
   filter: grayscale(1);
-}
-
-.collapse-toggle {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  cursor: pointer;
-  position: relative;
-  user-select: none;
-}
-
-.collapse-toggle::before {
-  content: "▼";
-  font-size: 8px;
-  display: block;
-  transition: transform 0.2s;
-}
-
-.collapse-toggle.collapsed::before {
-  transform: rotate(-90deg);
 }
 
 .row-change, .row-view {
