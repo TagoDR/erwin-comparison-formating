@@ -104,7 +104,6 @@ export class AppRoot extends LitElement {
 		return html`
 	<div class="main-content" @file-loaded=${this._onFileLoaded}>
 	<app-header></app-header>
-	...
         <div class="display-area">
           ${
 						showData

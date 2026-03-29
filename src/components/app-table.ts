@@ -2,12 +2,21 @@ import { StoreController } from "@nanostores/lit";
 import { html, LitElement, unsafeCSS } from "lit";
 import { customElement } from "lit/decorators.js";
 import { icons } from "../assets/icons";
-import { enrichedData$ } from "../store/data.store";
+import { 
+    enrichedData$, 
+    filteredData$, 
+    collapsedIds$, 
+    checkedIds$, 
+    toggleCollapse, 
+    toggleCheck 
+} from "../store/data.store";
 import tableStyles from "./app-table.css?inline";
 
 @customElement("app-table")
 export class AppTable extends LitElement {
-	private data = new StoreController(this, enrichedData$);
+	private data = new StoreController(this, filteredData$);
+    private collapsed = new StoreController(this, collapsedIds$);
+    private checked = new StoreController(this, checkedIds$);
 
 	static styles = unsafeCSS(tableStyles);
 
@@ -50,20 +59,34 @@ export class AppTable extends LitElement {
       `;
 		}
 
+        const collapsedSet = this.collapsed.value;
+        const checkedSet = this.checked.value;
+
+        // Determine which rows are hidden due to collapsed parents
+        const hiddenRows = new Set<string>();
+        this.data.value.forEach(row => {
+            if (row.parentId && (collapsedSet.has(row.parentId) || hiddenRows.has(row.parentId))) {
+                hiddenRows.add(row.id!);
+            }
+        });
+
 		return html`
       <table class="table table-condensed table-hover table-container">
         <thead>
           <tr>
+            <th class="col-check">√</th>
             <th>Tipo / Objeto</th>
             <th>Modelo Trabalhando (Left)</th>
             <th>Modelo Referência (Right)</th>
             <th>Prop</th>
-            <th>Alteração</th>
-            <th>Visão</th>
+            <th>Alt</th>
+            <th>Vis</th>
           </tr>
         </thead>
         <tbody>
           ${this.data.value.map((row) => {
+                        if (hiddenRows.has(row.id!)) return html``;
+
 						const isNameRow =
 							row.type.toLowerCase().includes("name") || row.isHeader;
 						const nestingLevel = this._getNestingLevel(row.indent);
@@ -71,6 +94,8 @@ export class AppTable extends LitElement {
 							row.type,
 							row.indent,
 						);
+                        const isCollapsed = collapsedSet.has(row.id!);
+                        const isChecked = checkedSet.has(row.id!);
 
 						return html`
               <tr 
@@ -78,10 +103,26 @@ export class AppTable extends LitElement {
                 data-level="${nestingLevel}"
                 data-prop="${row.prop}"
                 data-header="${row.isHeader || false}"
+                class="${isChecked ? "checked-row" : ""}"
               >
+                <td class="col-check">
+                   <input 
+                    type="checkbox" 
+                    .checked=${isChecked}
+                    @change=${() => toggleCheck(row.id!)}
+                   />
+                </td>
                 <td class="row-type">
                   <div class="name-cell">
-                    <span>${formattedType}</span>
+                    <span class="type-text">
+                        ${row.isHeader ? html`
+                            <span 
+                                class="collapse-toggle ${isCollapsed ? "collapsed" : ""}" 
+                                @click=${() => toggleCollapse(row.id!)}
+                            ></span>
+                        ` : ""}
+                        ${formattedType}
+                    </span>
                     ${
 											isNameRow
 												? html`

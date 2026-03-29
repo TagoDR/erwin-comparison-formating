@@ -61,12 +61,37 @@
 	margin: 0 3rem;
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-between;
 	gap: 1.5rem;
 	background: var(--bg-main);
-	padding: 0.3rem 1.5rem;
+	padding: 0.3rem 1rem;
 	border-radius: 4px;
 	border: 1px solid var(--border-subtle);
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    padding: 0.1rem 0.6rem;
+    border-radius: 4px;
+    flex: 0 1 300px;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.8125rem;
+    width: 100%;
+    outline: none;
+}
+
+.search-box svg {
+    color: var(--text-secondary);
+    opacity: 0.7;
 }
 
 .file-name {

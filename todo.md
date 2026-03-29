@@ -30,15 +30,15 @@
     - [x] Adicionar listener global de `dragover` e `drop` no `main.ts`.
 
 ## [FUNCIONAL] Fase 3: Interatividade
-- [ ] **10. Linhas Colapsáveis**
-    - [ ] Implementar estado de colapso por ID de objeto no store.
-    - [ ] Adicionar ícone de expandir/colapsar.
-- [ ] **11. Filtro por Nome**
-    - [ ] Adicionar campo de input no `app-header`.
-    - [ ] Criar seletor derivado no store para filtrar a lista de dados.
-- [ ] **12. Checklist e Controle Lateral**
-    - [ ] Adicionar coluna de checkbox à esquerda.
-    - [ ] Vincular checkbox de linha de cabeçalho ao estado de colapso.
-    - [ ] Estilizar checkbox para parecer nativo/discreto.
+- [x] **10. Linhas Colapsáveis**
+    - [x] Implementar estado de colapso por ID de objeto no store.
+    - [x] Adicionar ícone de expandir/colapsar.
+- [x] **11. Filtro por Nome**
+    - [x] Adicionar campo de input no `app-header`.
+    - [x] Criar seletor derivado no store para filtrar a lista de dados.
+- [x] **12. Checklist e Controle Lateral**
+    - [x] Adicionar coluna de checkbox à esquerda.
+    - [x] Vincular checkbox de linha de cabeçalho ao estado de colapso.
+    - [x] Estilizar checkbox para parecer nativo/discreto.
 
 

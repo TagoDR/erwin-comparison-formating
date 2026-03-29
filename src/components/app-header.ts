@@ -1,11 +1,11 @@
 import { StoreController } from "@nanostores/lit";
 import { html, LitElement, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 import { icons } from "../assets/icons";
 import {
 	fileName$,
 	filteredData$,
+    filterName$,
 	isLoading$,
 	rawData$,
 } from "../store/data.store";
@@ -16,6 +16,7 @@ import headerStyles from "./app-header.css?inline";
 export class AppHeader extends LitElement {
 	private fileName = new StoreController(this, fileName$);
 	private theme = new StoreController(this, theme$);
+    private filterName = new StoreController(this, filterName$);
 
 	@state() private isDragging = false;
 
@@ -60,7 +61,13 @@ export class AppHeader extends LitElement {
 		fileName$.set(null);
 		rawData$.set([]);
 		filteredData$.set([]);
+        filterName$.set("");
 	}
+
+    private _onSearchInput(e: Event) {
+        const input = e.target as HTMLInputElement;
+        filterName$.set(input.value);
+    }
 
 	render() {
 		return html`
@@ -71,6 +78,15 @@ export class AppHeader extends LitElement {
 					this.fileName.value
 						? html`
           <div class="file-info">
+            <div class="search-box">
+                ${icons.filter}
+                <input 
+                    type="text" 
+                    placeholder="Filtrar por nome..." 
+                    .value=${this.filterName.value}
+                    @input=${this._onSearchInput}
+                />
+            </div>
             <span class="file-name">${this.fileName.value}</span>
             <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
                ${icons.x} Fechar Arquivo
