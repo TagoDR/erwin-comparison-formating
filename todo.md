@@ -1,25 +1,25 @@
 # TODO: Erwin Compare Formatter
 
 ## [ALTA] Fase 1: Estética e UI
-- [ ] **1. Paleta Office 2010**
-    - [ ] Atualizar `index.css` com variáveis para Azul, Vermelho, Verde, Roxo, Aqua e Laranja (Base, 80%, 60%, 40%, -25%, -50%).
-    - [ ] Mapear Tabelas/Entidades para "Cor Base".
-    - [ ] Mapear Atributos/Colunas para "60% Mais Claro".
-    - [ ] Mapear outros objetos para escala de Laranja.
-- [ ] **2. Redimensionamento de Ícones**
-    - [ ] Criar variável `--icon-size` no `:root`.
-    - [ ] Aplicar dinamicamente em todos os SVGs do Tabler Icons, sem alterar os arquivos svg originais.
-- [ ] **3. Correção de Scroll (Header Sticky)**
-    - [ ] Ajustar `top` do `th` no `app-table.css`.
-    - [ ] Verificar se há `z-index` ou `overflow` causando o "sliver".
-- [ ] **4. Densidade de Informação**
-    - [ ] Reduzir `padding` das células `td` e `th`.
-    - [ ] Ajustar `line-height`, maioria das informações tem apenas uma linha, mas é possivel ter textos muito grandes.
-- [ ] **5. Botão de Cópia**
-    - [ ] Ajustar `opacity` base para ~0.4.
-    - [ ] Garantir visibilidade sem hover, mudando para 1.0 no hover.
-- [ ] **6. Contraste de Texto**
-    - [ ] Definir cores de texto (Preto ou cores escuras do Office) para linhas coloridas.
+- [x] **1. Paleta Office 2010**
+    - [x] Atualizar `index.css` com variáveis para Azul, Vermelho, Verde, Roxo, Aqua e Laranja (Base, 80%, 60%, 40%, -25%, -50%).
+    - [x] Mapear Tabelas/Entidades para "Cor Base".
+    - [x] Mapear Atributos/Colunas para "60% Mais Claro".
+    - [x] Mapear outros objetos para escala de Laranja.
+- [x] **2. Redimensionamento de Ícones**
+    - [x] Criar variável `--icon-size` no `:root`.
+    - [x] Aplicar dinamicamente em todos os SVGs do Tabler Icons, sem alterar os arquivos svg originais.
+- [x] **3. Correção de Scroll (Header Sticky)**
+    - [x] Ajustar `top` do `th` no `app-table.css`.
+    - [x] Verificar se há `z-index` ou `overflow` causando o "sliver".
+- [x] **4. Densidade de Informação**
+    - [x] Reduzir `padding` das células `td` e `th`.
+    - [x] Ajustar `line-height`, maioria das informações tem apenas uma linha, mas é possivel ter textos muito grandes.
+- [x] **5. Botão de Cópia**
+    - [x] Ajustar `opacity` base para ~0.4.
+    - [x] Garantir visibilidade sem hover, mudando para 1.0 no hover.
+- [x] **6. Contraste de Texto**
+    - [x] Definir cores de texto (Preto ou cores escuras do Office) para linhas coloridas.
 
 ## [MÉDIA] Fase 2: Comportamento Global
 - [ ] **7. Limpeza da Coluna Tipo**

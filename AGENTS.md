@@ -54,10 +54,11 @@ A interface é dividida em duas seções primárias:
 ## 4. Codificação Visual (Office 2010 Palette)
 
 ### 4.1. Cores de Status
-| Objeto | Inclusão (Verde) | Alteração (Roxo) | Exclusão (Vermelho) |
-| :--- | :--- | :--- | :--- |
-| **Tabela/Entidade** | #9BBB59 (Base) | #8064A2 (Base) | #C0504D (Base) |
-| **Atributo/Coluna** | #D7E3BC (60%) | #CCC1D9 (60%) | #E5B9B7 (60%) |
+| Objeto | Inclusão (Verde) | Alteração (Roxo) | Exclusão (Vermelho) | Texto
+| :--- | :--- | :--- | :--- | :--- |
+| **Tabela/Entidade** | #9BBB59 (Base) | #8064A2 (Base) | #C0504D (Base) | Branco |
+| **Atributo/Coluna** | #D7E3BC (60%) | #CCC1D9 (60%) | #E5B9B7 (60%) | Preto |
+| **Propriedades de qualquer objeto** | branco | branco | branco | Preto |
 
 ### 4.2. Outros Objetos
 Todos os outros objetos seguem a escala de Laranja (Ênfase 6):

@@ -96,8 +96,8 @@ export class AppTable extends LitElement {
                 <td class="row-left">${row.leftModel}</td>
                 <td class="row-right">${row.rightModel}</td>
                 <td class="row-prop">${row.prop}</td>
-                <td class="row-change" style="text-align: center;">${row.change}</td>
-                <td class="row-view" style="text-align: center;">${row.view}</td>
+                <td class="row-change">${row.change}</td>
+                <td class="row-view">${row.view}</td>
               </tr>
             `;
 					})}

@@ -17,36 +17,24 @@
 }
 
 /* Specific Column Widths */
-th:nth-child(1) {
-	width: 15%;
-} /* Tipo / Objeto */
-th:nth-child(2) {
-	width: 35%;
-} /* Modelo Trabalhando (Left) */
-th:nth-child(3) {
-	width: 35%;
-} /* Modelo Referência (Right) */
-th:nth-child(4) {
-	width: 5%;
-} /* Prop */
-th:nth-child(5) {
-	width: 5%;
-} /* Alteração */
-th:nth-child(6) {
-	width: 5%;
-} /* Visão */
+th:nth-child(1) { width: 15%; } /* Tipo / Objeto */
+th:nth-child(2) { width: 35%; } /* Modelo Trabalhando (Left) */
+th:nth-child(3) { width: 35%; } /* Modelo Referência (Right) */
+th:nth-child(4) { width: 5%; }  /* Prop */
+th:nth-child(5) { width: 5%; }  /* Alteração */
+th:nth-child(6) { width: 5%; }  /* Visão */
 
 th {
 	position: sticky;
-	top: 4.5rem;
+	top: 3.5rem; /* Adjusted for app-header height */
 	background: var(--bg-panel);
-	padding: 0.8rem 1rem;
-	text-align: center; /* Center headers by default */
+	padding: 0.3rem 0.5rem; /* Reduced padding */
+	text-align: center;
 	border-bottom: 2px solid var(--border-subtle);
 	font-weight: 700;
 	color: var(--text-secondary);
 	text-transform: uppercase;
-	font-size: 0.75rem;
+	font-size: 0.7rem; /* Smaller font for headers */
 	letter-spacing: 0.05em;
 	z-index: 50;
 	overflow: hidden;
@@ -55,34 +43,22 @@ th {
 }
 
 /* Specific header alignment */
-th:nth-child(1) {
+th:nth-child(1), th:nth-child(2), th:nth-child(3) {
 	text-align: left;
-} /* Tipo / Objeto */
-th:nth-child(2) {
-	text-align: left;
-} /* Modelo Trabalhando (Left) */
-th:nth-child(3) {
-	text-align: left;
-} /* Modelo Referência (Right) */
+}
 
 td {
-	padding: 0.6rem 1rem;
+	padding: 0.2rem 0.5rem; /* Further reduced padding for data density */
 	border-bottom: 1px solid var(--border-subtle);
-	vertical-align: top;
-	font-size: 0.85rem;
+	vertical-align: middle; /* Better vertical alignment */
+	font-size: 0.75rem; /* Smaller font for density */
 	word-wrap: break-word;
 	overflow-wrap: break-word;
-	text-align: center; /* Center data by default */
+	text-align: center;
 }
 
 /* Specific data alignment */
-.row-type {
-	text-align: left;
-}
-.row-left {
-	text-align: left;
-}
-.row-right {
+.row-type, .row-left, .row-right {
 	text-align: left;
 }
 
@@ -94,27 +70,26 @@ tr:last-child td {
 .row-type {
 	white-space: pre-wrap;
 	font-family: "JetBrains Mono", "Fira Code", monospace;
-	color: var(--accent-blue);
+	color: var(--text-primary);
 	position: relative;
 }
 
-/* Nesting Level Colors (Orange Palette) */
-tr[data-level="0"] .row-type {
-	color: var(--color-obj-l0);
-	font-weight: 700;
+/* Phase 1: Icon Resizing - Force override attributes */
+svg {
+    width: var(--icon-size) !important;
+    height: var(--icon-size) !important;
+    display: inline-block;
+    vertical-align: middle;
 }
-tr[data-level="1"] .row-type {
-	color: var(--color-obj-l1);
-	font-weight: 600;
-}
-tr[data-level="2"] .row-type {
-	color: var(--color-obj-l2);
-}
-tr[data-level="3"] .row-type {
-	color: var(--color-obj-l3);
-}
-tr[data-level="4"] .row-type {
-	color: var(--color-obj-l4);
+
+/* Nesting Level Colors (Orange Palette) - ONLY FOR HEADERS and only if no status color applied */
+tr[data-header="true"]:not([data-change="I"]):not([data-change="A"]):not([data-change="E"])[data-level="0"] .row-type { color: var(--color-obj-l0); font-weight: 700; }
+tr[data-header="true"]:not([data-change="I"]):not([data-change="A"]):not([data-change="E"])[data-level="1"] .row-type { color: var(--color-obj-l1); font-weight: 600; }
+tr[data-header="true"]:not([data-change="I"]):not([data-change="A"]):not([data-change="E"])[data-level="2"] .row-type { color: var(--color-obj-l2); }
+
+/* For non-header rows, type should be standard text color (Fixes orange text) */
+tr:not([data-header="true"]) .row-type {
+    color: var(--text-primary);
 }
 
 .name-cell {
@@ -124,11 +99,10 @@ tr[data-level="4"] .row-type {
 	gap: 0.5rem;
 }
 
-.row-left,
-.row-right {
+.row-left, .row-right {
 	font-family: "JetBrains Mono", monospace;
-	font-size: 0.8rem;
-	line-height: 1.4;
+	font-size: 0.75rem;
+	line-height: 1.2;
 	color: var(--text-secondary);
 }
 
@@ -138,115 +112,77 @@ tr[data-level="4"] .row-type {
 	color: var(--text-secondary);
 }
 
-/* Row Styling - Non-header rows or rows without changes should be the normal row background */
+/* Row Styling */
 tr {
 	background-color: var(--row-bg-normal);
 	color: var(--row-text-normal);
 }
 
-tr td {
+tr td { color: var(--row-text-normal); }
+
+tr .row-left, tr .row-right, tr .row-prop, tr .row-type, tr .row-change, tr .row-view {
 	color: var(--row-text-normal);
 }
 
-tr .row-left,
-tr .row-right,
-tr .row-prop,
-tr .row-type,
-tr .row-change,
-tr .row-view {
-	color: var(--row-text-normal);
+/* --- Phase 1: Office 2010 Palette Mapping Refinement --- */
+
+/* 1. PROPERTY ROWS (non-headers) MUST REMAIN WHITE/NORMAL */
+tr:not([data-header="true"]) {
+    background-color: var(--row-bg-normal) !important;
+    color: var(--row-text-normal) !important;
 }
 
-/* Object Identification Headers with status coloring (Saturated Pastels) */
-tr[data-header="true"][data-change="I"] {
-	background-color: var(--status-I-bg);
-	border-left: 4px solid var(--status-I-border);
+/* 2. OBJECT HEADERS (headers) ARE COLORED */
+
+/* ENTITY/TABLE (Base Colors - White Text) */
+tr[data-header="true"][data-prop="Ent"][data-change="I"] { background-color: var(--off-green-base); color: #ffffff !important; }
+tr[data-header="true"][data-prop="Ent"][data-change="A"] { background-color: var(--off-purple-base); color: #ffffff !important; }
+tr[data-header="true"][data-prop="Ent"][data-change="E"] { background-color: var(--off-red-base); color: #ffffff !important; }
+tr[data-header="true"][data-prop="Ent"][data-change=""]  { background-color: var(--off-blue-base); color: #ffffff !important; }
+
+/* ATTRIBUTE/COLUMN (60% Lighter Colors - Black Text) */
+tr[data-header="true"][data-prop="Atr"][data-change="I"] { background-color: var(--off-green-60); color: #000000 !important; }
+tr[data-header="true"][data-prop="Atr"][data-change="A"] { background-color: var(--off-purple-60); color: #000000 !important; }
+tr[data-header="true"][data-prop="Atr"][data-change="E"] { background-color: var(--off-red-60); color: #000000 !important; }
+tr[data-header="true"][data-prop="Atr"][data-change=""]  { background-color: var(--off-blue-60); color: #000000 !important; }
+
+/* OTHER OBJECTS (Orange Scale by default, or Status Colors if they have status) */
+tr[data-header="true"]:not([data-prop="Ent"]):not([data-prop="Atr"]) {
+    background-color: var(--off-orange-80);
+    color: #000000 !important;
 }
-tr[data-header="true"][data-change="I"] td {
-	color: var(--status-I-text);
+tr[data-header="true"]:not([data-prop="Ent"]):not([data-prop="Atr"])[data-change="I"] { background-color: var(--off-green-80); color: #000000 !important; }
+tr[data-header="true"]:not([data-prop="Ent"]):not([data-prop="Atr"])[data-change="A"] { background-color: var(--off-purple-80); color: #000000 !important; }
+tr[data-header="true"]:not([data-prop="Ent"]):not([data-prop="Atr"])[data-change="E"] { background-color: var(--off-red-80); color: #000000 !important; }
+
+/* Ensuring all cells in header rows inherit the color for contrast */
+tr[data-header="true"] td,
+tr[data-header="true"] .row-left, 
+tr[data-header="true"] .row-right,
+tr[data-header="true"] .row-type,
+tr[data-header="true"] .row-prop,
+tr[data-header="true"] .row-change,
+tr[data-header="true"] .row-view { 
+    color: inherit !important; 
     font-weight: bold;
 }
-tr[data-header="true"][data-change="I"] .row-left,
-tr[data-header="true"][data-change="I"] .row-right {
-	color: var(--status-I-text);
-}
 
-tr[data-header="true"][data-change="A"] {
-	background-color: var(--status-A-bg);
-	border-left: 4px solid var(--status-A-border);
-}
-tr[data-header="true"][data-change="A"] td {
-	color: var(--status-A-text);
-    font-weight: bold;
-}
-tr[data-header="true"][data-change="A"] .row-left,
-tr[data-header="true"][data-change="A"] .row-right {
-	color: var(--status-A-text);
-}
-
-tr[data-header="true"][data-change="E"] {
-	background-color: var(--status-E-bg);
-	border-left: 4px solid var(--status-E-border);
-}
-tr[data-header="true"][data-change="E"] td {
-	color: var(--status-E-text);
-    font-weight: bold;
-}
-tr[data-header="true"][data-change="E"] .row-left,
-tr[data-header="true"][data-change="E"] .row-right {
-	color: var(--status-E-text);
-}
-
-/* Special Case: Object headers with NO CHANGE should stay normal but bold */
-tr[data-header="true"][data-change=""] {
-	font-weight: 700;
-}
-
-/* Custom Overrides for Object vs Column distinction in specific statuses */
-tr[data-prop="Ent"][data-change="I"] {
-	border-left-width: 6px;
-} /* Heavy border for new table */
-tr[data-prop="Atr"][data-change="I"] {
-	border-left-width: 3px;
-} /* Thinner for new column */
-
-.callout {
-	background: var(--bg-panel);
-	border: 1px solid var(--border-subtle);
-	padding: 3rem;
-	text-align: center;
-	border-radius: 8px;
-	color: var(--text-secondary);
-	margin-top: 2rem;
-}
-
-.callout-icon {
-	font-size: 3rem;
-	margin-bottom: 1.5rem;
-	display: block;
-}
-
-/* Inline Copy Button */
+/* Inline Copy Button - Phase 1: Transparency and Hover */
 .copy-btn {
-	background: var(--bg-panel);
-	border: 1px solid var(--border-subtle);
-	color: var(--text-secondary);
+	background: rgba(255, 255, 255, 0.2);
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	color: inherit;
 	padding: 0.1rem 0.3rem;
 	border-radius: 3px;
 	cursor: pointer;
 	font-size: 0.7rem;
-	opacity: 0;
-	transition:
-		opacity 0.2s,
-		background 0.2s;
-}
-
-tr:hover .copy-btn {
-	opacity: 1;
+	opacity: 0.4;
+	transition: opacity 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
 }
 
 .copy-btn:hover {
-	background: var(--border-subtle);
-	color: var(--text-primary);
-	border-color: var(--accent-blue);
+	opacity: 1.0;
+	background: rgba(255, 255, 255, 0.4);
 }

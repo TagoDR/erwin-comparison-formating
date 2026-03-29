@@ -33,7 +33,7 @@
 
 th {
 	background: var(--bg-main);
-	padding: 0.6rem 1rem;
+	padding: 0.4rem 0.8rem;
 	text-align: left;
 	font-weight: 700;
 	color: var(--text-secondary);
@@ -43,29 +43,37 @@ th {
 }
 
 td {
-	padding: 0.5rem 1rem;
+	padding: 0.4rem 0.8rem;
 	border-bottom: 1px solid var(--border-subtle);
 }
 
-.type-col {
-	font-weight: 700;
-	color: var(--accent-blue);
-}
 .val-col {
 	text-align: center;
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.875rem;
 }
 
-.status-I {
-	color: var(--status-I-border);
+/* --- Phase 1: Office 2010 Stats Summary Colors --- */
+
+/* Tabelas Row (Base Colors) */
+tr[data-type="Tabelas"] {
+    background-color: var(--off-blue-base);
+    color: #ffffff;
 }
-.status-A {
-	color: var(--status-A-border);
+tr[data-type="Tabelas"] .type-col { color: #ffffff; font-weight: bold; }
+tr[data-type="Tabelas"] .status-I { background-color: var(--off-green-base); color: #ffffff; }
+tr[data-type="Tabelas"] .status-A { background-color: var(--off-purple-base); color: #ffffff; }
+tr[data-type="Tabelas"] .status-E { background-color: var(--off-red-base); color: #ffffff; }
+
+/* Colunas Row (60% Lighter Colors) */
+tr[data-type="Colunas"] {
+    background-color: var(--off-blue-60);
+    color: #000000;
 }
-.status-E {
-	color: var(--status-E-border);
-}
+tr[data-type="Colunas"] .type-col { color: #000000; font-weight: bold; }
+tr[data-type="Colunas"] .status-I { background-color: var(--off-green-60); color: #000000; }
+tr[data-type="Colunas"] .status-A { background-color: var(--off-purple-60); color: #000000; }
+tr[data-type="Colunas"] .status-E { background-color: var(--off-red-60); color: #000000; }
 
 /* Filter Panel Styling */
 .filter-panel {
@@ -125,4 +133,9 @@ td {
 
 .copy-all-btn:active {
 	transform: translateY(1px);
+}
+
+svg {
+    width: var(--icon-size) !important;
+    height: var(--icon-size) !important;
 }

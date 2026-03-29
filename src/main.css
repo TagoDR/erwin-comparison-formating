@@ -71,7 +71,12 @@
 	margin-bottom: 1rem;
 }
 
+svg {
+    width: var(--icon-size) !important;
+    height: var(--icon-size) !important;
+}
+
 .empty-icon svg {
-    width: 64px;
-    height: 64px;
+    width: 64px !important;
+    height: 64px !important;
 }

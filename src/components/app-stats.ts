@@ -66,7 +66,7 @@ export class AppStats extends LitElement {
               <tbody>
                 ${this.stats.value.map(
 									(s) => html`
-                  <tr>
+                  <tr data-type="${s.type}">
                     <td class="type-col">${s.type}</td>
                     <td class="val-col">${s.total}</td>
                     <td class="val-col status-I">${s.inclusion}</td>
