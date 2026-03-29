@@ -1,44 +1,21 @@
 # TODO: Erwin Compare Formatter
 
-## [ALTA] Fase 1: Estética e UI
-- [x] **1. Paleta Office 2010**
-    - [x] Atualizar `index.css` com variáveis para Azul, Vermelho, Verde, Roxo, Aqua e Laranja (Base, 80%, 60%, 40%, -25%, -50%).
-    - [x] Mapear Tabelas/Entidades para "Cor Base".
-    - [x] Mapear Atributos/Colunas para "60% Mais Claro".
-    - [x] Mapear outros objetos para escala de Laranja.
-- [x] **2. Redimensionamento de Ícones**
-    - [x] Criar variável `--icon-size` no `:root`.
-    - [x] Aplicar dinamicamente em todos os SVGs do Tabler Icons, sem alterar os arquivos svg originais.
-- [x] **3. Correção de Scroll (Header Sticky)**
-    - [x] Ajustar `top` do `th` no `app-table.css`.
-    - [x] Verificar se há `z-index` ou `overflow` causando o "sliver".
-- [x] **4. Densidade de Informação**
-    - [x] Reduzir `padding` das células `td` e `th`.
-    - [x] Ajustar `line-height`, maioria das informações tem apenas uma linha, mas é possivel ter textos muito grandes.
-- [x] **5. Botão de Cópia**
-    - [x] Ajustar `opacity` base para ~0.4.
-    - [x] Garantir visibilidade sem hover, mudando para 1.0 no hover.
-- [x] **6. Contraste de Texto**
-    - [x] Definir cores de texto (Preto ou cores escuras do Office) para linhas coloridas.
+## [ALTA] Fase 4: Refinamento de Layout e UX
+- [x] **1. Densidade Extrema (Espaçamento)**
+    - [x] Reduzir `line-height` para `1.1` em toda a tabela.
+    - [x] Reduzir `padding` das células para o mínimo funcional (`0.1rem 0.4rem`).
+    - [x] Garantir que ícones e checkboxes não forcem a altura da linha.
+- [x] **2. Reorganização de Filtros**
+    - [x] Mover campo de busca por nome do `app-header` para `app-stats`.
+    - [x] Centralizar a área de filtros e estatísticas.
+- [x] **3. Correção do Botão Fechar**
+    - [x] Ajustar alinhamento flex (icon + texto) no botão "Fechar Arquivo".
 
-## [MÉDIA] Fase 2: Comportamento Global
-- [x] **7. Limpeza da Coluna Tipo**
-    - [x] Modificar parser ou renderização para exibir apenas o tipo do objeto (ex: "Attribute/Column") e não o nome (ex: "Attribute/Column: NAME").
-- [x] **8. Título da Página Dinâmico**
-    - [x] Sincronizar `document.title` com o nome do arquivo carregado no store.
-- [x] **9. Drag & Drop Onipresente**
-    - [x] Adicionar listener global de `dragover` e `drop` no `main.ts`.
-
-## [FUNCIONAL] Fase 3: Interatividade
-- [x] **10. Linhas Colapsáveis**
-    - [x] Implementar estado de colapso por ID de objeto no store.
-    - [x] Adicionar ícone de expandir/colapsar.
-- [x] **11. Filtro por Nome**
-    - [x] Adicionar campo de input no `app-header`.
-    - [x] Criar seletor derivado no store para filtrar a lista de dados.
-- [x] **12. Checklist e Controle Lateral**
-    - [x] Adicionar coluna de checkbox à esquerda.
-    - [x] Vincular checkbox de linha de cabeçalho ao estado de colapso.
-    - [x] Estilizar checkbox para parecer nativo/discreto.
-
-
+## [ALTA] Fase 5: Agrupamento e Visibilidade
+- [x] **4. Agrupamento por Objeto (Tree Logic)**
+    - [x] Refinar `data.store.ts` para identificar sub-hierarquias completas.
+    - [x] Preparar lógica para colapso recursivo via checkbox ou clique.
+- [x] **5. Alternar Propriedades**
+    - [x] Criar estado `showProperties$` no store.
+    - [x] Adicionar botão "Esconder/Mostrar Propriedades" junto às estatísticas.
+    - [x] Filtrar linhas que não sejam `isHeader` quando o modo estiver ativo.

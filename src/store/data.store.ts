@@ -33,6 +33,7 @@ export const filterName$ = atom<string>("");
 // Interaction State
 export const collapsedIds$ = atom<Set<string>>(new Set());
 export const checkedIds$ = atom<Set<string>>(new Set());
+export const showProperties$ = atom<boolean>(true);
 
 /**
  * Helper to determine the short code for an object type.
@@ -79,12 +80,16 @@ export const enrichedData$ = computed(rawData$, (data) => {
 });
 
 /**
- * Filtered data based on search, type and change filters.
+ * Filtered data based on search, type, change filters and showProperties.
  */
 export const filteredData$ = computed(
-	[enrichedData$, filterChange$, filterObject$, filterName$],
-	(data, change, obj, name) => {
+	[enrichedData$, filterChange$, filterObject$, filterName$, showProperties$],
+	(data, change, obj, name, showProps) => {
 		let result = data;
+
+        if (!showProps) {
+            result = result.filter(r => r.isHeader);
+        }
 
 		if (change) {
 			result = result.filter((r) => r.change === change);
@@ -93,7 +98,6 @@ export const filteredData$ = computed(
 		if (obj) {
             if (obj === "table") result = result.filter((r) => r.prop === "Ent" || r.isHeader);
 		    else if (obj === "column") result = result.filter((r) => r.prop === "Atr" || r.isHeader);
-            // 'others' can be handled by excluding Ent and Atr
         }
 
         if (name) {
@@ -118,6 +122,10 @@ export const toggleCheck = (id: string) => {
     if (current.has(id)) current.delete(id);
     else current.add(id);
     checkedIds$.set(current);
+};
+
+export const toggleProperties = () => {
+    showProperties$.set(!showProperties$.get());
 };
 
 // Computed stats for the stats panel

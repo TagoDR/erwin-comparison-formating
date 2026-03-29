@@ -5,14 +5,19 @@ import { icons } from "../assets/icons";
 import {
 	filterChange$,
 	filterObject$,
+    filterName$,
 	rawData$,
 	statsSummary$,
+    showProperties$,
+    toggleProperties
 } from "../store/data.store";
 import statsStyles from "./app-stats.css?inline";
 
 @customElement("app-stats")
 export class AppStats extends LitElement {
 	private stats = new StoreController(this, statsSummary$);
+    private nameFilter = new StoreController(this, filterName$);
+    private showProps = new StoreController(this, showProperties$);
 
 	static styles = unsafeCSS(statsStyles);
 
@@ -25,6 +30,11 @@ export class AppStats extends LitElement {
 		const val = (e.target as HTMLSelectElement).value;
 		filterObject$.set(val);
 	}
+
+    private _updateNameFilter(e: Event) {
+        const val = (e.target as HTMLInputElement).value;
+        filterName$.set(val);
+    }
 
 	private _copyTablesToClipboard() {
 		const tables = rawData$
@@ -80,6 +90,21 @@ export class AppStats extends LitElement {
           </div>
 
           <div class="filter-panel">
+            <div class="filter-item search-filter">
+              <label for="name-filter">Filtrar por Nome</label>
+              <div class="search-input-wrapper">
+                  ${icons.filter}
+                  <input 
+                    id="name-filter"
+                    type="text" 
+                    class="form-control" 
+                    placeholder="Buscar..." 
+                    .value=${this.nameFilter.value}
+                    @input=${this._updateNameFilter}
+                  />
+              </div>
+            </div>
+
             <div class="filter-item">
               <label for="change-filter">Tipo de Mudança</label>
               <select id="change-filter" class="form-control" @change=${this._updateChangeFilter}>
@@ -96,15 +121,18 @@ export class AppStats extends LitElement {
                 <option value="">Todos</option>
                 <option value="table">Tabelas</option>
                 <option value="column">Colunas</option>
-                <option value="others">Outros</option>
               </select>
             </div>
           </div>
         </div>
 
         <div class="action-panel">
-          <button type="button" class="btn btn-primary btn-block copy-all-btn" @click=${this._copyTablesToClipboard}>
-            ${icons["clipboard-list"]} COPIAR NOMES DAS TABELAS
+          <button type="button" class="btn btn-primary btn-block action-btn" @click=${this._copyTablesToClipboard}>
+            ${icons["clipboard-list"]} <span>COPIAR TABELAS</span>
+          </button>
+          <button type="button" class="btn btn-default btn-block action-btn" @click=${toggleProperties}>
+            ${this.showProps.value ? icons["filter-off"] : icons.filter} 
+            <span>${this.showProps.value ? "ESCONDER PROPS" : "MOSTRAR PROPS"}</span>
           </button>
         </div>
       </div>

@@ -8,7 +8,7 @@
 	table-layout: fixed;
 	border-collapse: collapse;
 	font-family: inherit;
-	font-size: 0.8125rem;
+	font-size: 0.75rem; /* Further reduced overall font size */
 	color: var(--text-primary);
 	background: var(--bg-main);
 	border: 1px solid var(--border-subtle);
@@ -17,7 +17,7 @@
 }
 
 /* Specific Column Widths */
-.col-check { width: 40px; }
+.col-check { width: 30px; } /* Even smaller check column */
 th:nth-child(2) { width: 15%; } /* Tipo / Objeto */
 th:nth-child(3) { width: 35%; } /* Modelo Trabalhando (Left) */
 th:nth-child(4) { width: 35%; } /* Modelo Referência (Right) */
@@ -27,20 +27,21 @@ th:nth-child(7) { width: 4%; }  /* Vis (View) */
 
 th {
 	position: sticky;
-	top: 3.5rem; /* Adjusted for app-header height */
+	top: 3.5rem;
 	background: var(--bg-panel);
-	padding: 0.3rem 0.5rem; /* Reduced padding */
+	padding: 0.2rem 0.4rem; /* Minimized padding */
 	text-align: center;
 	border-bottom: 2px solid var(--border-subtle);
 	font-weight: 700;
 	color: var(--text-secondary);
 	text-transform: uppercase;
-	font-size: 0.7rem; /* Smaller font for headers */
+	font-size: 0.65rem; /* Smaller font for headers */
 	letter-spacing: 0.05em;
 	z-index: 50;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+    line-height: 1.1; /* Phase 4: Extreme density */
 }
 
 /* Specific header alignment */
@@ -49,13 +50,14 @@ th:nth-child(2), th:nth-child(3), th:nth-child(4) {
 }
 
 td {
-	padding: 0.2rem 0.5rem; /* Further reduced padding for data density */
+	padding: 0.1rem 0.4rem; /* Phase 4: Extreme density */
 	border-bottom: 1px solid var(--border-subtle);
-	vertical-align: middle; /* Better vertical alignment */
-	font-size: 0.75rem; /* Smaller font for density */
+	vertical-align: middle;
+	font-size: 0.75rem;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	text-align: center;
+    line-height: 1.1; /* Phase 4: Extreme density */
 }
 
 /* Specific data alignment */
@@ -98,18 +100,19 @@ tr:not([data-header="true"]) .row-type {
 	justify-content: space-between;
 	align-items: center;
 	gap: 0.5rem;
+    min-height: 1.2rem;
 }
 
 .type-text {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.3rem;
 }
 
 .collapse-toggle {
     cursor: pointer;
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -119,7 +122,7 @@ tr:not([data-header="true"]) .row-type {
 
 .collapse-toggle::before {
     content: "▼";
-    font-size: 8px;
+    font-size: 7px;
     color: inherit;
     opacity: 0.6;
 }
@@ -131,7 +134,7 @@ tr:not([data-header="true"]) .row-type {
 .row-left, .row-right {
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.75rem;
-	line-height: 1.2;
+	line-height: 1.1;
 	color: var(--text-secondary);
 }
 
@@ -143,16 +146,18 @@ tr:not([data-header="true"]) .row-type {
 
 /* Checklist Column */
 .col-check {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-left: 0.3rem !important;
+    padding-right: 0.3rem !important;
     text-align: center;
 }
 
 .col-check input[type="checkbox"] {
     cursor: pointer;
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     accent-color: var(--accent-blue);
+    margin: 0;
+    vertical-align: middle;
 }
 
 /* Checked Row Styling */
@@ -220,10 +225,10 @@ tr[data-header="true"] .row-view {
 	background: rgba(255, 255, 255, 0.2);
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	color: inherit;
-	padding: 0.1rem 0.3rem;
-	border-radius: 3px;
+	padding: 0.1rem 0.2rem;
+	border-radius: 2px;
 	cursor: pointer;
-	font-size: 0.7rem;
+	font-size: 0.6rem;
 	opacity: 0.4;
 	transition: opacity 0.2s, background 0.2s;
     display: flex;
