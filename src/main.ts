@@ -2,13 +2,13 @@ import { StoreController } from "@nanostores/lit";
 import { html, LitElement, unsafeCSS } from "lit";
 import { customElement } from "lit/decorators.js";
 import { icons } from "./assets/icons";
+import { parseErwinHtml } from "./parser/html-parser";
 import {
 	fileName$,
 	filteredData$,
 	isLoading$,
 	rawData$,
 } from "./store/data.store";
-import { parseErwinHtml } from "./parser/html-parser";
 
 // Import Global CSS
 import "./index.css";

@@ -289,5 +289,3 @@ A indentação no Erwin segue múltiplos de 4 espaços (aqui representados por '
 | ············Theme             |                                                 | Corporativa                                   |
 | ············Null Option       |                                                 | Not Null                                      |
 | ············Parent Domain     |                                                 | Number                                        |
-
-

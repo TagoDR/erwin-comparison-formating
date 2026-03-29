@@ -94,10 +94,8 @@ export const enrichedData$ = computed(rawData$, (data) => {
 			if (type.includes("Entity") && type.includes("Table")) view = "L/P";
 			else if (type.includes("Atribute") && type.includes("Column"))
 				view = "L/P";
-			else if (type.includes("Entity") || type.includes("Atribute"))
-				view = "L";
-			else if (type.includes("Table") || type.includes("Column"))
-				view = "P";
+			else if (type.includes("Entity") || type.includes("Atribute")) view = "L";
+			else if (type.includes("Table") || type.includes("Column")) view = "P";
 		}
 
 		return {
@@ -211,14 +209,22 @@ export const toggleCollapse = (id: string) => {
 };
 
 export const toggleCheck = (id: string) => {
-	const current = new Set(checkedIds$.get());
-	const isChecked = current.has(id);
+	const currentChecked = new Set(checkedIds$.get());
+	const willBeChecked = !currentChecked.has(id);
 
-	if (isChecked) current.delete(id);
-	else current.add(id);
+	if (willBeChecked) {
+		currentChecked.add(id);
+		// When checking, ensure it's collapsed (add to set, don't toggle)
+		const currentCollapsed = new Set(collapsedIds$.get());
+		currentCollapsed.add(id);
+		collapsedIds$.set(currentCollapsed);
+	} else {
+		currentChecked.delete(id);
+		// Optional: should we expand when unchecking?
+		// For now, following "keep closed" philosophy, we leave collapse state alone.
+	}
 
-	checkedIds$.set(current);
-	toggleCollapse(id);
+	checkedIds$.set(currentChecked);
 };
 
 export const toggleProperties = () => {

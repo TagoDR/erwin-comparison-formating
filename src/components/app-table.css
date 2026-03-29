@@ -1,10 +1,10 @@
 .table-container {
-  margin-top: 5px;
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  font-size: 0.85rem;
-  line-height: 1.1;
-  width: 100%;
+	margin-top: 5px;
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	font-size: 0.85rem;
+	line-height: 1.1;
+	width: 100%;
 }
 
 .table-condensed > thead > tr > th,
@@ -13,147 +13,183 @@
 .table-condensed > thead > tr > td,
 .table-condensed > tbody > tr > td,
 .table-condensed > tfoot > tr > td {
-  padding: 0.1rem 0.4rem;
-  border-top: 1px solid var(--border-color);
-  vertical-align: middle;
+	padding: 0.1rem 0.4rem;
+	border-top: 1px solid var(--border-color);
+	vertical-align: middle;
 }
 
 .col-check {
-  width: 30px;
-  text-align: center;
+	width: 30px;
+	text-align: center;
 }
 
 .row-type {
-  position: relative;
-  min-width: 250px;
-  white-space: nowrap;
+	min-width: 250px;
+	white-space: nowrap;
 }
 
-.name-cell {
-  display: flex;
-  align-items: center;
-  position: relative;
-  min-height: 22px;
+.tree-node {
+	display: flex;
+	align-items: center;
+	position: relative;
+	min-height: 24px;
 }
 
-.indent-guide {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background-color: var(--border-color);
-  opacity: 0.4;
-  pointer-events: none;
+/* Vertical guide line that spans the whole depth */
+.tree-node::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: -10px;
+	width: 1px;
+	background-color: var(--border-color);
+	opacity: 0.3;
 }
 
-.type-content {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex: 1;
+/* Hide line for top-level */
+tr[data-level="0"] .tree-node::before {
+	display: none;
 }
 
-.indent-leaf {
-  width: 16px;
-  height: 1px;
-  background-color: var(--border-color);
-  opacity: 0.4;
-  margin-right: 4px;
-  position: relative;
+.tree-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	margin-right: 4px;
+	z-index: 1;
+	color: var(--text-color);
+	opacity: 0.7;
 }
 
-.indent-leaf::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: -11px;
-  bottom: 0;
-  width: 1px;
-  background-color: var(--border-color);
+.tree-toggle::before {
+	content: "▾";
+	font-size: 14px;
+	transition: transform 0.2s;
 }
 
-.collapse-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 14px;
-  height: 14px;
-  margin-right: 4px;
-  cursor: pointer;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 2px;
-  font-size: 10px;
-  font-family: monospace;
-  line-height: 1;
-  color: var(--text-color);
-  z-index: 1;
-  padding: 0;
+.tree-toggle.collapsed::before {
+	transform: rotate(-90deg);
 }
 
-.collapse-toggle:hover {
-  background-color: var(--highlight-bg);
+.tree-leaf-connector {
+	width: 16px;
+	height: 12px;
+	border-left: 1px solid var(--border-color);
+	border-bottom: 1px solid var(--border-color);
+	margin-top: -12px;
+	margin-right: 4px;
+	opacity: 0.4;
 }
 
 .type-text {
-  white-space: nowrap;
+	font-family: var(--font-mono, monospace);
+	font-size: 0.8rem;
+	padding: 2px 4px;
+}
+
+tr[data-header="true"] .type-text {
+	font-weight: bold;
 }
 
 .copy-btn {
-  opacity: 0.3;
-  transition: opacity 0.2s;
-  padding: 0 2px;
-  height: 16px;
-  line-height: 1;
+	opacity: 0.3;
+	transition: opacity 0.2s;
+	padding: 0 2px;
+	height: 16px;
+	line-height: 1;
+	margin-left: 4px;
 }
 
 .copy-btn svg {
-  width: 12px;
-  height: 12px;
+	width: 12px;
+	height: 12px;
 }
 
 tr:hover .copy-btn {
-  opacity: 1;
+	opacity: 1;
 }
 
 /* Status Colors (Office 2010 Palette) */
 
 /* Entity/Table Level */
-tr[data-header="true"][data-prop="Ent"][data-change="I"] { background-color: #9BBB59 !important; color: white; }
-tr[data-header="true"][data-prop="Ent"][data-change="A"] { background-color: #8064A2 !important; color: white; }
-tr[data-header="true"][data-prop="Ent"][data-change="E"] { background-color: #C0504D !important; color: white; }
-
-/* Attribute/Column Level */
-tr[data-header="true"][data-prop="Atr"][data-change="I"] { background-color: #D7E3BC !important; color: black; }
-tr[data-header="true"][data-prop="Atr"][data-change="A"] { background-color: #CCC1D9 !important; color: black; }
-tr[data-header="true"][data-prop="Atr"][data-change="E"] { background-color: #E5B9B7 !important; color: black; }
-
-/* Relationships/Others */
-tr[data-header="true"][data-level="0"] { background-color: #F79646; color: white; }
-tr[data-header="true"][data-level="1"] { background-color: #FAC08F; color: black; }
-tr[data-header="true"][data-level="2"] { background-color: #FBD5B5; color: black; }
-
-/* Checked row state */
-.checked-row {
-  opacity: 0.6;
-  text-decoration: line-through;
-  filter: grayscale(1);
+tr[data-header="true"][data-prop="Ent"][data-change="I"] {
+	background-color: #9bbb59 !important;
+	color: white;
+}
+tr[data-header="true"][data-prop="Ent"][data-change="A"] {
+	background-color: #8064a2 !important;
+	color: white;
+}
+tr[data-header="true"][data-prop="Ent"][data-change="E"] {
+	background-color: #c0504d !important;
+	color: white;
 }
 
-.row-change, .row-view {
-  font-weight: bold;
-  text-align: center;
-  width: 40px;
+/* Attribute/Column Level */
+tr[data-header="true"][data-prop="Atr"][data-change="I"] {
+	background-color: #d7e3bc !important;
+	color: black;
+}
+tr[data-header="true"][data-prop="Atr"][data-change="A"] {
+	background-color: #ccc1d9 !important;
+	color: black;
+}
+tr[data-header="true"][data-prop="Atr"][data-change="E"] {
+	background-color: #e5b9b7 !important;
+	color: black;
+}
+
+/* Relationships/Others */
+tr[data-header="true"][data-level="0"] {
+	background-color: #f79646;
+	color: white;
+}
+tr[data-header="true"][data-level="1"] {
+	background-color: #fac08f;
+	color: black;
+}
+tr[data-header="true"][data-level="2"] {
+	background-color: #fbd5b5;
+	color: black;
+}
+
+/* Checked row state: Preserves status colors but applies greyed-out effect */
+.checked-row {
+	opacity: 0.45;
+	filter: grayscale(0.3);
+	transition: all 0.2s ease;
+}
+
+.checked-row:hover {
+	opacity: 0.7;
+	filter: grayscale(0.1);
+}
+
+.checked-row .type-text {
+	text-decoration: line-through;
+	color: inherit;
+}
+
+.row-change,
+.row-view {
+	font-weight: bold;
+	text-align: center;
+	width: 40px;
 }
 
 .row-prop {
-  width: 40px;
-  font-size: 0.75rem;
-  opacity: 0.7;
+	width: 40px;
+	font-size: 0.75rem;
+	opacity: 0.7;
 }
 
-.row-left, .row-right {
-  min-width: 250px;
-  word-break: break-all;
-  white-space: normal;
+.row-left,
+.row-right {
+	min-width: 250px;
+	word-break: break-all;
+	white-space: normal;
 }

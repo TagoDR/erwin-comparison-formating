@@ -107,28 +107,18 @@ export class AppTable extends LitElement {
                    />
                 </td>
                 <td class="row-type">
-                  <div class="name-cell">
-                    ${Array.from({ length: level }).map(
-											(_, i) =>
-												html`<div class="indent-guide" style="left: ${
-													i * 16 + 8
-												}px"></div>`,
-										)}
-                    <div class="type-content" style="padding-left: ${
-											level * 16
-										}px">
-                      ${
-												row.isHeader
-													? html`
-                          <button 
-                              class="collapse-toggle ${isCollapsed ? "collapsed" : ""}" 
-                              @click=${() => toggleCollapse(row.id!)}
-                          >${isCollapsed ? "+" : "-"}</button>
-                      `
-													: html`<span class="indent-leaf"></span>`
-											}
-                      <span class="type-text">${row.type}</span>
-                    </div>
+                  <div class="tree-node" style="padding-left: ${level * 20}px">
+                    ${
+											row.isHeader
+												? html`
+                          <span 
+                            class="tree-toggle ${isCollapsed ? "collapsed" : ""}" 
+                            @click=${() => toggleCollapse(row.id!)}
+                          ></span>
+                        `
+												: html`<span class="tree-leaf-connector"></span>`
+										}
+                    <span class="type-text">${row.type}</span>
                     ${
 											isNameRow
 												? html`
