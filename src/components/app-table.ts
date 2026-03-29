@@ -27,15 +27,17 @@ export class AppTable extends LitElement {
 	}
 
 	/**
-	 * Replaces the leading spaces with a visible indentation symbol.
+	 * Replaces the leading spaces with a visible indentation symbol and removes object name.
 	 */
 	private _formatTypeWithIndents(type: string, indent: number) {
 		const level = this._getNestingLevel(indent);
-		if (level === 0) return type.trim();
+		const category = type.includes(":") ? type.split(":")[0].trim() : type.trim();
+
+		if (level === 0) return category;
 
 		// Using a subtle middle dot (·) for each level without spaces
 		const symbol = "·".repeat(level);
-		return `${symbol} ${type.trim()}`;
+		return `${symbol} ${category}`;
 	}
 
 	render() {

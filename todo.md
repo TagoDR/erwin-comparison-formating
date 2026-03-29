@@ -22,12 +22,12 @@
     - [x] Definir cores de texto (Preto ou cores escuras do Office) para linhas coloridas.
 
 ## [MÉDIA] Fase 2: Comportamento Global
-- [ ] **7. Limpeza da Coluna Tipo**
-    - [ ] Modificar parser ou renderização para exibir apenas o tipo do objeto (ex: "Attribute/Column") e não o nome (ex: "Attribute/Column: NAME").
-- [ ] **8. Título da Página Dinâmico**
-    - [ ] Sincronizar `document.title` com o nome do arquivo carregado no store.
-- [ ] **9. Drag & Drop Onipresente**
-    - [ ] Adicionar listener global de `dragover` e `drop` no `main.ts`.
+- [x] **7. Limpeza da Coluna Tipo**
+    - [x] Modificar parser ou renderização para exibir apenas o tipo do objeto (ex: "Attribute/Column") e não o nome (ex: "Attribute/Column: NAME").
+- [x] **8. Título da Página Dinâmico**
+    - [x] Sincronizar `document.title` com o nome do arquivo carregado no store.
+- [x] **9. Drag & Drop Onipresente**
+    - [x] Adicionar listener global de `dragover` e `drop` no `main.ts`.
 
 ## [FUNCIONAL] Fase 3: Interatividade
 - [ ] **10. Linhas Colapsáveis**

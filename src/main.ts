@@ -33,6 +33,43 @@ export class AppRoot extends LitElement {
 		if (USE_MOCK) {
 			this._loadMockData();
 		}
+
+		// Phase 2: Dynamic Page Title
+		fileName$.subscribe((name) => {
+			document.title = name ? `Erwin: ${name}` : "Erwin Compare Formatter";
+		});
+
+		// Phase 2: Global Drag & Drop Support
+		this._setupGlobalDragDrop();
+	}
+
+	private _setupGlobalDragDrop() {
+		window.addEventListener("dragover", (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
+		window.addEventListener("drop", (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+
+			const file = e.dataTransfer?.files?.[0];
+			if (file && file.name.toLowerCase().endsWith(".html")) {
+				this._onFileLoadedFromDrop(file);
+			}
+		});
+	}
+
+	private _onFileLoadedFromDrop(file: File) {
+		fileName$.set(file.name);
+		isLoading$.set(true);
+
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			const content = e.target?.result as string;
+			this._processFileContent(content);
+		};
+		reader.readAsText(file);
 	}
 
 	private _loadMockData() {
@@ -49,11 +86,14 @@ export class AppRoot extends LitElement {
 
 	private _onFileLoaded(e: CustomEvent<{ content: string }>) {
 		const { content } = e.detail;
+		this._processFileContent(content);
+	}
+
+	private _processFileContent(content: string) {
 		console.log(
 			"File content loaded, starting parser...",
 			content.substring(0, 100),
 		);
-
 		// TODO: Implement actual parser logic in src/parser/
 		isLoading$.set(false);
 	}
@@ -62,9 +102,9 @@ export class AppRoot extends LitElement {
 		const showData = !!this.fileName.value && !this.isLoading.value;
 
 		return html`
-      <div class="main-content" @file-loaded=${this._onFileLoaded}>
-        <app-header></app-header>
-        
+	<div class="main-content" @file-loaded=${this._onFileLoaded}>
+	<app-header></app-header>
+	...
         <div class="display-area">
           ${
 						showData
