@@ -93,6 +93,7 @@ Todos os outros objetos seguem a escala de Laranja (Ênfase 6):
 
 ### Fase 2: Limpeza e Comportamento Global (Prioridade Média)
 
+- [x] **Implementação do Parser HTML:** Parser robusto para relatórios Erwin no `src/parser/html-parser.ts`.
 - [ ] **Limpeza da Coluna Tipo:** Remover o nome do objeto da coluna "Tipo", deixando apenas a categoria (ex: "Entity/Table").
 - [ ] **Título Dinâmico:** Atualizar o `document.title` com o nome do arquivo carregado.
 - [ ] **Drag & Drop Global:** Permitir arrastar arquivos para qualquer lugar da aplicação para carregá-los.

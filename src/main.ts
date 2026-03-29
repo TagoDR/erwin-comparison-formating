@@ -8,7 +8,7 @@ import {
 	isLoading$,
 	rawData$,
 } from "./store/data.store";
-import { MOCK_ERWIN_DATA } from "./store/mock-data";
+import { parseErwinHtml } from "./parser/html-parser";
 
 // Import Global CSS
 import "./index.css";
@@ -19,8 +19,8 @@ import "./components/app-header";
 import "./components/app-stats";
 import "./components/app-table";
 
-// FLAG TO ENABLE MOCK DATA IN DEV MODE
-const USE_MOCK = import.meta.env.DEV && true;
+// FLAG TO ENABLE SAMPLE DATA IN DEV MODE
+const USE_SAMPLE = import.meta.env.DEV && true;
 
 @customElement("app-root")
 export class AppRoot extends LitElement {
@@ -30,8 +30,8 @@ export class AppRoot extends LitElement {
 	static styles = unsafeCSS(mainStyles);
 
 	firstUpdated() {
-		if (USE_MOCK) {
-			this._loadMockData();
+		if (USE_SAMPLE) {
+			this._loadSampleData();
 		}
 
 		// Phase 2: Dynamic Page Title
@@ -72,19 +72,30 @@ export class AppRoot extends LitElement {
 		reader.readAsText(file);
 	}
 
-	private _loadMockData() {
-		fileName$.set("mock-erwin-report.html");
+	private async _loadSampleData() {
+		fileName$.set("sample.html");
 		isLoading$.set(true);
 
-		// Simulate parsing delay for visual verification
-		setTimeout(() => {
-			rawData$.set(MOCK_ERWIN_DATA);
+		try {
+			// Using fetch to get the sample file provided in the store
+			const response = await fetch("./src/store/sample.html");
+			if (!response.ok) throw new Error("Failed to load sample file");
+			const content = await response.text();
+
+			// Simulate parsing delay for visual verification
+			setTimeout(() => {
+				this._processFileContent(content);
+			}, 800);
+		} catch (error) {
+			console.error("Error loading sample data:", error);
 			isLoading$.set(false);
-		}, 800);
+		}
 	}
 
-	private _onFileLoaded(e: CustomEvent<{ content: string }>) {
-		const { content } = e.detail;
+	private _onFileLoaded(e: CustomEvent<{ content: string; name: string }>) {
+		const { content, name } = e.detail;
+		fileName$.set(name);
+		isLoading$.set(true);
 		this._processFileContent(content);
 	}
 
@@ -93,7 +104,8 @@ export class AppRoot extends LitElement {
 			"File content loaded, starting parser...",
 			content.substring(0, 100),
 		);
-		// TODO: Implement actual parser logic in src/parser/
+		const rows = parseErwinHtml(content);
+		rawData$.set(rows);
 		isLoading$.set(false);
 	}
 

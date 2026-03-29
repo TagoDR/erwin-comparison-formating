@@ -82,20 +82,27 @@ export const enrichedData$ = computed(rawData$, (data) => {
 		const isHeader =
 			row.isHeader || HEADER_KEYWORDS.some((kw) => row.type.includes(kw));
 
+		// Clean type for headers: remove name if present (e.g. "Entity/Table: CLI" -> "Entity/Table")
+		let type = row.type;
+		if (isHeader && type.includes(":")) {
+			type = type.split(":")[0].trim();
+		}
+
 		// Initial View Classification based on keywords
 		let view = row.view;
 		if (!view) {
-			if (row.type.includes("Entity") && row.type.includes("Table")) view = "L/P";
-			else if (row.type.includes("Atribute") && row.type.includes("Column"))
+			if (type.includes("Entity") && type.includes("Table")) view = "L/P";
+			else if (type.includes("Atribute") && type.includes("Column"))
 				view = "L/P";
-			else if (row.type.includes("Entity") || row.type.includes("Atribute"))
+			else if (type.includes("Entity") || type.includes("Atribute"))
 				view = "L";
-			else if (row.type.includes("Table") || row.type.includes("Column"))
+			else if (type.includes("Table") || type.includes("Column"))
 				view = "P";
 		}
 
 		return {
 			...row,
+			type,
 			id: `row-${index}`,
 			isHeader,
 			view,
@@ -126,7 +133,7 @@ export const enrichedData$ = computed(rawData$, (data) => {
 
 	// 2. Status & View Hoisting (Bottom-Up)
 	const hoisted = [...withParents];
-	const statusPriority = { E: 3, I: 2, A: 1, "": 0 };
+	const statusPriority = { A: 3, E: 2, I: 1, "": 0 };
 
 	for (let i = hoisted.length - 1; i >= 0; i--) {
 		const row = hoisted[i];
@@ -135,9 +142,13 @@ export const enrichedData$ = computed(rawData$, (data) => {
 			if (parentIndex !== -1) {
 				const parent = hoisted[parentIndex];
 
-				// Hoist Change Status
-				if (statusPriority[row.change] > statusPriority[parent.change]) {
+				// Hoist Change Status ONLY if parent doesn't have its own status from presence.
+				// This ensures the object identifier line's status is preserved.
+				if (!parent.change && row.change) {
 					parent.change = row.change;
+				} else if (parent.change && row.change) {
+					// If both have status, we keep the parent's status as it is the definitive existence status.
+					// No action needed, parent.change remains.
 				}
 
 				// Hoist View classification

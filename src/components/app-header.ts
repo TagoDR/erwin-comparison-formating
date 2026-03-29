@@ -23,15 +23,13 @@ export class AppHeader extends LitElement {
 
 	private _handleFile(file: File) {
 		if (!file) return;
-		fileName$.set(file.name);
-		isLoading$.set(true);
 
 		const reader = new FileReader();
 		reader.onload = (e) => {
 			const content = e.target?.result as string;
 			this.dispatchEvent(
 				new CustomEvent("file-loaded", {
-					detail: { content },
+					detail: { content, name: file.name },
 					bubbles: true,
 					composed: true,
 				}),
