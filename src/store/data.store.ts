@@ -4,6 +4,7 @@ export interface ErwinRow {
   id?: string;
   parentId?: string;
   type: string;
+  originalType?: string;
   prop: string;
   change: 'I' | 'A' | 'E' | '';
   view: string;
@@ -28,7 +29,6 @@ export const fileName$ = atom<string | null>(null);
 
 // Filters State
 export const filterChange$ = atom<string>('');
-export const filterObject$ = atom<string>('');
 export const filterName$ = atom<string>('');
 
 // Interaction State
@@ -83,6 +83,7 @@ export const enrichedData$ = computed(rawData$, data => {
 
     // Clean type for headers: remove name if present (e.g. "Entity/Table: CLI" -> "Entity/Table")
     let type = row.type;
+    const originalType = type;
     if (isHeader && type.includes(':')) {
       type = type.split(':')[0].trim();
     }
@@ -99,6 +100,7 @@ export const enrichedData$ = computed(rawData$, data => {
     return {
       ...row,
       type,
+      originalType,
       id: `row-${index}`,
       isHeader,
       view,
@@ -136,9 +138,6 @@ export const enrichedData$ = computed(rawData$, data => {
         // This ensures the object identifier line's status is preserved.
         if (!parent.change && row.change) {
           parent.change = row.change;
-        } else if (parent.change && row.change) {
-          // If both have status, we keep the parent's status as it is the definitive existence status.
-          // No action needed, parent.change remains.
         }
 
         // Hoist View classification
@@ -164,26 +163,87 @@ export const enrichedData$ = computed(rawData$, data => {
  * Filtered data based on search, type, change filters and showProperties.
  */
 export const filteredData$ = computed(
-  [enrichedData$, filterChange$, filterObject$, filterName$, showProperties$],
-  (data, change, obj, name, showProps) => {
+  [enrichedData$, filterChange$, filterName$, showProperties$],
+  (data, change, name, showProps) => {
     let result = data;
+
+    // 1. Change Filter (Rule 1: observe at table level)
+    if (change) {
+      const validTableIds = new Set<string>();
+      data.forEach(r => {
+        // Find tables (Ent) that have the requested change status
+        if (r.prop === 'Ent' && r.isHeader && r.change === change) {
+          validTableIds.add(r.id);
+        }
+      });
+
+      // Show table and all its contents
+      const matches = new Set<string>();
+      const addRowAndChildren = (id: string) => {
+        matches.add(id);
+        data.forEach(r => {
+          if (r.parentId === id) addRowAndChildren(r.id);
+        });
+      };
+
+      validTableIds.forEach(id => {
+        addRowAndChildren(id);
+      });
+      result = result.filter(r => matches.has(r.id));
+    }
+
+    // 2. Name Filter (Rule 3)
+    if (name) {
+      const search = name.toLowerCase();
+      const hits = new Set<string>();
+
+      data.forEach(r => {
+        const typeMatch = (r.originalType || r.type).toLowerCase().includes(search);
+        const leftMatch = r.leftModel.toLowerCase().includes(search);
+        const rightMatch = r.rightModel.toLowerCase().includes(search);
+
+        // Match on identifier line (header) or Name/Physical Name properties
+        if (r.isHeader && (typeMatch || leftMatch || rightMatch)) {
+          hits.add(r.id);
+        } else if ((r.type === 'Name' || r.type === 'Physical Name') && (leftMatch || rightMatch)) {
+          hits.add(r.id);
+        }
+      });
+
+      // Expanded results: full object (header + descendants) + all ancestors
+      const finalIds = new Set<string>();
+
+      const addWithDescendants = (id: string) => {
+        if (finalIds.has(id)) return;
+        finalIds.add(id);
+        data.forEach(r => {
+          if (r.parentId === id) addWithDescendants(r.id);
+        });
+      };
+
+      const addAncestors = (id: string) => {
+        let curr = data.find(r => r.id === id);
+        while (curr?.parentId) {
+          finalIds.add(curr.parentId);
+          curr = data.find(r => r.id === curr?.parentId);
+        }
+      };
+
+      hits.forEach(id => {
+        const row = data.find(r => r.id === id);
+        if (!row) return;
+
+        // If it's a property (like Name), start from its parent header
+        const objectId = !row.isHeader && row.parentId ? row.parentId : id;
+        addWithDescendants(objectId);
+        addAncestors(objectId);
+      });
+
+      result = result.filter(r => finalIds.has(r.id));
+    }
 
     if (!showProps) {
       result = result.filter(r => r.isHeader);
-    }
-
-    if (change) {
-      result = result.filter(r => r.change === change);
-    }
-
-    if (obj) {
-      if (obj === 'table') result = result.filter(r => r.prop === 'Ent' || r.isHeader);
-      else if (obj === 'column') result = result.filter(r => r.prop === 'Atr' || r.isHeader);
-    }
-
-    if (name) {
-      const search = name.toLowerCase();
-      result = result.filter(r => r.type.toLowerCase().includes(search));
     }
 
     return result;

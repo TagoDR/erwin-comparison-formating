@@ -24,7 +24,7 @@
 }
 
 .row-type {
-  min-width: 250px;
+  width: 250px;
   white-space: nowrap;
 }
 
@@ -178,18 +178,18 @@ tr[data-header="true"][data-level="2"] {
 .row-view {
   font-weight: bold;
   text-align: center;
-  width: 40px;
+  width: 25px;
 }
 
 .row-prop {
-  width: 40px;
+  width: 30px;
   font-size: 0.75rem;
   opacity: 0.7;
 }
 
 .row-left,
 .row-right {
-  min-width: 250px;
+  min-width: 200px;
   word-break: break-all;
   white-space: normal;
 }

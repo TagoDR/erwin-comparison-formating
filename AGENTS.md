@@ -80,30 +80,6 @@ Todos os outros objetos seguem a escala de Laranja (Ênfase 6):
 - `src/components/`: Componentes Lit baseados em Bootflat (`app-header`, `app-stats`, `app-table`).
 - `src/store/`: Gerenciamento de estado para dados, filtragem e estados de carregamento.
 
-## 6. Plano de Desenvolvimento (Roadmap)
-
-### Fase 1: Refinamento Estético e UI (Prioridade Alta)
-
-- [ ] **Ajuste de Cores (Office 2010):** Implementar a paleta completa no `index.css` e mapear para as linhas da tabela.
-- [ ] **Controle de Ícones:** Definir variáveis CSS para redimensionar Tabler Icons globalmente.
-- [ ] **Correção do Header Sticky:** Ajustar o offset do header da tabela para evitar sobreposição de scroll.
-- [ ] **Densidade de Dados:** Reduzir o padding das células para exibir mais informações.
-- [ ] **Botão de Cópia:** Tornar o botão semi-transparente e sempre visível para facilitar o acesso.
-- [ ] **Contraste de Texto:** Garantir que o texto nas linhas coloridas use cores do Office 2010 ou preto para legibilidade.
-
-### Fase 2: Limpeza e Comportamento Global (Prioridade Média)
-
-- [x] **Implementação do Parser HTML:** Parser robusto para relatórios Erwin no `src/parser/html-parser.ts`.
-- [ ] **Limpeza da Coluna Tipo:** Remover o nome do objeto da coluna "Tipo", deixando apenas a categoria (ex: "Entity/Table").
-- [ ] **Título Dinâmico:** Atualizar o `document.title` com o nome do arquivo carregado.
-- [ ] **Drag & Drop Global:** Permitir arrastar arquivos para qualquer lugar da aplicação para carregá-los.
-
-### Fase 3: Interatividade e Filtragem (Prioridade Funcional)
-
-- [x] **Linhas Colapsáveis:** Permitir clicar em linhas de identificação de objeto para ocultar/exibir seu conteúdo (estilo Windows Explorer).
-- [ ] **Filtro por Nome:** Adicionar campo de busca no cabeçalho para filtrar tabelas/entidades específicas.
-- [ ] **Coluna de Checklist:** Adicionar coluna à esquerda com checkbox para controle do analista e integração com colapso de linhas.
-
 ## 7. Estrutura do Arquivo de Entrada e Dados de Exemplo
 
 ### 7.1. Regras Lógicas

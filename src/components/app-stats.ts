@@ -5,7 +5,6 @@ import { icons } from '../assets/icons';
 import {
   filterChange$,
   filterName$,
-  filterObject$,
   rawData$,
   showProperties$,
   statsSummary$,
@@ -24,11 +23,6 @@ export class AppStats extends LitElement {
   private _updateChangeFilter(e: Event) {
     const val = (e.target as HTMLSelectElement).value;
     filterChange$.set(val);
-  }
-
-  private _updateObjectFilter(e: Event) {
-    const val = (e.target as HTMLSelectElement).value;
-    filterObject$.set(val);
   }
 
   private _updateNameFilter(e: Event) {
@@ -112,15 +106,6 @@ export class AppStats extends LitElement {
                 <option value="I">Inclusão (I)</option>
                 <option value="A">Alteração (A)</option>
                 <option value="E">Exclusão (E)</option>
-              </select>
-            </div>
-
-            <div class="filter-item">
-              <label for="object-filter">Categoria</label>
-              <select id="object-filter" class="form-control" @change=${this._updateObjectFilter}>
-                <option value="">Todos</option>
-                <option value="table">Tabelas</option>
-                <option value="column">Colunas</option>
               </select>
             </div>
           </div>
