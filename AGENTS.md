@@ -23,7 +23,7 @@ A interface é dividida em duas seções primárias:
     - Uma linha fina de alto contraste no topo da tela.
     - **Carregamento de Arquivo:** Área para escolher um arquivo via input padrão ou drag-and-drop.
     - **Gerenciamento de Arquivo:** Um botão para "Fechar Arquivo" que limpa a sessão atual.
-    - **Filtros:** (Planejado) Seletores para Tipo de Alteração e Categoria de Objeto.
+    - **Filtros:** Seletores e campos de busca para Tipo de Alteração, Categoria de Objeto e Nome.
 
 2. **Exibição Principal (Layout Dividido):**
     - **Painel de Estatísticas:** Uma tabela de resumo com 3 linhas (Geral, Tabelas, Colunas) e 5 colunas (Tipo, Total, Inclusão, Alteração, Exclusão).
@@ -43,33 +43,63 @@ A interface é dividida em duas seções primárias:
 ### 3.3. Configuração da Tabela
 | Coluna | Descrição |
 | :--- | :--- |
-| **Type** | Hierarquia de objetos indentada (fonte mono). |
+| **Check** | Controle visual/funcional para checklist e colapso. |
+| **Type** | Hierarquia de objetos indentada (sem o nome do objeto). |
 | **Prop** | Identificador do objeto pai. |
 | **Change** | I (Inclusão), A (Alteração) ou E (Exclusão). |
 | **View** | L (Lógica), P (Física) ou L/P. |
 | **Left Model** | Dados do modelo de trabalho. |
 | **Right Model** | Dados do modelo de referência (baseline). |
 
-## 4. Codificação Visual (Esquema de Cores)
-- **Tabela:** Verde Escuro (Nova), Roxo Escuro (Alterada), Vermelho Escuro (Excluída).
-- **Coluna:** Verde (Nova), Roxo (Alterada), Vermelho (Excluída).
-- **Outros Objetos:** Laranja (com intensidade decrescente por nível de aninhamento).
+## 4. Codificação Visual (Office 2010 Palette)
+
+### 4.1. Cores de Status
+| Objeto | Inclusão (Verde) | Alteração (Roxo) | Exclusão (Vermelho) |
+| :--- | :--- | :--- | :--- |
+| **Tabela/Entidade** | #9BBB59 (Base) | #8064A2 (Base) | #C0504D (Base) |
+| **Atributo/Coluna** | #D7E3BC (60%) | #CCC1D9 (60%) | #E5B9B7 (60%) |
+
+### 4.2. Outros Objetos
+Todos os outros objetos seguem a escala de Laranja (Ênfase 6):
+- Nível 0: #F79646 (Base)
+- Nível 1: #FAC08F (40% Claro)
+- Nível 2+: #FBD5B5 (60% Claro) ou #FDE9D9 (80% Claro)
 
 ## 5. Estrutura de Arquivos
 - `src/parser/`: Lógica de processamento do HTML do Erwin.
 - `src/components/`: Componentes Lit baseados em Bootflat (`app-header`, `app-stats`, `app-table`).
 - `src/store/`: Gerenciamento de estado para dados, filtragem e estados de carregamento.
 
-## 6. Estrutura do Arquivo de Entrada e Dados de Exemplo
+## 6. Plano de Desenvolvimento (Roadmap)
 
-### 6.1. Regras Lógicas
+### Fase 1: Refinamento Estético e UI (Prioridade Alta)
+- [ ] **Ajuste de Cores (Office 2010):** Implementar a paleta completa no `index.css` e mapear para as linhas da tabela.
+- [ ] **Controle de Ícones:** Definir variáveis CSS para redimensionar Tabler Icons globalmente.
+- [ ] **Correção do Header Sticky:** Ajustar o offset do header da tabela para evitar sobreposição de scroll.
+- [ ] **Densidade de Dados:** Reduzir o padding das células para exibir mais informações.
+- [ ] **Botão de Cópia:** Tornar o botão semi-transparente e sempre visível para facilitar o acesso.
+- [ ] **Contraste de Texto:** Garantir que o texto nas linhas coloridas use cores do Office 2010 ou preto para legibilidade.
+
+### Fase 2: Limpeza e Comportamento Global (Prioridade Média)
+- [ ] **Limpeza da Coluna Tipo:** Remover o nome do objeto da coluna "Tipo", deixando apenas a categoria (ex: "Entity/Table").
+- [ ] **Título Dinâmico:** Atualizar o `document.title` com o nome do arquivo carregado.
+- [ ] **Drag & Drop Global:** Permitir arrastar arquivos para qualquer lugar da aplicação para carregá-los.
+
+### Fase 3: Interatividade e Filtragem (Prioridade Funcional)
+- [ ] **Linhas Colapsáveis:** Permitir clicar em linhas de identificação de objeto para ocultar/exibir seu conteúdo.
+- [ ] **Filtro por Nome:** Adicionar campo de busca no cabeçalho para filtrar tabelas/entidades específicas.
+- [ ] **Coluna de Checklist:** Adicionar coluna à esquerda com checkbox para controle do analista e integração com colapso de linhas.
+
+## 7. Estrutura do Arquivo de Entrada e Dados de Exemplo
+
+### 7.1. Regras Lógicas
 - **Aninhamento:** 4 espaços = 1 Nível.
 - **Detecção de Mudança:**
   - `Left != "" && Right == ""` -> **Inclusão (I)**
   - `Left == "" && Right != ""` -> **Exclusão (E)**
   - `Left != "" && Right != "" && Left != Right` -> **Alteração (A)**
 
-### 6.2. Cenários de Exemplo Complexos
+### 7.2. Cenários de Exemplo Complexos
 
 #### Cenário A: Alteração de Tabela (Elevada)
 | Type | Left | Difference | Right | Resultado Lógico |
@@ -91,7 +121,7 @@ A interface é dividida em duas seções primárias:
 | Relationship | | - | FK_01 | **E** |
 | &nbsp;&nbsp;&nbsp;&nbsp;Name | | - | FK_01 | **E** |
 
-### 6.3. Amostra Extensa de Dados
+### 7.3. Amostra Extensa de Dados
 ```text
 Model| AAAA| - |AAAB
     Nome| AAAA| - |AAAB
@@ -129,5 +159,5 @@ Entities/Tables| | - |
             Index| IFK_001| - |IFK_001
 ```
 
-## 7. Configuração de Saída
+## 8. Configuração de Saída
 - **Nome do Arquivo:** `Erwin_Formatar_CompleteCompare_v5.html`

@@ -1,35 +1,44 @@
-1 -  the colors needs to be fixed, the best colors for the rows are office 2010's:
+# TODO: Erwin Compare Formatter
 
-Variação,Ênfase 1 (Azul),Ênfase 2 (Vermelho),Ênfase 3 (Verde),Ênfase 4 (Roxo),Ênfase 5 (Aqua),Ênfase 6 (Laranja)
-Cor Base,#4F81BD,#C0504D,#9BBB59,#8064A2,#4BACC6,#F79646
-80% Mais Claro,#DBE5F1,#F2DCDB,#EBF1DE,#E5E0EC,#DBEEF3,#FDE9D9
-60% Mais Claro,#B8CCE4,#E5B9B7,#D7E3BC,#CCC1D9,#B7DEE8,#FBD5B5
-40% Mais Claro,#95B3D7,#D99694,#C3D69B,#B2A2C7,#92CDDC,#FAC08F
-25% Mais Escuro,#366092,#953734,#76923C,#5F497A,#31859B,#E36C09
-50% Mais Escuro,#244061,#632423,#4F6128,#3F3151,#205867,#974806
+## [ALTA] Fase 1: Estética e UI
+- [ ] **1. Paleta Office 2010**
+    - [ ] Atualizar `index.css` com variáveis para Azul, Vermelho, Verde, Roxo, Aqua e Laranja (Base, 80%, 60%, 40%, -25%, -50%).
+    - [ ] Mapear Tabelas/Entidades para "Cor Base".
+    - [ ] Mapear Atributos/Colunas para "60% Mais Claro".
+    - [ ] Mapear outros objetos para escala de Laranja.
+- [ ] **2. Redimensionamento de Ícones**
+    - [ ] Criar variável `--icon-size` no `:root`.
+    - [ ] Aplicar dinamicamente em todos os SVGs do Tabler Icons, sem alterar os arquivos svg originais.
+- [ ] **3. Correção de Scroll (Header Sticky)**
+    - [ ] Ajustar `top` do `th` no `app-table.css`.
+    - [ ] Verificar se há `z-index` ou `overflow` causando o "sliver".
+- [ ] **4. Densidade de Informação**
+    - [ ] Reduzir `padding` das células `td` e `th`.
+    - [ ] Ajustar `line-height`, maioria das informações tem apenas uma linha, mas é possivel ter textos muito grandes.
+- [ ] **5. Botão de Cópia**
+    - [ ] Ajustar `opacity` base para ~0.4.
+    - [ ] Garantir visibilidade sem hover, mudando para 1.0 no hover.
+- [ ] **6. Contraste de Texto**
+    - [ ] Definir cores de texto (Preto ou cores escuras do Office) para linhas coloridas.
 
-use "Cor Base" for table/entity e "60% Mais Claro" for atributes/columns, only they should be colored with green, purple or red observing the change
-the other objects are all in the scale of orange, including the nested in entity and columns
+## [MÉDIA] Fase 2: Comportamento Global
+- [ ] **7. Limpeza da Coluna Tipo**
+    - [ ] Modificar parser ou renderização para exibir apenas o tipo do objeto (ex: "Attribute/Column") e não o nome (ex: "Attribute/Column: NAME").
+- [ ] **8. Título da Página Dinâmico**
+    - [ ] Sincronizar `document.title` com o nome do arquivo carregado no store.
+- [ ] **9. Drag & Drop Onipresente**
+    - [ ] Adicionar listener global de `dragover` e `drop` no `main.ts`.
 
-2- Tabler Icons are too big set a css variable to ajust change it
+## [FUNCIONAL] Fase 3: Interatividade
+- [ ] **10. Linhas Colapsáveis**
+    - [ ] Implementar estado de colapso por ID de objeto no store.
+    - [ ] Adicionar ícone de expandir/colapsar.
+- [ ] **11. Filtro por Nome**
+    - [ ] Adicionar campo de input no `app-header`.
+    - [ ] Criar seletor derivado no store para filtrar a lista de dados.
+- [ ] **12. Checklist e Controle Lateral**
+    - [ ] Adicionar coluna de checkbox à esquerda.
+    - [ ] Vincular checkbox de linha de cabeçalho ao estado de colapso.
+    - [ ] Estilizar checkbox para parecer nativo/discreto.
 
-3- the table header is sticky as I scroll, but the table scroll past it and show a sliver above the table header
-
-4- the rows height is too much
-
-5- Copy button in the rows needs transparency
-
-6- color of text in the rows need contrast, use the same as office 2010, or black
-
-7- Do not include the object name in the colum "Tipo"
-
-8- the title of the page should change to reflect the open file
-
-9- if there isnt a file open, drag and drop a file anywhere should open it, if it is a html or htm
-
-10- Data Object identification row should be collapsable, when click hide everything below/inside
-
-11- add input field to filter table/entity by name, one selected show everything below/inside it
-
-12- add a leftmost column with a checkbox, if its a Data Object identification row collapsa it  when checked, hide everything below/inside, if a normal row do nothing it a visual aid, check list for the human analist
 
