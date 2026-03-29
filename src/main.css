@@ -72,11 +72,11 @@
 }
 
 svg {
-    width: var(--icon-size) !important;
-    height: var(--icon-size) !important;
+	width: var(--icon-size) !important;
+	height: var(--icon-size) !important;
 }
 
 .empty-icon svg {
-    width: 64px !important;
-    height: 64px !important;
+	width: 64px !important;
+	height: 64px !important;
 }

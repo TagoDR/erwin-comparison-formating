@@ -1,8 +1,8 @@
 import { atom, computed } from "nanostores";
 
 export interface ErwinRow {
-    id?: string;
-    parentId?: string;
+	id?: string;
+	parentId?: string;
 	type: string;
 	prop: string;
 	change: "I" | "A" | "E" | "";
@@ -55,25 +55,25 @@ export const getObjectShortCode = (type: string): string => {
  */
 export const enrichedData$ = computed(rawData$, (data) => {
 	let currentPropCode = "O";
-    let lastHeaderId = "";
+	let lastHeaderId = "";
 
 	return data.map((row, index) => {
-        const id = `row-${index}`;
+		const id = `row-${index}`;
 		// If it's a header, determine new prop code
 		const newCode = getObjectShortCode(row.type);
 		if (newCode) {
 			currentPropCode = newCode;
 		}
 
-        const parentId = row.isHeader ? "" : lastHeaderId;
-        if (row.isHeader) {
-            lastHeaderId = id;
-        }
+		const parentId = row.isHeader ? "" : lastHeaderId;
+		if (row.isHeader) {
+			lastHeaderId = id;
+		}
 
 		return {
 			...row,
-            id,
-            parentId,
+			id,
+			parentId,
 			prop: currentPropCode,
 		};
 	});
@@ -87,23 +87,25 @@ export const filteredData$ = computed(
 	(data, change, obj, name, showProps) => {
 		let result = data;
 
-        if (!showProps) {
-            result = result.filter(r => r.isHeader);
-        }
+		if (!showProps) {
+			result = result.filter((r) => r.isHeader);
+		}
 
 		if (change) {
 			result = result.filter((r) => r.change === change);
 		}
 
 		if (obj) {
-            if (obj === "table") result = result.filter((r) => r.prop === "Ent" || r.isHeader);
-		    else if (obj === "column") result = result.filter((r) => r.prop === "Atr" || r.isHeader);
-        }
+			if (obj === "table")
+				result = result.filter((r) => r.prop === "Ent" || r.isHeader);
+			else if (obj === "column")
+				result = result.filter((r) => r.prop === "Atr" || r.isHeader);
+		}
 
-        if (name) {
-            const search = name.toLowerCase();
-            result = result.filter(r => r.type.toLowerCase().includes(search));
-        }
+		if (name) {
+			const search = name.toLowerCase();
+			result = result.filter((r) => r.type.toLowerCase().includes(search));
+		}
 
 		return result;
 	},
@@ -111,21 +113,21 @@ export const filteredData$ = computed(
 
 // Toggle functions
 export const toggleCollapse = (id: string) => {
-    const current = new Set(collapsedIds$.get());
-    if (current.has(id)) current.delete(id);
-    else current.add(id);
-    collapsedIds$.set(current);
+	const current = new Set(collapsedIds$.get());
+	if (current.has(id)) current.delete(id);
+	else current.add(id);
+	collapsedIds$.set(current);
 };
 
 export const toggleCheck = (id: string) => {
-    const current = new Set(checkedIds$.get());
-    if (current.has(id)) current.delete(id);
-    else current.add(id);
-    checkedIds$.set(current);
+	const current = new Set(checkedIds$.get());
+	if (current.has(id)) current.delete(id);
+	else current.add(id);
+	checkedIds$.set(current);
 };
 
 export const toggleProperties = () => {
-    showProperties$.set(!showProperties$.get());
+	showProperties$.set(!showProperties$.get());
 };
 
 // Computed stats for the stats panel

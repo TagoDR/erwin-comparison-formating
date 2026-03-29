@@ -2,21 +2,21 @@ import { StoreController } from "@nanostores/lit";
 import { html, LitElement, unsafeCSS } from "lit";
 import { customElement } from "lit/decorators.js";
 import { icons } from "../assets/icons";
-import { 
-    enrichedData$, 
-    filteredData$, 
-    collapsedIds$, 
-    checkedIds$, 
-    toggleCollapse, 
-    toggleCheck 
+import {
+	checkedIds$,
+	collapsedIds$,
+	enrichedData$,
+	filteredData$,
+	toggleCheck,
+	toggleCollapse,
 } from "../store/data.store";
 import tableStyles from "./app-table.css?inline";
 
 @customElement("app-table")
 export class AppTable extends LitElement {
 	private data = new StoreController(this, filteredData$);
-    private collapsed = new StoreController(this, collapsedIds$);
-    private checked = new StoreController(this, checkedIds$);
+	private collapsed = new StoreController(this, collapsedIds$);
+	private checked = new StoreController(this, checkedIds$);
 
 	static styles = unsafeCSS(tableStyles);
 
@@ -40,7 +40,9 @@ export class AppTable extends LitElement {
 	 */
 	private _formatTypeWithIndents(type: string, indent: number) {
 		const level = this._getNestingLevel(indent);
-		const category = type.includes(":") ? type.split(":")[0].trim() : type.trim();
+		const category = type.includes(":")
+			? type.split(":")[0].trim()
+			: type.trim();
 
 		if (level === 0) return category;
 
@@ -59,16 +61,19 @@ export class AppTable extends LitElement {
       `;
 		}
 
-        const collapsedSet = this.collapsed.value;
-        const checkedSet = this.checked.value;
+		const collapsedSet = this.collapsed.value;
+		const checkedSet = this.checked.value;
 
-        // Determine which rows are hidden due to collapsed parents
-        const hiddenRows = new Set<string>();
-        this.data.value.forEach(row => {
-            if (row.parentId && (collapsedSet.has(row.parentId) || hiddenRows.has(row.parentId))) {
-                hiddenRows.add(row.id!);
-            }
-        });
+		// Determine which rows are hidden due to collapsed parents
+		const hiddenRows = new Set<string>();
+		this.data.value.forEach((row) => {
+			if (
+				row.parentId &&
+				(collapsedSet.has(row.parentId) || hiddenRows.has(row.parentId))
+			) {
+				hiddenRows.add(row.id!);
+			}
+		});
 
 		return html`
       <table class="table table-condensed table-hover table-container">
@@ -85,7 +90,7 @@ export class AppTable extends LitElement {
         </thead>
         <tbody>
           ${this.data.value.map((row) => {
-                        if (hiddenRows.has(row.id!)) return html``;
+						if (hiddenRows.has(row.id!)) return html``;
 
 						const isNameRow =
 							row.type.toLowerCase().includes("name") || row.isHeader;
@@ -94,8 +99,8 @@ export class AppTable extends LitElement {
 							row.type,
 							row.indent,
 						);
-                        const isCollapsed = collapsedSet.has(row.id!);
-                        const isChecked = checkedSet.has(row.id!);
+						const isCollapsed = collapsedSet.has(row.id!);
+						const isChecked = checkedSet.has(row.id!);
 
 						return html`
               <tr 
@@ -115,12 +120,16 @@ export class AppTable extends LitElement {
                 <td class="row-type">
                   <div class="name-cell">
                     <span class="type-text">
-                        ${row.isHeader ? html`
+                        ${
+													row.isHeader
+														? html`
                             <span 
                                 class="collapse-toggle ${isCollapsed ? "collapsed" : ""}" 
                                 @click=${() => toggleCollapse(row.id!)}
                             ></span>
-                        ` : ""}
+                        `
+														: ""
+												}
                         ${formattedType}
                     </span>
                     ${

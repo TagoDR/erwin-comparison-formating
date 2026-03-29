@@ -7,7 +7,8 @@
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
-		"lint": "biome check --write ."
+		"prettier": "prettier --write ./**/*.md",
+		"biome": " biome check --write ."
 	},
 	"dependencies": {
 		"@nanostores/lit": "^0.2.3",

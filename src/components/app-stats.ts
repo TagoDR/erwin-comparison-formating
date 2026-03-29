@@ -4,20 +4,20 @@ import { customElement } from "lit/decorators.js";
 import { icons } from "../assets/icons";
 import {
 	filterChange$,
+	filterName$,
 	filterObject$,
-    filterName$,
 	rawData$,
+	showProperties$,
 	statsSummary$,
-    showProperties$,
-    toggleProperties
+	toggleProperties,
 } from "../store/data.store";
 import statsStyles from "./app-stats.css?inline";
 
 @customElement("app-stats")
 export class AppStats extends LitElement {
 	private stats = new StoreController(this, statsSummary$);
-    private nameFilter = new StoreController(this, filterName$);
-    private showProps = new StoreController(this, showProperties$);
+	private nameFilter = new StoreController(this, filterName$);
+	private showProps = new StoreController(this, showProperties$);
 
 	static styles = unsafeCSS(statsStyles);
 
@@ -31,10 +31,10 @@ export class AppStats extends LitElement {
 		filterObject$.set(val);
 	}
 
-    private _updateNameFilter(e: Event) {
-        const val = (e.target as HTMLInputElement).value;
-        filterName$.set(val);
-    }
+	private _updateNameFilter(e: Event) {
+		const val = (e.target as HTMLInputElement).value;
+		filterName$.set(val);
+	}
 
 	private _copyTablesToClipboard() {
 		const tables = rawData$

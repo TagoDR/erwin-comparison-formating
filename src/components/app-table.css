@@ -17,13 +17,27 @@
 }
 
 /* Specific Column Widths */
-.col-check { width: 30px; } /* Even smaller check column */
-th:nth-child(2) { width: 15%; } /* Tipo / Objeto */
-th:nth-child(3) { width: 35%; } /* Modelo Trabalhando (Left) */
-th:nth-child(4) { width: 35%; } /* Modelo Referência (Right) */
-th:nth-child(5) { width: 5%; }  /* Prop */
-th:nth-child(6) { width: 4%; }  /* Alt (Change) */
-th:nth-child(7) { width: 4%; }  /* Vis (View) */
+.col-check {
+	width: 30px;
+} /* Even smaller check column */
+th:nth-child(2) {
+	width: 15%;
+} /* Tipo / Objeto */
+th:nth-child(3) {
+	width: 35%;
+} /* Modelo Trabalhando (Left) */
+th:nth-child(4) {
+	width: 35%;
+} /* Modelo Referência (Right) */
+th:nth-child(5) {
+	width: 5%;
+} /* Prop */
+th:nth-child(6) {
+	width: 4%;
+} /* Alt (Change) */
+th:nth-child(7) {
+	width: 4%;
+} /* Vis (View) */
 
 th {
 	position: sticky;
@@ -41,11 +55,13 @@ th {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-    line-height: 1.1; /* Phase 4: Extreme density */
+	line-height: 1.1; /* Phase 4: Extreme density */
 }
 
 /* Specific header alignment */
-th:nth-child(2), th:nth-child(3), th:nth-child(4) {
+th:nth-child(2),
+th:nth-child(3),
+th:nth-child(4) {
 	text-align: left;
 }
 
@@ -57,11 +73,13 @@ td {
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	text-align: center;
-    line-height: 1.1; /* Phase 4: Extreme density */
+	line-height: 1.1; /* Phase 4: Extreme density */
 }
 
 /* Specific data alignment */
-.row-type, .row-left, .row-right {
+.row-type,
+.row-left,
+.row-right {
 	text-align: left;
 }
 
@@ -71,7 +89,6 @@ tr:last-child td {
 
 /* Default Text Row */
 .row-type {
-	white-space: pre-wrap;
 	font-family: "JetBrains Mono", "Fira Code", monospace;
 	color: var(--text-primary);
 	position: relative;
@@ -79,20 +96,37 @@ tr:last-child td {
 
 /* Phase 1: Icon Resizing - Force override attributes */
 svg {
-    width: var(--icon-size) !important;
-    height: var(--icon-size) !important;
-    display: inline-block;
-    vertical-align: middle;
+	width: var(--icon-size) !important;
+	height: var(--icon-size) !important;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 /* Nesting Level Colors (Orange Palette) - ONLY FOR HEADERS and only if no status color applied */
-tr[data-header="true"]:not([data-change="I"]):not([data-change="A"]):not([data-change="E"])[data-level="0"] .row-type { color: var(--color-obj-l0); font-weight: 700; }
-tr[data-header="true"]:not([data-change="I"]):not([data-change="A"]):not([data-change="E"])[data-level="1"] .row-type { color: var(--color-obj-l1); font-weight: 600; }
-tr[data-header="true"]:not([data-change="I"]):not([data-change="A"]):not([data-change="E"])[data-level="2"] .row-type { color: var(--color-obj-l2); }
+tr[data-header="true"]:not([data-change="I"]):not([data-change="A"]):not(
+	[data-change="E"]
+)[data-level="0"]
+.row-type {
+	color: var(--color-obj-l0);
+	font-weight: 700;
+}
+tr[data-header="true"]:not([data-change="I"]):not([data-change="A"]):not(
+		[data-change="E"]
+	)[data-level="1"]
+	.row-type {
+	color: var(--color-obj-l1);
+	font-weight: 600;
+}
+tr[data-header="true"]:not([data-change="I"]):not([data-change="A"]):not(
+		[data-change="E"]
+	)[data-level="2"]
+	.row-type {
+	color: var(--color-obj-l2);
+}
 
 /* For non-header rows, type should be standard text color */
 tr:not([data-header="true"]) .row-type {
-    color: var(--text-primary);
+	color: var(--text-primary);
 }
 
 .name-cell {
@@ -100,38 +134,39 @@ tr:not([data-header="true"]) .row-type {
 	justify-content: space-between;
 	align-items: center;
 	gap: 0.5rem;
-    min-height: 1.2rem;
+	min-height: 1.2rem;
 }
 
 .type-text {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
 }
 
 .collapse-toggle {
-    cursor: pointer;
-    width: 10px;
-    height: 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    transition: transform 0.2s;
+	cursor: pointer;
+	width: 10px;
+	height: 10px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	user-select: none;
+	transition: transform 0.2s;
 }
 
 .collapse-toggle::before {
-    content: "▼";
-    font-size: 7px;
-    color: inherit;
-    opacity: 0.6;
+	content: "▼";
+	font-size: 7px;
+	color: inherit;
+	opacity: 0.6;
 }
 
 .collapse-toggle.collapsed {
-    transform: rotate(-90deg);
+	transform: rotate(-90deg);
 }
 
-.row-left, .row-right {
+.row-left,
+.row-right {
 	font-family: "JetBrains Mono", monospace;
 	font-size: 0.75rem;
 	line-height: 1.1;
@@ -146,23 +181,23 @@ tr:not([data-header="true"]) .row-type {
 
 /* Checklist Column */
 .col-check {
-    padding-left: 0.3rem !important;
-    padding-right: 0.3rem !important;
-    text-align: center;
+	padding-left: 0.3rem !important;
+	padding-right: 0.3rem !important;
+	text-align: center;
 }
 
 .col-check input[type="checkbox"] {
-    cursor: pointer;
-    width: 12px;
-    height: 12px;
-    accent-color: var(--accent-blue);
-    margin: 0;
-    vertical-align: middle;
+	cursor: pointer;
+	width: 12px;
+	height: 12px;
+	accent-color: var(--accent-blue);
+	margin: 0;
+	vertical-align: middle;
 }
 
 /* Checked Row Styling */
 tr.checked-row {
-    opacity: 0.6;
+	opacity: 0.6;
 }
 
 /* Row Styling */
@@ -171,9 +206,16 @@ tr {
 	color: var(--row-text-normal);
 }
 
-tr td { color: var(--row-text-normal); }
+tr td {
+	color: var(--row-text-normal);
+}
 
-tr .row-left, tr .row-right, tr .row-prop, tr .row-type, tr .row-change, tr .row-view {
+tr .row-left,
+tr .row-right,
+tr .row-prop,
+tr .row-type,
+tr .row-change,
+tr .row-view {
 	color: var(--row-text-normal);
 }
 
@@ -181,43 +223,82 @@ tr .row-left, tr .row-right, tr .row-prop, tr .row-type, tr .row-change, tr .row
 
 /* 1. PROPERTY ROWS (non-headers) MUST REMAIN WHITE/NORMAL */
 tr:not([data-header="true"]) {
-    background-color: var(--row-bg-normal) !important;
-    color: var(--row-text-normal) !important;
+	background-color: var(--row-bg-normal) !important;
+	color: var(--row-text-normal) !important;
 }
 
 /* 2. OBJECT HEADERS (headers) ARE COLORED */
 
 /* ENTITY/TABLE (Base Colors - White Text) */
-tr[data-header="true"][data-prop="Ent"][data-change="I"] { background-color: var(--off-green-base); color: #ffffff !important; }
-tr[data-header="true"][data-prop="Ent"][data-change="A"] { background-color: var(--off-purple-base); color: #ffffff !important; }
-tr[data-header="true"][data-prop="Ent"][data-change="E"] { background-color: var(--off-red-base); color: #ffffff !important; }
-tr[data-header="true"][data-prop="Ent"][data-change=""]  { background-color: var(--off-blue-base); color: #ffffff !important; }
+tr[data-header="true"][data-prop="Ent"][data-change="I"] {
+	background-color: var(--off-green-base);
+	color: #ffffff !important;
+}
+tr[data-header="true"][data-prop="Ent"][data-change="A"] {
+	background-color: var(--off-purple-base);
+	color: #ffffff !important;
+}
+tr[data-header="true"][data-prop="Ent"][data-change="E"] {
+	background-color: var(--off-red-base);
+	color: #ffffff !important;
+}
+tr[data-header="true"][data-prop="Ent"][data-change=""] {
+	background-color: var(--off-blue-base);
+	color: #ffffff !important;
+}
 
 /* ATTRIBUTE/COLUMN (60% Lighter Colors - Black Text) */
-tr[data-header="true"][data-prop="Atr"][data-change="I"] { background-color: var(--off-green-60); color: #000000 !important; }
-tr[data-header="true"][data-prop="Atr"][data-change="A"] { background-color: var(--off-purple-60); color: #000000 !important; }
-tr[data-header="true"][data-prop="Atr"][data-change="E"] { background-color: var(--off-red-60); color: #000000 !important; }
-tr[data-header="true"][data-prop="Atr"][data-change=""]  { background-color: var(--off-blue-60); color: #000000 !important; }
+tr[data-header="true"][data-prop="Atr"][data-change="I"] {
+	background-color: var(--off-green-60);
+	color: #000000 !important;
+}
+tr[data-header="true"][data-prop="Atr"][data-change="A"] {
+	background-color: var(--off-purple-60);
+	color: #000000 !important;
+}
+tr[data-header="true"][data-prop="Atr"][data-change="E"] {
+	background-color: var(--off-red-60);
+	color: #000000 !important;
+}
+tr[data-header="true"][data-prop="Atr"][data-change=""] {
+	background-color: var(--off-blue-60);
+	color: #000000 !important;
+}
 
 /* OTHER OBJECTS (Orange Scale by default, or Status Colors if they have status) */
 tr[data-header="true"]:not([data-prop="Ent"]):not([data-prop="Atr"]) {
-    background-color: var(--off-orange-80);
-    color: #000000 !important;
+	background-color: var(--off-orange-80);
+	color: #000000 !important;
 }
-tr[data-header="true"]:not([data-prop="Ent"]):not([data-prop="Atr"])[data-change="I"] { background-color: var(--off-green-80); color: #000000 !important; }
-tr[data-header="true"]:not([data-prop="Ent"]):not([data-prop="Atr"])[data-change="A"] { background-color: var(--off-purple-80); color: #000000 !important; }
-tr[data-header="true"]:not([data-prop="Ent"]):not([data-prop="Atr"])[data-change="E"] { background-color: var(--off-red-80); color: #000000 !important; }
+tr[data-header="true"]:not([data-prop="Ent"]):not(
+		[data-prop="Atr"]
+	)[data-change="I"] {
+	background-color: var(--off-green-80);
+	color: #000000 !important;
+}
+tr[data-header="true"]:not([data-prop="Ent"]):not(
+		[data-prop="Atr"]
+	)[data-change="A"] {
+	background-color: var(--off-purple-80);
+	color: #000000 !important;
+}
+tr[data-header="true"]:not([data-prop="Ent"]):not(
+		[data-prop="Atr"]
+	)[data-change="E"] {
+	background-color: var(--off-red-80);
+	color: #000000 !important;
+}
 
 /* Ensuring all cells in header rows inherit the color for contrast */
 tr[data-header="true"] td,
-tr[data-header="true"] .row-left, 
+tr[data-header="true"] .row-left,
 tr[data-header="true"] .row-right,
 tr[data-header="true"] .row-type,
 tr[data-header="true"] .row-prop,
 tr[data-header="true"] .row-change,
-tr[data-header="true"] .row-view { 
-    color: inherit !important; 
-    font-weight: bold;
+tr[data-header="true"] .row-view {
+	color: inherit !important;
+	font-weight: bold;
 }
 
 /* Inline Copy Button - Phase 1: Transparency and Hover */
@@ -230,12 +311,14 @@ tr[data-header="true"] .row-view {
 	cursor: pointer;
 	font-size: 0.6rem;
 	opacity: 0.4;
-	transition: opacity 0.2s, background 0.2s;
-    display: flex;
-    align-items: center;
+	transition:
+		opacity 0.2s,
+		background 0.2s;
+	display: flex;
+	align-items: center;
 }
 
 .copy-btn:hover {
-	opacity: 1.0;
+	opacity: 1;
 	background: rgba(255, 255, 255, 0.4);
 }

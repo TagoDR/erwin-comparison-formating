@@ -9,7 +9,7 @@
 	--text-secondary: #95a5a6;
 	--border-subtle: #465c71;
 	--accent-blue: #3498db;
-    
+
 	/* Office 2010 Palette */
 	--off-blue-base: #4f81bd;
 	--off-blue-80: #dbe5f1;
@@ -81,9 +81,9 @@
 
 	--bg-empty: rgba(44, 62, 80, 0.95);
 	--text-muted: #7f8c8d;
-    
-    --row-bg-normal: #2c3e50;
-    --row-text-normal: #f1f2f2;
+
+	--row-bg-normal: #2c3e50;
+	--row-text-normal: #f1f2f2;
 }
 
 [data-theme="light"] {
@@ -93,11 +93,11 @@
 	--text-secondary: #7f8c8d;
 	--border-subtle: #d1d8e0;
 	--accent-blue: #2980b9;
-    
-    --row-bg-normal: #ffffff;
-    --row-text-normal: #262626;
-    
-    --bg-empty: rgba(255, 255, 255, 0.95);
+
+	--row-bg-normal: #ffffff;
+	--row-text-normal: #262626;
+
+	--bg-empty: rgba(255, 255, 255, 0.95);
 }
 
 body {
@@ -105,7 +105,9 @@ body {
 	color: var(--text-primary);
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	margin: 0;
-    transition: background-color 0.3s ease, color 0.3s ease;
+	transition:
+		background-color 0.3s ease,
+		color 0.3s ease;
 }
 
 /* Bootflat Overrides */

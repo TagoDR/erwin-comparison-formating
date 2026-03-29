@@ -5,9 +5,9 @@ import { icons } from "../assets/icons";
 import {
 	fileName$,
 	filteredData$,
+	filterName$,
 	isLoading$,
 	rawData$,
-    filterName$
 } from "../store/data.store";
 import { theme$, toggleTheme } from "../store/theme.store";
 import headerStyles from "./app-header.css?inline";
@@ -60,7 +60,7 @@ export class AppHeader extends LitElement {
 		fileName$.set(null);
 		rawData$.set([]);
 		filteredData$.set([]);
-        filterName$.set("");
+		filterName$.set("");
 	}
 
 	render() {

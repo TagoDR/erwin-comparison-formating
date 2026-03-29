@@ -1,8 +1,8 @@
+import fs from "node:fs";
+import path from "node:path";
 import { defineConfig } from "vite";
 import { viteSingleFile } from "vite-plugin-singlefile";
 import svgLoader from "vite-svg-loader";
-import fs from "node:fs";
-import path from "node:path";
 
 function renameIndex() {
 	return {
@@ -12,7 +12,9 @@ function renameIndex() {
 			const newPath = path.resolve("dist/Erwin_Formatar_CompleteCompare.html");
 			if (fs.existsSync(oldPath)) {
 				fs.renameSync(oldPath, newPath);
-				console.log(`Renamed: dist/index.html -> dist/Erwin_Formatar_CompleteCompare.html`);
+				console.log(
+					`Renamed: dist/index.html -> dist/Erwin_Formatar_CompleteCompare.html`,
+				);
 			}
 		},
 	};
