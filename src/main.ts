@@ -1,153 +1,145 @@
-import { StoreController } from "@nanostores/lit";
-import { html, LitElement, unsafeCSS } from "lit";
-import { customElement } from "lit/decorators.js";
-import { icons } from "./assets/icons";
-import { parseErwinHtml } from "./parser/html-parser";
-import {
-	fileName$,
-	filteredData$,
-	isLoading$,
-	rawData$,
-} from "./store/data.store";
+import { StoreController } from '@nanostores/lit';
+import { html, LitElement, unsafeCSS } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { icons } from './assets/icons';
+import { parseErwinHtml } from './parser/html-parser';
+import { fileName$, isLoading$, rawData$ } from './store/data.store';
 
 // Import Global CSS
-import "./index.css";
-import mainStyles from "./main.css?inline";
+import './index.css';
+import mainStyles from './main.css?inline';
 
 // Importing components
-import "./components/app-header";
-import "./components/app-stats";
-import "./components/app-table";
+import './components/app-header';
+import './components/app-stats';
+import './components/app-table';
 
 // FLAG TO ENABLE SAMPLE DATA IN DEV MODE
 const USE_SAMPLE = import.meta.env.DEV && true;
 
-@customElement("app-root")
+@customElement('app-root')
 export class AppRoot extends LitElement {
-	private isLoading = new StoreController(this, isLoading$);
-	private fileName = new StoreController(this, fileName$);
+  private isLoading = new StoreController(this, isLoading$);
+  private fileName = new StoreController(this, fileName$);
 
-	static styles = unsafeCSS(mainStyles);
+  static styles = unsafeCSS(mainStyles);
 
-	firstUpdated() {
-		if (USE_SAMPLE) {
-			this._loadSampleData();
-		}
+  firstUpdated() {
+    if (USE_SAMPLE) {
+      this._loadSampleData();
+    }
 
-		// Phase 2: Dynamic Page Title
-		fileName$.subscribe((name) => {
-			document.title = name ? `Erwin: ${name}` : "Erwin Compare Formatter";
-		});
+    // Phase 2: Dynamic Page Title
+    fileName$.subscribe(name => {
+      document.title = name ? `Erwin: ${name}` : 'Erwin Compare Formatter';
+    });
 
-		// Phase 2: Global Drag & Drop Support
-		this._setupGlobalDragDrop();
-	}
+    // Phase 2: Global Drag & Drop Support
+    this._setupGlobalDragDrop();
+  }
 
-	private _setupGlobalDragDrop() {
-		window.addEventListener("dragover", (e) => {
-			e.preventDefault();
-			e.stopPropagation();
-		});
+  private _setupGlobalDragDrop() {
+    window.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
 
-		window.addEventListener("drop", (e) => {
-			e.preventDefault();
-			e.stopPropagation();
+    window.addEventListener('drop', e => {
+      e.preventDefault();
+      e.stopPropagation();
 
-			const file = e.dataTransfer?.files?.[0];
-			if (file && file.name.toLowerCase().endsWith(".html")) {
-				this._onFileLoadedFromDrop(file);
-			}
-		});
-	}
+      const file = e.dataTransfer?.files?.[0];
+      if (file?.name.toLowerCase().endsWith('.html')) {
+        this._onFileLoadedFromDrop(file);
+      }
+    });
+  }
 
-	private _onFileLoadedFromDrop(file: File) {
-		fileName$.set(file.name);
-		isLoading$.set(true);
+  private _onFileLoadedFromDrop(file: File) {
+    fileName$.set(file.name);
+    isLoading$.set(true);
 
-		const reader = new FileReader();
-		reader.onload = (e) => {
-			const content = e.target?.result as string;
-			this._processFileContent(content);
-		};
-		reader.readAsText(file);
-	}
+    const reader = new FileReader();
+    reader.onload = e => {
+      const content = e.target?.result as string;
+      this._processFileContent(content);
+    };
+    reader.readAsText(file);
+  }
 
-	private async _loadSampleData() {
-		fileName$.set("sample.html");
-		isLoading$.set(true);
+  private async _loadSampleData() {
+    fileName$.set('sample.html');
+    isLoading$.set(true);
 
-		try {
-			// Using fetch to get the sample file provided in the store
-			const response = await fetch("./src/store/sample.html");
-			if (!response.ok) throw new Error("Failed to load sample file");
-			const content = await response.text();
+    try {
+      // Using fetch to get the sample file provided in the store
+      const response = await fetch('./src/store/sample.html');
+      if (!response.ok) throw new Error('Failed to load sample file');
+      const content = await response.text();
 
-			// Simulate parsing delay for visual verification
-			setTimeout(() => {
-				this._processFileContent(content);
-			}, 800);
-		} catch (error) {
-			console.error("Error loading sample data:", error);
-			isLoading$.set(false);
-		}
-	}
+      // Simulate parsing delay for visual verification
+      setTimeout(() => {
+        this._processFileContent(content);
+      }, 800);
+    } catch (error) {
+      console.error('Error loading sample data:', error);
+      isLoading$.set(false);
+    }
+  }
 
-	private _onFileLoaded(e: CustomEvent<{ content: string; name: string }>) {
-		const { content, name } = e.detail;
-		fileName$.set(name);
-		isLoading$.set(true);
-		this._processFileContent(content);
-	}
+  private _onFileLoaded(e: CustomEvent<{ content: string; name: string }>) {
+    const { content, name } = e.detail;
+    fileName$.set(name);
+    isLoading$.set(true);
+    this._processFileContent(content);
+  }
 
-	private _processFileContent(content: string) {
-		console.log(
-			"File content loaded, starting parser...",
-			content.substring(0, 100),
-		);
-		const rows = parseErwinHtml(content);
-		rawData$.set(rows);
-		isLoading$.set(false);
-	}
+  private _processFileContent(content: string) {
+    console.log('File content loaded, starting parser...', content.substring(0, 100));
+    const rows = parseErwinHtml(content);
+    rawData$.set(rows);
+    isLoading$.set(false);
+  }
 
-	render() {
-		const showData = !!this.fileName.value && !this.isLoading.value;
+  render() {
+    const showData = !!this.fileName.value && !this.isLoading.value;
 
-		return html`
+    return html`
 	<div class="main-content" @file-loaded=${this._onFileLoaded}>
 	<app-header></app-header>
         <div class="display-area">
           ${
-						showData
-							? html`
+            showData
+              ? html`
             <app-stats></app-stats>
             <app-table></app-table>
           `
-							: ""
-					}
+              : ''
+          }
 
           ${
-						!this.fileName.value && !this.isLoading.value
-							? html`
+            !this.fileName.value && !this.isLoading.value
+              ? html`
             <div class="empty-state">
-              <span class="empty-icon">${icons["file-diff"]}</span>
+              <span class="empty-icon">${icons['file-diff']}</span>
               <span>Nenhum arquivo carregado. Use a área superior para iniciar.</span>
             </div>
           `
-							: ""
-					}
+              : ''
+          }
         </div>
         
         ${
-					this.isLoading.value
-						? html`
+          this.isLoading.value
+            ? html`
           <div class="loading-overlay">
             <div class="spinner"></div>
             <span class="loading-text">Processando arquivo Erwin...</span>
           </div>
         `
-						: ""
-				}
+            : ''
+        }
       </div>
     `;
-	}
+  }
 }

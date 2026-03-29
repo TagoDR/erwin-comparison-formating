@@ -1,27 +1,27 @@
 {
-	"name": "comparison-formating",
-	"private": true,
-	"version": "5.0.0",
-	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prettier": "prettier --write ./**/*.md",
-		"biome": " biome check --write ."
-	},
-	"dependencies": {
-		"@nanostores/lit": "^0.2.3",
-		"bootflat": "^2.0.4",
-		"lit": "^3.3.2",
-		"nanostores": "^1.2.0"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.4.9",
-		"@types/node": "^25.5.0",
-		"typescript": "~6.0.2",
-		"vite": "^8.0.3",
-		"vite-plugin-singlefile": "^2.3.2",
-		"vite-svg-loader": "^5.1.1"
-	}
+  "name": "comparison-formating",
+  "private": true,
+  "version": "5.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prettier": "prettier --write ./**/*.md",
+    "biome": " biome check --write ."
+  },
+  "dependencies": {
+    "@nanostores/lit": "^0.2.3",
+    "bootflat": "^2.0.4",
+    "lit": "^3.3.2",
+    "nanostores": "^1.2.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.9",
+    "@types/node": "^25.5.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.3",
+    "vite-plugin-singlefile": "^2.3.2",
+    "vite-svg-loader": "^5.1.1"
+  }
 }
