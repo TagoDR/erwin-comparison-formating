@@ -43,10 +43,10 @@ export class AppStats extends LitElement {
 
     if (tables) {
       navigator.clipboard.writeText(tables).then(() => {
-        alert('Lista de tabelas copiada para o clipboard!');
+        alert('Table name list copied to clipboard!');
       });
     } else {
-      alert('Nenhuma tabela encontrada para copiar.');
+      alert('No table names found.');
     }
   }
 
@@ -60,11 +60,11 @@ export class AppStats extends LitElement {
             <table class="table table-condensed stats-table">
               <thead>
                 <tr>
-                  <th>Objeto</th>
+                  <th>Object</th>
                   <th>Total</th>
-                  <th class="status-I">Inclusão</th>
-                  <th class="status-A">Alteração</th>
-                  <th class="status-E">Exclusão</th>
+                  <th class="status-I">Inclusion</th>
+                  <th class="status-A">Alteration</th>
+                  <th class="status-E">Exclusion</th>
                 </tr>
               </thead>
               <tbody>
@@ -85,14 +85,14 @@ export class AppStats extends LitElement {
 
           <div class="filter-panel">
             <div class="filter-item search-filter">
-              <label for="name-filter">Filtrar por Nome</label>
+              <label for="name-filter">Filter by Name</label>
               <div class="search-input-wrapper">
                   ${icons.filter}
                   <input 
                     id="name-filter"
                     type="text" 
                     class="form-control" 
-                    placeholder="Buscar..." 
+                    placeholder="Search..." 
                     .value=${this.nameFilter.value}
                     @input=${this._updateNameFilter}
                   />
@@ -100,12 +100,12 @@ export class AppStats extends LitElement {
             </div>
 
             <div class="filter-item">
-              <label for="change-filter">Tipo de Mudança</label>
+              <label for="change-filter">Change Type</label>
               <select id="change-filter" class="form-control" @change=${this._updateChangeFilter}>
-                <option value="">Todas</option>
-                <option value="I">Inclusão (I)</option>
-                <option value="A">Alteração (A)</option>
-                <option value="E">Exclusão (E)</option>
+                <option value="">All</option>
+                <option value="I">Inclusion (I)</option>
+                <option value="A">Alteration (A)</option>
+                <option value="E">Exclusion (E)</option>
               </select>
             </div>
           </div>
@@ -113,11 +113,11 @@ export class AppStats extends LitElement {
 
         <div class="action-panel">
           <button type="button" class="btn btn-primary btn-block action-btn" @click=${this._copyTablesToClipboard}>
-            ${icons['clipboard-list']} <span>COPIAR TABELAS</span>
+            ${icons['clipboard-list']} <span>COPY TABLES</span>
           </button>
           <button type="button" class="btn btn-default btn-block action-btn" @click=${toggleProperties}>
             ${this.showProps.value ? icons['filter-off'] : icons.filter} 
-            <span>${this.showProps.value ? 'ESCONDER PROPS' : 'MOSTRAR PROPS'}</span>
+            <span>${this.showProps.value ? 'HIDE PROPERTIES' : 'SHOW PROPERTIES'}</span>
           </button>
         </div>
       </div>

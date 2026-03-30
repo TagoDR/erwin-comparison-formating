@@ -65,7 +65,7 @@ export class AppHeader extends LitElement {
           <div class="file-info">
             <span class="file-name">${this.fileName.value}</span>
             <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
-               ${icons.x} <span>Fechar Arquivo</span>
+               ${icons.x} <span>Close File</span>
             </button>
           </div>
         `
@@ -77,7 +77,7 @@ export class AppHeader extends LitElement {
             @dragleave=${this._onDragLeave}
           >
             <span class="icon">${icons['file-diff']}</span>
-            <span>Selecione ou arraste o arquivo HTML do Erwin aqui</span>
+            <span>Select file or drag and drop here</span>
             <input type="file" @change=${(e: Event) => this._handleFile((e.target as HTMLInputElement).files?.[0] as File)} />
           </div>
         `
@@ -85,7 +85,7 @@ export class AppHeader extends LitElement {
 
         <div class="header-controls">
           <div class="version-tag">v5</div>
-          <button class="theme-toggle" @click=${toggleTheme} title="Alternar Tema">
+          <button class="theme-toggle" @click=${toggleTheme} title="Change Theme">
             ${this.theme.value === 'dark' ? icons.sun : icons.moon}
           </button>
         </div>

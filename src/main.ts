@@ -122,7 +122,7 @@ export class AppRoot extends LitElement {
               ? html`
             <div class="empty-state">
               <span class="empty-icon">${icons['file-diff']}</span>
-              <span>Nenhum arquivo carregado. Use a área superior para iniciar.</span>
+              <span>No file loaded, select a file above.</span>
             </div>
           `
               : ''
@@ -134,7 +134,7 @@ export class AppRoot extends LitElement {
             ? html`
           <div class="loading-overlay">
             <div class="spinner"></div>
-            <span class="loading-text">Processando arquivo Erwin...</span>
+            <span class="loading-text">Processing html File...</span>
           </div>
         `
             : ''
