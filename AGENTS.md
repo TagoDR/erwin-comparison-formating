@@ -90,13 +90,16 @@ Grouping rows are high-level structural elements that categorize model objects.
 | **Attribute/Column**                | #D7E3BC (60%)    | #CCC1D9 (60%)   | #E5B9B7 (60%)  | Black |
 | **Properties of any object**        | White            | White           | White          | Black |
 
-### 4.2. Other Objects
+### 4.2. Other Objects (Absolute Nesting)
 
-All other objects follow the Orange scale (Accent 6):
+All other objects (Grouping Rows and non-Table/Column objects) follow the Orange scale (Accent 6). The color level is **absolute**, determined by the indentation level regardless of object type:
 
-- Level 0: #F79646 (Base)
-- Level 1: #FAC08F (40% Lighter)
-- Level 2+: #FBD5B5 (60% Lighter) or #FDE9D9 (80% Lighter)
+- **Level 0 (Root):** #F79646 (Base)
+- **Level 1 (4 spaces):** #FAC08F (40% Lighter)
+- **Level 2 (8 spaces):** #FBD5B5 (60% Lighter)
+- **Level 3+ (12+ spaces):** #FDE9D9 (80% Lighter)
+
+*Example:* A "Foreign Keys" grouping row inside a table (Level 2 indentation) will always use the Level 2 color (#FBD5B5).
 
 ## 5. File Structure
 
