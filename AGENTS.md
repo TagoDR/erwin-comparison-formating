@@ -81,6 +81,7 @@ Grouping rows are high-level structural elements that categorize model objects.
   - **Passive Role:** They do not represent model objects themselves and are not counted in the Statistics Panel.
   - **Visual Anchor:** They provide context in the hierarchy (e.g., distinguishing between "Foreign Keys" and "Primary Keys").
   - **Omission:** These rows can be filtered out or ignored without loss of object-level data.
+  - **Visual Styling:** These rows are **not colored** (neutral background) and do not show values in the "Change" or "View" columns.
 
 ## 4. Visual Encoding (Office 2010 Palette)
 
@@ -94,14 +95,14 @@ Grouping rows are high-level structural elements that categorize model objects.
 
 ### 4.2. Other Objects (Absolute Nesting)
 
-All other objects (Grouping Rows and non-Table/Column objects) follow the Orange scale (Accent 6). The color level is **absolute**, determined by the indentation level regardless of object type:
+All other non-grouping header objects (non-Table/Column objects) follow the Orange scale (Accent 6). The color level is **absolute**, determined by the indentation level regardless of object type:
 
 - **Level 0 (Root):** #F79646 (Base)
 - **Level 1 (6 spaces):** #FAC08F (40% Lighter)
 - **Level 2 (12 spaces):** #FBD5B5 (60% Lighter)
 - **Level 3+ (18+ spaces):** #FDE9D9 (80% Lighter)
 
-*Example:* A "Foreign Keys" grouping row inside a table (Level 2 indentation) will always use the Level 2 color (#FBD5B5).
+*Example:* A "Foreign Keys" identification row (not the grouping row) at Level 2 indentation will use the Level 2 color (#FBD5B5). Grouping rows remain uncolored.
 
 ## 5. File Structure
 

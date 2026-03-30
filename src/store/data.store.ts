@@ -68,14 +68,8 @@ const HEADER_KEYWORDS = [
 export const getObjectShortCode = (type: string): string => {
   const t = type.toLowerCase();
   if (t.includes('entity') || t.includes('table')) return 'Ent';
-  if (t.includes('attribute') || t.includes('column') || t.includes('atribute')) return 'Atr';
-  if (
-    t.includes('foreign key') ||
-    t.includes('foreignkey') ||
-    t.includes('foregn key') ||
-    t.includes('relationship')
-  )
-    return 'FK';
+  if (t.includes('attribute') || t.includes('column')) return 'Atr';
+  if (t.includes('foreign key') || t.includes('relationship')) return 'FK';
   if (t.includes('tablespace')) return 'TB';
   if (t.includes('index')) return 'IX';
   if (t.includes('view')) return 'VW';

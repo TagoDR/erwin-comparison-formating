@@ -71,7 +71,10 @@ export class AppTable extends LitElement {
             // Requirement 5: Check if any ancestor is collapsed
             if (isAncestorCollapsed(row.parentId)) return html``;
 
-            const isNameRow = row.type.toLowerCase().includes('name') || row.isHeader;
+            const isIdentificationRow = row.isHeader && !row.isGrouping;
+            const isNameProp = row.type === 'Name' || row.type === 'Physical Name';
+            const showCopy = isIdentificationRow || isNameProp;
+
             const level = row.indent;
             const isCollapsed = row.id ? collapsedSet.has(row.id) : false;
             const isChecked = row.id ? checkedSet.has(row.id) : false;
@@ -105,24 +108,39 @@ export class AppTable extends LitElement {
                         : html`<span class="tree-leaf-connector"></span>`
                     }
                     <span class="type-text">${row.type}</span>
-                    ${
-                      isNameRow
-                        ? html`
-                      <button 
-                        class="btn btn-default btn-xs copy-btn" 
-                        title="Copiar nome" 
-                        @click=${() => this._copyToClipboard(row.type)}
-                      >${icons.copy}</button>
-                    `
-                        : ''
-                    }
                   </div>
                 </td>
-                <td class="row-left">${row.leftModel}</td>
-                <td class="row-right">${row.rightModel}</td>
+                <td class="row-left">
+                  ${row.leftModel}
+                  ${
+                    showCopy && row.leftModel
+                      ? html`
+                    <button 
+                      class="btn btn-default btn-xs copy-btn" 
+                      title="Copy Left" 
+                      @click=${() => this._copyToClipboard(row.leftModel)}
+                    >${icons.copy}</button>
+                  `
+                      : ''
+                  }
+                </td>
+                <td class="row-right">
+                  ${row.rightModel}
+                  ${
+                    showCopy && row.rightModel
+                      ? html`
+                    <button 
+                      class="btn btn-default btn-xs copy-btn" 
+                      title="Copy Right" 
+                      @click=${() => this._copyToClipboard(row.rightModel)}
+                    >${icons.copy}</button>
+                  `
+                      : ''
+                  }
+                </td>
                 <td class="row-prop">${row.prop}</td>
-                <td class="row-change">${row.change}</td>
-                <td class="row-view">${row.view}</td>
+                <td class="row-change">${isIdentificationRow ? row.change : ''}</td>
+                <td class="row-view">${isIdentificationRow ? row.view : ''}</td>
               </tr>
             `;
           })}
