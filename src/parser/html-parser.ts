@@ -26,7 +26,7 @@ export function parseErwinHtml(html: string): ErwinRow[] {
     // Calculate indent based on non-breaking spaces or regular spaces
     // In DOM, &nbsp; becomes \u00a0 (160)
     const leadingWhitespace = rawTypeText.match(/^[\s\u00a0]*/)?.[0] || '';
-    const indent = Math.floor(leadingWhitespace.length / 4);
+    const indent = Math.floor(leadingWhitespace.length / 6);
 
     let change: 'I' | 'A' | 'E' | '' = '';
     if (leftModel && rightModel) {

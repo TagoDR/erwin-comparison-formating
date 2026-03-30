@@ -34,7 +34,7 @@ The interface is divided into two primary sections:
 
 ### 3.2. Data Processing (Parser Logic)
 
-- **Indentation Parsing:** Interpret leading spaces in Erwin's "Type" column to build an object hierarchy. (Indentation is typically multiples of 4 spaces).
+- **Indentation Parsing:** Interpret leading spaces in Erwin's "Type" column to build an object hierarchy. (Indentation is typically multiples of **6 spaces**).
 - **Difference Logic:** Erwin's "Difference" column is unreliable and should be ignored. Status is determined by:
   - **Addition (I):** Right Model is empty.
   - **Deletion (E):** Left Model is empty.
@@ -45,6 +45,7 @@ The interface is divided into two primary sections:
 - **Grouping Logic:**
   - **Grouping Rows** act as organizational containers (e.g., "Entities/Tables", "Columns", "Relationships").
   - They inherit visibility from their children; if a child is visible (after filtering), its parent grouping row is also shown.
+  - **Note:** Grouping rows can be omitted as they contain no direct model information.
 
 ### 3.3. Table Configuration
 
@@ -79,6 +80,7 @@ Grouping rows are high-level structural elements that categorize model objects.
   - **Containment:** They hold one or more Data Object Identification Rows.
   - **Passive Role:** They do not represent model objects themselves and are not counted in the Statistics Panel.
   - **Visual Anchor:** They provide context in the hierarchy (e.g., distinguishing between "Foreign Keys" and "Primary Keys").
+  - **Omission:** These rows can be filtered out or ignored without loss of object-level data.
 
 ## 4. Visual Encoding (Office 2010 Palette)
 
@@ -95,9 +97,9 @@ Grouping rows are high-level structural elements that categorize model objects.
 All other objects (Grouping Rows and non-Table/Column objects) follow the Orange scale (Accent 6). The color level is **absolute**, determined by the indentation level regardless of object type:
 
 - **Level 0 (Root):** #F79646 (Base)
-- **Level 1 (4 spaces):** #FAC08F (40% Lighter)
-- **Level 2 (8 spaces):** #FBD5B5 (60% Lighter)
-- **Level 3+ (12+ spaces):** #FDE9D9 (80% Lighter)
+- **Level 1 (6 spaces):** #FAC08F (40% Lighter)
+- **Level 2 (12 spaces):** #FBD5B5 (60% Lighter)
+- **Level 3+ (18+ spaces):** #FDE9D9 (80% Lighter)
 
 *Example:* A "Foreign Keys" grouping row inside a table (Level 2 indentation) will always use the Level 2 color (#FBD5B5).
 
@@ -111,7 +113,7 @@ All other objects (Grouping Rows and non-Table/Column objects) follow the Orange
 
 ### 6.1. Logical Rules
 
-- **Nesting:** 4 spaces = 1 Level.
+- **Nesting:** **6 spaces** = 1 Level.
 - **Change Detection:**
   - `Left != "" && Right == ""` -> **Addition (I)**
   - `Left == "" && Right != ""` -> **Deletion (E)**
@@ -121,64 +123,64 @@ All other objects (Grouping Rows and non-Table/Column objects) follow the Orange
 
 #### Scenario A: Table Change (Hoisted)
 
-| Type                         | Left   | Difference | Right       | Logical Result          |
-| :--------------------------- | :----- | :--------- | :---------- | :---------------------- |
-| Entity/Table                 | CLI    | -          | CLI         | **A** (Hoisted from Name) |
-| &nbsp;&nbsp;&nbsp;&nbsp;Name | Client | -          | Client Info | **A**                   |
+| Type                               | Left   | Difference | Right       | Logical Result          |
+| :--------------------------------- | :----- | :--------- | :---------- | :---------------------- |
+| Entity/Table                       | CLI    | -          | CLI         | **A** (Hoisted from Name) |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name | Client | -          | Client Info | **A**                   |
 
 #### Scenario B: New Column (Hoisted)
 
-| Type                                                                                  | Left    | Difference | Right | Logical Result            |
-| :------------------------------------------------------------------------------------ | :------ | :--------- | :---- | :------------------------ |
-| Entity/Table                                                                          | PROD    | -          | PROD  | **A** (Hoisted from Column) |
-| &nbsp;&nbsp;&nbsp;&nbsp;Columns                                                       |         | -          |       |                           |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column                      | SK_PROD | -          |       | **I**                     |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name | SK_PROD | -          |       | **I**                     |
+| Type                                                                                        | Left    | Difference | Right | Logical Result            |
+| :------------------------------------------------------------------------------------------ | :------ | :--------- | :---- | :------------------------ |
+| Entity/Table                                                                                | PROD    | -          | PROD  | **A** (Hoisted from Column) |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Columns                                                |         | -          |       |                           |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column    | SK_PROD | -          |       | **I**                     |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name | SK_PROD | -          |       | **I**                     |
 
 #### Scenario C: Deleted Relationship
 
-| Type                         | Left | Difference | Right | Logical Result |
-| :--------------------------- | :--- | :--------- | :---- | :------------- |
-| Relationship                 |      | -          | FK_01 | **E**          |
-| &nbsp;&nbsp;&nbsp;&nbsp;Name |      | -          | FK_01 | **E**          |
+| Type                               | Left | Difference | Right | Logical Result |
+| :--------------------------------- | :--- | :--------- | :---- | :------------- |
+| Relationship                       |      | -          | FK_01 | **E**          |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name |      | -          | FK_01 | **E**          |
 
 ### 6.3. Extensive Data Sample
 
 ```text
 Model| AAAA| - |AAAB
-    Name| AAAA| - |AAAB
-    Author| John| - |John A
+      Name| AAAA| - |AAAB
+      Author| John| - |John A
 Entities/Tables| | - |
-    Entity/Table| CLI| - |CLI
-        Physical Name| GGGGG| - |GGGGG
-        Name| Client| - |Client
-        Description| a...z| - |a...z
-        Logical Only| false| - |false
-        Physical Only| false| - |false
-        Columns| | - |
-            Attribute/Column| NM_CLI| - |NM_CLI
-                Physical Name| NM_CLI| - |NM_CLI
-                Name| Name Client| - |Name Client
-                Logical Datatype| Char(50)| - |Char(30)
-                Physical Datatype| char(50)| - |char(30)
-                Logical Only| false| - |false
-                Physical Only| false| - |false
-            Attribute/Column| CD_CLI| - |CD_CLI
-                Physical Name| CD_CLI| - |CD_CLI
-                Name| Code Client| - |Code Client
-                Logical Datatype| Integer| - |Integer
-                Physical Datatype| int| - |int
-                Logical Only| false| - |false
-                Physical Only| false| - |false
-        Relationships| | - |
-            Relationship|FK_01||FK_01
-                Name|FK_01||FK_01
-            Relationship|FK_02||FK_02
-                Name|FK_02||FK_02
-        Tablespaces| | - |
-            Tablespace| TB_001| - |TB_001
-        Indexes| | - |
-            Index| IFK_001| - |IFK_001
+      Entity/Table| CLI| - |CLI
+            Physical Name| GGGGG| - |GGGGG
+            Name| Client| - |Client
+            Description| a...z| - |a...z
+            Logical Only| false| - |false
+            Physical Only| false| - |false
+            Columns| | - |
+                  Attribute/Column| NM_CLI| - |NM_CLI
+                        Physical Name| NM_CLI| - |NM_CLI
+                        Name| Name Client| - |Name Client
+                        Logical Datatype| Char(50)| - |Char(30)
+                        Physical Datatype| char(50)| - |char(30)
+                        Logical Only| false| - |false
+                        Physical Only| false| - |false
+                  Attribute/Column| CD_CLI| - |CD_CLI
+                        Physical Name| CD_CLI| - |CD_CLI
+                        Name| Code Client| - |Code Client
+                        Logical Datatype| Integer| - |Integer
+                        Physical Datatype| int| - |int
+                        Logical Only| false| - |false
+                        Physical Only| false| - |false
+            Relationships| | - |
+                  Relationship|FK_01||FK_01
+                        Name|FK_01||FK_01
+                  Relationship|FK_02||FK_02
+                        Name|FK_02||FK_02
+            Tablespaces| | - |
+                  Tablespace| TB_001| - |TB_001
+            Indexes| | - |
+                  Index| IFK_001| - |IFK_001
 ```
 
 ## 7. Output Configuration
@@ -188,7 +190,7 @@ Entities/Tables| | - |
 ## 8. Data Sample
 
 Real data extracted from a comparison converted to markdown.
-Indentation in Erwin follows multiples of 4 spaces (represented here by '·').
+Indentation in Erwin follows multiples of **6 spaces** (represented here by '·').
 
 ### 8.1. Identification Row Rules
 
@@ -205,90 +207,90 @@ Indentation in Erwin follows multiples of 4 spaces (represented here by '·').
 
 ### 8.2. Real Data Sample
 
-| Object                        | Left                                            | Right                                         |
-| ----------------------------- | ----------------------------------------------- | --------------------------------------------- |
-| ····Entity/Table              | CLI                                             | CLI_PF                                        |
-| ······Name                    | Client                                          | Individual Client                             |
-| ······Physical Name           | CLI                                             | CLI_PF                                        |
-| ······Description             | Client of interest to the institution           | Registered Individual Client                  |
-| ······Comment                 | Client of interest to the institution [Calculated] | Registered Individual Client [Calculated]      |
-| ······Max Rows                | 10000000                                        |                                               |
-| ······Growth By               | 10000                                           |                                               |
-| ······Initial Rows            | 0                                               |                                               |
-| ········Attributes/Columns    |                                                 |                                               |
-| ··········Attribute/Column    | NR_PTR                                          | NR_PTR                                        |
-| ············Name              | Partition Number                                | Partition Number                              |
-| ············Physical Only     | true                                            | false                                         |
-| ············Theme             | A.Physical                                      |                                               |
-| ··········Attribute/Column    | CD_OPR                                          |                                               |
-| ············Name              | Operation Code                                  |                                               |
-| ············Logical Datatype  | CHAR(8)                                         |                                               |
-| ············Physical Datatype | CHAR(8) [Calculated]                            |                                               |
-| ············Physical Name     | CD_OPR                                          |                                               |
-| ············Null Option       |                                                 | Not Null                                      |
-| ············Parent Domain     |                                                 | String                                        |
-| ············Description       | System Operation Code                           |                                               |
-| ············Comment           | System Operation Code [Calculated]              |                                               |
-| ············Logical Only      | false                                           |                                               |
-| ············Physical Only     | false                                           |                                               |
-| ············Theme             | Corporate                                       |                                               |
-| ··········Attribute/Column    |                                                 | CD_PRD                                        |
-| ············Name              |                                                 | Product Code                                  |
-| ············Logical Datatype  |                                                 | Integer                                       |
-| ············Physical Datatype |                                                 | Integer [Calculated]                          |
-| ············Physical Name     |                                                 | CD_PRD                                        |
-| ············Description       |                                                 | Company Product Code                          |
-| ············Comment           |                                                 | Company Product Code [Calculated]             |
-| ············Logical Only      |                                                 | false                                         |
-| ············Physical Only     |                                                 | false                                         |
-| ············Theme             |                                                 | Corporate                                     |
-| ············Null Option       |                                                 | Not Null                                      |
-| ············Parent Domain     |                                                 | Number                                        |
-| ········Foreign Keys          |                                                 |                                               |
-| ··········Foreign Key         | FK_CLI_02                                       |                                               |
-| ············Name              | FK_CLI_02                                       |                                               |
-| ········Keys/Indexes          |                                                 |                                               |
-| ··········Key/Index           | IX_CLI_02                                       |                                               |
-| ············Type              | FK                                              |                                               |
-| ····Entity/Table              | OPR                                             |                                               |
-| ······Name                    | Operation                                       |                                               |
-| ······Physical Name           | OPR                                             |                                               |
-| ······Description             | System Operation                                |                                               |
-| ······Comment                 | System Operation [Calculated]                   |                                               |
-| ······Logical Only            | true                                            |                                               |
-| ······Physical Only           | false                                           |                                               |
-| ······Theme                   | Corporate                                       |                                               |
-| ········Attributes/Columns    |                                                 |                                               |
-| ··········Attribute/Column    | CD_OPR                                          |                                               |
-| ············Name              | Operation Code                                  |                                               |
-| ············Logical Datatype  | CHAR(8)                                         |                                               |
-| ············Physical Datatype | CHAR(8) [Calculated]                            |                                               |
-| ············Physical Name     | CD_OPR                                          |                                               |
-| ············Null Option       |                                                 | Not Null                                      |
-| ············Parent Domain     |                                               | String                                        |
-| ············Description       | System Operation Code                           |                                               |
-| ············Comment           | System Operation Code [Calculated]              |                                               |
-| ············Logical Only      | false                                           |                                               |
-| ············Physical Only     | false                                           |                                               |
-| ············Theme             | Corporate                                       |                                               |
-| ····Entity/Table              |                                                 | PRD                                           |
-| ······Name                    |                                                 | Product                                       |
-| ······Physical Name           |                                                 | PRD                                           |
-| ······Description             |                                                 | Company Product                               |
-| ······Comment                 |                                                 | Company Product [Calculated]                  |
-| ······Logical Only            |                                                 | true                                          |
-| ······Physical Only           |                                                 | false                                         |
-| ······Theme                   |                                                 | Corporate                                     |
-| ········Attributes/Columns    |                                                 |                                               |
-| ··········Attribute/Column    |                                                 | CD_PRD                                        |
-| ············Name              |                                                 | Product Code                                  |
-| ············Logical Datatype  |                                                 | Integer                                       |
-| ············Physical Datatype |                                                 | Integer [Calculated]                          |
-| ············Physical Name     |                                                 | CD_PRD                                        |
-| ············Description       |                                                 | Company Product Code                          |
-| ············Comment           |                                                 | Company Product Code [Calculated]             |
-| ············Logical Only      |                                                 | false                                         |
-| ············Physical Only     |                                                 | false                                         |
-| ············Theme             |                                                 | Corporate                                     |
-| ············Null Option       |                                                 | Not Null                                      |
-| ············Parent Domain     |                                                 | Number                                        |
+| Object                                    | Left                                            | Right                                         |
+| ----------------------------------------- | ----------------------------------------------- | --------------------------------------------- |
+| ······Entity/Table                        | CLI                                             | CLI_PF                                        |
+| ············Name                          | Client                                          | Individual Client                             |
+| ············Physical Name                 | CLI                                             | CLI_PF                                        |
+| ············Description                   | Client of interest to the institution           | Registered Individual Client                  |
+| ············Comment                       | Client of interest to the institution [Calculated] | Registered Individual Client [Calculated]      |
+| ············Max Rows                      | 10000000                                        |                                               |
+| ············Growth By                     | 10000                                           |                                               |
+| ············Initial Rows                  | 0                                               |                                               |
+| ············Attributes/Columns            |                                                 |                                               |
+| ··················Attribute/Column        | NR_PTR                                          | NR_PTR                                        |
+| ························Name              | Partition Number                                | Partition Number                              |
+| ························Physical Only     | true                                            | false                                         |
+| ························Theme             | A.Physical                                      |                                               |
+| ··················Attribute/Column        | CD_OPR                                          |                                               |
+| ························Name              | Operation Code                                  |                                               |
+| ························Logical Datatype  | CHAR(8)                                         |                                               |
+| ························Physical Datatype | CHAR(8) [Calculated]                            |                                               |
+| ························Physical Name     | CD_OPR                                          |                                               |
+| ························Null Option       |                                                 | Not Null                                      |
+| ························Parent Domain     |                                                 | String                                        |
+| ························Description       | System Operation Code                           |                                               |
+| ························Comment           | System Operation Code [Calculated]              |                                               |
+| ························Logical Only      | false                                           |                                               |
+| ························Physical Only     | false                                           |                                               |
+| ························Theme             | Corporate                                       |                                               |
+| ··················Attribute/Column        |                                                 | CD_PRD                                        |
+| ························Name              |                                                 | Product Code                                  |
+| ························Logical Datatype  |                                                 | Integer                                       |
+| ························Physical Datatype |                                                 | Integer [Calculated]                          |
+| ························Physical Name     |                                                 | CD_PRD                                        |
+| ························Description       |                                                 | Company Product Code                          |
+| ························Comment           |                                                 | Company Product Code [Calculated]             |
+| ························Logical Only      |                                                 | false                                         |
+| ························Physical Only     |                                                 | false                                         |
+| ························Theme             |                                                 | Corporate                                     |
+| ························Null Option       |                                                 | Not Null                                      |
+| ························Parent Domain     |                                                 | Number                                        |
+| ············Foreign Keys                  |                                                 |                                               |
+| ··················Foreign Key             | FK_CLI_02                                       |                                               |
+| ························Name              | FK_CLI_02                                       |                                               |
+| ············Keys/Indexes                  |                                                 |                                               |
+| ··················Key/Index               | IX_CLI_02                                       |                                               |
+| ························Type              | FK                                              |                                               |
+| ······Entity/Table                        | OPR                                             |                                               |
+| ············Name                          | Operation                                       |                                               |
+| ············Physical Name                 | OPR                                             |                                               |
+| ············Description                   | System Operation                                |                                               |
+| ············Comment                       | System Operation [Calculated]                   |                                               |
+| ············Logical Only                  | true                                            |                                               |
+| ············Physical Only                 | false                                           |                                               |
+| ············Theme                         | Corporate                                       |                                               |
+| ············Attributes/Columns            |                                                 |                                               |
+| ··················Attribute/Column        | CD_OPR                                          |                                               |
+| ························Name              | Operation Code                                  |                                               |
+| ························Logical Datatype  | CHAR(8)                                         |                                               |
+| ························Physical Datatype | CHAR(8) [Calculated]                            |                                               |
+| ························Physical Name     | CD_OPR                                          |                                               |
+| ························Null Option       |                                                 | Not Null                                      |
+| ························Parent Domain     |                                                 | String                                        |
+| ························Description       | System Operation Code                           |                                               |
+| ························Comment           | System Operation Code [Calculated]              |                                               |
+| ························Logical Only      | false                                           |                                               |
+| ························Physical Only     | false                                           |                                               |
+| ························Theme             | Corporate                                       |                                               |
+| ······Entity/Table                        |                                                 | PRD                                           |
+| ············Name                          |                                                 | Product                                       |
+| ············Physical Name                 |                                                 | PRD                                           |
+| ············Description                   |                                                 | Company Product                               |
+| ············Comment                       |                                                 | Company Product [Calculated]                  |
+| ············Logical Only                  |                                                 | true                                          |
+| ············Physical Only                 |                                                 | false                                         |
+| ············Theme                         |                                                 | Corporate                                     |
+| ············Attributes/Columns            |                                                 |                                               |
+| ··················Attribute/Column        |                                                 | CD_PRD                                        |
+| ························Name              |                                                 | Product Code                                  |
+| ························Logical Datatype  |                                                 | Integer                                       |
+| ························Physical Datatype |                                                 | Integer [Calculated]                          |
+| ························Physical Name     |                                                 | CD_PRD                                        |
+| ························Description       |                                                 | Company Product Code                          |
+| ························Comment           |                                                 | Company Product Code [Calculated]             |
+| ························Logical Only      |                                                 | false                                         |
+| ························Physical Only     |                                                 | false                                         |
+| ························Theme             |                                                 | Corporate                                     |
+| ························Null Option       |                                                 | Not Null                                      |
+| ························Parent Domain     |                                                 | Number                                        |

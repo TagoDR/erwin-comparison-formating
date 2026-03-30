@@ -143,7 +143,7 @@ tr[data-header="true"][data-prop="Atr"][data-change="E"] {
   color: black;
 }
 
-/* Relationships/Others */
+/* Other Objects (Absolute Orange Nesting) */
 tr[data-header="true"][data-level="0"] {
   background-color: #f79646;
   color: white;
@@ -154,6 +154,12 @@ tr[data-header="true"][data-level="1"] {
 }
 tr[data-header="true"][data-level="2"] {
   background-color: #fbd5b5;
+  color: black;
+}
+tr[data-header="true"][data-level="3"],
+tr[data-header="true"][data-level="4"],
+tr[data-header="true"][data-level="5"] {
+  background-color: #fde9d9;
   color: black;
 }
 

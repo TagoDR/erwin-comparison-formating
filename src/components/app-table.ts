@@ -26,16 +26,6 @@ export class AppTable extends LitElement {
     });
   }
 
-  private _getNestingLevel(indent: number): number {
-    // Based on the data sample:
-    // Entity/Table: 8 spaces -> Level 0
-    // Name/Properties: 12 spaces -> Level 1
-    // Columns Group: 16 spaces -> Level 2
-    // Attribute/Column: 20 spaces -> Level 3
-    if (indent <= 8) return 0;
-    return Math.floor((indent - 8) / 4);
-  }
-
   render() {
     if (this.data.value.length === 0) {
       return html`
@@ -82,7 +72,7 @@ export class AppTable extends LitElement {
             if (isAncestorCollapsed(row.parentId)) return html``;
 
             const isNameRow = row.type.toLowerCase().includes('name') || row.isHeader;
-            const level = this._getNestingLevel(row.indent);
+            const level = row.indent;
             const isCollapsed = row.id ? collapsedSet.has(row.id) : false;
             const isChecked = row.id ? checkedSet.has(row.id) : false;
 
@@ -92,6 +82,7 @@ export class AppTable extends LitElement {
                 data-level="${level}"
                 data-prop="${row.prop}"
                 data-header="${row.isHeader || false}"
+                data-grouping="${row.isGrouping || false}"
                 class="${isChecked ? 'checked-row' : ''}"
               >
                 <td class="col-check">

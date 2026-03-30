@@ -8,11 +8,12 @@ export interface ErwinRow {
   prop: string;
   change: 'I' | 'A' | 'E' | '';
   view: string;
-  leftModel: string;
-  rightModel: string;
   indent: number;
   isHeader?: boolean;
+  isGrouping?: boolean;
   isCalculated?: boolean;
+  leftModel: string;
+  rightModel: string;
 }
 
 export interface StatsSummary {
@@ -36,20 +37,25 @@ export const collapsedIds$ = atom<Set<string>>(new Set());
 export const checkedIds$ = atom<Set<string>>(new Set());
 export const showProperties$ = atom<boolean>(true);
 
-const IGNORED_GROUPS = [
-  'Atributes/Columns',
-  'Foreign Keys',
-  'Keys/Indexes',
-  'Relationships',
-  'Tablespaces',
+const GROUPING_KEYWORDS = [
+  'Entities/Tables',
+  'Entities',
+  'Tables',
+  'Attributes/Columns',
+  'Attributes',
   'Columns',
+  'Foreign Keys',
+  'Keys',
+  'Indexes',
+  'Tablespaces',
+  'Relationships',
 ];
 
 const HEADER_KEYWORDS = [
   'Entity/Table',
   'Entity',
   'Table',
-  'Atribute/Column',
+  'Attribute/Column',
   'Attribute',
   'Column',
   'Foreign Key',
@@ -62,8 +68,14 @@ const HEADER_KEYWORDS = [
 export const getObjectShortCode = (type: string): string => {
   const t = type.toLowerCase();
   if (t.includes('entity') || t.includes('table')) return 'Ent';
-  if (t.includes('attribute') || t.includes('column')) return 'Atr';
-  if (t.includes('foreignkey') || t.includes('relationship')) return 'FK';
+  if (t.includes('attribute') || t.includes('column') || t.includes('atribute')) return 'Atr';
+  if (
+    t.includes('foreign key') ||
+    t.includes('foreignkey') ||
+    t.includes('foregn key') ||
+    t.includes('relationship')
+  )
+    return 'FK';
   if (t.includes('tablespace')) return 'TB';
   if (t.includes('index')) return 'IX';
   if (t.includes('view')) return 'VW';
@@ -75,16 +87,16 @@ export const getObjectShortCode = (type: string): string => {
  * Computed store that process raw rows to add recursive parenting, status hoisting and filtering.
  */
 export const enrichedData$ = computed(rawData$, data => {
-  const filtered = data.filter(row => !IGNORED_GROUPS.includes(row.type));
-
   // 1. Assign IDs and Parentage based on indentation
-  const withInitialState = filtered.map((row, index) => {
-    const isHeader = row.isHeader || HEADER_KEYWORDS.some(kw => row.type.includes(kw));
+  const withInitialState = data.map((row, index) => {
+    const isGrouping = GROUPING_KEYWORDS.some(kw => row.type.includes(kw));
+    const isHeader =
+      isGrouping || row.isHeader || HEADER_KEYWORDS.some(kw => row.type.includes(kw));
 
     // Clean type for headers: remove name if present (e.g. "Entity/Table: CLI" -> "Entity/Table")
     let type = row.type;
     const originalType = type;
-    if (isHeader && type.includes(':')) {
+    if (isHeader && !isGrouping && type.includes(':')) {
       type = type.split(':')[0].trim();
     }
 
@@ -92,8 +104,8 @@ export const enrichedData$ = computed(rawData$, data => {
     let view = row.view;
     if (!view) {
       if (type.includes('Entity') && type.includes('Table')) view = 'L/P';
-      else if (type.includes('Atribute') && type.includes('Column')) view = 'L/P';
-      else if (type.includes('Entity') || type.includes('Atribute')) view = 'L';
+      else if (type.includes('Attribute') && type.includes('Column')) view = 'L/P';
+      else if (type.includes('Entity') || type.includes('Attribute')) view = 'L';
       else if (type.includes('Table') || type.includes('Column')) view = 'P';
     }
 
@@ -103,6 +115,7 @@ export const enrichedData$ = computed(rawData$, data => {
       originalType,
       id: `row-${index}`,
       isHeader,
+      isGrouping,
       view,
       isCalculated:
         row.leftModel.includes('[Calculated]') && row.rightModel.includes('[Calculated]'),
@@ -150,13 +163,22 @@ export const enrichedData$ = computed(rawData$, data => {
     }
   }
 
-  // 3. Final polish: Prop code
+  // 3. Final polish: Prop code and Filter out empty grouping rows
   let lastPropCode = 'O';
-  return hoisted.map(row => {
-    const code = getObjectShortCode(row.type);
-    if (code) lastPropCode = code;
-    return { ...row, prop: lastPropCode };
-  });
+  return hoisted
+    .map(row => {
+      const code = getObjectShortCode(row.type);
+      if (code) lastPropCode = code;
+      return { ...row, prop: lastPropCode };
+    })
+    .filter(row => {
+      // Omit grouping rows that have no change (meaning all children are unchanged)
+      // and have no model data.
+      if (row.isGrouping && !row.change && !row.leftModel && !row.rightModel) {
+        return false;
+      }
+      return true;
+    });
 });
 
 /**
@@ -314,7 +336,7 @@ export const statsSummary$ = computed(enrichedData$, data => {
   });
 
   data.forEach(row => {
-    if (!row.isHeader) return;
+    if (!row.isHeader || row.isGrouping) return;
 
     const isTable = row.prop === 'Ent';
     const isColumn = row.prop === 'Atr';
