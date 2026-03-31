@@ -1,4 +1,4 @@
-# Erwin Compare Formatter (v5)
+# Erwin Compare Formatter
 
 A specialized utility to transform Erwin Data Modeler difference reports into a modern, filterable, and easy-to-analyze visual interface.
 
@@ -53,8 +53,6 @@ This section is for developers who want to modify or build the project.
     ```bash
     npm run build
     ```
-    *Note: The build script uses PowerShell to automatically rename the output file.*
+    _Note: The build script uses PowerShell to automatically rename the output file._
 
 ---
-
-**Version:** 5.0.0
