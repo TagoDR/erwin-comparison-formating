@@ -166,8 +166,8 @@ label {
 }
 
 .btn-danger {
-  background-color: var(--status-E-border);
-  border-color: var(--status-E-border);
+  background-color: #da4453;
+  border-color: #ed5565;
 }
 
 /* Remove Glyphicons dependency */

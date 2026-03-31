@@ -172,6 +172,7 @@ export const enrichedData$ = computed(rawData$, data => {
       return { ...row, prop: lastPropCode };
     })
     .filter(row => {
+      // return true;
       // Omit grouping rows that have no change (meaning all children are unchanged)
       // and have no model data.
       return !(row.isGrouping && !row.change && !row.leftModel && !row.rightModel);
