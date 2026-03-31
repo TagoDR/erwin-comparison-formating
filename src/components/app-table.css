@@ -1,3 +1,8 @@
+:host {
+  --font-mono: monospace;
+  --card-bg: transparent;
+  --border-color: #cccccc;
+}
 .table-container {
   margin-top: 5px;
   background-color: var(--card-bg);
@@ -61,7 +66,6 @@ tr[data-level="0"] .tree-node::before {
   cursor: pointer;
   margin-right: 4px;
   z-index: 1;
-  color: var(--text-color);
   opacity: 0.7;
 }
 
@@ -86,7 +90,7 @@ tr[data-level="0"] .tree-node::before {
 }
 
 .type-text {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-mono, monospace), serif;
   font-size: 0.8rem;
   padding: 2px 4px;
 }
@@ -191,6 +195,7 @@ tr[data-header="true"][data-level="5"] {
   width: 30px;
   font-size: 0.75rem;
   opacity: 0.7;
+  text-align: center;
 }
 
 .row-left,

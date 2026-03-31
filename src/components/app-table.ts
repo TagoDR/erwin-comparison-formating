@@ -96,7 +96,7 @@ export class AppTable extends LitElement {
                    />
                 </td>
                 <td class="row-type">
-                  <div class="tree-node" style="padding-left: ${level * 20}px">
+                  <div class="tree-node" style="padding-left: ${level * 3}px">
                     ${
                       row.isHeader
                         ? html`

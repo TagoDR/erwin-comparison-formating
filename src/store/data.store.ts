@@ -45,10 +45,12 @@ const GROUPING_KEYWORDS = [
   'Attributes',
   'Columns',
   'Foreign Keys',
+  'Keys/Indexes',
   'Keys',
   'Indexes',
   'Tablespaces',
   'Relationships',
+  'Subject Areas',
 ];
 
 const HEADER_KEYWORDS = [
@@ -62,7 +64,11 @@ const HEADER_KEYWORDS = [
   'Relationship',
   'Key/Index',
   'Index',
+  'Key',
   'Model',
+  'Subject Area',
+  'View',
+  'Sequence',
 ];
 
 export const getObjectShortCode = (type: string): string => {
@@ -83,24 +89,24 @@ export const getObjectShortCode = (type: string): string => {
 export const enrichedData$ = computed(rawData$, data => {
   // 1. Assign IDs and Parentage based on indentation
   const withInitialState = data.map((row, index) => {
-    const isGrouping = GROUPING_KEYWORDS.some(kw => row.type.includes(kw));
-    const isHeader =
-      isGrouping || row.isHeader || HEADER_KEYWORDS.some(kw => row.type.includes(kw));
+    // Clean type for matching and headers: remove name if present (e.g. "Entity/Table: CLI" -> "Entity/Table")
+    const cleanedType = row.type.split(':')[0].trim();
+    const isGrouping = GROUPING_KEYWORDS.some(kw => cleanedType === kw);
+    const isHeader = isGrouping || row.isHeader || HEADER_KEYWORDS.some(kw => cleanedType === kw);
 
-    // Clean type for headers: remove name if present (e.g. "Entity/Table: CLI" -> "Entity/Table")
     let type = row.type;
     const originalType = type;
     if (isHeader && !isGrouping && type.includes(':')) {
-      type = type.split(':')[0].trim();
+      type = cleanedType;
     }
 
     // Initial View Classification based on keywords
     let view = row.view;
     if (!view) {
-      if (type.includes('Entity') && type.includes('Table')) view = 'L/P';
-      else if (type.includes('Attribute') && type.includes('Column')) view = 'L/P';
-      else if (type.includes('Entity') || type.includes('Attribute')) view = 'L';
-      else if (type.includes('Table') || type.includes('Column')) view = 'P';
+      if (type === 'Entity/Table') view = 'L/P';
+      else if (type === 'Attribute/Column') view = 'L/P';
+      else if (type === 'Entity' || type === 'Attribute') view = 'L';
+      else if (type === 'Table' || type === 'Column') view = 'P';
     }
 
     return {
@@ -161,17 +167,14 @@ export const enrichedData$ = computed(rawData$, data => {
   let lastPropCode = 'O';
   return hoisted
     .map(row => {
-      const code = getObjectShortCode(row.type);
+      const code = row.isHeader ? getObjectShortCode(row.type) : '';
       if (code) lastPropCode = code;
       return { ...row, prop: lastPropCode };
     })
     .filter(row => {
       // Omit grouping rows that have no change (meaning all children are unchanged)
       // and have no model data.
-      if (row.isGrouping && !row.change && !row.leftModel && !row.rightModel) {
-        return false;
-      }
-      return true;
+      return !(row.isGrouping && !row.change && !row.leftModel && !row.rightModel);
     });
 });
 
