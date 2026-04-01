@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Erwin Compare Formatter</title>
     <script type="module" crossorigin>var e=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports);(function(){let e=document.createElement(`link`).relList;if(e&&e.supports&&e.supports(`modulepreload`))return;for(let e of document.querySelectorAll(`link[rel="modulepreload"]`))n(e);new MutationObserver(e=>{for(let t of e)if(t.type===`childList`)for(let e of t.addedNodes)e.tagName===`LINK`&&e.rel===`modulepreload`&&n(e)}).observe(document,{childList:!0,subtree:!0});function t(e){let t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin===`use-credentials`?t.credentials=`include`:e.crossOrigin===`anonymous`?t.credentials=`omit`:t.credentials=`same-origin`,t}function n(e){if(e.ep)return;e.ep=!0;let n=t(e);fetch(e.href,n)}})();var t=e((e=>{Object.defineProperty(e,`__esModule`,{value:!0}),e.StoreController=void 0,e.StoreController=class{constructor(e,t){this.host=e,this.atom=t,e.addController(this)}hostConnected(){this.unsubscribe=this.atom.subscribe(()=>{this.host.requestUpdate()})}hostDisconnected(){var e;(e=this.unsubscribe)==null||e.call(this)}get value(){return this.atom.get()}}})),n=e((e=>{Object.defineProperty(e,`__esModule`,{value:!0}),e.MultiStoreController=void 0,e.MultiStoreController=class{constructor(e,t){this.host=e,this.atoms=t,e.addController(this)}hostConnected(){this.unsubscribes=this.atoms.map(e=>e.subscribe(()=>this.host.requestUpdate()))}hostDisconnected(){var e;(e=this.unsubscribes)==null||e.forEach(e=>e())}get values(){return this.atoms.map(e=>e.get())}}})),r=e((e=>{Object.defineProperty(e,`__esModule`,{value:!0}),e.useStores=void 0;var t=n();function r(...e){return n=>class extends n{constructor(...n){super(...n),new t.MultiStoreController(this,e)}}}e.useStores=r})),i=e((e=>{Object.defineProperty(e,`__esModule`,{value:!0}),e.withStores=void 0;var t=n();e.withStores=(e,n)=>class extends e{constructor(...e){super(...e),new t.MultiStoreController(this,n)}}})),a=e((e=>{Object.defineProperty(e,`__esModule`,{value:!0}),e.withStores=e.useStores=e.MultiStoreController=e.StoreController=void 0;var a=t();Object.defineProperty(e,`StoreController`,{enumerable:!0,get:function(){return a.StoreController}});var o=n();Object.defineProperty(e,`MultiStoreController`,{enumerable:!0,get:function(){return o.MultiStoreController}});var s=r();Object.defineProperty(e,`useStores`,{enumerable:!0,get:function(){return s.useStores}});var c=i();Object.defineProperty(e,`withStores`,{enumerable:!0,get:function(){return c.withStores}})}))(),o=globalThis,s=o.ShadowRoot&&(o.ShadyCSS===void 0||o.ShadyCSS.nativeShadow)&&`adoptedStyleSheets`in Document.prototype&&`replace`in CSSStyleSheet.prototype,c=Symbol(),l=new WeakMap,u=class{constructor(e,t,n){if(this._$cssResult$=!0,n!==c)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o,t=this.t;if(s&&e===void 0){let n=t!==void 0&&t.length===1;n&&(e=l.get(t)),e===void 0&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),n&&l.set(t,e))}return e}toString(){return this.cssText}},d=e=>new u(typeof e==`string`?e:e+``,void 0,c),ee=(e,t)=>{if(s)e.adoptedStyleSheets=t.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(let n of t){let t=document.createElement(`style`),r=o.litNonce;r!==void 0&&t.setAttribute(`nonce`,r),t.textContent=n.cssText,e.appendChild(t)}},te=s?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t=``;for(let n of e.cssRules)t+=n.cssText;return d(t)})(e):e,{is:ne,defineProperty:re,getOwnPropertyDescriptor:ie,getOwnPropertyNames:ae,getOwnPropertySymbols:oe,getPrototypeOf:se}=Object,f=globalThis,ce=f.trustedTypes,le=ce?ce.emptyScript:``,ue=f.reactiveElementPolyfillSupport,p=(e,t)=>e,m={toAttribute(e,t){switch(t){case Boolean:e=e?le:null;break;case Object:case Array:e=e==null?e:JSON.stringify(e)}return e},fromAttribute(e,t){let n=e;switch(t){case Boolean:n=e!==null;break;case Number:n=e===null?null:Number(e);break;case Object:case Array:try{n=JSON.parse(e)}catch{n=null}}return n}},de=(e,t)=>!ne(e,t),fe={attribute:!0,type:String,converter:m,reflect:!1,useDefault:!1,hasChanged:de};Symbol.metadata??=Symbol(`metadata`),f.litPropertyMetadata??=new WeakMap;var h=class extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=fe){if(t.state&&(t.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(e)&&((t=Object.create(t)).wrapped=!0),this.elementProperties.set(e,t),!t.noAccessor){let n=Symbol(),r=this.getPropertyDescriptor(e,n,t);r!==void 0&&re(this.prototype,e,r)}}static getPropertyDescriptor(e,t,n){let{get:r,set:i}=ie(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get:r,set(t){let a=r?.call(this);i?.call(this,t),this.requestUpdate(e,a,n)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??fe}static _$Ei(){if(this.hasOwnProperty(p(`elementProperties`)))return;let e=se(this);e.finalize(),e.l!==void 0&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(p(`finalized`)))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(p(`properties`))){let e=this.properties,t=[...ae(e),...oe(e)];for(let n of t)this.createProperty(n,e[n])}let e=this[Symbol.metadata];if(e!==null){let t=litPropertyMetadata.get(e);if(t!==void 0)for(let[e,n]of t)this.elementProperties.set(e,n)}this._$Eh=new Map;for(let[e,t]of this.elementProperties){let n=this._$Eu(e,t);n!==void 0&&this._$Eh.set(n,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){let t=[];if(Array.isArray(e)){let n=new Set(e.flat(1/0).reverse());for(let e of n)t.unshift(te(e))}else e!==void 0&&t.push(te(e));return t}static _$Eu(e,t){let n=t.attribute;return!1===n?void 0:typeof n==`string`?n:typeof e==`string`?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(e=>e(this))}addController(e){(this._$EO??=new Set).add(e),this.renderRoot!==void 0&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){let e=new Map,t=this.constructor.elementProperties;for(let n of t.keys())this.hasOwnProperty(n)&&(e.set(n,this[n]),delete this[n]);e.size>0&&(this._$Ep=e)}createRenderRoot(){let e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return ee(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(e=>e.hostConnected?.())}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach(e=>e.hostDisconnected?.())}attributeChangedCallback(e,t,n){this._$AK(e,n)}_$ET(e,t){let n=this.constructor.elementProperties.get(e),r=this.constructor._$Eu(e,n);if(r!==void 0&&!0===n.reflect){let i=(n.converter?.toAttribute===void 0?m:n.converter).toAttribute(t,n.type);this._$Em=e,i==null?this.removeAttribute(r):this.setAttribute(r,i),this._$Em=null}}_$AK(e,t){let n=this.constructor,r=n._$Eh.get(e);if(r!==void 0&&this._$Em!==r){let e=n.getPropertyOptions(r),i=typeof e.converter==`function`?{fromAttribute:e.converter}:e.converter?.fromAttribute===void 0?m:e.converter;this._$Em=r;let a=i.fromAttribute(t,e.type);this[r]=a??this._$Ej?.get(r)??a,this._$Em=null}}requestUpdate(e,t,n,r=!1,i){if(e!==void 0){let a=this.constructor;if(!1===r&&(i=this[e]),n??=a.getPropertyOptions(e),!((n.hasChanged??de)(i,t)||n.useDefault&&n.reflect&&i===this._$Ej?.get(e)&&!this.hasAttribute(a._$Eu(e,n))))return;this.C(e,t,n)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(e,t,{useDefault:n,reflect:r,wrapped:i},a){n&&!(this._$Ej??=new Map).has(e)&&(this._$Ej.set(e,a??t??this[e]),!0!==i||a!==void 0)||(this._$AL.has(e)||(this.hasUpdated||n||(t=void 0),this._$AL.set(e,t)),!0===r&&this._$Em!==e&&(this._$Eq??=new Set).add(e))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}let e=this.scheduleUpdate();return e!=null&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(let[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}let e=this.constructor.elementProperties;if(e.size>0)for(let[t,n]of e){let{wrapped:e}=n,r=this[t];!0!==e||this._$AL.has(t)||r===void 0||this.C(t,void 0,n,r)}}let e=!1,t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach(e=>e.hostUpdate?.()),this.update(t)):this._$EM()}catch(t){throw e=!1,this._$EM(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(e){}firstUpdated(e){}};h.elementStyles=[],h.shadowRootOptions={mode:`open`},h[p(`elementProperties`)]=new Map,h[p(`finalized`)]=new Map,ue?.({ReactiveElement:h}),(f.reactiveElementVersions??=[]).push(`2.1.2`);var g=globalThis,pe=e=>e,_=g.trustedTypes,me=_?_.createPolicy(`lit-html`,{createHTML:e=>e}):void 0,he=`$lit$`,v=`lit$${Math.random().toFixed(9).slice(2)}$`,ge=`?`+v,_e=`<${ge}>`,y=document,b=()=>y.createComment(``),x=e=>e===null||typeof e!=`object`&&typeof e!=`function`,ve=Array.isArray,ye=e=>ve(e)||typeof e?.[Symbol.iterator]==`function`,be=`[ 	
-\f\r]`,S=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,xe=/-->/g,Se=/>/g,C=RegExp(`>|${be}(?:([^\\s"'>=/]+)(${be}*=${be}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,`g`),Ce=/'/g,we=/"/g,Te=/^(?:script|style|textarea|title)$/i,w=(e=>(t,...n)=>({_$litType$:e,strings:t,values:n}))(1),T=Symbol.for(`lit-noChange`),E=Symbol.for(`lit-nothing`),Ee=new WeakMap,D=y.createTreeWalker(y,129);function De(e,t){if(!ve(e)||!e.hasOwnProperty(`raw`))throw Error(`invalid template strings array`);return me===void 0?t:me.createHTML(t)}var Oe=(e,t)=>{let n=e.length-1,r=[],i,a=t===2?`<svg>`:t===3?`<math>`:``,o=S;for(let t=0;t<n;t++){let n=e[t],s,c,l=-1,u=0;for(;u<n.length&&(o.lastIndex=u,c=o.exec(n),c!==null);)u=o.lastIndex,o===S?c[1]===`!--`?o=xe:c[1]===void 0?c[2]===void 0?c[3]!==void 0&&(o=C):(Te.test(c[2])&&(i=RegExp(`</`+c[2],`g`)),o=C):o=Se:o===C?c[0]===`>`?(o=i??S,l=-1):c[1]===void 0?l=-2:(l=o.lastIndex-c[2].length,s=c[1],o=c[3]===void 0?C:c[3]===`"`?we:Ce):o===we||o===Ce?o=C:o===xe||o===Se?o=S:(o=C,i=void 0);let d=o===C&&e[t+1].startsWith(`/>`)?` `:``;a+=o===S?n+_e:l>=0?(r.push(s),n.slice(0,l)+he+n.slice(l)+v+d):n+v+(l===-2?t:d)}return[De(e,a+(e[n]||`<?>`)+(t===2?`</svg>`:t===3?`</math>`:``)),r]},O=class e{constructor({strings:t,_$litType$:n},r){let i;this.parts=[];let a=0,o=0,s=t.length-1,c=this.parts,[l,u]=Oe(t,n);if(this.el=e.createElement(l,r),D.currentNode=this.el.content,n===2||n===3){let e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;(i=D.nextNode())!==null&&c.length<s;){if(i.nodeType===1){if(i.hasAttributes())for(let e of i.getAttributeNames())if(e.endsWith(he)){let t=u[o++],n=i.getAttribute(e).split(v),r=/([.?@])?(.*)/.exec(t);c.push({type:1,index:a,name:r[2],strings:n,ctor:r[1]===`.`?Ae:r[1]===`?`?je:r[1]===`@`?Me:j}),i.removeAttribute(e)}else e.startsWith(v)&&(c.push({type:6,index:a}),i.removeAttribute(e));if(Te.test(i.tagName)){let e=i.textContent.split(v),t=e.length-1;if(t>0){i.textContent=_?_.emptyScript:``;for(let n=0;n<t;n++)i.append(e[n],b()),D.nextNode(),c.push({type:2,index:++a});i.append(e[t],b())}}}else if(i.nodeType===8)if(i.data===ge)c.push({type:2,index:a});else{let e=-1;for(;(e=i.data.indexOf(v,e+1))!==-1;)c.push({type:7,index:a}),e+=v.length-1}a++}}static createElement(e,t){let n=y.createElement(`template`);return n.innerHTML=e,n}};function k(e,t,n=e,r){if(t===T)return t;let i=r===void 0?n._$Cl:n._$Co?.[r],a=x(t)?void 0:t._$litDirective$;return i?.constructor!==a&&(i?._$AO?.(!1),a===void 0?i=void 0:(i=new a(e),i._$AT(e,n,r)),r===void 0?n._$Cl=i:(n._$Co??=[])[r]=i),i!==void 0&&(t=k(e,i._$AS(e,t.values),i,r)),t}var ke=class{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){let{el:{content:t},parts:n}=this._$AD,r=(e?.creationScope??y).importNode(t,!0);D.currentNode=r;let i=D.nextNode(),a=0,o=0,s=n[0];for(;s!==void 0;){if(a===s.index){let t;s.type===2?t=new A(i,i.nextSibling,this,e):s.type===1?t=new s.ctor(i,s.name,s.strings,this,e):s.type===6&&(t=new Ne(i,this,e)),this._$AV.push(t),s=n[++o]}a!==s?.index&&(i=D.nextNode(),a++)}return D.currentNode=y,r}p(e){let t=0;for(let n of this._$AV)n!==void 0&&(n.strings===void 0?n._$AI(e[t]):(n._$AI(e,n,t),t+=n.strings.length-2)),t++}},A=class e{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(e,t,n,r){this.type=2,this._$AH=E,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=n,this.options=r,this._$Cv=r?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode,t=this._$AM;return t!==void 0&&e?.nodeType===11&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=k(this,e,t),x(e)?e===E||e==null||e===``?(this._$AH!==E&&this._$AR(),this._$AH=E):e!==this._$AH&&e!==T&&this._(e):e._$litType$===void 0?e.nodeType===void 0?ye(e)?this.k(e):this._(e):this.T(e):this.$(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==E&&x(this._$AH)?this._$AA.nextSibling.data=e:this.T(y.createTextNode(e)),this._$AH=e}$(e){let{values:t,_$litType$:n}=e,r=typeof n==`number`?this._$AC(e):(n.el===void 0&&(n.el=O.createElement(De(n.h,n.h[0]),this.options)),n);if(this._$AH?._$AD===r)this._$AH.p(t);else{let e=new ke(r,this),n=e.u(this.options);e.p(t),this.T(n),this._$AH=e}}_$AC(e){let t=Ee.get(e.strings);return t===void 0&&Ee.set(e.strings,t=new O(e)),t}k(t){ve(this._$AH)||(this._$AH=[],this._$AR());let n=this._$AH,r,i=0;for(let a of t)i===n.length?n.push(r=new e(this.O(b()),this.O(b()),this,this.options)):r=n[i],r._$AI(a),i++;i<n.length&&(this._$AR(r&&r._$AB.nextSibling,i),n.length=i)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e!==this._$AB;){let t=pe(e).nextSibling;pe(e).remove(),e=t}}setConnected(e){this._$AM===void 0&&(this._$Cv=e,this._$AP?.(e))}},j=class{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,n,r,i){this.type=1,this._$AH=E,this._$AN=void 0,this.element=e,this.name=t,this._$AM=r,this.options=i,n.length>2||n[0]!==``||n[1]!==``?(this._$AH=Array(n.length-1).fill(new String),this.strings=n):this._$AH=E}_$AI(e,t=this,n,r){let i=this.strings,a=!1;if(i===void 0)e=k(this,e,t,0),a=!x(e)||e!==this._$AH&&e!==T,a&&(this._$AH=e);else{let r=e,o,s;for(e=i[0],o=0;o<i.length-1;o++)s=k(this,r[n+o],t,o),s===T&&(s=this._$AH[o]),a||=!x(s)||s!==this._$AH[o],s===E?e=E:e!==E&&(e+=(s??``)+i[o+1]),this._$AH[o]=s}a&&!r&&this.j(e)}j(e){e===E?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??``)}},Ae=class extends j{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===E?void 0:e}},je=class extends j{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==E)}},Me=class extends j{constructor(e,t,n,r,i){super(e,t,n,r,i),this.type=5}_$AI(e,t=this){if((e=k(this,e,t,0)??E)===T)return;let n=this._$AH,r=e===E&&n!==E||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,i=e!==E&&(n===E||r);r&&this.element.removeEventListener(this.name,this,n),i&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){typeof this._$AH==`function`?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}},Ne=class{constructor(e,t,n){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=n}get _$AU(){return this._$AM._$AU}_$AI(e){k(this,e)}},Pe=g.litHtmlPolyfillSupport;Pe?.(O,A),(g.litHtmlVersions??=[]).push(`3.3.2`);var Fe=(e,t,n)=>{let r=n?.renderBefore??t,i=r._$litPart$;if(i===void 0){let e=n?.renderBefore??null;r._$litPart$=i=new A(t.insertBefore(b(),e),e,void 0,n??{})}return i._$AI(e),i},M=globalThis,N=class extends h{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){let e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){let t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=Fe(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return T}};N._$litElement$=!0,N.finalized=!0,M.litElementHydrateSupport?.({LitElement:N});var Ie=M.litElementPolyfillSupport;Ie?.({LitElement:N}),(M.litElementVersions??=[]).push(`4.2.2`);var P=e=>(t,n)=>{n===void 0?customElements.define(e,t):n.addInitializer(()=>{customElements.define(e,t)})},Le={attribute:!0,type:String,converter:m,reflect:!1,hasChanged:de},Re=(e=Le,t,n)=>{let{kind:r,metadata:i}=n,a=globalThis.litPropertyMetadata.get(i);if(a===void 0&&globalThis.litPropertyMetadata.set(i,a=new Map),r===`setter`&&((e=Object.create(e)).wrapped=!0),a.set(n.name,e),r===`accessor`){let{name:r}=n;return{set(n){let i=t.get.call(this);t.set.call(this,n),this.requestUpdate(r,i,e,!0,n)},init(t){return t!==void 0&&this.C(r,void 0,e,t),t}}}if(r===`setter`){let{name:r}=n;return function(n){let i=this[r];t.call(this,n),this.requestUpdate(r,i,e,!0,n)}}throw Error(`Unsupported decorator location: `+r)};function ze(e){return(t,n)=>typeof n==`object`?Re(e,t,n):((e,t,n)=>{let r=t.hasOwnProperty(n);return t.constructor.createProperty(n,e),r?Object.getOwnPropertyDescriptor(t,n):void 0})(e,t,n)}function Be(e){return ze({...e,state:!0,attribute:!1})}var Ve={ATTRIBUTE:1,CHILD:2,PROPERTY:3,BOOLEAN_ATTRIBUTE:4,EVENT:5,ELEMENT:6},He=e=>(...t)=>({_$litDirective$:e,values:t}),Ue=class{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,n){this._$Ct=e,this._$AM=t,this._$Ci=n}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}},F=class extends Ue{constructor(e){if(super(e),this.it=E,e.type!==Ve.CHILD)throw Error(this.constructor.directiveName+`() can only be used in child bindings`)}render(e){if(e===E||e==null)return this._t=void 0,this.it=e;if(e===T)return e;if(typeof e!=`string`)throw Error(this.constructor.directiveName+`() called with a non-string value`);if(e===this.it)return this._t;this.it=e;let t=[e];return t.raw=t,this._t={_$litType$:this.constructor.resultType,strings:t,values:[]}}};F.directiveName=`unsafeHTML`,F.resultType=1;var We=class extends F{};We.directiveName=`unsafeSVG`,We.resultType=2;var I=He(We),Ge=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-copy"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h3m9 -9v-5a2 2 0 0 0 -2 -2h-2" /><path d="M13 17v-1a1 1 0 0 1 1 -1h1m3 0h1a1 1 0 0 1 1 1v1m0 3v1a1 1 0 0 1 -1 1h-1m-3 0h-1a1 1 0 0 1 -1 -1v-1" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /></svg>`,Ke=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-list"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M9 12l.01 0" /><path d="M13 12l2 0" /><path d="M9 16l.01 0" /><path d="M13 16l2 0" /></svg>`,qe=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-copy"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>`,Je=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-diff"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /><path d="M12 10l0 4" /><path d="M10 12l4 0" /><path d="M10 17l4 0" /></svg>`,Ye=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /><path d="M12 11v6" /><path d="M9.5 13.5l2.5 -2.5l2.5 2.5" /></svg>`,Xe=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-filter"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227" /></svg>`,Ze=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-filter-off"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 4h12v2.172a2 2 0 0 1 -.586 1.414l-3.914 3.914m-.5 3.5v4l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227" /><path d="M3 3l18 18" /></svg>`,Qe=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-moon"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008" /></svg>`,$e=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-square-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14" /><path d="M9 12l2 2l4 -4" /></svg>`,et=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-sun"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>`,tt=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>`,L={"clipboard-copy":w`${I(Ge)}`,"clipboard-list":w`${I(Ke)}`,copy:w`${I(qe)}`,"file-diff":w`${I(Je)}`,"file-upload":w`${I(Ye)}`,"filter-off":w`${I(Ze)}`,filter:w`${I(Xe)}`,moon:w`${I(Qe)}`,"square-check":w`${I($e)}`,sun:w`${I(et)}`,x:w`${I(tt)}`};function nt(e){let t=new DOMParser().parseFromString(e,`text/html`),n=[];return t.querySelectorAll(`tbody tr`).forEach(e=>{let t=e.querySelectorAll(`td`);if(t.length<4)return;let r=t[0],i=t[1].textContent?.trim()||``,a=t[3].textContent?.trim()||``,o=r.textContent||``,s=o.trim(),c=o.match(/^[\s\u00a0]*/)?.[0]||``,l=Math.floor(c.length/4),u=``;i&&a?u=`A`:i?u=`I`:a&&(u=`E`),n.push({type:s,indent:l,leftModel:i,rightModel:a,change:u,prop:``,view:``})}),n}var R=[],z=0,B=4,V=0,H=e=>{let t=[],n={get(){return n.lc||n.listen(()=>{})(),n.value},init:e,lc:0,listen(e){return n.lc=t.push(e),()=>{for(let t=z+B;t<R.length;)R[t]===e?R.splice(t,B):t+=B;let r=t.indexOf(e);~r&&(t.splice(r,1),--n.lc||n.off())}},notify(e,r){V++;let i=!R.length;for(let i of t)R.push(i,n.value,e,r);if(i){for(z=0;z<R.length;z+=B)R[z](R[z+1],R[z+2],R[z+3]);R.length=0}},off(){},set(e){let t=n.value;t!==e&&(n.value=e,n.notify(t))},subscribe(e){let t=n.listen(e);return e(n.value),t},value:e};return n},rt=5,U=6,W=10,it=(e,t,n,r)=>(e.events=e.events||{},e.events[n+W]||(e.events[n+W]=r(t=>{e.events[n].reduceRight((e,t)=>(t(e),e),{shared:{},...t})})),e.events[n]=e.events[n]||[],e.events[n].push(t),()=>{let r=e.events[n],i=r.indexOf(t);r.splice(i,1),r.length||(delete e.events[n],e.events[n+W](),delete e.events[n+W])}),at=1e3,ot=(e,t)=>it(e,n=>{let r=t(n);r&&e.events[U].push(r)},rt,t=>{let n=e.listen;e.listen=(...r)=>(!e.lc&&!e.active&&(e.active=!0,t()),n(...r));let r=e.off;return e.events[U]=[],e.off=()=>{r(),setTimeout(()=>{if(e.active&&!e.lc){e.active=!1;for(let t of e.events[U])t();e.events[U]=[]}},at)},()=>{e.listen=n,e.off=r}}),st=(e,t,n)=>{Array.isArray(e)||(e=[e]);let r,i,a=()=>{if(i===V)return;i=V;let n=e.map(e=>e.get());if(!r||n.some((e,t)=>e!==r[t])){r=n;let e=t(...n);e&&e.then&&e.t?e.then(e=>{r===n&&o.set(e)}):(o.set(e),i=V)}},o=H(void 0),s=o.get;o.get=()=>(a(),s());let c,l=n?()=>{clearTimeout(c),c=setTimeout(a)}:a;return ot(o,()=>{let t=e.map(e=>e.listen(l));return a(),()=>{for(let e of t)e()}}),o},ct=(e,t)=>st(e,t),G=H([]),K=H(!1),q=H(null),lt=H(``),J=H(``),Y=H(new Set),ut=H(new Set),X=H(!0),dt=[`Atributes/Columns`,`Foreign Keys`,`Keys/Indexes`,`Relationships`,`Tablespaces`,`Columns`],ft=[`Entity/Table`,`Entity`,`Table`,`Atribute/Column`,`Attribute`,`Column`,`Foreign Key`,`Relationship`,`Key/Index`,`Index`,`Model`],pt=e=>{let t=e.toLowerCase();return t.includes(`entity`)||t.includes(`table`)?`Ent`:t.includes(`attribute`)||t.includes(`column`)?`Atr`:t.includes(`foreignkey`)||t.includes(`relationship`)?`FK`:t.includes(`tablespace`)?`TB`:t.includes(`index`)?`IX`:t.includes(`view`)?`VW`:t.includes(`model`)?`M`:``},mt=ct(G,e=>{let t=e.filter(e=>!dt.includes(e.type)).map((e,t)=>{let n=e.isHeader||ft.some(t=>e.type.includes(t)),r=e.type,i=r;n&&r.includes(`:`)&&(r=r.split(`:`)[0].trim());let a=e.view;return a||(r.includes(`Entity`)&&r.includes(`Table`)||r.includes(`Atribute`)&&r.includes(`Column`)?a=`L/P`:r.includes(`Entity`)||r.includes(`Atribute`)?a=`L`:(r.includes(`Table`)||r.includes(`Column`))&&(a=`P`)),{...e,type:r,originalType:i,id:`row-${t}`,isHeader:n,view:a,isCalculated:e.leftModel.includes(`[Calculated]`)&&e.rightModel.includes(`[Calculated]`)}}),n=[],r=[...t.map(e=>{for(;n.length>0&&n[n.length-1].indent>=e.indent;)n.pop();let t=n.length>0?n[n.length-1].id:``;return e.isHeader&&n.push({id:e.id,indent:e.indent}),{...e,parentId:t}})];for(let e=r.length-1;e>=0;e--){let t=r[e];if(t.parentId){let e=r.findIndex(e=>e.id===t.parentId);if(e!==-1){let n=r[e];!n.change&&t.change&&(n.change=t.change),t.type===`Logical Only`&&t.leftModel===`true`?n.view=`L`:t.type===`Physical Only`&&t.leftModel===`true`&&(n.view=`P`)}}}let i=`O`;return r.map(e=>{let t=pt(e.type);return t&&(i=t),{...e,prop:i}})}),ht=ct([mt,lt,J,X],(e,t,n,r)=>{let i=e;if(t){let n=new Set;e.forEach(e=>{e.prop===`Ent`&&e.isHeader&&e.change===t&&n.add(e.id)});let r=new Set,a=t=>{r.add(t),e.forEach(e=>{e.parentId===t&&a(e.id)})};n.forEach(e=>{a(e)}),i=i.filter(e=>r.has(e.id))}if(n){let t=n.toLowerCase(),r=new Set;e.forEach(e=>{let n=(e.originalType||e.type).toLowerCase().includes(t),i=e.leftModel.toLowerCase().includes(t),a=e.rightModel.toLowerCase().includes(t);(e.isHeader&&(n||i||a)||(e.type===`Name`||e.type===`Physical Name`)&&(i||a))&&r.add(e.id)});let a=new Set,o=t=>{a.has(t)||(a.add(t),e.forEach(e=>{e.parentId===t&&o(e.id)}))},s=t=>{let n=e.find(e=>e.id===t);for(;n?.parentId;)a.add(n.parentId),n=e.find(e=>e.id===n?.parentId)};r.forEach(t=>{let n=e.find(e=>e.id===t);if(!n)return;let r=!n.isHeader&&n.parentId?n.parentId:t;o(r),s(r)}),i=i.filter(e=>a.has(e.id))}return r||(i=i.filter(e=>e.isHeader)),i}),gt=e=>{let t=new Set(Y.get());t.has(e)?t.delete(e):t.add(e),Y.set(t)},_t=e=>{let t=new Set(ut.get());if(t.has(e))t.delete(e);else{t.add(e);let n=new Set(Y.get());n.add(e),Y.set(n)}ut.set(t)},vt=()=>{X.set(!X.get())},yt=ct(mt,e=>{let t={Tabelas:{type:`Tabelas`,total:0,inclusion:0,alteration:0,exclusion:0},Colunas:{type:`Colunas`,total:0,inclusion:0,alteration:0,exclusion:0}},n=new Set;return e.forEach(t=>{if(!t.isHeader&&t.change&&!t.isCalculated){let r=t.parentId;for(;r;)n.add(r),r=e.find(e=>e.id===r)?.parentId}}),e.forEach(e=>{if(!e.isHeader)return;let r=e.prop===`Ent`,i=e.prop===`Atr`;if(e.change===`A`&&!n.has(e.id))return;let a=n=>{t[n].total++,e.change===`I`&&t[n].inclusion++,e.change===`A`&&t[n].alteration++,e.change===`E`&&t[n].exclusion++};r&&a(`Tabelas`),i&&a(`Colunas`)}),Object.values(t)}),bt=`:host {\r
+\f\r]`,S=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,xe=/-->/g,Se=/>/g,C=RegExp(`>|${be}(?:([^\\s"'>=/]+)(${be}*=${be}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,`g`),Ce=/'/g,we=/"/g,Te=/^(?:script|style|textarea|title)$/i,w=(e=>(t,...n)=>({_$litType$:e,strings:t,values:n}))(1),T=Symbol.for(`lit-noChange`),E=Symbol.for(`lit-nothing`),Ee=new WeakMap,D=y.createTreeWalker(y,129);function De(e,t){if(!ve(e)||!e.hasOwnProperty(`raw`))throw Error(`invalid template strings array`);return me===void 0?t:me.createHTML(t)}var Oe=(e,t)=>{let n=e.length-1,r=[],i,a=t===2?`<svg>`:t===3?`<math>`:``,o=S;for(let t=0;t<n;t++){let n=e[t],s,c,l=-1,u=0;for(;u<n.length&&(o.lastIndex=u,c=o.exec(n),c!==null);)u=o.lastIndex,o===S?c[1]===`!--`?o=xe:c[1]===void 0?c[2]===void 0?c[3]!==void 0&&(o=C):(Te.test(c[2])&&(i=RegExp(`</`+c[2],`g`)),o=C):o=Se:o===C?c[0]===`>`?(o=i??S,l=-1):c[1]===void 0?l=-2:(l=o.lastIndex-c[2].length,s=c[1],o=c[3]===void 0?C:c[3]===`"`?we:Ce):o===we||o===Ce?o=C:o===xe||o===Se?o=S:(o=C,i=void 0);let d=o===C&&e[t+1].startsWith(`/>`)?` `:``;a+=o===S?n+_e:l>=0?(r.push(s),n.slice(0,l)+he+n.slice(l)+v+d):n+v+(l===-2?t:d)}return[De(e,a+(e[n]||`<?>`)+(t===2?`</svg>`:t===3?`</math>`:``)),r]},O=class e{constructor({strings:t,_$litType$:n},r){let i;this.parts=[];let a=0,o=0,s=t.length-1,c=this.parts,[l,u]=Oe(t,n);if(this.el=e.createElement(l,r),D.currentNode=this.el.content,n===2||n===3){let e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;(i=D.nextNode())!==null&&c.length<s;){if(i.nodeType===1){if(i.hasAttributes())for(let e of i.getAttributeNames())if(e.endsWith(he)){let t=u[o++],n=i.getAttribute(e).split(v),r=/([.?@])?(.*)/.exec(t);c.push({type:1,index:a,name:r[2],strings:n,ctor:r[1]===`.`?Ae:r[1]===`?`?je:r[1]===`@`?Me:j}),i.removeAttribute(e)}else e.startsWith(v)&&(c.push({type:6,index:a}),i.removeAttribute(e));if(Te.test(i.tagName)){let e=i.textContent.split(v),t=e.length-1;if(t>0){i.textContent=_?_.emptyScript:``;for(let n=0;n<t;n++)i.append(e[n],b()),D.nextNode(),c.push({type:2,index:++a});i.append(e[t],b())}}}else if(i.nodeType===8)if(i.data===ge)c.push({type:2,index:a});else{let e=-1;for(;(e=i.data.indexOf(v,e+1))!==-1;)c.push({type:7,index:a}),e+=v.length-1}a++}}static createElement(e,t){let n=y.createElement(`template`);return n.innerHTML=e,n}};function k(e,t,n=e,r){if(t===T)return t;let i=r===void 0?n._$Cl:n._$Co?.[r],a=x(t)?void 0:t._$litDirective$;return i?.constructor!==a&&(i?._$AO?.(!1),a===void 0?i=void 0:(i=new a(e),i._$AT(e,n,r)),r===void 0?n._$Cl=i:(n._$Co??=[])[r]=i),i!==void 0&&(t=k(e,i._$AS(e,t.values),i,r)),t}var ke=class{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){let{el:{content:t},parts:n}=this._$AD,r=(e?.creationScope??y).importNode(t,!0);D.currentNode=r;let i=D.nextNode(),a=0,o=0,s=n[0];for(;s!==void 0;){if(a===s.index){let t;s.type===2?t=new A(i,i.nextSibling,this,e):s.type===1?t=new s.ctor(i,s.name,s.strings,this,e):s.type===6&&(t=new Ne(i,this,e)),this._$AV.push(t),s=n[++o]}a!==s?.index&&(i=D.nextNode(),a++)}return D.currentNode=y,r}p(e){let t=0;for(let n of this._$AV)n!==void 0&&(n.strings===void 0?n._$AI(e[t]):(n._$AI(e,n,t),t+=n.strings.length-2)),t++}},A=class e{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(e,t,n,r){this.type=2,this._$AH=E,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=n,this.options=r,this._$Cv=r?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode,t=this._$AM;return t!==void 0&&e?.nodeType===11&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=k(this,e,t),x(e)?e===E||e==null||e===``?(this._$AH!==E&&this._$AR(),this._$AH=E):e!==this._$AH&&e!==T&&this._(e):e._$litType$===void 0?e.nodeType===void 0?ye(e)?this.k(e):this._(e):this.T(e):this.$(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==E&&x(this._$AH)?this._$AA.nextSibling.data=e:this.T(y.createTextNode(e)),this._$AH=e}$(e){let{values:t,_$litType$:n}=e,r=typeof n==`number`?this._$AC(e):(n.el===void 0&&(n.el=O.createElement(De(n.h,n.h[0]),this.options)),n);if(this._$AH?._$AD===r)this._$AH.p(t);else{let e=new ke(r,this),n=e.u(this.options);e.p(t),this.T(n),this._$AH=e}}_$AC(e){let t=Ee.get(e.strings);return t===void 0&&Ee.set(e.strings,t=new O(e)),t}k(t){ve(this._$AH)||(this._$AH=[],this._$AR());let n=this._$AH,r,i=0;for(let a of t)i===n.length?n.push(r=new e(this.O(b()),this.O(b()),this,this.options)):r=n[i],r._$AI(a),i++;i<n.length&&(this._$AR(r&&r._$AB.nextSibling,i),n.length=i)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e!==this._$AB;){let t=pe(e).nextSibling;pe(e).remove(),e=t}}setConnected(e){this._$AM===void 0&&(this._$Cv=e,this._$AP?.(e))}},j=class{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,n,r,i){this.type=1,this._$AH=E,this._$AN=void 0,this.element=e,this.name=t,this._$AM=r,this.options=i,n.length>2||n[0]!==``||n[1]!==``?(this._$AH=Array(n.length-1).fill(new String),this.strings=n):this._$AH=E}_$AI(e,t=this,n,r){let i=this.strings,a=!1;if(i===void 0)e=k(this,e,t,0),a=!x(e)||e!==this._$AH&&e!==T,a&&(this._$AH=e);else{let r=e,o,s;for(e=i[0],o=0;o<i.length-1;o++)s=k(this,r[n+o],t,o),s===T&&(s=this._$AH[o]),a||=!x(s)||s!==this._$AH[o],s===E?e=E:e!==E&&(e+=(s??``)+i[o+1]),this._$AH[o]=s}a&&!r&&this.j(e)}j(e){e===E?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??``)}},Ae=class extends j{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===E?void 0:e}},je=class extends j{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==E)}},Me=class extends j{constructor(e,t,n,r,i){super(e,t,n,r,i),this.type=5}_$AI(e,t=this){if((e=k(this,e,t,0)??E)===T)return;let n=this._$AH,r=e===E&&n!==E||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,i=e!==E&&(n===E||r);r&&this.element.removeEventListener(this.name,this,n),i&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){typeof this._$AH==`function`?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}},Ne=class{constructor(e,t,n){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=n}get _$AU(){return this._$AM._$AU}_$AI(e){k(this,e)}},Pe=g.litHtmlPolyfillSupport;Pe?.(O,A),(g.litHtmlVersions??=[]).push(`3.3.2`);var Fe=(e,t,n)=>{let r=n?.renderBefore??t,i=r._$litPart$;if(i===void 0){let e=n?.renderBefore??null;r._$litPart$=i=new A(t.insertBefore(b(),e),e,void 0,n??{})}return i._$AI(e),i},M=globalThis,N=class extends h{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){let e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){let t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=Fe(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return T}};N._$litElement$=!0,N.finalized=!0,M.litElementHydrateSupport?.({LitElement:N});var Ie=M.litElementPolyfillSupport;Ie?.({LitElement:N}),(M.litElementVersions??=[]).push(`4.2.2`);var P=e=>(t,n)=>{n===void 0?customElements.define(e,t):n.addInitializer(()=>{customElements.define(e,t)})},Le={attribute:!0,type:String,converter:m,reflect:!1,hasChanged:de},Re=(e=Le,t,n)=>{let{kind:r,metadata:i}=n,a=globalThis.litPropertyMetadata.get(i);if(a===void 0&&globalThis.litPropertyMetadata.set(i,a=new Map),r===`setter`&&((e=Object.create(e)).wrapped=!0),a.set(n.name,e),r===`accessor`){let{name:r}=n;return{set(n){let i=t.get.call(this);t.set.call(this,n),this.requestUpdate(r,i,e,!0,n)},init(t){return t!==void 0&&this.C(r,void 0,e,t),t}}}if(r===`setter`){let{name:r}=n;return function(n){let i=this[r];t.call(this,n),this.requestUpdate(r,i,e,!0,n)}}throw Error(`Unsupported decorator location: `+r)};function ze(e){return(t,n)=>typeof n==`object`?Re(e,t,n):((e,t,n)=>{let r=t.hasOwnProperty(n);return t.constructor.createProperty(n,e),r?Object.getOwnPropertyDescriptor(t,n):void 0})(e,t,n)}function Be(e){return ze({...e,state:!0,attribute:!1})}var Ve={ATTRIBUTE:1,CHILD:2,PROPERTY:3,BOOLEAN_ATTRIBUTE:4,EVENT:5,ELEMENT:6},He=e=>(...t)=>({_$litDirective$:e,values:t}),Ue=class{constructor(e){}get _$AU(){return this._$AM._$AU}_$AT(e,t,n){this._$Ct=e,this._$AM=t,this._$Ci=n}_$AS(e,t){return this.update(e,t)}update(e,t){return this.render(...t)}},F=class extends Ue{constructor(e){if(super(e),this.it=E,e.type!==Ve.CHILD)throw Error(this.constructor.directiveName+`() can only be used in child bindings`)}render(e){if(e===E||e==null)return this._t=void 0,this.it=e;if(e===T)return e;if(typeof e!=`string`)throw Error(this.constructor.directiveName+`() called with a non-string value`);if(e===this.it)return this._t;this.it=e;let t=[e];return t.raw=t,this._t={_$litType$:this.constructor.resultType,strings:t,values:[]}}};F.directiveName=`unsafeHTML`,F.resultType=1;var We=class extends F{};We.directiveName=`unsafeSVG`,We.resultType=2;var I=He(We),Ge=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-copy"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h3m9 -9v-5a2 2 0 0 0 -2 -2h-2" /><path d="M13 17v-1a1 1 0 0 1 1 -1h1m3 0h1a1 1 0 0 1 1 1v1m0 3v1a1 1 0 0 1 -1 1h-1m-3 0h-1a1 1 0 0 1 -1 -1v-1" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /></svg>`,Ke=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-list"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" /><path d="M9 12l.01 0" /><path d="M13 12l2 0" /><path d="M9 16l.01 0" /><path d="M13 16l2 0" /></svg>`,qe=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-copy"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>`,Je=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-diff"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /><path d="M12 10l0 4" /><path d="M10 12l4 0" /><path d="M10 17l4 0" /></svg>`,Ye=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" /><path d="M12 11v6" /><path d="M9.5 13.5l2.5 -2.5l2.5 2.5" /></svg>`,Xe=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-filter"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227" /></svg>`,Ze=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-filter-off"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 4h12v2.172a2 2 0 0 1 -.586 1.414l-3.914 3.914m-.5 3.5v4l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227" /><path d="M3 3l18 18" /></svg>`,Qe=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-moon"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008" /></svg>`,$e=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-square-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14" /><path d="M9 12l2 2l4 -4" /></svg>`,et=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-sun"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>`,tt=`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>`,L={"clipboard-copy":w`${I(Ge)}`,"clipboard-list":w`${I(Ke)}`,copy:w`${I(qe)}`,"file-diff":w`${I(Je)}`,"file-upload":w`${I(Ye)}`,"filter-off":w`${I(Ze)}`,filter:w`${I(Xe)}`,moon:w`${I(Qe)}`,"square-check":w`${I($e)}`,sun:w`${I(et)}`,x:w`${I(tt)}`};function nt(e){let t=new DOMParser().parseFromString(e,`text/html`),n=[];return t.querySelectorAll(`tbody tr`).forEach(e=>{let t=e.querySelectorAll(`td`);if(t.length<4)return;let r=t[0],i=t[1].textContent?.trim()||``,a=t[3].textContent?.trim()||``,o=r.textContent||``,s=o.trim(),c=o.match(/^[\s\u00a0]*/)?.[0]||``,l=Math.max(0,Math.floor(c.length/3)-1),u=``;i&&a?u=`A`:i?u=`I`:a&&(u=`E`),n.push({type:s,indent:l,leftModel:i,rightModel:a,change:u,prop:``,view:``})}),n}var R=[],z=0,B=4,V=0,H=e=>{let t=[],n={get(){return n.lc||n.listen(()=>{})(),n.value},init:e,lc:0,listen(e){return n.lc=t.push(e),()=>{for(let t=z+B;t<R.length;)R[t]===e?R.splice(t,B):t+=B;let r=t.indexOf(e);~r&&(t.splice(r,1),--n.lc||n.off())}},notify(e,r){V++;let i=!R.length;for(let i of t)R.push(i,n.value,e,r);if(i){for(z=0;z<R.length;z+=B)R[z](R[z+1],R[z+2],R[z+3]);R.length=0}},off(){},set(e){let t=n.value;t!==e&&(n.value=e,n.notify(t))},subscribe(e){let t=n.listen(e);return e(n.value),t},value:e};return n},rt=5,U=6,W=10,it=(e,t,n,r)=>(e.events=e.events||{},e.events[n+W]||(e.events[n+W]=r(t=>{e.events[n].reduceRight((e,t)=>(t(e),e),{shared:{},...t})})),e.events[n]=e.events[n]||[],e.events[n].push(t),()=>{let r=e.events[n],i=r.indexOf(t);r.splice(i,1),r.length||(delete e.events[n],e.events[n+W](),delete e.events[n+W])}),at=1e3,ot=(e,t)=>it(e,n=>{let r=t(n);r&&e.events[U].push(r)},rt,t=>{let n=e.listen;e.listen=(...r)=>(!e.lc&&!e.active&&(e.active=!0,t()),n(...r));let r=e.off;return e.events[U]=[],e.off=()=>{r(),setTimeout(()=>{if(e.active&&!e.lc){e.active=!1;for(let t of e.events[U])t();e.events[U]=[]}},at)},()=>{e.listen=n,e.off=r}}),st=(e,t,n)=>{Array.isArray(e)||(e=[e]);let r,i,a=()=>{if(i===V)return;i=V;let n=e.map(e=>e.get());if(!r||n.some((e,t)=>e!==r[t])){r=n;let e=t(...n);e&&e.then&&e.t?e.then(e=>{r===n&&o.set(e)}):(o.set(e),i=V)}},o=H(void 0),s=o.get;o.get=()=>(a(),s());let c,l=n?()=>{clearTimeout(c),c=setTimeout(a)}:a;return ot(o,()=>{let t=e.map(e=>e.listen(l));return a(),()=>{for(let e of t)e()}}),o},ct=(e,t)=>st(e,t),G=H([]),K=H(!1),q=H(null),lt=H(``),J=H(``),Y=H(new Set),ut=H(new Set),X=H(!0),dt=[`Entities/Tables`,`Entities`,`Tables`,`Attributes/Columns`,`Attributes`,`Columns`,`Foreign Keys`,`Keys Groups/Indexes`,`Keys Groups`,`Indexes`,`Tablespaces`,`Relationships`,`Subject Areas`,`Sequences`,`Physical Storage Objects`,`Default Constrain Usages`,`ER Diagrams`],ft=[`Entity/Table`,`Entity`,`Table`,`Attribute/Column`,`Attribute`,`Column`,`Foreign Key`,`Tablespace`,`Relationship`,`Key Group/Index`,`Index`,`Key`,`Model`,`Subject Area`,`View`,`Sequence`,`ER Diagram`,`Physical Storage Object`,`Default Constrain Usage`],pt=e=>{let t=e.toLowerCase();return t.includes(`entity`)||t.includes(`table`)?`Ent`:t.includes(`attribute`)||t.includes(`column`)?`Atr`:t.includes(`foreign key`)||t.includes(`relationship`)?`FK`:t.includes(`tablespace`)?`TB`:t.includes(`index`)?`IX`:t.includes(`view`)?`VW`:t.includes(`model`)?`M`:``},mt=ct(G,e=>{let t=e.map((e,t)=>{let n=e.type.split(`:`)[0].trim(),r=dt.some(e=>n===e),i=r||e.isHeader||ft.some(e=>n===e),a=e.type,o=a;i&&!r&&a.includes(`:`)&&(a=n);let s=e.view;return s||(a===`Entity/Table`||a===`Attribute/Column`?s=`L/P`:a===`Entity`||a===`Attribute`?s=`L`:(a===`Table`||a===`Column`)&&(s=`P`)),{...e,type:a,originalType:o,id:`row-${t}`,isHeader:i,isGrouping:r,view:s,isCalculated:e.leftModel.includes(`[Calculated]`)&&e.rightModel.includes(`[Calculated]`)}}),n=[],r=[...t.map(e=>{for(;n.length>0&&n[n.length-1].indent>=e.indent;)n.pop();let t=n.length>0?n[n.length-1].id:``;return e.isHeader&&n.push({id:e.id,indent:e.indent}),{...e,parentId:t}})];for(let e=r.length-1;e>=0;e--){let t=r[e];if(t.parentId){let e=r.findIndex(e=>e.id===t.parentId);if(e!==-1){let n=r[e];!n.change&&t.change&&(n.change=t.change),t.type===`Logical Only`&&t.leftModel===`true`?n.view=`L`:t.type===`Physical Only`&&t.leftModel===`true`&&(n.view=`P`)}}}let i=`O`;return r.map(e=>{let t=e.isHeader?pt(e.type):``;return t&&(i=t),{...e,prop:i}}).filter(e=>!(e.isGrouping&&!e.change&&!e.leftModel&&!e.rightModel))}),ht=ct([mt,lt,J,X],(e,t,n,r)=>{let i=e;if(t){let n=new Set;e.forEach(e=>{e.prop===`Ent`&&e.isHeader&&e.change===t&&n.add(e.id)});let r=new Set,a=t=>{r.add(t),e.forEach(e=>{e.parentId===t&&a(e.id)})};n.forEach(e=>{a(e)}),i=i.filter(e=>r.has(e.id))}if(n){let t=n.toLowerCase(),r=new Set;e.forEach(e=>{let n=(e.originalType||e.type).toLowerCase().includes(t),i=e.leftModel.toLowerCase().includes(t),a=e.rightModel.toLowerCase().includes(t);(e.isHeader&&(n||i||a)||(e.type===`Name`||e.type===`Physical Name`)&&(i||a))&&r.add(e.id)});let a=new Set,o=t=>{a.has(t)||(a.add(t),e.forEach(e=>{e.parentId===t&&o(e.id)}))},s=t=>{let n=e.find(e=>e.id===t);for(;n?.parentId;)a.add(n.parentId),n=e.find(e=>e.id===n?.parentId)};r.forEach(t=>{let n=e.find(e=>e.id===t);if(!n)return;let r=!n.isHeader&&n.parentId?n.parentId:t;o(r),s(r)}),i=i.filter(e=>a.has(e.id))}return r||(i=i.filter(e=>e.isHeader)),i}),gt=e=>{let t=new Set(Y.get());t.has(e)?t.delete(e):t.add(e),Y.set(t)},_t=e=>{let t=new Set(ut.get());if(t.has(e))t.delete(e);else{t.add(e);let n=new Set(Y.get());n.add(e),Y.set(n)}ut.set(t)},vt=()=>{X.set(!X.get())},yt=ct(mt,e=>{let t={Tabelas:{type:`Tabelas`,total:0,inclusion:0,alteration:0,exclusion:0},Colunas:{type:`Colunas`,total:0,inclusion:0,alteration:0,exclusion:0}},n=new Set;return e.forEach(t=>{if(!t.isHeader&&t.change&&!t.isCalculated){let r=t.parentId;for(;r;)n.add(r),r=e.find(e=>e.id===r)?.parentId}}),e.forEach(e=>{if(!e.isHeader||e.isGrouping)return;let r=e.prop===`Ent`,i=e.prop===`Atr`;if(e.change===`A`&&!n.has(e.id))return;let a=n=>{t[n].total++,e.change===`I`&&t[n].inclusion++,e.change===`A`&&t[n].alteration++,e.change===`E`&&t[n].exclusion++};r&&a(`Tabelas`),i&&a(`Colunas`)}),Object.values(t)}),bt=`:host {\r
   display: block;\r
   min-height: 100vh;\r
   background-color: var(--bg-main);\r
@@ -232,7 +232,7 @@
           <div class="file-info">
             <span class="file-name">${this.fileName.value}</span>
             <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
-               ${L.x} <span>Fechar Arquivo</span>
+               ${L.x} <span>Close File</span>
             </button>
           </div>
         `:w`
@@ -243,14 +243,14 @@
             @dragleave=${this._onDragLeave}
           >
             <span class="icon">${L[`file-diff`]}</span>
-            <span>Selecione ou arraste o arquivo HTML do Erwin aqui</span>
+            <span>Select file or drag and drop here</span>
             <input type="file" @change=${e=>this._handleFile(e.target.files?.[0])} />
           </div>
         `}
 
         <div class="header-controls">
           <div class="version-tag">v5</div>
-          <button class="theme-toggle" @click=${xt} title="Alternar Tema">
+          <button class="theme-toggle" @click=${xt} title="Change Theme">
             ${this.theme.value===`dark`?L.sun:L.moon}
           </button>
         </div>
@@ -454,18 +454,18 @@ tr[data-type="Colunas"] .status-E {\r
   height: var(--icon-size);\r
 }\r
 `,wt=class extends N{constructor(...e){super(...e),this.stats=new a.StoreController(this,yt),this.nameFilter=new a.StoreController(this,J),this.showProps=new a.StoreController(this,X)}static{this.styles=d(Ct)}_updateChangeFilter(e){let t=e.target.value;lt.set(t)}_updateNameFilter(e){let t=e.target.value;J.set(t)}_copyTablesToClipboard(){let e=G.get().filter(e=>e.isHeader&&e.type.toLowerCase().includes(`table`)).map(e=>{let t=e.type.split(`:`);return t.length>1?t[1].trim():e.type.trim()}).join(`
-`);e?navigator.clipboard.writeText(e).then(()=>{alert(`Lista de tabelas copiada para o clipboard!`)}):alert(`Nenhuma tabela encontrada para copiar.`)}render(){return this.stats.value.length===0?w``:w`
+`);e?navigator.clipboard.writeText(e).then(()=>{alert(`Table name list copied to clipboard!`)}):alert(`No table names found.`)}render(){return this.stats.value.length===0?w``:w`
       <div class="layout-stats">
         <div class="left-stats">
           <div class="stats-container">
             <table class="table table-condensed stats-table">
               <thead>
                 <tr>
-                  <th>Objeto</th>
+                  <th>Object</th>
                   <th>Total</th>
-                  <th class="status-I">Inclusão</th>
-                  <th class="status-A">Alteração</th>
-                  <th class="status-E">Exclusão</th>
+                  <th class="status-I">Inclusion</th>
+                  <th class="status-A">Alteration</th>
+                  <th class="status-E">Exclusion</th>
                 </tr>
               </thead>
               <tbody>
@@ -484,14 +484,14 @@ tr[data-type="Colunas"] .status-E {\r
 
           <div class="filter-panel">
             <div class="filter-item search-filter">
-              <label for="name-filter">Filtrar por Nome</label>
+              <label for="name-filter">Filter by Name</label>
               <div class="search-input-wrapper">
                   ${L.filter}
                   <input 
                     id="name-filter"
                     type="text" 
                     class="form-control" 
-                    placeholder="Buscar..." 
+                    placeholder="Search..." 
                     .value=${this.nameFilter.value}
                     @input=${this._updateNameFilter}
                   />
@@ -499,12 +499,12 @@ tr[data-type="Colunas"] .status-E {\r
             </div>
 
             <div class="filter-item">
-              <label for="change-filter">Tipo de Mudança</label>
+              <label for="change-filter">Change Type</label>
               <select id="change-filter" class="form-control" @change=${this._updateChangeFilter}>
-                <option value="">Todas</option>
-                <option value="I">Inclusão (I)</option>
-                <option value="A">Alteração (A)</option>
-                <option value="E">Exclusão (E)</option>
+                <option value="">All</option>
+                <option value="I">Inclusion (I)</option>
+                <option value="A">Alteration (A)</option>
+                <option value="E">Exclusion (E)</option>
               </select>
             </div>
           </div>
@@ -512,15 +512,20 @@ tr[data-type="Colunas"] .status-E {\r
 
         <div class="action-panel">
           <button type="button" class="btn btn-primary btn-block action-btn" @click=${this._copyTablesToClipboard}>
-            ${L[`clipboard-list`]} <span>COPIAR TABELAS</span>
+            ${L[`clipboard-list`]} <span>COPY TABLES</span>
           </button>
           <button type="button" class="btn btn-default btn-block action-btn" @click=${vt}>
             ${this.showProps.value?L[`filter-off`]:L.filter} 
-            <span>${this.showProps.value?`ESCONDER PROPS`:`MOSTRAR PROPS`}</span>
+            <span>${this.showProps.value?`HIDE PROPERTIES`:`SHOW PROPERTIES`}</span>
           </button>
         </div>
       </div>
-    `}};wt=Q([P(`app-stats`)],wt);var Tt=`.table-container {\r
+    `}};wt=Q([P(`app-stats`)],wt);var Tt=`:host {\r
+  --font-mono: monospace;\r
+  --card-bg: transparent;\r
+  --border-color: #cccccc;\r
+}\r
+.table-container {\r
   margin-top: 5px;\r
   background-color: var(--card-bg);\r
   border: 1px solid var(--border-color);\r
@@ -583,7 +588,6 @@ tr[data-level="0"] .tree-node::before {\r
   cursor: pointer;\r
   margin-right: 4px;\r
   z-index: 1;\r
-  color: var(--text-color);\r
   opacity: 0.7;\r
 }\r
 \r
@@ -608,7 +612,7 @@ tr[data-level="0"] .tree-node::before {\r
 }\r
 \r
 .type-text {\r
-  font-family: var(--font-mono, monospace);\r
+  font-family: var(--font-mono, monospace), serif;\r
   font-size: 0.8rem;\r
   padding: 2px 4px;\r
 }\r
@@ -635,47 +639,72 @@ tr:hover .copy-btn {\r
   opacity: 1;\r
 }\r
 \r
+/* Grouping Rows (Grayscale Palette) */\r
+tr[data-grouping="true"] {\r
+  background-color: #6c7a89;\r
+  color: black;\r
+}\r
+tr[data-grouping="true"][data-level="1"] {\r
+  background-color: #95a5a6;\r
+  color: black;\r
+}\r
+tr[data-grouping="true"][data-level="2"] {\r
+  background-color: #bdc3c7;\r
+  color: black;\r
+}\r
+tr[data-grouping="true"][data-level="3"],\r
+tr[data-grouping="true"][data-level="4"] {\r
+  background-color: #bfbfbf;\r
+  color: black;\r
+}\r
+\r
 /* Status Colors (Office 2010 Palette) */\r
 \r
 /* Entity/Table Level */\r
-tr[data-header="true"][data-prop="Ent"][data-change="I"] {\r
+tr[data-header="true"][data-prop="Ent"][data-change="I"]:not([data-grouping="true"]) {\r
   background-color: #9bbb59;\r
   color: white;\r
 }\r
-tr[data-header="true"][data-prop="Ent"][data-change="A"] {\r
+tr[data-header="true"][data-prop="Ent"][data-change="A"]:not([data-grouping="true"]) {\r
   background-color: #8064a2;\r
   color: white;\r
 }\r
-tr[data-header="true"][data-prop="Ent"][data-change="E"] {\r
+tr[data-header="true"][data-prop="Ent"][data-change="E"]:not([data-grouping="true"]) {\r
   background-color: #c0504d;\r
   color: white;\r
 }\r
 \r
 /* Attribute/Column Level */\r
-tr[data-header="true"][data-prop="Atr"][data-change="I"] {\r
+tr[data-header="true"][data-prop="Atr"][data-change="I"]:not([data-grouping="true"]) {\r
   background-color: #d7e3bc;\r
   color: black;\r
 }\r
-tr[data-header="true"][data-prop="Atr"][data-change="A"] {\r
+tr[data-header="true"][data-prop="Atr"][data-change="A"]:not([data-grouping="true"]) {\r
   background-color: #ccc1d9;\r
   color: black;\r
 }\r
-tr[data-header="true"][data-prop="Atr"][data-change="E"] {\r
+tr[data-header="true"][data-prop="Atr"][data-change="E"]:not([data-grouping="true"]) {\r
   background-color: #e5b9b7;\r
   color: black;\r
 }\r
 \r
-/* Relationships/Others */\r
-tr[data-header="true"][data-level="0"] {\r
+/* Other Objects (Absolute Orange Nesting) */\r
+tr[data-header="true"][data-level="0"]:not([data-grouping="true"]) {\r
   background-color: #f79646;\r
   color: white;\r
 }\r
-tr[data-header="true"][data-level="1"] {\r
+tr[data-header="true"][data-level="1"]:not([data-grouping="true"]) {\r
   background-color: #fac08f;\r
   color: black;\r
 }\r
-tr[data-header="true"][data-level="2"] {\r
+tr[data-header="true"][data-level="2"]:not([data-grouping="true"]) {\r
   background-color: #fbd5b5;\r
+  color: black;\r
+}\r
+tr[data-header="true"][data-level="3"]:not([data-grouping="true"]),\r
+tr[data-header="true"][data-level="4"]:not([data-grouping="true"]),\r
+tr[data-header="true"][data-level="5"]:not([data-grouping="true"]) {\r
+  background-color: #fde9d9;\r
   color: black;\r
 }\r
 \r
@@ -707,6 +736,7 @@ tr[data-header="true"][data-level="2"] {\r
   width: 30px;\r
   font-size: 0.75rem;\r
   opacity: 0.7;\r
+  text-align: center;\r
 }\r
 \r
 .row-left,\r
@@ -715,68 +745,80 @@ tr[data-header="true"][data-level="2"] {\r
   word-break: break-all;\r
   white-space: normal;\r
 }\r
-`,Et=class extends N{constructor(...e){super(...e),this.data=new a.StoreController(this,ht),this.collapsed=new a.StoreController(this,Y),this.checked=new a.StoreController(this,ut)}static{this.styles=d(Tt)}_copyToClipboard(e){let t=e.includes(`:`)?e.split(`:`)[1].trim():e.trim();navigator.clipboard.writeText(t).then(()=>{console.log(`Copied:`,t)})}_getNestingLevel(e){return e<=8?0:Math.floor((e-8)/4)}render(){if(this.data.value.length===0)return w`
+`,Et=class extends N{constructor(...e){super(...e),this.data=new a.StoreController(this,ht),this.collapsed=new a.StoreController(this,Y),this.checked=new a.StoreController(this,ut)}static{this.styles=d(Tt)}_copyToClipboard(e){let t=e.includes(`:`)?e.split(`:`)[1].trim():e.trim();navigator.clipboard.writeText(t).then(()=>{console.log(`Copied:`,t)})}render(){if(this.data.value.length===0)return w`
         <div class="callout">
           <span class="callout-icon">${L[`clipboard-list`]}</span>
-          Selecione o arquivo HTML gerado pelo Erwin Modeler para análise comparativa.
+          Select a html with the comparison generated by Erwin to format
         </div>
       `;let e=this.collapsed.value,t=this.checked.value,n=this.data.value,r=new Map(n.map(e=>[e.id,e])),i=t=>{if(!t)return!1;let n=r.get(t);return n?e.has(t)?!0:i(n.parentId):!1};return w`
       <table class="table table-condensed table-hover table-container">
         <thead>
           <tr>
             <th class="col-check">${L[`square-check`]}</th>
-            <th>Tipo / Objeto</th>
-            <th>Modelo Trabalhando (Left)</th>
-            <th>Modelo Referência (Right)</th>
+            <th>Type / Object</th>
+            <th>Work Model (Left)</th>
+            <th>Reference Model (Right)</th>
             <th>Prop</th>
-            <th>Alt</th>
-            <th>Vis</th>
+            <th>Change</th>
+            <th>View</th>
           </tr>
         </thead>
         <tbody>
-          ${n.map(n=>{if(i(n.parentId))return w``;let r=n.type.toLowerCase().includes(`name`)||n.isHeader,a=this._getNestingLevel(n.indent),o=n.id?e.has(n.id):!1,s=n.id?t.has(n.id):!1;return w`
+          ${n.map(n=>{if(i(n.parentId))return w``;let r=n.isHeader&&!n.isGrouping,a=n.type===`Name`||n.type===`Physical Name`,o=r||a,s=n.indent,c=n.id?e.has(n.id):!1,l=n.id?t.has(n.id):!1;return w`
               <tr 
                 data-change="${n.change}" 
-                data-level="${a}"
+                data-level="${s}"
                 data-prop="${n.prop}"
                 data-header="${n.isHeader||!1}"
-                class="${s?`checked-row`:``}"
+                data-grouping="${n.isGrouping||!1}"
+                class="${l?`checked-row`:``}"
               >
                 <td class="col-check">
                    <input 
                     type="checkbox" 
-                    .checked=${s}
+                    .checked=${l}
                     @change=${()=>n.id&&_t(n.id)}
                    />
                 </td>
                 <td class="row-type">
-                  <div class="tree-node" style="padding-left: ${a*20}px">
+                  <div class="tree-node" style="padding-left: ${s*3}px">
                     ${n.isHeader?w`
                           <span 
-                            class="tree-toggle ${o?`collapsed`:``}" 
+                            class="tree-toggle ${c?`collapsed`:``}" 
                             @click=${()=>n.id&&gt(n.id)}
                           ></span>
                         `:w`<span class="tree-leaf-connector"></span>`}
                     <span class="type-text">${n.type}</span>
-                    ${r?w`
-                      <button 
-                        class="btn btn-default btn-xs copy-btn" 
-                        title="Copiar nome" 
-                        @click=${()=>this._copyToClipboard(n.type)}
-                      >${L.copy}</button>
-                    `:``}
                   </div>
                 </td>
-                <td class="row-left">${n.leftModel}</td>
-                <td class="row-right">${n.rightModel}</td>
+                <td class="row-left">
+                  ${n.leftModel}
+                  ${o&&n.leftModel?w`
+                    <button 
+                      class="btn btn-default btn-xs copy-btn" 
+                      title="Copy Left" 
+                      @click=${()=>this._copyToClipboard(n.leftModel)}
+                    >${L.copy}</button>
+                  `:``}
+                </td>
+                <td class="row-right">
+                  ${n.rightModel}
+                  ${o&&n.rightModel?w`
+                    <button 
+                      class="btn btn-default btn-xs copy-btn" 
+                      title="Copy Right" 
+                      @click=${()=>this._copyToClipboard(n.rightModel)}
+                    >${L.copy}</button>
+                  `:``}
+                </td>
                 <td class="row-prop">${n.prop}</td>
-                <td class="row-change">${n.change}</td>
-                <td class="row-view">${n.view}</td>
+                <td class="row-change">${r?n.change:``}</td>
+                <td class="row-view">${r?n.view:``}</td>
               </tr>
             `})}
         </tbody>
       </table>
-    `}};Et=Q([P(`app-table`)],Et);var Dt=class extends N{constructor(...e){super(...e),this.isLoading=new a.StoreController(this,K),this.fileName=new a.StoreController(this,q)}static{this.styles=d(bt)}firstUpdated(){q.subscribe(e=>{document.title=e?`Erwin: ${e}`:`Erwin Compare Formatter`}),this._setupGlobalDragDrop()}_setupGlobalDragDrop(){window.addEventListener(`dragover`,e=>{e.preventDefault(),e.stopPropagation()}),window.addEventListener(`drop`,e=>{e.preventDefault(),e.stopPropagation();let t=e.dataTransfer?.files?.[0];t?.name.toLowerCase().endsWith(`.html`)&&this._onFileLoadedFromDrop(t)})}_onFileLoadedFromDrop(e){q.set(e.name),K.set(!0);let t=new FileReader;t.onload=e=>{let t=e.target?.result;this._processFileContent(t)},t.readAsText(e)}async _loadSampleData(){q.set(`sample.html`),K.set(!0);try{let e=await fetch(`./src/store/sample.html`);if(!e.ok)throw Error(`Failed to load sample file`);let t=await e.text();setTimeout(()=>{this._processFileContent(t)},800)}catch(e){console.error(`Error loading sample data:`,e),K.set(!1)}}_onFileLoaded(e){let{content:t,name:n}=e.detail;q.set(n),K.set(!0),this._processFileContent(t)}_processFileContent(e){console.log(`File content loaded, starting parser...`,e.substring(0,100));let t=nt(e);G.set(t),K.set(!1)}render(){let e=!!this.fileName.value&&!this.isLoading.value;return w`
+    `}};Et=Q([P(`app-table`)],Et);var Dt=class extends N{constructor(...e){super(...e),this.isLoading=new a.StoreController(this,K),this.fileName=new a.StoreController(this,q)}static{this.styles=d(bt)}firstUpdated(){q.subscribe(e=>{document.title=e?`Erwin: ${e}`:`Erwin Compare Formatter`}),this._setupGlobalDragDrop()}_setupGlobalDragDrop(){window.addEventListener(`dragover`,e=>{e.preventDefault(),e.stopPropagation()}),window.addEventListener(`drop`,e=>{e.preventDefault(),e.stopPropagation();let t=e.dataTransfer?.files?.[0];t?.name.toLowerCase().endsWith(`.html`)&&this._onFileLoadedFromDrop(t)})}_onFileLoadedFromDrop(e){q.set(e.name),K.set(!0);let t=new FileReader;t.onload=e=>{let t=e.target?.result,n=new TextDecoder(`windows-1252`).decode(t);this._processFileContent(n)},t.readAsArrayBuffer(e)}async _loadSampleData(){q.set(`sample.html`),K.set(!0);try{let e=await fetch(`./src/store/sample.html`);if(!e.ok)throw Error(`Failed to load sample file`);let t=await e.text();setTimeout(()=>{this._processFileContent(t)},800)}catch(e){console.error(`Error loading sample data:`,e),K.set(!1)}}_onFileLoaded(e){let{content:t,name:n}=e.detail;q.set(n),K.set(!0),this._processFileContent(t)}_processFileContent(e){console.log(`File content loaded, starting parser...`,e.substring(0,100));let t=nt(e);G.set(t),K.set(!1)}render(){let e=!!this.fileName.value&&!this.isLoading.value;return w`
 	<div class="main-content" @file-loaded=${this._onFileLoaded}>
 	<app-header></app-header>
         <div class="display-area">
@@ -788,7 +830,7 @@ tr[data-header="true"][data-level="2"] {\r
           ${!this.fileName.value&&!this.isLoading.value?w`
             <div class="empty-state">
               <span class="empty-icon">${L[`file-diff`]}</span>
-              <span>Nenhum arquivo carregado. Use a área superior para iniciar.</span>
+              <span>No file loaded, select a file above.</span>
             </div>
           `:``}
         </div>
@@ -796,7 +838,7 @@ tr[data-header="true"][data-level="2"] {\r
         ${this.isLoading.value?w`
           <div class="loading-overlay">
             <div class="spinner"></div>
-            <span class="loading-text">Processando arquivo Erwin...</span>
+            <span class="loading-text">Processing html File...</span>
           </div>
         `:``}
       </div>
@@ -1900,8 +1942,8 @@ label {
 }
 
 .btn-danger {
-  background-color: var(--status-E-border);
-  border-color: var(--status-E-border);
+  background-color: #da4453;
+  border-color: #ed5565;
 }
 
 /* Remove Glyphicons dependency */
@@ -1912,7 +1954,7 @@ label {
 }
 /*$vite$:1*/</style>
   </head>
-  <body class="wa-theme-awesome wa-dark">
+  <body class="">
     <app-root></app-root>
   </body>
 </html>

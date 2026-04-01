@@ -45,12 +45,16 @@ const GROUPING_KEYWORDS = [
   'Attributes',
   'Columns',
   'Foreign Keys',
-  'Keys/Indexes',
-  'Keys',
+  'Keys Groups/Indexes',
+  'Keys Groups',
   'Indexes',
   'Tablespaces',
   'Relationships',
   'Subject Areas',
+  'Sequences',
+  'Physical Storage Objects',
+  'Default Constrain Usages',
+  'ER Diagrams',
 ];
 
 const HEADER_KEYWORDS = [
@@ -61,14 +65,18 @@ const HEADER_KEYWORDS = [
   'Attribute',
   'Column',
   'Foreign Key',
+  'Tablespace',
   'Relationship',
-  'Key/Index',
+  'Key Group/Index',
   'Index',
   'Key',
   'Model',
   'Subject Area',
   'View',
   'Sequence',
+  'ER Diagram',
+  'Physical Storage Object',
+  'Default Constrain Usage',
 ];
 
 export const getObjectShortCode = (type: string): string => {

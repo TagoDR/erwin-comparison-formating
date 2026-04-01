@@ -61,10 +61,11 @@ export class AppRoot extends LitElement {
 
     const reader = new FileReader();
     reader.onload = e => {
-      const content = e.target?.result as string;
-      this._processFileContent(content);
+      const buffer = e.target?.result as ArrayBuffer;
+      const text = new TextDecoder('windows-1252').decode(buffer);
+      this._processFileContent(text);
     };
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file);
   }
 
   private async _loadSampleData() {
