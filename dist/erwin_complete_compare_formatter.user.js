@@ -2115,67 +2115,67 @@
 	//#region src/assets/icons/clipboard-copy.svg
 	var clipboard_copy_default;
 	var init_clipboard_copy = __esmMin((() => {
-		clipboard_copy_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-clipboard-copy\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h3m9 -9v-5a2 2 0 0 0 -2 -2h-2\" /><path d=\"M13 17v-1a1 1 0 0 1 1 -1h1m3 0h1a1 1 0 0 1 1 1v1m0 3v1a1 1 0 0 1 -1 1h-1m-3 0h-1a1 1 0 0 1 -1 -1v-1\" /><path d=\"M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2\" /></svg>";
+		clipboard_copy_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-clipboard-copy\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h3m9 -9v-5a2 2 0 0 0 -2 -2h-2\"/>\r\n    <path d=\"M13 17v-1a1 1 0 0 1 1 -1h1m3 0h1a1 1 0 0 1 1 1v1m0 3v1a1 1 0 0 1 -1 1h-1m-3 0h-1a1 1 0 0 1 -1 -1v-1\"/>\r\n    <path d=\"M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/clipboard-list.svg
 	var clipboard_list_default;
 	var init_clipboard_list = __esmMin((() => {
-		clipboard_list_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-clipboard-list\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2\" /><path d=\"M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2\" /><path d=\"M9 12l.01 0\" /><path d=\"M13 12l2 0\" /><path d=\"M9 16l.01 0\" /><path d=\"M13 16l2 0\" /></svg>";
+		clipboard_list_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-clipboard-list\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2\"/>\r\n    <path d=\"M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2\"/>\r\n    <path d=\"M9 12l.01 0\"/>\r\n    <path d=\"M13 12l2 0\"/>\r\n    <path d=\"M9 16l.01 0\"/>\r\n    <path d=\"M13 16l2 0\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/copy.svg
 	var copy_default;
 	var init_copy = __esmMin((() => {
-		copy_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-copy\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666\" /><path d=\"M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1\" /></svg>";
+		copy_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-copy\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666\"/>\r\n    <path d=\"M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/file-diff.svg
 	var file_diff_default;
 	var init_file_diff = __esmMin((() => {
-		file_diff_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-file-diff\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M14 3v4a1 1 0 0 0 1 1h4\" /><path d=\"M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2\" /><path d=\"M12 10l0 4\" /><path d=\"M10 12l4 0\" /><path d=\"M10 17l4 0\" /></svg>";
+		file_diff_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-file-diff\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M14 3v4a1 1 0 0 0 1 1h4\"/>\r\n    <path d=\"M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2\"/>\r\n    <path d=\"M12 10l0 4\"/>\r\n    <path d=\"M10 12l4 0\"/>\r\n    <path d=\"M10 17l4 0\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/file-upload.svg
 	var file_upload_default;
 	var init_file_upload = __esmMin((() => {
-		file_upload_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-file-upload\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M14 3v4a1 1 0 0 0 1 1h4\" /><path d=\"M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2\" /><path d=\"M12 11v6\" /><path d=\"M9.5 13.5l2.5 -2.5l2.5 2.5\" /></svg>";
+		file_upload_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-file-upload\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M14 3v4a1 1 0 0 0 1 1h4\"/>\r\n    <path d=\"M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2\"/>\r\n    <path d=\"M12 11v6\"/>\r\n    <path d=\"M9.5 13.5l2.5 -2.5l2.5 2.5\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/filter.svg
 	var filter_default;
 	var init_filter = __esmMin((() => {
-		filter_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-filter\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227\" /></svg>";
+		filter_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-filter\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/filter-off.svg
 	var filter_off_default;
 	var init_filter_off = __esmMin((() => {
-		filter_off_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-filter-off\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M8 4h12v2.172a2 2 0 0 1 -.586 1.414l-3.914 3.914m-.5 3.5v4l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227\" /><path d=\"M3 3l18 18\" /></svg>";
+		filter_off_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-filter-off\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M8 4h12v2.172a2 2 0 0 1 -.586 1.414l-3.914 3.914m-.5 3.5v4l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227\"/>\r\n    <path d=\"M3 3l18 18\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/moon.svg
 	var moon_default;
 	var init_moon = __esmMin((() => {
-		moon_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-moon\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008\" /></svg>";
+		moon_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-moon\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/square-check.svg
 	var square_check_default;
 	var init_square_check = __esmMin((() => {
-		square_check_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-square-check\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14\" /><path d=\"M9 12l2 2l4 -4\" /></svg>";
+		square_check_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-square-check\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14\"/>\r\n    <path d=\"M9 12l2 2l4 -4\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/sun.svg
 	var sun_default;
 	var init_sun = __esmMin((() => {
-		sun_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-sun\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\" /><path d=\"M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7\" /></svg>";
+		sun_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-sun\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\"/>\r\n    <path d=\"M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/x.svg
 	var x_default;
 	var init_x = __esmMin((() => {
-		x_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-x\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M18 6l-12 12\" /><path d=\"M6 6l12 12\" /></svg>";
+		x_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-x\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M18 6l-12 12\"/>\r\n    <path d=\"M6 6l12 12\"/>\r\n</svg>";
 	}));
 	//#endregion
 	//#region src/assets/icons/index.ts
@@ -2600,44 +2600,6 @@
 			static {
 				this.styles = r$4(app_header_default);
 			}
-			_handleFile(file) {
-				if (!file) return;
-				const reader = new FileReader();
-				reader.onload = (e) => {
-					const content = e.target?.result;
-					this.dispatchEvent(new CustomEvent("file-loaded", {
-						detail: {
-							content,
-							name: file.name
-						},
-						bubbles: true,
-						composed: true
-					}));
-				};
-				reader.readAsText(file);
-			}
-			_onDrop(e) {
-				e.preventDefault();
-				this.isDragging = false;
-				const file = e.dataTransfer?.files[0];
-				if (file) this._handleFile(file);
-			}
-			_onDragOver(e) {
-				e.preventDefault();
-				this.isDragging = true;
-			}
-			_onDragLeave() {
-				this.isDragging = false;
-			}
-			_closeFile() {
-				fileName$.set(null);
-				rawData$.set([]);
-				filterName$.set("");
-			}
-			_onLanguageChange(e) {
-				const val = e.target.value;
-				changeLanguage(val);
-			}
 			render() {
 				return b`
       <div class="header-layout">
@@ -2680,6 +2642,44 @@
       </div>
     `;
 			}
+			_handleFile(file) {
+				if (!file) return;
+				const reader = new FileReader();
+				reader.onload = (e) => {
+					const content = e.target?.result;
+					this.dispatchEvent(new CustomEvent("file-loaded", {
+						detail: {
+							content,
+							name: file.name
+						},
+						bubbles: true,
+						composed: true
+					}));
+				};
+				reader.readAsText(file);
+			}
+			_onDrop(e) {
+				e.preventDefault();
+				this.isDragging = false;
+				const file = e.dataTransfer?.files[0];
+				if (file) this._handleFile(file);
+			}
+			_onDragOver(e) {
+				e.preventDefault();
+				this.isDragging = true;
+			}
+			_onDragLeave() {
+				this.isDragging = false;
+			}
+			_closeFile() {
+				fileName$.set(null);
+				rawData$.set([]);
+				filterName$.set("");
+			}
+			_onLanguageChange(e) {
+				const val = e.target.value;
+				changeLanguage(val);
+			}
 		};
 		__decorate([r()], AppHeader.prototype, "isDragging", void 0);
 		AppHeader = __decorate([t$2("app-header")], AppHeader);
@@ -2711,24 +2711,6 @@
 			}
 			static {
 				this.styles = r$4(app_stats_default);
-			}
-			_updateChangeFilter(e) {
-				const val = e.target.value;
-				filterChange$.set(val);
-			}
-			_updateNameFilter(e) {
-				const val = e.target.value;
-				filterName$.set(val);
-			}
-			_copyTablesToClipboard() {
-				const tables = rawData$.get().filter((row) => row.isHeader && row.type.toLowerCase().includes("table")).map((row) => {
-					const parts = row.type.split(":");
-					return parts.length > 1 ? parts[1].trim() : row.type.trim();
-				}).join("\n");
-				if (tables) navigator.clipboard.writeText(tables).then(() => {
-					alert(get("stats.messages.copied"));
-				});
-				else alert(get("stats.messages.no_tables"));
 			}
 			render() {
 				if (this.stats.value.length === 0) return b``;
@@ -2802,6 +2784,24 @@
       </div>
     `;
 			}
+			_updateChangeFilter(e) {
+				const val = e.target.value;
+				filterChange$.set(val);
+			}
+			_updateNameFilter(e) {
+				const val = e.target.value;
+				filterName$.set(val);
+			}
+			_copyTablesToClipboard() {
+				const tables = rawData$.get().filter((row) => row.isHeader && row.type.toLowerCase().includes("table")).map((row) => {
+					const parts = row.type.split(":");
+					return parts.length > 1 ? parts[1].trim() : row.type.trim();
+				}).join("\n");
+				if (tables) navigator.clipboard.writeText(tables).then(() => {
+					alert(get("stats.messages.copied"));
+				});
+				else alert(get("stats.messages.no_tables"));
+			}
 		};
 		AppStats = __decorate([t$2("app-stats")], AppStats);
 	}));
@@ -2834,12 +2834,6 @@
 			}
 			static {
 				this.styles = r$4(app_table_default);
-			}
-			_copyToClipboard(text) {
-				const cleanText = text.includes(":") ? text.split(":")[1].trim() : text.trim();
-				navigator.clipboard.writeText(cleanText).then(() => {
-					console.log("Copied:", cleanText);
-				});
 			}
 			render() {
 				if (this.data.value.length === 0) return b`
@@ -2960,6 +2954,12 @@
       </table>
     `;
 			}
+			_copyToClipboard(text) {
+				const cleanText = text.includes(":") ? text.split(":")[1].trim() : text.trim();
+				navigator.clipboard.writeText(cleanText).then(() => {
+					console.log("Copied:", cleanText);
+				});
+			}
 		};
 		AppTable = __decorate([t$2("app-table")], AppTable);
 	}));
@@ -2996,6 +2996,34 @@
 				});
 				this._setupGlobalDragDrop();
 				this._detectAndTransformUserscript();
+			}
+			render() {
+				const showData = !!this.fileName.value && !this.isLoading.value;
+				return b`
+	<div class="main-content" @file-loaded=${this._onFileLoaded}>
+	<app-header></app-header>
+        <div class="display-area">
+          ${showData ? b`
+            <app-stats></app-stats>
+            <app-table></app-table>
+          ` : ""}
+
+          ${!this.fileName.value && !this.isLoading.value ? b`
+            <div class="empty-state">
+              <span class="empty-icon">${icons["file-diff"]}</span>
+              <span>${translate("app.no_file")}</span>
+            </div>
+          ` : ""}
+        </div>
+        
+        ${this.isLoading.value ? b`
+          <div class="loading-overlay">
+            <div class="spinner"></div>
+            <span class="loading-text">${translate("app.loading")}</span>
+          </div>
+        ` : ""}
+      </div>
+    `;
 			}
 			_detectAndTransformUserscript() {
 				const ths = Array.from(document.querySelectorAll("table th"));
@@ -3059,34 +3087,6 @@
 				rawData$.set(rows);
 				initializeVisibility();
 				isLoading$.set(false);
-			}
-			render() {
-				const showData = !!this.fileName.value && !this.isLoading.value;
-				return b`
-	<div class="main-content" @file-loaded=${this._onFileLoaded}>
-	<app-header></app-header>
-        <div class="display-area">
-          ${showData ? b`
-            <app-stats></app-stats>
-            <app-table></app-table>
-          ` : ""}
-
-          ${!this.fileName.value && !this.isLoading.value ? b`
-            <div class="empty-state">
-              <span class="empty-icon">${icons["file-diff"]}</span>
-              <span>${translate("app.no_file")}</span>
-            </div>
-          ` : ""}
-        </div>
-        
-        ${this.isLoading.value ? b`
-          <div class="loading-overlay">
-            <div class="spinner"></div>
-            <span class="loading-text">${translate("app.loading")}</span>
-          </div>
-        ` : ""}
-      </div>
-    `;
 			}
 		};
 		AppRoot = __decorate([t$2("app-root")], AppRoot);
