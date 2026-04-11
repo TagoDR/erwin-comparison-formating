@@ -148,16 +148,23 @@ export const enrichedData$ = computed(rawData$, data => {
     };
   });
 
-  const headerStack: { id: string; indent: number }[] = [];
+  const headerStack: { id: string; indent: number; isGrouping: boolean }[] = [];
   const withParents = withInitialState.map(row => {
     while (headerStack.length > 0 && headerStack[headerStack.length - 1].indent >= row.indent) {
       headerStack.pop();
     }
 
-    const parentId = headerStack.length > 0 ? headerStack[headerStack.length - 1].id : '';
+    // Find the nearest non-grouping parent
+    let parentId = '';
+    for (let i = headerStack.length - 1; i >= 0; i--) {
+      if (!headerStack[i].isGrouping) {
+        parentId = headerStack[i].id;
+        break;
+      }
+    }
 
     if (row.isHeader) {
-      headerStack.push({ id: row.id, indent: row.indent });
+      headerStack.push({ id: row.id, indent: row.indent, isGrouping: row.isGrouping || false });
     }
 
     return { ...row, parentId };
@@ -208,12 +215,13 @@ export const filteredData$ = computed(
   (data, change, name) => {
     let result = data;
 
-    // 1. Change Filter (Rule 1: observe at table level)
+    // 1. Change Filter (Rule 1: observe at table level only)
     if (change) {
       const matches = new Set<string>();
       
       data.forEach(r => {
-        if (r.isHeader && r.change === change) {
+        // Only apply filter to entities (prop === 'Ent')
+        if (r.isHeader && r.prop === 'Ent' && r.change === change) {
           // Show header and all its descendants
           const addWithDescendants = (id: string) => {
             matches.add(id);
