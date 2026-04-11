@@ -22,6 +22,7 @@ export interface StatsSummary {
   inclusion: number;
   alteration: number;
   exclusion: number;
+  calculated: number;
 }
 
 export const rawData$ = atom<ErwinRow[]>([]);
@@ -143,13 +144,15 @@ export const enrichedData$ = computed(rawData$, data => {
       isHeader,
       isGrouping,
       view,
+      // A property is calculated if it's the same on both sides or explicitly marked
       isCalculated:
-        row.leftModel.includes('[Calculated]') && row.rightModel.includes('[Calculated]'),
+        (row.leftModel === row.rightModel && row.leftModel !== '') ||
+        (row.leftModel.includes('[Calculated]') && row.rightModel.includes('[Calculated]')),
     };
-  });
+    });
 
-  const headerStack: { id: string; indent: number; isGrouping: boolean }[] = [];
-  const withParents = withInitialState.map(row => {
+    const headerStack: { id: string; indent: number; isGrouping: boolean }[] = [];
+    const withParents = withInitialState.map(row => {
     while (headerStack.length > 0 && headerStack[headerStack.length - 1].indent >= row.indent) {
       headerStack.pop();
     }
@@ -168,15 +171,41 @@ export const enrichedData$ = computed(rawData$, data => {
     }
 
     return { ...row, parentId };
-  });
+    });
 
-  // 2. View Hoisting (Bottom-Up) - Keep only view hoisting if needed, or remove if also not wanted.
-  // The user said "there is no hoising for teh change", which specifically mentions "change".
-  // I will remove change hoisting.
-  const hoisted = [...withParents];
+    // 2. Hoisting (Bottom-Up)
+    // We hoist View classification and also determine if a Header is "fully calculated"
+    // A header is fully calculated if ALL its descendants (properties and sub-headers) are calculated.
+    const hoisted = [...withParents];
 
-  for (let i = hoisted.length - 1; i >= 0; i--) {
+    // Track children for each header to verify "all descendants" rule
+    const childrenMap = new Map<string, string[]>();
+    hoisted.forEach(r => {
+    if (r.parentId) {
+      const list = childrenMap.get(r.parentId) || [];
+      list.push(r.id!);
+      childrenMap.set(r.parentId, list);
+    }
+    });
+
+    for (let i = hoisted.length - 1; i >= 0; i--) {
     const row = hoisted[i];
+
+    if (row.isHeader && !row.isGrouping) {
+      const childrenIds = childrenMap.get(row.id!) || [];
+      const nonGroupingChildren = childrenIds.filter(cid => {
+        const child = hoisted.find(r => r.id === cid);
+        return !child?.isGrouping;
+      });
+
+      if (nonGroupingChildren.length > 0) {
+        // A header is calculated if all its non-grouping children are calculated
+        row.isCalculated = nonGroupingChildren.every(cid => {
+          const child = hoisted.find(r => r.id === cid);
+          return child?.isCalculated;
+        });
+      }
+    }
 
     // Properties that are not headers contribute to parent view classification
     if (row.parentId) {
@@ -192,11 +221,11 @@ export const enrichedData$ = computed(rawData$, data => {
         }
       }
     }
-  }
+    }
 
-  // 3. Final polish: Prop code and Filter out grouping rows
-  let lastPropCode = 'O';
-  const result = hoisted
+    // 3. Final polish: Prop code and Filter out grouping rows
+    let lastPropCode = 'O';
+    const result = hoisted
     .map(row => {
       const code = row.isHeader ? getObjectShortCode(row.type) : '';
       if (code) lastPropCode = code;
@@ -204,15 +233,15 @@ export const enrichedData$ = computed(rawData$, data => {
     })
     .filter(row => !row.isGrouping);
 
-  return result;
-});
+    return result;
+    });
 
-/**
- * Filtered data based on search, type and change filters.
- */
-export const filteredData$ = computed(
-  [enrichedData$, filterChange$, filterName$],
-  (data, change, name) => {
+    /**
+    * Filtered data based on search, type and change filters.
+    */
+    export const filteredData$ = computed(
+    [enrichedData$, filterChange$, filterName$],
+    (data, change, name) => {
     let result = data;
 
     // 1. Change Filter (Rule 1: observe at table level only)
@@ -221,6 +250,7 @@ export const filteredData$ = computed(
 
       data.forEach(r => {
         // Only apply filter to entities (prop === 'Ent')
+        // Special case: "C" for Calculated if we want to filter by it, but the user didn't ask for a filter yet.
         if (r.isHeader && r.prop === 'Ent' && r.change === change) {
           // Show header and all its descendants
           const addWithDescendants = (id: string) => {
@@ -287,36 +317,36 @@ export const filteredData$ = computed(
     }
 
     return result;
-  },
-);
+    },
+    );
 
-// Toggle functions
-export const togglePropertiesGlobal = () => {
-  const nextValue = !showProperties$.get();
-  showProperties$.set(nextValue);
-  // Reset individual toggles when global toggle is used
-  toggledPropertiesIds$.set(new Set());
-};
+    // Toggle functions
+    export const togglePropertiesGlobal = () => {
+    const nextValue = !showProperties$.get();
+    showProperties$.set(nextValue);
+    // Reset individual toggles when global toggle is used
+    toggledPropertiesIds$.set(new Set());
+    };
 
-export const togglePropertiesIndividual = (id: string) => {
-  const current = new Set(toggledPropertiesIds$.get());
-  if (current.has(id)) current.delete(id);
-  else current.add(id);
-  toggledPropertiesIds$.set(current);
-};
+    export const togglePropertiesIndividual = (id: string) => {
+    const current = new Set(toggledPropertiesIds$.get());
+    if (current.has(id)) current.delete(id);
+    else current.add(id);
+    toggledPropertiesIds$.set(current);
+    };
 
-export const toggleSubObjects = (id: string) => {
-  const current = new Set(hiddenSubObjectsIds$.get());
-  if (current.has(id)) current.delete(id);
-  else current.add(id);
-  hiddenSubObjectsIds$.set(current);
-};
+    export const toggleSubObjects = (id: string) => {
+    const current = new Set(hiddenSubObjectsIds$.get());
+    if (current.has(id)) current.delete(id);
+    else current.add(id);
+    hiddenSubObjectsIds$.set(current);
+    };
 
-export const toggleCheck = (id: string) => {
-  const currentChecked = new Set(checkedIds$.get());
-  const willBeChecked = !currentChecked.has(id);
+    export const toggleCheck = (id: string) => {
+    const currentChecked = new Set(checkedIds$.get());
+    const willBeChecked = !currentChecked.has(id);
 
-  if (willBeChecked) {
+    if (willBeChecked) {
     currentChecked.add(id);
     // When checking, ensure its sub-objects are hidden
     const currentHiddenSubs = new Set(hiddenSubObjectsIds$.get());
@@ -334,28 +364,29 @@ export const toggleCheck = (id: string) => {
       currentToggled.delete(id);
     }
     toggledPropertiesIds$.set(currentToggled);
-  } else {
+    } else {
     currentChecked.delete(id);
-  }
+    }
 
-  checkedIds$.set(currentChecked);
-};
+    checkedIds$.set(currentChecked);
+    };
 
-export const initializeVisibility = () => {
-  showProperties$.set(false);
-  toggledPropertiesIds$.set(new Set());
-  hiddenSubObjectsIds$.set(new Set());
-};
+    export const initializeVisibility = () => {
+    showProperties$.set(false);
+    toggledPropertiesIds$.set(new Set());
+    hiddenSubObjectsIds$.set(new Set());
+    };
 
-// Computed stats for the stats panel
-export const statsSummary$ = computed(enrichedData$, data => {
-  const summary: Record<string, StatsSummary> = {
+    // Computed stats for the stats panel
+    export const statsSummary$ = computed(enrichedData$, data => {
+    const summary: Record<string, StatsSummary> = {
     Tables: {
       type: 'Tables',
       total: 0,
       inclusion: 0,
       alteration: 0,
       exclusion: 0,
+      calculated: 0,
     },
     Columns: {
       type: 'Columns',
@@ -363,10 +394,11 @@ export const statsSummary$ = computed(enrichedData$, data => {
       inclusion: 0,
       alteration: 0,
       exclusion: 0,
+      calculated: 0,
     },
-  };
+    };
 
-  data.forEach(row => {
+    data.forEach(row => {
     if (!row.isHeader || row.isGrouping || !row.change) return;
 
     const isTable = row.prop === 'Ent';
@@ -374,14 +406,19 @@ export const statsSummary$ = computed(enrichedData$, data => {
 
     const increment = (key: string) => {
       summary[key].total++;
-      if (row.change === 'I') summary[key].inclusion++;
-      if (row.change === 'A') summary[key].alteration++;
-      if (row.change === 'E') summary[key].exclusion++;
+      if (row.isCalculated) {
+        summary[key].calculated++;
+      } else {
+        if (row.change === 'I') summary[key].inclusion++;
+        if (row.change === 'A') summary[key].alteration++;
+        if (row.change === 'E') summary[key].exclusion++;
+      }
     };
 
     if (isTable) increment('Tables');
     if (isColumn) increment('Columns');
-  });
+    });
 
-  return Object.values(summary);
-});
+    return Object.values(summary);
+    });
+

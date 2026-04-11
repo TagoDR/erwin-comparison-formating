@@ -62,10 +62,11 @@ export class AppStats extends LitElement {
               <thead>
                 <tr>
                   <th>${translate('stats.col_type')}</th>
-                  <th>${translate('stats.col_total')}</th>
+                  <th class="total-col">${translate('stats.col_total')}</th>
                   <th class="status-I">${translate('stats.col_addition')}</th>
                   <th class="status-A">${translate('stats.col_change')}</th>
                   <th class="status-E">${translate('stats.col_deletion')}</th>
+                  <th class="status-C">${translate('stats.col_calculated')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -73,10 +74,11 @@ export class AppStats extends LitElement {
                   s => html`
                   <tr data-type="${s.type}">
                     <td class="type-col">${translate(`stats.row_${s.type.toLowerCase()}`)}</td>
-                    <td class="val-col">${s.total}</td>
+                    <td class="val-col total-col">${s.total}</td>
                     <td class="val-col status-I">${s.inclusion}</td>
                     <td class="val-col status-A">${s.alteration}</td>
                     <td class="val-col status-E">${s.exclusion}</td>
+                    <td class="val-col status-C">${s.calculated}</td>
                   </tr>
                 `,
                 )}

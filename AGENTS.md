@@ -29,18 +29,18 @@ The interface is divided into two primary sections:
    - **Filters:** Selectors and search fields for Change Type, Object Category, and Name.
 
 2. **Main Display (Split Layout):**
-   - **Stats Panel:** A summary table with 3 rows (General, Tables, Columns) and 5 columns (Type, Total, Addition, Change, Deletion).
+   - **Stats Panel:** A summary table with 3 rows (General, Tables, Columns) and 6 columns (Type, Total, Addition, Change, Deletion, Calculated).
    - **Data Table Panel:** The primary enhanced data view as defined in section 3.3.
 
-### 3.2. Data Processing (Parser Logic)
+   ### 3.2. Data Processing (Parser Logic)
 
-- **Indentation Parsing:** Interpret leading spaces in Erwin's "Type" column to build an object hierarchy. (Indentation is typically multiples of **6 spaces**).
-- **Difference Logic:** Erwin's "Difference" column is unreliable and should be ignored. Status is determined by:
-  - **Addition (I):** Right Model is empty.
-  - **Deletion (E):** Left Model is empty.
-  - **Change (A):** Both models have values.
-- **Grouping Rows:** Grouping rows (e.g., "Entities/Tables", "Columns") are removed from the data during parsing/enrichment as they are considered redundant.
-
+   - **Indentation Parsing:** Interpret leading spaces in Erwin's "Type" column to build an object hierarchy. (Indentation is typically multiples of **6 spaces**).
+   - **Difference Logic:** Erwin's "Difference" column is unreliable and should be ignored. Status is determined by:
+     - **Addition (I):** Right Model is empty.
+     - **Deletion (E):** Left Model is empty.
+     - **Change (A):** Both models have values.
+   - **Calculated Status:** An object (Table/Column) is considered "Calculated" if all its properties and sub-objects are identical on both sides or explicitly end with `[Calculated]` in both models.
+   - **Grouping Rows:** Grouping rows (e.g., "Entities/Tables", "Columns") are removed from the data during parsing/enrichment as they are considered redundant.
 ### 3.3. Table Configuration and Interactions
 
 | Interaction       | Effect                                                |

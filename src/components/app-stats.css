@@ -76,6 +76,14 @@ tr[data-type="Tables"] .status-E {
   background-color: var(--off-red-base);
   color: #ffffff;
 }
+tr[data-type="Tables"] .status-C {
+  background-color: var(--off-orange-base);
+  color: #ffffff;
+}
+tr[data-type="Tables"] .total-col {
+  background-color: var(--off-aqua-base);
+  color: #ffffff;
+}
 
 /* Columns Row (60% Lighter Colors) */
 tr[data-type="Columns"] {
@@ -96,6 +104,14 @@ tr[data-type="Columns"] .status-A {
 }
 tr[data-type="Columns"] .status-E {
   background-color: var(--off-red-60);
+  color: #000000;
+}
+tr[data-type="Columns"] .status-C {
+  background-color: var(--off-orange-60);
+  color: #000000;
+}
+tr[data-type="Columns"] .total-col {
+  background-color: var(--off-aqua-60);
   color: #000000;
 }
 

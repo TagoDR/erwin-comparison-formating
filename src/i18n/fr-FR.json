@@ -18,6 +18,7 @@
     "col_addition": "Inclusion",
     "col_change": "Altération",
     "col_deletion": "Exclusion",
+    "col_calculated": "Calculé",
     "actions": {
       "copy_tables": "COPIER LES TABLES",
       "show_props": "AFFICHER LES PROPRIÉTÉS",
