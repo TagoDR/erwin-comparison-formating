@@ -82,12 +82,12 @@ export class AppTable extends LitElement {
         <thead>
           <tr>
             <th class="col-check">${icons['square-check']}</th>
-            <th>${translate('table.col_type')}</th>
-            <th>${translate('table.col_left')}</th>
-            <th>${translate('table.col_right')}</th>
-            <th>${translate('table.col_prop')}</th>
-            <th>${translate('table.col_change')}</th>
-            <th>${translate('table.col_view')}</th>
+            <th class="col-type">${translate('table.col_type')}</th>
+            <th class="col-left">${translate('table.col_left')}</th>
+            <th class="col-right">${translate('table.col_right')}</th>
+            <th class="col-prop">${translate('table.col_prop')}</th>
+            <th class="col-change">${translate('table.col_change')}</th>
+            <th class="col-view">${translate('table.col_view')}</th>
             <th class="col-cal">Cal</th>
           </tr>
         </thead>

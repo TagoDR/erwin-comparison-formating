@@ -10,6 +10,7 @@
   font-size: 0.85rem;
   line-height: 1.1;
   width: 100%;
+  table-layout: fixed;
 }
 
 .table-condensed > thead > tr > th,
@@ -21,6 +22,8 @@
   padding: 0.1rem 0.4rem;
   border-top: 1px solid var(--border-color);
   vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .col-check {
@@ -28,9 +31,41 @@
   text-align: center;
 }
 
+.col-type,
 .row-type {
   width: 250px;
   white-space: nowrap;
+}
+
+.col-left,
+.col-right,
+.row-left,
+.row-right {
+  text-align: left !important;
+}
+
+.col-prop,
+.row-prop {
+  width: 45px;
+  text-align: center;
+}
+
+.col-change,
+.row-change {
+  width: 40px;
+  text-align: center;
+}
+
+.col-view,
+.row-view {
+  width: 40px;
+  text-align: center;
+}
+
+.col-cal,
+.row-cal {
+  width: 35px;
+  text-align: center;
 }
 
 .tree-node {
@@ -163,36 +198,19 @@ tr[data-header="true"][data-level="5"]:not([data-grouping="true"]) {
   color: inherit;
 }
 
-.row-change,
-.row-view {
-  font-weight: bold;
-  text-align: center;
-  width: 25px;
+.row-prop {
+  font-size: 0.75rem;
+  opacity: 0.7;
 }
 
 .row-cal {
   font-weight: bold;
-  text-align: center;
-  width: 15px;
   color: var(--off-orange-base);
   font-size: 0.7rem;
 }
 
-.col-cal {
-  width: 15px;
-  text-align: center;
-}
-
-.row-prop {
-  width: 30px;
-  font-size: 0.75rem;
-  opacity: 0.7;
-  text-align: center;
-}
-
 .row-left,
 .row-right {
-  min-width: 200px;
   word-break: break-all;
   white-space: normal;
 }
