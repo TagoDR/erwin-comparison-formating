@@ -144,10 +144,10 @@ export const enrichedData$ = computed(rawData$, data => {
       isHeader,
       isGrouping,
       view,
-      // A property is calculated if it's the same on both sides or explicitly marked
+      // A property is calculated if it's exactly the same AND ends with [Calculated] both sides
       isCalculated:
-        (row.leftModel === row.rightModel && row.leftModel !== '') ||
-        (row.leftModel.includes('[Calculated]') && row.rightModel.includes('[Calculated]')),
+        row.leftModel === row.rightModel &&
+        row.leftModel.endsWith('[Calculated]') && row.rightModel.endsWith('[Calculated]'),
     };
     });
 

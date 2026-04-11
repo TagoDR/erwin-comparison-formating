@@ -88,6 +88,7 @@ export class AppTable extends LitElement {
             <th>${translate('table.col_prop')}</th>
             <th>${translate('table.col_change')}</th>
             <th>${translate('table.col_view')}</th>
+            <th class="col-cal">Cal</th>
           </tr>
         </thead>
         <tbody>
@@ -108,6 +109,7 @@ export class AppTable extends LitElement {
                 data-prop="${row.prop}"
                 data-header="${row.isHeader || false}"
                 data-grouping="${row.isGrouping || false}"
+                data-calculated="${row.isCalculated || false}"
                 class="${isChecked ? 'checked-row' : ''} ${isIdentificationRow ? 'clickable-row' : ''}"
                 @click=${() => {
                   if (isIdentificationRow && row.id) {
@@ -170,6 +172,7 @@ export class AppTable extends LitElement {
                 <td class="row-prop">${row.prop}</td>
                 <td class="row-change">${isIdentificationRow ? row.change : ''}</td>
                 <td class="row-view">${isIdentificationRow ? row.view : ''}</td>
+                <td class="row-cal">${row.isCalculated ? 'C' : ''}</td>
               </tr>
             `;
           })}

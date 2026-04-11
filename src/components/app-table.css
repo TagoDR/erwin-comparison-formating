@@ -170,6 +170,19 @@ tr[data-header="true"][data-level="5"]:not([data-grouping="true"]) {
   width: 25px;
 }
 
+.row-cal {
+  font-weight: bold;
+  text-align: center;
+  width: 15px;
+  color: var(--off-orange-base);
+  font-size: 0.7rem;
+}
+
+.col-cal {
+  width: 15px;
+  text-align: center;
+}
+
 .row-prop {
   width: 30px;
   font-size: 0.75rem;
