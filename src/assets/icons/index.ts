@@ -1,16 +1,17 @@
 import { html } from 'lit';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
-import IconClipboardCopy from './icons/clipboard-copy.svg';
-import IconClipboardList from './icons/clipboard-list.svg';
-import IconCopy from './icons/copy.svg';
-import IconFileDiff from './icons/file-diff.svg';
-import IconFileUpload from './icons/file-upload.svg';
-import IconFilter from './icons/filter.svg';
-import IconFilterOff from './icons/filter-off.svg';
-import IconMoon from './icons/moon.svg';
-import IconSquareCheck from './icons/square-check.svg';
-import IconSun from './icons/sun.svg';
-import IconX from './icons/x.svg';
+
+import IconClipboardCopy from './clipboard-copy.svg';
+import IconClipboardList from './clipboard-list.svg';
+import IconCopy from './copy.svg';
+import IconFileDiff from './file-diff.svg';
+import IconFileUpload from './file-upload.svg';
+import IconFilter from './filter.svg';
+import IconFilterOff from './filter-off.svg';
+import IconMoon from './moon.svg';
+import IconSquareCheck from './square-check.svg';
+import IconSun from './sun.svg';
+import IconX from './x.svg';
 
 export const icons = {
   'clipboard-copy': html`${unsafeSVG(IconClipboardCopy)}`,

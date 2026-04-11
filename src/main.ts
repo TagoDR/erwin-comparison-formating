@@ -37,6 +37,27 @@ export class AppRoot extends LitElement {
 
     // Phase 2: Global Drag & Drop Support
     this._setupGlobalDragDrop();
+
+    // Userscript: Auto-transform if Erwin report is detected in the current document
+    this._detectAndTransformUserscript();
+  }
+
+  private _detectAndTransformUserscript() {
+    // Look for typical Erwin Report markers: a table with specific headers
+    const ths = Array.from(document.querySelectorAll('table th'));
+    const hasObject = ths.some(th => th.textContent?.trim() === 'Object');
+    const hasLeft = ths.some(th => th.textContent?.trim() === 'Left');
+    const hasRight = ths.some(th => th.textContent?.trim() === 'Right');
+
+    if (hasObject && hasLeft && hasRight) {
+      console.log('Erwin Report detected via Userscript, transforming...');
+      const originalHTML = document.documentElement.outerHTML;
+
+      // Store current page content before it gets potentially cleared or shadowed
+      // In monkey mode, the script might run after DOM is ready.
+      fileName$.set(location.pathname.split('/').pop() || 'local-report.html');
+      this._processFileContent(originalHTML);
+    }
   }
 
   private _setupGlobalDragDrop() {

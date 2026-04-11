@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --mode standalone && vite build --mode monkey",
+    "build:standalone": "vite build --mode standalone",
+    "build:monkey": "vite build --mode monkey",
     "preview": "vite preview",
     "prettier": "prettier --write ./**/*.md",
     "biome": " biome check --write ."
@@ -19,9 +21,12 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.9",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.6.0",
     "typescript": "~6.0.2",
-    "vite": "^8.0.3",
+    "userscript-metadata-generator": "^0.2.4",
+    "vite": "^8.0.8",
+    "vite-plugin-banner": "^0.8.1",
+    "vite-plugin-css-injected-by-js": "^4.0.1",
     "vite-plugin-singlefile": "^2.3.2",
     "vite-svg-loader": "^5.1.1"
   }

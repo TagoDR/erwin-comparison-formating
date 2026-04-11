@@ -1,36 +1,74 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { defineConfig } from 'vite';
+import * as fs from 'node:fs';
+import userscript, { type Metadata } from 'userscript-metadata-generator';
+import { defineConfig, type UserConfig } from 'vite';
+import viteBanner from 'vite-plugin-banner';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import svgLoader from 'vite-svg-loader';
 
-function renameIndex() {
+const metadata: Metadata = {
+  name: 'Erwin Compare Formatter',
+  namespace: 'npm/erwin-compare-formatter',
+  version: '5.0.0',
+  description:
+    'Color code and format Erwin Data Modeler HTML difference reports into a searchable interface.',
+  author: 'TagoDR',
+  match: ['file:///*.html', 'file:///*.htm'],
+  grant: ['none'],
+  runAt: 'document-end',
+};
+
+export default defineConfig(({ mode }): UserConfig => {
+  // STANDALONE BUILD (Single HTML File)
+  if (mode === 'standalone' || mode === 'production') {
+    return {
+      plugins: [
+        svgLoader({ svgo: false, defaultImport: 'raw' }),
+        viteSingleFile(),
+        {
+          name: 'rename-index',
+          closeBundle() {
+            if (fs.existsSync('./dist/index.html')) {
+              fs.renameSync('./dist/index.html', './dist/Erwin_Complete_Compare_Formatter.html');
+            }
+          },
+        },
+      ],
+      build: {
+        minify: true,
+        cssMinify: false, // Avoid star hack errors
+        target: 'esnext',
+        emptyOutDir: false,
+        outDir: 'dist',
+      },
+    };
+  }
+
+  // USERSCRIPT BUILD (Tampermonkey)
   return {
-    name: 'rename-index',
-    writeBundle() {
-      const oldPath = path.resolve('dist/index.html');
-      const newPath = path.resolve('dist/Erwin_Formatar_CompleteCompare.html');
-      if (fs.existsSync(oldPath)) {
-        fs.renameSync(oldPath, newPath);
-        console.log(`Renamed: dist/index.html -> dist/Erwin_Formatar_CompleteCompare.html`);
-      }
+    plugins: [
+      svgLoader({ svgo: false, defaultImport: 'raw' }),
+      cssInjectedByJsPlugin(),
+      viteBanner({ content: userscript(metadata), verify: false }),
+    ],
+    build: {
+      target: 'esnext',
+      minify: false, // Never minify userscript as requested
+      cssMinify: false,
+      emptyOutDir: false,
+      outDir: 'dist',
+      cssCodeSplit: false,
+      lib: {
+        entry: 'src/index.ts',
+        name: 'ErwinCompareFormatter',
+        formats: ['iife'],
+        fileName: () => 'erwin_complete_compare_formatter.user.js',
+      },
+      rollupOptions: {
+        output: {
+          extend: true,
+        },
+      },
     },
   };
-}
-
-export default defineConfig({
-  plugins: [
-    svgLoader({
-      defaultImport: 'raw',
-    }),
-    viteSingleFile(),
-    renameIndex(),
-  ],
-  build: {
-    cssMinify: false,
-    assetsInlineLimit: 100000000,
-    chunkSizeWarningLimit: 100000000,
-    cssCodeSplit: false,
-    reportCompressedSize: false,
-  },
 });
