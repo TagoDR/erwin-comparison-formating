@@ -33,9 +33,10 @@ export const filterChange$ = atom<string>('');
 export const filterName$ = atom<string>('');
 
 // Interaction State
-export const collapsedIds$ = atom<Set<string>>(new Set());
+export const showProperties$ = atom<boolean>(false);
+export const toggledPropertiesIds$ = atom<Set<string>>(new Set());
+export const hiddenSubObjectsIds$ = atom<Set<string>>(new Set());
 export const checkedIds$ = atom<Set<string>>(new Set());
-export const showProperties$ = atom<boolean>(true);
 
 // Useless rows must be removed/ignored/hidden
 const GROUPING_KEYWORDS = [
@@ -51,7 +52,6 @@ const GROUPING_KEYWORDS = [
   'ER Diagrams',
   'Entities',
   'Entities/Tables',
-  'Foreign Keys',
   'Indexes',
   'Keys Groups',
   'Keys Groups/Indexes',
@@ -93,15 +93,15 @@ const HEADER_KEYWORDS = [
   'Subtype Symbol',
   'Table',
   'Tablespace',
-  'Theme',
+  // 'Theme',
   'View',
 ];
 
 export const getObjectShortCode = (type: string): string => {
   const t = type.toLowerCase();
-  if (t.includes('entity') || t.includes('table')) return 'Ent';
-  if (t.includes('attribute') || t.includes('column')) return 'Atr';
-  if (t.includes('foreign key') || t.includes('relationship')) return 'FK';
+  if (t.includes('entity') || t.includes('table') || t.includes('collection')) return 'Ent';
+  if (t.includes('attribute') || t.includes('column') || t.includes('field')) return 'Atr';
+  if (t.includes('relationship')) return 'FK';
   if (t.includes('tablespace')) return 'TB';
   if (t.includes('index')) return 'IX';
   if (t.includes('view')) return 'VW';
@@ -163,21 +163,19 @@ export const enrichedData$ = computed(rawData$, data => {
     return { ...row, parentId };
   });
 
-  // 2. Status & View Hoisting (Bottom-Up)
+  // 2. View Hoisting (Bottom-Up) - Keep only view hoisting if needed, or remove if also not wanted.
+  // The user said "there is no hoising for teh change", which specifically mentions "change".
+  // I will remove change hoisting.
   const hoisted = [...withParents];
 
   for (let i = hoisted.length - 1; i >= 0; i--) {
     const row = hoisted[i];
+    
+    // Properties that are not headers contribute to parent view classification
     if (row.parentId) {
       const parentIndex = hoisted.findIndex(p => p.id === row.parentId);
       if (parentIndex !== -1) {
         const parent = hoisted[parentIndex];
-
-        // Hoist Change Status ONLY if parent doesn't have its own status from presence.
-        // This ensures the object identifier line's status is preserved.
-        if (!parent.change && row.change) {
-          parent.change = row.change;
-        }
 
         // Hoist View classification
         if (row.type === 'Logical Only' && row.leftModel === 'true') {
@@ -189,52 +187,44 @@ export const enrichedData$ = computed(rawData$, data => {
     }
   }
 
-  // 3. Final polish: Prop code and Filter out empty grouping rows
+  // 3. Final polish: Prop code and Filter out grouping rows
   let lastPropCode = 'O';
-  return hoisted
+  const result = hoisted
     .map(row => {
       const code = row.isHeader ? getObjectShortCode(row.type) : '';
       if (code) lastPropCode = code;
       return { ...row, prop: lastPropCode };
     })
-    .filter(row => {
-      // return true;
-      // Omit grouping rows that have no change (meaning all children are unchanged)
-      // and have no model data.
-      return !(row.isGrouping && !row.change && !row.leftModel && !row.rightModel);
-    });
+    .filter(row => !row.isGrouping);
+
+  return result;
 });
 
 /**
- * Filtered data based on search, type, change filters and showProperties.
+ * Filtered data based on search, type and change filters.
  */
 export const filteredData$ = computed(
-  [enrichedData$, filterChange$, filterName$, showProperties$],
-  (data, change, name, showProps) => {
+  [enrichedData$, filterChange$, filterName$],
+  (data, change, name) => {
     let result = data;
 
     // 1. Change Filter (Rule 1: observe at table level)
     if (change) {
-      const validTableIds = new Set<string>();
+      const matches = new Set<string>();
+      
       data.forEach(r => {
-        // Find tables (Ent) that have the requested change status
-        if (r.prop === 'Ent' && r.isHeader && r.change === change) {
-          validTableIds.add(r.id);
+        if (r.isHeader && r.change === change) {
+          // Show header and all its descendants
+          const addWithDescendants = (id: string) => {
+            matches.add(id);
+            data.forEach(child => {
+              if (child.parentId === id) addWithDescendants(child.id);
+            });
+          };
+          addWithDescendants(r.id);
         }
       });
-
-      // Show table and all its contents
-      const matches = new Set<string>();
-      const addRowAndChildren = (id: string) => {
-        matches.add(id);
-        data.forEach(r => {
-          if (r.parentId === id) addRowAndChildren(r.id);
-        });
-      };
-
-      validTableIds.forEach(id => {
-        addRowAndChildren(id);
-      });
+      
       result = result.filter(r => matches.has(r.id));
     }
 
@@ -288,20 +278,30 @@ export const filteredData$ = computed(
       result = result.filter(r => finalIds.has(r.id));
     }
 
-    if (!showProps) {
-      result = result.filter(r => r.isHeader);
-    }
-
     return result;
   },
 );
 
 // Toggle functions
-export const toggleCollapse = (id: string) => {
-  const current = new Set(collapsedIds$.get());
+export const togglePropertiesGlobal = () => {
+  const nextValue = !showProperties$.get();
+  showProperties$.set(nextValue);
+  // Reset individual toggles when global toggle is used
+  toggledPropertiesIds$.set(new Set());
+};
+
+export const togglePropertiesIndividual = (id: string) => {
+  const current = new Set(toggledPropertiesIds$.get());
   if (current.has(id)) current.delete(id);
   else current.add(id);
-  collapsedIds$.set(current);
+  toggledPropertiesIds$.set(current);
+};
+
+export const toggleSubObjects = (id: string) => {
+  const current = new Set(hiddenSubObjectsIds$.get());
+  if (current.has(id)) current.delete(id);
+  else current.add(id);
+  hiddenSubObjectsIds$.set(current);
 };
 
 export const toggleCheck = (id: string) => {
@@ -310,35 +310,47 @@ export const toggleCheck = (id: string) => {
 
   if (willBeChecked) {
     currentChecked.add(id);
-    // When checking, ensure it's collapsed (add to set, don't toggle)
-    const currentCollapsed = new Set(collapsedIds$.get());
-    currentCollapsed.add(id);
-    collapsedIds$.set(currentCollapsed);
+    // When checking, ensure its sub-objects are hidden
+    const currentHiddenSubs = new Set(hiddenSubObjectsIds$.get());
+    currentHiddenSubs.add(id);
+    hiddenSubObjectsIds$.set(currentHiddenSubs);
+
+    // For properties, we want them hidden.
+    // If global showProperties is true, we must add to toggled set to hide it.
+    // If global showProperties is false, we must remove from toggled set to hide it.
+    const globalShow = showProperties$.get();
+    const currentToggled = new Set(toggledPropertiesIds$.get());
+    if (globalShow) {
+      currentToggled.add(id);
+    } else {
+      currentToggled.delete(id);
+    }
+    toggledPropertiesIds$.set(currentToggled);
   } else {
     currentChecked.delete(id);
-    // Optional: should we expand when unchecking?
-    // For now, following "keep closed" philosophy, we leave collapse state alone.
   }
 
   checkedIds$.set(currentChecked);
 };
 
-export const toggleProperties = () => {
-  showProperties$.set(!showProperties$.get());
+export const initializeVisibility = () => {
+  showProperties$.set(false);
+  toggledPropertiesIds$.set(new Set());
+  hiddenSubObjectsIds$.set(new Set());
 };
 
 // Computed stats for the stats panel
 export const statsSummary$ = computed(enrichedData$, data => {
   const summary: Record<string, StatsSummary> = {
-    Tabelas: {
-      type: 'Tabelas',
+    Tables: {
+      type: 'Tables',
       total: 0,
       inclusion: 0,
       alteration: 0,
       exclusion: 0,
     },
-    Colunas: {
-      type: 'Colunas',
+    Columns: {
+      type: 'Columns',
       total: 0,
       inclusion: 0,
       alteration: 0,
@@ -346,28 +358,11 @@ export const statsSummary$ = computed(enrichedData$, data => {
     },
   };
 
-  // Track which headers have real (non-calculated) changes
-  const hasRealChange = new Set<string>();
   data.forEach(row => {
-    if (!row.isHeader && row.change && !row.isCalculated) {
-      let currentParentId: string | undefined = row.parentId;
-      while (currentParentId) {
-        hasRealChange.add(currentParentId);
-        const parent = data.find(r => r.id === currentParentId);
-        currentParentId = parent?.parentId;
-      }
-    }
-  });
-
-  data.forEach(row => {
-    if (!row.isHeader || row.isGrouping) return;
+    if (!row.isHeader || row.isGrouping || !row.change) return;
 
     const isTable = row.prop === 'Ent';
     const isColumn = row.prop === 'Atr';
-
-    if (row.change === 'A' && !hasRealChange.has(row.id)) {
-      return;
-    }
 
     const increment = (key: string) => {
       summary[key].total++;
@@ -376,8 +371,8 @@ export const statsSummary$ = computed(enrichedData$, data => {
       if (row.change === 'E') summary[key].exclusion++;
     };
 
-    if (isTable) increment('Tabelas');
-    if (isColumn) increment('Colunas');
+    if (isTable) increment('Tables');
+    if (isColumn) increment('Columns');
   });
 
   return Object.values(summary);

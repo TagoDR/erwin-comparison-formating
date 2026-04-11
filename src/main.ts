@@ -3,7 +3,7 @@ import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { icons } from './assets/icons';
 import { parseErwinHtml } from './parser/html-parser';
-import { fileName$, isLoading$, rawData$ } from './store/data.store';
+import { fileName$, isLoading$, rawData$, initializeVisibility } from './store/data.store';
 
 // Import Global CSS
 import './index.css';
@@ -99,6 +99,7 @@ export class AppRoot extends LitElement {
     console.log('File content loaded, starting parser...', content.substring(0, 100));
     const rows = parseErwinHtml(content);
     rawData$.set(rows);
+    initializeVisibility();
     isLoading$.set(false);
   }
 

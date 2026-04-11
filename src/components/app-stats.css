@@ -55,46 +55,46 @@ td {
 
 /* --- Phase 1: Office 2010 Stats Summary Colors --- */
 
-/* Tabelas Row (Base Colors) */
-tr[data-type="Tabelas"] {
+/* Tables Row (Base Colors) */
+tr[data-type="Tables"] {
   background-color: var(--off-blue-base);
   color: #ffffff;
 }
-tr[data-type="Tabelas"] .type-col {
+tr[data-type="Tables"] .type-col {
   color: #ffffff;
   font-weight: bold;
 }
-tr[data-type="Tabelas"] .status-I {
+tr[data-type="Tables"] .status-I {
   background-color: var(--off-green-base);
   color: #ffffff;
 }
-tr[data-type="Tabelas"] .status-A {
+tr[data-type="Tables"] .status-A {
   background-color: var(--off-purple-base);
   color: #ffffff;
 }
-tr[data-type="Tabelas"] .status-E {
+tr[data-type="Tables"] .status-E {
   background-color: var(--off-red-base);
   color: #ffffff;
 }
 
-/* Colunas Row (60% Lighter Colors) */
-tr[data-type="Colunas"] {
+/* Columns Row (60% Lighter Colors) */
+tr[data-type="Columns"] {
   background-color: var(--off-blue-60);
   color: #000000;
 }
-tr[data-type="Colunas"] .type-col {
+tr[data-type="Columns"] .type-col {
   color: #000000;
   font-weight: bold;
 }
-tr[data-type="Colunas"] .status-I {
+tr[data-type="Columns"] .status-I {
   background-color: var(--off-green-60);
   color: #000000;
 }
-tr[data-type="Colunas"] .status-A {
+tr[data-type="Columns"] .status-A {
   background-color: var(--off-purple-60);
   color: #000000;
 }
-tr[data-type="Colunas"] .status-E {
+tr[data-type="Columns"] .status-E {
   background-color: var(--off-red-60);
   color: #000000;
 }

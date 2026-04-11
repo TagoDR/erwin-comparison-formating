@@ -16,18 +16,20 @@ export function parseErwinHtml(html: string): ErwinRow[] {
     if (tds.length < 4) return;
 
     const objectTd = tds[0];
-    const leftModel = tds[1].textContent?.trim() || '';
-    // tds[2] is Match/Difference, usually ignored
-    const rightModel = tds[3].textContent?.trim() || '';
+    const rawLeft = tds[1].textContent?.trim() || '';
+    const rawRight = tds[3].textContent?.trim() || '';
+
+    // Strip [Calculated] for comparison
+    const leftModel = rawLeft.replace(/\[Calculated\]/g, '').trim();
+    const rightModel = rawRight.replace(/\[Calculated\]/g, '').trim();
 
     const rawTypeText = objectTd.textContent || '';
     const type = rawTypeText.trim();
 
-    // Calculate indent based on non-breaking spaces or regular spaces
-    // In DOM, &nbsp; becomes \u00a0 (160)
-    // Indentation is 3 spaces for level 0, 6 for level 1, etc.
+    // Calculate indent: typically 6 spaces per level. 
+    // We count leading spaces or non-breaking spaces (\u00a0)
     const leadingWhitespace = rawTypeText.match(/^[\s\u00a0]*/)?.[0] || '';
-    const indent = Math.max(0, Math.floor(leadingWhitespace.length / 3) - 1);
+    const indent = Math.floor(leadingWhitespace.length / 6);
 
     let change: 'I' | 'A' | 'E' | '' = '';
     if (leftModel && rightModel) {
@@ -41,11 +43,11 @@ export function parseErwinHtml(html: string): ErwinRow[] {
     rows.push({
       type,
       indent,
-      leftModel,
-      rightModel,
+      leftModel: rawLeft, // Keep original for display
+      rightModel: rawRight, // Keep original for display
       change,
-      prop: '', // Will be filled by enrichment in store
-      view: '', // Will be filled by enrichment in store
+      prop: '', 
+      view: '', 
     });
   });
 

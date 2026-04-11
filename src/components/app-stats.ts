@@ -8,7 +8,7 @@ import {
   rawData$,
   showProperties$,
   statsSummary$,
-  toggleProperties,
+  togglePropertiesGlobal,
 } from '../store/data.store';
 import statsStyles from './app-stats.css?inline';
 
@@ -115,7 +115,7 @@ export class AppStats extends LitElement {
           <button type="button" class="btn btn-primary btn-block action-btn" @click=${this._copyTablesToClipboard}>
             ${icons['clipboard-list']} <span>COPY TABLES</span>
           </button>
-          <button type="button" class="btn btn-default btn-block action-btn" @click=${toggleProperties}>
+          <button type="button" class="btn btn-default btn-block action-btn" @click=${togglePropertiesGlobal}>
             ${this.showProps.value ? icons['filter-off'] : icons.filter} 
             <span>${this.showProps.value ? 'HIDE PROPERTIES' : 'SHOW PROPERTIES'}</span>
           </button>

@@ -4,17 +4,22 @@ import { customElement } from 'lit/decorators.js';
 import { icons } from '../assets/icons';
 import {
   checkedIds$,
-  collapsedIds$,
+  showProperties$,
+  toggledPropertiesIds$,
+  hiddenSubObjectsIds$,
   filteredData$,
   toggleCheck,
-  toggleCollapse,
+  togglePropertiesIndividual,
+  toggleSubObjects,
 } from '../store/data.store';
 import tableStyles from './app-table.css?inline';
 
 @customElement('app-table')
 export class AppTable extends LitElement {
   private data = new StoreController(this, filteredData$);
-  private collapsed = new StoreController(this, collapsedIds$);
+  private showProps = new StoreController(this, showProperties$);
+  private toggledProps = new StoreController(this, toggledPropertiesIds$);
+  private hiddenSubs = new StoreController(this, hiddenSubObjectsIds$);
   private checked = new StoreController(this, checkedIds$);
 
   static styles = unsafeCSS(tableStyles);
@@ -36,21 +41,39 @@ export class AppTable extends LitElement {
       `;
     }
 
-    const collapsedSet = this.collapsed.value;
+    const globalShowProps = this.showProps.value;
+    const toggledPropsSet = this.toggledProps.value;
+    const hiddenSubsSet = this.hiddenSubs.value;
     const checkedSet = this.checked.value;
 
-    // Recursive hidden check: if any ancestor is collapsed, hide row
     const allRows = this.data.value;
-
-    // Map id to row for fast lookup
     const rowMap = new Map(allRows.map(r => [r.id, r]));
 
-    const isAncestorCollapsed = (rowId: string | undefined): boolean => {
+    const isRowHidden = (rowId: string | undefined): boolean => {
       if (!rowId) return false;
       const row = rowMap.get(rowId);
       if (!row) return false;
-      if (collapsedSet.has(rowId)) return true;
-      return isAncestorCollapsed(row.parentId);
+
+      // Recursive check: if parent is hidden, child is hidden
+      if (row.parentId) {
+        const parent = rowMap.get(row.parentId);
+        if (parent) {
+          // Property Visibility: XOR of global state and individual toggle
+          if (!row.isHeader) {
+            let isParentToggled = toggledPropsSet.has(row.parentId);
+            let isVisible = globalShowProps ? !isParentToggled : isParentToggled;
+            if (!isVisible) return true;
+          }
+          
+          // Sub-object Visibility: Explicitly hidden via right click
+          if (row.isHeader && hiddenSubsSet.has(row.parentId)) return true;
+          
+          // Ancestor check
+          if (isRowHidden(row.parentId)) return true;
+        }
+      }
+
+      return false;
     };
 
     return html`
@@ -68,15 +91,13 @@ export class AppTable extends LitElement {
         </thead>
         <tbody>
           ${allRows.map(row => {
-            // Requirement 5: Check if any ancestor is collapsed
-            if (isAncestorCollapsed(row.parentId)) return html``;
+            if (isRowHidden(row.id)) return html``;
 
             const isIdentificationRow = row.isHeader && !row.isGrouping;
             const isNameProp = row.type === 'Name' || row.type === 'Physical Name';
             const showCopy = isIdentificationRow || isNameProp;
 
             const level = row.indent;
-            const isCollapsed = row.id ? collapsedSet.has(row.id) : false;
             const isChecked = row.id ? checkedSet.has(row.id) : false;
 
             return html`
@@ -86,9 +107,20 @@ export class AppTable extends LitElement {
                 data-prop="${row.prop}"
                 data-header="${row.isHeader || false}"
                 data-grouping="${row.isGrouping || false}"
-                class="${isChecked ? 'checked-row' : ''}"
+                class="${isChecked ? 'checked-row' : ''} ${isIdentificationRow ? 'clickable-row' : ''}"
+                @click=${(e: MouseEvent) => {
+                  if (isIdentificationRow && row.id) {
+                    togglePropertiesIndividual(row.id);
+                  }
+                }}
+                @contextmenu=${(e: MouseEvent) => {
+                  if (isIdentificationRow && row.id) {
+                    e.preventDefault();
+                    toggleSubObjects(row.id);
+                  }
+                }}
               >
-                <td class="col-check">
+                <td class="col-check" @click=${(e: Event) => e.stopPropagation()}>
                    <input 
                     type="checkbox" 
                     .checked=${isChecked}
@@ -97,16 +129,6 @@ export class AppTable extends LitElement {
                 </td>
                 <td class="row-type">
                   <div class="tree-node" style="padding-left: ${level * 3}px">
-                    ${
-                      row.isHeader
-                        ? html`
-                          <span 
-                            class="tree-toggle ${isCollapsed ? 'collapsed' : ''}" 
-                            @click=${() => row.id && toggleCollapse(row.id)}
-                          ></span>
-                        `
-                        : html`<span class="tree-leaf-connector"></span>`
-                    }
                     <span class="type-text">${row.type}</span>
                   </div>
                 </td>
@@ -118,7 +140,10 @@ export class AppTable extends LitElement {
                     <button 
                       class="btn btn-default btn-xs copy-btn" 
                       title="Copy Left" 
-                      @click=${() => this._copyToClipboard(row.leftModel)}
+                      @click=${(e: MouseEvent) => {
+                        e.stopPropagation();
+                        this._copyToClipboard(row.leftModel);
+                      }}
                     >${icons.copy}</button>
                   `
                       : ''
@@ -132,7 +157,10 @@ export class AppTable extends LitElement {
                     <button 
                       class="btn btn-default btn-xs copy-btn" 
                       title="Copy Right" 
-                      @click=${() => this._copyToClipboard(row.rightModel)}
+                      @click=${(e: MouseEvent) => {
+                        e.stopPropagation();
+                        this._copyToClipboard(row.rightModel);
+                      }}
                     >${icons.copy}</button>
                   `
                       : ''

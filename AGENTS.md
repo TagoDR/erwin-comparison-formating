@@ -38,26 +38,28 @@ The interface is divided into two primary sections:
 - **Difference Logic:** Erwin's "Difference" column is unreliable and should be ignored. Status is determined by:
   - **Addition (I):** Right Model is empty.
   - **Deletion (E):** Left Model is empty.
-  - **Change (A):** Both models have values, but they differ.
-- **Status Hoisting:**
-  - Property-level changes are hoisted to the parent object (e.g., Table or Column).
-  - Parent objects inherit the "highest" status found in their subtree: `Deletion > Addition > Change > No Change`.
-- **Grouping Logic:**
-  - **Grouping Rows** act as organizational containers (e.g., "Entities/Tables", "Columns", "Relationships").
-  - They inherit visibility from their children; if a child is visible (after filtering), its parent grouping row is also shown.
-  - **Note:** Grouping rows can be omitted as they contain no direct model information.
+  - **Change (A):** Both models have values.
+- **Grouping Rows:** Grouping rows (e.g., "Entities/Tables", "Columns") are removed from the data during parsing/enrichment as they are considered redundant.
 
-### 3.3. Table Configuration
+### 3.3. Table Configuration and Interactions
+
+| Interaction      | Effect                                      |
+| :--------------- | :------------------------------------------ |
+| **Left Click**   | Show/Hide the object's properties.          |
+| **Right Click**  | Show/Hide the object's sub-objects (children). |
+| **Global Toggle**| Master shortcut to Show/Hide all properties globally. |
+| **Initial State**| All object properties are hidden by default. |
 
 | Column          | Description                                              |
 | :-------------- | :------------------------------------------------------- |
-| **Check**       | Visual/functional control for checklists and collapsing. |
+| **Check**       | Visual/functional control for checklists.               |
 | **Type**        | Indented object hierarchy (without the object name).     |
 | **Prop**        | Parent object identifier.                                |
 | **Change**      | I (Addition), A (Change), or E (Deletion).               |
 | **View**        | L (Logical), P (Physical), or L/P.                       |
 | **Left Model**  | Working model data.                                      |
 | **Right Model** | Reference model data (baseline).                         |
+
 
 ### 3.4. Data Object Identification Rows
 
@@ -68,20 +70,7 @@ The "Identification Row" is the primary entry for a model object. It acts as a h
   - **Entity** and **Attribute**: Represents objects that are **Logical Only**.
   - **Table** and **Column**: Represents objects that are **Physical Only**.
 - **Functional Role:**
-  - **Hoisting Source:** Displays the aggregated "highest" status of all child properties.
   - **Metadata Display:** Shows the object name and the "View" flag (L, P, or L/P) directly in the identification line.
-
-### 3.5. Grouping Rows
-
-Grouping rows are high-level structural elements that categorize model objects.
-
-- **Examples:** "Entities/Tables", "Entities", "Tables", "Attributes/Columns", "Foreign Keys", "Keys", "Indexes", "Tablespaces".
-- **Characteristics:**
-  - **Containment:** They hold one or more Data Object Identification Rows.
-  - **Passive Role:** They do not represent model objects themselves and are not counted in the Statistics Panel.
-  - **Visual Anchor:** They provide context in the hierarchy (e.g., distinguishing between "Foreign Keys" and "Primary Keys").
-  - **Omission:** These rows can be filtered out or ignored without loss of object-level data.
-  - **Visual Styling:** These rows are **not colored** (neutral background) and do not show values in the "Change" or "View" columns.
 
 ## 4. Visual Encoding (Office 2010 Palette)
 
@@ -118,22 +107,22 @@ _Example:_ A "Foreign Keys" identification row (not the grouping row) at Level 2
 - **Change Detection:**
   - `Left != "" && Right == ""` -> **Addition (I)**
   - `Left == "" && Right != ""` -> **Deletion (E)**
-  - `Left != "" && Right != "" && Left != Right` -> **Change (A)**
+  - `Left != "" && Right != ""` -> **Change (A)**
 
 ### 6.2. Complex Example Scenarios
 
-#### Scenario A: Table Change (Hoisted)
+#### Scenario A: Table Change
 
 | Type                                     | Left   | Difference | Right       | Logical Result            |
 | :--------------------------------------- | :----- | :--------- | :---------- | :------------------------ |
-| Entity/Table                             | CLI    | -          | CLI         | **A** (Hoisted from Name) |
+| Entity/Table                             | CLI    | -          | CLI         |                           |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name | Client | -          | Client Info | **A**                     |
 
-#### Scenario B: New Column (Hoisted)
+#### Scenario B: New Column
 
 | Type                                                                                                          | Left    | Difference | Right | Logical Result              |
 | :------------------------------------------------------------------------------------------------------------ | :------ | :--------- | :---- | :-------------------------- |
-| Entity/Table                                                                                                  | PROD    | -          | PROD  | **A** (Hoisted from Column) |
+| Entity/Table                                                                                                  | PROD    | -          | PROD  |                             |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Columns                                                                   |         | -          |       |                             |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column                      | SK_PROD | -          |       | **I**                       |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name | SK_PROD | -          |       | **I**                       |
@@ -247,8 +236,8 @@ Indentation in Erwin follows multiples of **6 spaces** (represented here by '·'
 | ···············Theme             |                                                    | Corporate                                 |
 | ···············Null Option       |                                                    | Not Null                                  |
 | ···············Parent Domain     |                                                    | Number                                    |
-| ······Foreign Keys               |                                                    |                                           |
-| ·········Foreign Key             | FK_CLI_02                                          |                                           |
+| ······Relationships               |                                                    |                                           |
+| ·········Relationship             | FK_CLI_02                                          |                                           |
 | ············Name                 | FK_CLI_02                                          |                                           |
 | ······Keys/Indexes               |                                                    |                                           |
 | ·········Key/Index               | IX_CLI_02                                          |                                           |
