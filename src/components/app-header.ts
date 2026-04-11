@@ -10,57 +10,11 @@ import headerStyles from './app-header.css?inline';
 
 @customElement('app-header')
 export class AppHeader extends LitElement {
+  static styles = unsafeCSS(headerStyles);
   private fileName = new StoreController(this, fileName$);
   private theme = new StoreController(this, theme$);
   private language = new StoreController(this, language$);
-
   @state() private isDragging = false;
-
-  static styles = unsafeCSS(headerStyles);
-
-  private _handleFile(file: File) {
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = e => {
-      const content = e.target?.result as string;
-      this.dispatchEvent(
-        new CustomEvent('file-loaded', {
-          detail: { content, name: file.name },
-          bubbles: true,
-          composed: true,
-        }),
-      );
-    };
-    reader.readAsText(file);
-  }
-
-  private _onDrop(e: DragEvent) {
-    e.preventDefault();
-    this.isDragging = false;
-    const file = e.dataTransfer?.files[0];
-    if (file) this._handleFile(file);
-  }
-
-  private _onDragOver(e: DragEvent) {
-    e.preventDefault();
-    this.isDragging = true;
-  }
-
-  private _onDragLeave() {
-    this.isDragging = false;
-  }
-
-  private _closeFile() {
-    fileName$.set(null);
-    rawData$.set([]);
-    filterName$.set('');
-  }
-
-  private _onLanguageChange(e: Event) {
-    const val = (e.target as HTMLSelectElement).value;
-    changeLanguage(val);
-  }
 
   render() {
     return html`
@@ -107,5 +61,49 @@ export class AppHeader extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  private _handleFile(file: File) {
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      const content = e.target?.result as string;
+      this.dispatchEvent(
+        new CustomEvent('file-loaded', {
+          detail: { content, name: file.name },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    };
+    reader.readAsText(file);
+  }
+
+  private _onDrop(e: DragEvent) {
+    e.preventDefault();
+    this.isDragging = false;
+    const file = e.dataTransfer?.files[0];
+    if (file) this._handleFile(file);
+  }
+
+  private _onDragOver(e: DragEvent) {
+    e.preventDefault();
+    this.isDragging = true;
+  }
+
+  private _onDragLeave() {
+    this.isDragging = false;
+  }
+
+  private _closeFile() {
+    fileName$.set(null);
+    rawData$.set([]);
+    filterName$.set('');
+  }
+
+  private _onLanguageChange(e: Event) {
+    const val = (e.target as HTMLSelectElement).value;
+    changeLanguage(val);
   }
 }

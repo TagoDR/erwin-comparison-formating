@@ -20,10 +20,9 @@ const USE_SAMPLE = import.meta.env.DEV && true;
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
+  static styles = unsafeCSS(mainStyles);
   private isLoading = new StoreController(this, isLoading$);
   private fileName = new StoreController(this, fileName$);
-
-  static styles = unsafeCSS(mainStyles);
 
   firstUpdated() {
     if (USE_SAMPLE) {
@@ -40,6 +39,48 @@ export class AppRoot extends LitElement {
 
     // Userscript: Auto-transform if Erwin report is detected in the current document
     this._detectAndTransformUserscript();
+  }
+
+  render() {
+    const showData = !!this.fileName.value && !this.isLoading.value;
+
+    return html`
+	<div class="main-content" @file-loaded=${this._onFileLoaded}>
+	<app-header></app-header>
+        <div class="display-area">
+          ${
+            showData
+              ? html`
+            <app-stats></app-stats>
+            <app-table></app-table>
+          `
+              : ''
+          }
+
+          ${
+            !this.fileName.value && !this.isLoading.value
+              ? html`
+            <div class="empty-state">
+              <span class="empty-icon">${icons['file-diff']}</span>
+              <span>${translate('app.no_file')}</span>
+            </div>
+          `
+              : ''
+          }
+        </div>
+        
+        ${
+          this.isLoading.value
+            ? html`
+          <div class="loading-overlay">
+            <div class="spinner"></div>
+            <span class="loading-text">${translate('app.loading')}</span>
+          </div>
+        `
+            : ''
+        }
+      </div>
+    `;
   }
 
   private _detectAndTransformUserscript() {
@@ -123,47 +164,5 @@ export class AppRoot extends LitElement {
     rawData$.set(rows);
     initializeVisibility();
     isLoading$.set(false);
-  }
-
-  render() {
-    const showData = !!this.fileName.value && !this.isLoading.value;
-
-    return html`
-	<div class="main-content" @file-loaded=${this._onFileLoaded}>
-	<app-header></app-header>
-        <div class="display-area">
-          ${
-            showData
-              ? html`
-            <app-stats></app-stats>
-            <app-table></app-table>
-          `
-              : ''
-          }
-
-          ${
-            !this.fileName.value && !this.isLoading.value
-              ? html`
-            <div class="empty-state">
-              <span class="empty-icon">${icons['file-diff']}</span>
-              <span>${translate('app.no_file')}</span>
-            </div>
-          `
-              : ''
-          }
-        </div>
-        
-        ${
-          this.isLoading.value
-            ? html`
-          <div class="loading-overlay">
-            <div class="spinner"></div>
-            <span class="loading-text">${translate('app.loading')}</span>
-          </div>
-        `
-            : ''
-        }
-      </div>
-    `;
   }
 }

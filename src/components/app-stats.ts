@@ -15,41 +15,10 @@ import statsStyles from './app-stats.css?inline';
 
 @customElement('app-stats')
 export class AppStats extends LitElement {
+  static styles = unsafeCSS(statsStyles);
   private stats = new StoreController(this, statsSummary$);
   private nameFilter = new StoreController(this, filterName$);
   private showProps = new StoreController(this, showProperties$);
-
-  static styles = unsafeCSS(statsStyles);
-
-  private _updateChangeFilter(e: Event) {
-    const val = (e.target as HTMLSelectElement).value;
-    filterChange$.set(val);
-  }
-
-  private _updateNameFilter(e: Event) {
-    const val = (e.target as HTMLInputElement).value;
-    filterName$.set(val);
-  }
-
-  private _copyTablesToClipboard() {
-    const tables = rawData$
-      .get()
-      .filter(row => row.isHeader && row.type.toLowerCase().includes('table'))
-      .map(row => {
-        // Extracting table name after ':'
-        const parts = row.type.split(':');
-        return parts.length > 1 ? parts[1].trim() : row.type.trim();
-      })
-      .join('\n');
-
-    if (tables) {
-      navigator.clipboard.writeText(tables).then(() => {
-        alert(get('stats.messages.copied'));
-      });
-    } else {
-      alert(get('stats.messages.no_tables'));
-    }
-  }
 
   render() {
     if (this.stats.value.length === 0) return html``;
@@ -125,5 +94,35 @@ export class AppStats extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  private _updateChangeFilter(e: Event) {
+    const val = (e.target as HTMLSelectElement).value;
+    filterChange$.set(val);
+  }
+
+  private _updateNameFilter(e: Event) {
+    const val = (e.target as HTMLInputElement).value;
+    filterName$.set(val);
+  }
+
+  private _copyTablesToClipboard() {
+    const tables = rawData$
+      .get()
+      .filter(row => row.isHeader && row.type.toLowerCase().includes('table'))
+      .map(row => {
+        // Extracting table name after ':'
+        const parts = row.type.split(':');
+        return parts.length > 1 ? parts[1].trim() : row.type.trim();
+      })
+      .join('\n');
+
+    if (tables) {
+      navigator.clipboard.writeText(tables).then(() => {
+        alert(get('stats.messages.copied'));
+      });
+    } else {
+      alert(get('stats.messages.no_tables'));
+    }
   }
 }

@@ -17,20 +17,12 @@ import tableStyles from './app-table.css?inline';
 
 @customElement('app-table')
 export class AppTable extends LitElement {
+  static styles = unsafeCSS(tableStyles);
   private data = new StoreController(this, filteredData$);
   private showProps = new StoreController(this, showProperties$);
   private toggledProps = new StoreController(this, toggledPropertiesIds$);
   private hiddenSubs = new StoreController(this, hiddenSubObjectsIds$);
   private checked = new StoreController(this, checkedIds$);
-
-  static styles = unsafeCSS(tableStyles);
-
-  private _copyToClipboard(text: string) {
-    const cleanText = text.includes(':') ? text.split(':')[1].trim() : text.trim();
-    navigator.clipboard.writeText(cleanText).then(() => {
-      console.log('Copied:', cleanText);
-    });
-  }
 
   render() {
     if (this.data.value.length === 0) {
@@ -179,5 +171,12 @@ export class AppTable extends LitElement {
         </tbody>
       </table>
     `;
+  }
+
+  private _copyToClipboard(text: string) {
+    const cleanText = text.includes(':') ? text.split(':')[1].trim() : text.trim();
+    navigator.clipboard.writeText(cleanText).then(() => {
+      console.log('Copied:', cleanText);
+    });
   }
 }
