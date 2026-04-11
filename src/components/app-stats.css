@@ -58,61 +58,61 @@ td {
 /* Tables Row (Base Colors) */
 tr[data-type="Tables"] {
   background-color: var(--off-blue-base);
-  color: #ffffff;
+  color: var(--text-on-dark);
 }
 tr[data-type="Tables"] .type-col {
-  color: #ffffff;
+  color: var(--text-on-dark);
   font-weight: bold;
 }
 tr[data-type="Tables"] .status-I {
   background-color: var(--off-green-base);
-  color: #ffffff;
+  color: var(--text-on-dark);
 }
 tr[data-type="Tables"] .status-A {
   background-color: var(--off-purple-base);
-  color: #ffffff;
+  color: var(--text-on-dark);
 }
 tr[data-type="Tables"] .status-E {
   background-color: var(--off-red-base);
-  color: #ffffff;
+  color: var(--text-on-dark);
 }
 tr[data-type="Tables"] .status-C {
   background-color: var(--off-orange-base);
-  color: #ffffff;
+  color: var(--text-on-dark);
 }
 tr[data-type="Tables"] .total-col {
-  background-color: var(--off-aqua-base);
-  color: #ffffff;
+  background-color: var(--off-blue-40);
+  color: var(--text-on-dark);
 }
 
 /* Columns Row (60% Lighter Colors) */
 tr[data-type="Columns"] {
   background-color: var(--off-blue-60);
-  color: #000000;
+  color: var(--text-on-light);
 }
 tr[data-type="Columns"] .type-col {
-  color: #000000;
+  color: var(--text-on-light);
   font-weight: bold;
 }
 tr[data-type="Columns"] .status-I {
   background-color: var(--off-green-60);
-  color: #000000;
+  color: var(--text-on-light);
 }
 tr[data-type="Columns"] .status-A {
   background-color: var(--off-purple-60);
-  color: #000000;
+  color: var(--text-on-light);
 }
 tr[data-type="Columns"] .status-E {
   background-color: var(--off-red-60);
-  color: #000000;
+  color: var(--text-on-light);
 }
 tr[data-type="Columns"] .status-C {
   background-color: var(--off-orange-60);
-  color: #000000;
+  color: var(--text-on-light);
 }
 tr[data-type="Columns"] .total-col {
-  background-color: var(--off-aqua-60);
-  color: #000000;
+  background-color: var(--off-blue-80);
+  color: var(--text-on-light);
 }
 
 /* Filter Panel Styling */
@@ -201,7 +201,7 @@ tr[data-type="Columns"] .total-col {
 .action-btn:hover {
   background: var(--accent-blue);
   border-color: var(--accent-blue);
-  color: white;
+  color: var(--text-on-dark);
 }
 
 .action-btn:active {

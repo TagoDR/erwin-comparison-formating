@@ -147,12 +147,13 @@ export const enrichedData$ = computed(rawData$, data => {
       // A property is calculated if it's exactly the same AND ends with [Calculated] both sides
       isCalculated:
         row.leftModel === row.rightModel &&
-        row.leftModel.endsWith('[Calculated]') && row.rightModel.endsWith('[Calculated]'),
+        row.leftModel.endsWith('[Calculated]') &&
+        row.rightModel.endsWith('[Calculated]'),
     };
-    });
+  });
 
-    const headerStack: { id: string; indent: number; isGrouping: boolean }[] = [];
-    const withParents = withInitialState.map(row => {
+  const headerStack: { id: string; indent: number; isGrouping: boolean }[] = [];
+  const withParents = withInitialState.map(row => {
     while (headerStack.length > 0 && headerStack[headerStack.length - 1].indent >= row.indent) {
       headerStack.pop();
     }
@@ -171,28 +172,28 @@ export const enrichedData$ = computed(rawData$, data => {
     }
 
     return { ...row, parentId };
-    });
+  });
 
-    // 2. Hoisting (Bottom-Up)
-    // We hoist View classification and also determine if a Header is "fully calculated"
-    // A header is fully calculated if ALL its descendants (properties and sub-headers) are calculated.
-    const hoisted = [...withParents];
+  // 2. Hoisting (Bottom-Up)
+  // We hoist View classification and also determine if a Header is "fully calculated"
+  // A header is fully calculated if ALL its descendants (properties and sub-headers) are calculated.
+  const hoisted = [...withParents];
 
-    // Track children for each header to verify "all descendants" rule
-    const childrenMap = new Map<string, string[]>();
-    hoisted.forEach(r => {
+  // Track children for each header to verify "all descendants" rule
+  const childrenMap = new Map<string, string[]>();
+  hoisted.forEach(r => {
     if (r.parentId) {
       const list = childrenMap.get(r.parentId) || [];
-      list.push(r.id!);
+      list.push(r.id);
       childrenMap.set(r.parentId, list);
     }
-    });
+  });
 
-    for (let i = hoisted.length - 1; i >= 0; i--) {
+  for (let i = hoisted.length - 1; i >= 0; i--) {
     const row = hoisted[i];
 
     if (row.isHeader && !row.isGrouping) {
-      const childrenIds = childrenMap.get(row.id!) || [];
+      const childrenIds = childrenMap.get(row.id) || [];
       const nonGroupingChildren = childrenIds.filter(cid => {
         const child = hoisted.find(r => r.id === cid);
         return !child?.isGrouping;
@@ -221,11 +222,11 @@ export const enrichedData$ = computed(rawData$, data => {
         }
       }
     }
-    }
+  }
 
-    // 3. Final polish: Prop code and Filter out grouping rows
-    let lastPropCode = 'O';
-    const result = hoisted
+  // 3. Final polish: Prop code and Filter out grouping rows
+  let lastPropCode = 'O';
+  const result = hoisted
     .map(row => {
       const code = row.isHeader ? getObjectShortCode(row.type) : '';
       if (code) lastPropCode = code;
@@ -233,15 +234,15 @@ export const enrichedData$ = computed(rawData$, data => {
     })
     .filter(row => !row.isGrouping);
 
-    return result;
-    });
+  return result;
+});
 
-    /**
-    * Filtered data based on search, type and change filters.
-    */
-    export const filteredData$ = computed(
-    [enrichedData$, filterChange$, filterName$],
-    (data, change, name) => {
+/**
+ * Filtered data based on search, type and change filters.
+ */
+export const filteredData$ = computed(
+  [enrichedData$, filterChange$, filterName$],
+  (data, change, name) => {
     let result = data;
 
     // 1. Change Filter (Rule 1: observe at table level only)
@@ -317,36 +318,36 @@ export const enrichedData$ = computed(rawData$, data => {
     }
 
     return result;
-    },
-    );
+  },
+);
 
-    // Toggle functions
-    export const togglePropertiesGlobal = () => {
-    const nextValue = !showProperties$.get();
-    showProperties$.set(nextValue);
-    // Reset individual toggles when global toggle is used
-    toggledPropertiesIds$.set(new Set());
-    };
+// Toggle functions
+export const togglePropertiesGlobal = () => {
+  const nextValue = !showProperties$.get();
+  showProperties$.set(nextValue);
+  // Reset individual toggles when global toggle is used
+  toggledPropertiesIds$.set(new Set());
+};
 
-    export const togglePropertiesIndividual = (id: string) => {
-    const current = new Set(toggledPropertiesIds$.get());
-    if (current.has(id)) current.delete(id);
-    else current.add(id);
-    toggledPropertiesIds$.set(current);
-    };
+export const togglePropertiesIndividual = (id: string) => {
+  const current = new Set(toggledPropertiesIds$.get());
+  if (current.has(id)) current.delete(id);
+  else current.add(id);
+  toggledPropertiesIds$.set(current);
+};
 
-    export const toggleSubObjects = (id: string) => {
-    const current = new Set(hiddenSubObjectsIds$.get());
-    if (current.has(id)) current.delete(id);
-    else current.add(id);
-    hiddenSubObjectsIds$.set(current);
-    };
+export const toggleSubObjects = (id: string) => {
+  const current = new Set(hiddenSubObjectsIds$.get());
+  if (current.has(id)) current.delete(id);
+  else current.add(id);
+  hiddenSubObjectsIds$.set(current);
+};
 
-    export const toggleCheck = (id: string) => {
-    const currentChecked = new Set(checkedIds$.get());
-    const willBeChecked = !currentChecked.has(id);
+export const toggleCheck = (id: string) => {
+  const currentChecked = new Set(checkedIds$.get());
+  const willBeChecked = !currentChecked.has(id);
 
-    if (willBeChecked) {
+  if (willBeChecked) {
     currentChecked.add(id);
     // When checking, ensure its sub-objects are hidden
     const currentHiddenSubs = new Set(hiddenSubObjectsIds$.get());
@@ -364,22 +365,22 @@ export const enrichedData$ = computed(rawData$, data => {
       currentToggled.delete(id);
     }
     toggledPropertiesIds$.set(currentToggled);
-    } else {
+  } else {
     currentChecked.delete(id);
-    }
+  }
 
-    checkedIds$.set(currentChecked);
-    };
+  checkedIds$.set(currentChecked);
+};
 
-    export const initializeVisibility = () => {
-    showProperties$.set(false);
-    toggledPropertiesIds$.set(new Set());
-    hiddenSubObjectsIds$.set(new Set());
-    };
+export const initializeVisibility = () => {
+  showProperties$.set(false);
+  toggledPropertiesIds$.set(new Set());
+  hiddenSubObjectsIds$.set(new Set());
+};
 
-    // Computed stats for the stats panel
-    export const statsSummary$ = computed(enrichedData$, data => {
-    const summary: Record<string, StatsSummary> = {
+// Computed stats for the stats panel
+export const statsSummary$ = computed(enrichedData$, data => {
+  const summary: Record<string, StatsSummary> = {
     Tables: {
       type: 'Tables',
       total: 0,
@@ -396,9 +397,9 @@ export const enrichedData$ = computed(rawData$, data => {
       exclusion: 0,
       calculated: 0,
     },
-    };
+  };
 
-    data.forEach(row => {
+  data.forEach(row => {
     if (!row.isHeader || row.isGrouping || !row.change) return;
 
     const isTable = row.prop === 'Ent';
@@ -417,8 +418,7 @@ export const enrichedData$ = computed(rawData$, data => {
 
     if (isTable) increment('Tables');
     if (isColumn) increment('Columns');
-    });
+  });
 
-    return Object.values(summary);
-    });
-
+  return Object.values(summary);
+});

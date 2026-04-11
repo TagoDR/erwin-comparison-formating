@@ -84,6 +84,20 @@
 
   --row-bg-normal: #2c3e50;
   --row-text-normal: #f1f2f2;
+
+  --text-on-dark: #ffffff;
+  --text-on-light: #262626;
+
+  --hover-bg: rgba(255, 255, 255, 0.05);
+
+  /* Grouping Rows (Grayscale) */
+  --bg-group-l0: #6c7a89;
+  --bg-group-l1: #95a5a6;
+  --bg-group-l2: #bdc3c7;
+  --bg-group-l3: #bfbfbf;
+
+  --btn-danger-bg: #da4453;
+  --btn-danger-border: #ed5565;
 }
 
 [data-theme="light"] {
@@ -98,6 +112,7 @@
   --row-text-normal: #262626;
 
   --bg-empty: rgba(255, 255, 255, 0.95);
+  --hover-bg: rgba(0, 0, 0, 0.05);
 }
 
 body {
@@ -135,11 +150,11 @@ body {
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--hover-bg);
 }
 
 [data-theme="dark"] .table-hover tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--hover-bg);
 }
 
 .form-control {
@@ -166,8 +181,8 @@ label {
 }
 
 .btn-danger {
-  background-color: #da4453;
-  border-color: #ed5565;
+  background-color: var(--btn-danger-bg);
+  border-color: var(--btn-danger-border);
 }
 
 /* Remove Glyphicons dependency */

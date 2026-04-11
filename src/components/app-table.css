@@ -41,7 +41,7 @@
 .col-right,
 .row-left,
 .row-right {
-  text-align: left !important;
+  text-align: left;
 }
 
 .col-prop,
@@ -114,71 +114,71 @@ tr:hover .copy-btn {
 
 /* Grouping Rows (Grayscale Palette) */
 tr[data-grouping="true"] {
-  background-color: #6c7a89;
-  color: black;
+  background-color: var(--bg-group-l0);
+  color: var(--text-on-light);
 }
 tr[data-grouping="true"][data-level="1"] {
-  background-color: #95a5a6;
-  color: black;
+  background-color: var(--bg-group-l1);
+  color: var(--text-on-light);
 }
 tr[data-grouping="true"][data-level="2"] {
-  background-color: #bdc3c7;
-  color: black;
+  background-color: var(--bg-group-l2);
+  color: var(--text-on-light);
 }
 tr[data-grouping="true"][data-level="3"],
 tr[data-grouping="true"][data-level="4"] {
-  background-color: #bfbfbf;
-  color: black;
+  background-color: var(--bg-group-l3);
+  color: var(--text-on-light);
 }
 
 /* Status Colors (Office 2010 Palette) */
 
 /* Entity/Table Level */
 tr[data-header="true"][data-prop="Ent"][data-change="I"]:not([data-grouping="true"]) {
-  background-color: #9bbb59;
-  color: white;
+  background-color: var(--off-green-base);
+  color: var(--text-on-dark);
 }
 tr[data-header="true"][data-prop="Ent"][data-change="A"]:not([data-grouping="true"]) {
-  background-color: #8064a2;
-  color: white;
+  background-color: var(--off-purple-base);
+  color: var(--text-on-dark);
 }
 tr[data-header="true"][data-prop="Ent"][data-change="E"]:not([data-grouping="true"]) {
-  background-color: #c0504d;
-  color: white;
+  background-color: var(--off-red-base);
+  color: var(--text-on-dark);
 }
 
 /* Attribute/Column Level */
 tr[data-header="true"][data-prop="Atr"][data-change="I"]:not([data-grouping="true"]) {
-  background-color: #d7e3bc;
-  color: black;
+  background-color: var(--off-green-60);
+  color: var(--text-on-light);
 }
 tr[data-header="true"][data-prop="Atr"][data-change="A"]:not([data-grouping="true"]) {
-  background-color: #ccc1d9;
-  color: black;
+  background-color: var(--off-purple-60);
+  color: var(--text-on-light);
 }
 tr[data-header="true"][data-prop="Atr"][data-change="E"]:not([data-grouping="true"]) {
-  background-color: #e5b9b7;
-  color: black;
+  background-color: var(--off-red-60);
+  color: var(--text-on-light);
 }
 
 /* Other Objects (Absolute Orange Nesting) */
 tr[data-header="true"][data-level="0"]:not([data-grouping="true"]) {
-  background-color: #f79646;
-  color: white;
+  background-color: var(--color-obj-l0);
+  color: var(--text-on-dark);
 }
 tr[data-header="true"][data-level="1"]:not([data-grouping="true"]) {
-  background-color: #fac08f;
-  color: black;
+  background-color: var(--color-obj-l1);
+  color: var(--text-on-dark);
 }
 tr[data-header="true"][data-level="2"]:not([data-grouping="true"]) {
-  background-color: #fbd5b5;
-  color: black;
+  background-color: var(--color-obj-l2);
+  color: var(--text-on-light);
 }
 tr[data-header="true"][data-level="3"]:not([data-grouping="true"]),
 tr[data-header="true"][data-level="4"]:not([data-grouping="true"]),
 tr[data-header="true"][data-level="5"]:not([data-grouping="true"]) {
-  background-color: #fde9d9;
-  color: black;
+  background-color: var(--color-obj-l3);
+  color: var(--text-on-light);
 }
 
 /* Checked row state: Preserves status colors but applies greyed-out effect */
