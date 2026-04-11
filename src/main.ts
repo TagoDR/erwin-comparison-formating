@@ -1,9 +1,10 @@
 import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { translate } from 'lit-translate';
 import { icons } from './assets/icons';
 import { parseErwinHtml } from './parser/html-parser';
-import { fileName$, isLoading$, rawData$, initializeVisibility } from './store/data.store';
+import { fileName$, initializeVisibility, isLoading$, rawData$ } from './store/data.store';
 
 // Import Global CSS
 import './index.css';
@@ -124,7 +125,7 @@ export class AppRoot extends LitElement {
               ? html`
             <div class="empty-state">
               <span class="empty-icon">${icons['file-diff']}</span>
-              <span>No file loaded, select a file above.</span>
+              <span>${translate('app.no_file')}</span>
             </div>
           `
               : ''
@@ -136,7 +137,7 @@ export class AppRoot extends LitElement {
             ? html`
           <div class="loading-overlay">
             <div class="spinner"></div>
-            <span class="loading-text">Processing html File...</span>
+            <span class="loading-text">${translate('app.loading')}</span>
           </div>
         `
             : ''

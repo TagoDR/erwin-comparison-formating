@@ -177,7 +177,7 @@ export const enrichedData$ = computed(rawData$, data => {
 
   for (let i = hoisted.length - 1; i >= 0; i--) {
     const row = hoisted[i];
-    
+
     // Properties that are not headers contribute to parent view classification
     if (row.parentId) {
       const parentIndex = hoisted.findIndex(p => p.id === row.parentId);
@@ -218,7 +218,7 @@ export const filteredData$ = computed(
     // 1. Change Filter (Rule 1: observe at table level only)
     if (change) {
       const matches = new Set<string>();
-      
+
       data.forEach(r => {
         // Only apply filter to entities (prop === 'Ent')
         if (r.isHeader && r.prop === 'Ent' && r.change === change) {
@@ -232,7 +232,7 @@ export const filteredData$ = computed(
           addWithDescendants(r.id);
         }
       });
-      
+
       result = result.filter(r => matches.has(r.id));
     }
 

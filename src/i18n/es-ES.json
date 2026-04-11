@@ -1,0 +1,52 @@
+{
+  "header": {
+    "title": "Formateador de Comparación Erwin",
+    "upload": "Suelte el HTML de Erwin aquí o haga clic para cargar",
+    "close": "Cerrar archivo",
+    "filters": {
+      "change": "Tipo de cambio",
+      "category": "Categoría",
+      "name": "Filtrar por nombre"
+    }
+  },
+  "stats": {
+    "row_general": "General",
+    "row_tables": "Tablas",
+    "row_columns": "Columnas",
+    "col_type": "Objeto",
+    "col_total": "Total",
+    "col_addition": "Inclusión",
+    "col_change": "Alteración",
+    "col_deletion": "Exclusión",
+    "actions": {
+      "copy_tables": "COPIAR TABLAS",
+      "show_props": "MOSTRAR PROPIEDADES",
+      "hide_props": "OCULTAR PROPIEDADES"
+    },
+    "messages": {
+      "copied": "¡Lista de nombres de tablas copiada al portapapeles!",
+      "no_tables": "No se encontraron nombres de tablas."
+    }
+  },
+  "table": {
+    "empty": "Seleccione un archivo HTML con la comparación generada por Erwin para formatear",
+    "col_type": "Tipo / Objeto",
+    "col_left": "Modelo de trabajo (Izquierda)",
+    "col_right": "Modelo de referencia (Derecha)",
+    "col_prop": "Prop",
+    "col_change": "Cambio",
+    "col_view": "Vista",
+    "copy_left": "Copiar izquierda",
+    "copy_right": "Copiar derecha"
+  },
+  "changes": {
+    "all": "Todos",
+    "addition": "Inclusión (I)",
+    "change": "Alteración (A)",
+    "deletion": "Exclusión (E)"
+  },
+  "app": {
+    "no_file": "Ningún archivo cargado, seleccione un archivo arriba.",
+    "loading": "Procesando archivo HTML..."
+  }
+}

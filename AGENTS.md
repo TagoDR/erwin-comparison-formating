@@ -43,23 +43,22 @@ The interface is divided into two primary sections:
 
 ### 3.3. Table Configuration and Interactions
 
-| Interaction      | Effect                                      |
-| :--------------- | :------------------------------------------ |
-| **Left Click**   | Show/Hide the object's properties.          |
-| **Right Click**  | Show/Hide the object's sub-objects (children). |
-| **Global Toggle**| Master shortcut to Show/Hide all properties globally. |
-| **Initial State**| All object properties are hidden by default. |
+| Interaction       | Effect                                                |
+| :---------------- | :---------------------------------------------------- |
+| **Left Click**    | Show/Hide the object's properties.                    |
+| **Right Click**   | Show/Hide the object's sub-objects (children).        |
+| **Global Toggle** | Master shortcut to Show/Hide all properties globally. |
+| **Initial State** | All object properties are hidden by default.          |
 
-| Column          | Description                                              |
-| :-------------- | :------------------------------------------------------- |
-| **Check**       | Visual/functional control for checklists.               |
-| **Type**        | Indented object hierarchy (without the object name).     |
-| **Prop**        | Parent object identifier.                                |
-| **Change**      | I (Addition), A (Change), or E (Deletion).               |
-| **View**        | L (Logical), P (Physical), or L/P.                       |
-| **Left Model**  | Working model data.                                      |
-| **Right Model** | Reference model data (baseline).                         |
-
+| Column          | Description                                          |
+| :-------------- | :--------------------------------------------------- |
+| **Check**       | Visual/functional control for checklists.            |
+| **Type**        | Indented object hierarchy (without the object name). |
+| **Prop**        | Parent object identifier.                            |
+| **Change**      | I (Addition), A (Change), or E (Deletion).           |
+| **View**        | L (Logical), P (Physical), or L/P.                   |
+| **Left Model**  | Working model data.                                  |
+| **Right Model** | Reference model data (baseline).                     |
 
 ### 3.4. Data Object Identification Rows
 
@@ -113,19 +112,19 @@ _Example:_ A "Foreign Keys" identification row (not the grouping row) at Level 2
 
 #### Scenario A: Table Change
 
-| Type                                     | Left   | Difference | Right       | Logical Result            |
-| :--------------------------------------- | :----- | :--------- | :---------- | :------------------------ |
-| Entity/Table                             | CLI    | -          | CLI         |                           |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name | Client | -          | Client Info | **A**                     |
+| Type                                     | Left   | Difference | Right       | Logical Result |
+| :--------------------------------------- | :----- | :--------- | :---------- | :------------- |
+| Entity/Table                             | CLI    | -          | CLI         |                |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name | Client | -          | Client Info | **A**          |
 
 #### Scenario B: New Column
 
-| Type                                                                                                          | Left    | Difference | Right | Logical Result              |
-| :------------------------------------------------------------------------------------------------------------ | :------ | :--------- | :---- | :-------------------------- |
-| Entity/Table                                                                                                  | PROD    | -          | PROD  |                             |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Columns                                                                   |         | -          |       |                             |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column                      | SK_PROD | -          |       | **I**                       |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name | SK_PROD | -          |       | **I**                       |
+| Type                                                                                                          | Left    | Difference | Right | Logical Result |
+| :------------------------------------------------------------------------------------------------------------ | :------ | :--------- | :---- | :------------- |
+| Entity/Table                                                                                                  | PROD    | -          | PROD  |                |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Columns                                                                   |         | -          |       |                |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column                      | SK_PROD | -          |       | **I**          |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name | SK_PROD | -          |       | **I**          |
 
 #### Scenario C: Deleted Relationship
 
@@ -236,8 +235,8 @@ Indentation in Erwin follows multiples of **6 spaces** (represented here by '·'
 | ···············Theme             |                                                    | Corporate                                 |
 | ···············Null Option       |                                                    | Not Null                                  |
 | ···············Parent Domain     |                                                    | Number                                    |
-| ······Relationships               |                                                    |                                           |
-| ·········Relationship             | FK_CLI_02                                          |                                           |
+| ······Relationships              |                                                    |                                           |
+| ·········Relationship            | FK_CLI_02                                          |                                           |
 | ············Name                 | FK_CLI_02                                          |                                           |
 | ······Keys/Indexes               |                                                    |                                           |
 | ·········Key/Index               | IX_CLI_02                                          |                                           |

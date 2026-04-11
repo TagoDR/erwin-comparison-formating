@@ -26,7 +26,7 @@ export function parseErwinHtml(html: string): ErwinRow[] {
     const rawTypeText = objectTd.textContent || '';
     const type = rawTypeText.trim();
 
-    // Calculate indent: typically 6 spaces per level. 
+    // Calculate indent: typically 6 spaces per level.
     // We count leading spaces or non-breaking spaces (\u00a0)
     const leadingWhitespace = rawTypeText.match(/^[\s\u00a0]*/)?.[0] || '';
     const indent = Math.floor(leadingWhitespace.length / 6);
@@ -46,8 +46,8 @@ export function parseErwinHtml(html: string): ErwinRow[] {
       leftModel: rawLeft, // Keep original for display
       rightModel: rawRight, // Keep original for display
       change,
-      prop: '', 
-      view: '', 
+      prop: '',
+      view: '',
     });
   });
 

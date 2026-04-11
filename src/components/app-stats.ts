@@ -1,6 +1,7 @@
 import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { get, translate } from 'lit-translate';
 import { icons } from '../assets/icons';
 import {
   filterChange$,
@@ -43,10 +44,10 @@ export class AppStats extends LitElement {
 
     if (tables) {
       navigator.clipboard.writeText(tables).then(() => {
-        alert('Table name list copied to clipboard!');
+        alert(get('stats.messages.copied'));
       });
     } else {
-      alert('No table names found.');
+      alert(get('stats.messages.no_tables'));
     }
   }
 
@@ -60,18 +61,18 @@ export class AppStats extends LitElement {
             <table class="table table-condensed stats-table">
               <thead>
                 <tr>
-                  <th>Object</th>
-                  <th>Total</th>
-                  <th class="status-I">Inclusion</th>
-                  <th class="status-A">Alteration</th>
-                  <th class="status-E">Exclusion</th>
+                  <th>${translate('stats.col_type')}</th>
+                  <th>${translate('stats.col_total')}</th>
+                  <th class="status-I">${translate('stats.col_addition')}</th>
+                  <th class="status-A">${translate('stats.col_change')}</th>
+                  <th class="status-E">${translate('stats.col_deletion')}</th>
                 </tr>
               </thead>
               <tbody>
                 ${this.stats.value.map(
                   s => html`
                   <tr data-type="${s.type}">
-                    <td class="type-col">${s.type}</td>
+                    <td class="type-col">${translate(`stats.row_${s.type.toLowerCase()}`)}</td>
                     <td class="val-col">${s.total}</td>
                     <td class="val-col status-I">${s.inclusion}</td>
                     <td class="val-col status-A">${s.alteration}</td>
@@ -85,7 +86,7 @@ export class AppStats extends LitElement {
 
           <div class="filter-panel">
             <div class="filter-item search-filter">
-              <label for="name-filter">Filter by Name</label>
+              <label for="name-filter">${translate('header.filters.name')}</label>
               <div class="search-input-wrapper">
                   ${icons.filter}
                   <input 
@@ -100,12 +101,12 @@ export class AppStats extends LitElement {
             </div>
 
             <div class="filter-item">
-              <label for="change-filter">Change Type</label>
+              <label for="change-filter">${translate('header.filters.change')}</label>
               <select id="change-filter" class="form-control" @change=${this._updateChangeFilter}>
-                <option value="">All</option>
-                <option value="I">Inclusion (I)</option>
-                <option value="A">Alteration (A)</option>
-                <option value="E">Exclusion (E)</option>
+                <option value="">${translate('changes.all')}</option>
+                <option value="I">${translate('changes.addition')}</option>
+                <option value="A">${translate('changes.change')}</option>
+                <option value="E">${translate('changes.deletion')}</option>
               </select>
             </div>
           </div>
@@ -113,11 +114,11 @@ export class AppStats extends LitElement {
 
         <div class="action-panel">
           <button type="button" class="btn btn-primary btn-block action-btn" @click=${this._copyTablesToClipboard}>
-            ${icons['clipboard-list']} <span>COPY TABLES</span>
+            ${icons['clipboard-list']} <span>${translate('stats.actions.copy_tables')}</span>
           </button>
           <button type="button" class="btn btn-default btn-block action-btn" @click=${togglePropertiesGlobal}>
             ${this.showProps.value ? icons['filter-off'] : icons.filter} 
-            <span>${this.showProps.value ? 'HIDE PROPERTIES' : 'SHOW PROPERTIES'}</span>
+            <span>${this.showProps.value ? translate('stats.actions.hide_props') : translate('stats.actions.show_props')}</span>
           </button>
         </div>
       </div>

@@ -1,8 +1,10 @@
 import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { translate } from 'lit-translate';
 import { icons } from '../assets/icons';
 import { fileName$, filterName$, rawData$ } from '../store/data.store';
+import { changeLanguage, language$ } from '../store/i18n.store';
 import { theme$, toggleTheme } from '../store/theme.store';
 import headerStyles from './app-header.css?inline';
 
@@ -10,6 +12,7 @@ import headerStyles from './app-header.css?inline';
 export class AppHeader extends LitElement {
   private fileName = new StoreController(this, fileName$);
   private theme = new StoreController(this, theme$);
+  private language = new StoreController(this, language$);
 
   @state() private isDragging = false;
 
@@ -54,10 +57,15 @@ export class AppHeader extends LitElement {
     filterName$.set('');
   }
 
+  private _onLanguageChange(e: Event) {
+    const val = (e.target as HTMLSelectElement).value;
+    changeLanguage(val);
+  }
+
   render() {
     return html`
       <div class="header-layout">
-        <div class="brand">Erwin Complete Compare</div>
+        <div class="brand">${translate('header.title')}</div>
 
         ${
           this.fileName.value
@@ -65,7 +73,7 @@ export class AppHeader extends LitElement {
           <div class="file-info">
             <span class="file-name">${this.fileName.value}</span>
             <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
-               ${icons.x} <span>Close File</span>
+               ${icons.x} <span>${translate('header.close')}</span>
             </button>
           </div>
         `
@@ -77,17 +85,25 @@ export class AppHeader extends LitElement {
             @dragleave=${this._onDragLeave}
           >
             <span class="icon">${icons['file-diff']}</span>
-            <span>Select file or drag and drop here</span>
+            <span>${translate('header.upload')}</span>
             <input type="file" @change=${(e: Event) => this._handleFile((e.target as HTMLInputElement).files?.[0] as File)} />
           </div>
         `
         }
 
         <div class="header-controls">
-          <div class="version-tag">v5</div>
+          <select class="lang-select" .value=${this.language.value} @change=${this._onLanguageChange}>
+            <option value="pt-BR">PT</option>
+            <option value="en-US">EN</option>
+            <option value="fr-FR">FR</option>
+            <option value="es-ES">ES</option>
+          </select>
+
           <button class="theme-toggle" @click=${toggleTheme} title="Change Theme">
             ${this.theme.value === 'dark' ? icons.sun : icons.moon}
           </button>
+          
+          <div class="version-tag">v5</div>
         </div>
       </div>
     `;
