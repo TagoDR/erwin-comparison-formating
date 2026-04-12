@@ -45,7 +45,7 @@ export class AppRoot extends LitElement {
     const showData = !!this.fileName.value && !this.isLoading.value;
 
     return html`
-	<div class="main-content" @file-loaded=${this._onFileLoaded}>
+	<div class="main-content" @file-selected=${this._onFileSelected}>
 	<app-header></app-header>
         <div class="display-area">
           ${
@@ -92,10 +92,11 @@ export class AppRoot extends LitElement {
 
     if (hasObject && hasLeft && hasRight) {
       console.log('Erwin Report detected via Userscript, transforming...');
+      // When running as a userscript, the browser has already parsed the document.
+      // If the encoding was wrong, the textContent might already be mangled.
+      // However, usually the browser handles the local file encoding based on system locale or BOM.
       const originalHTML = document.documentElement.outerHTML;
 
-      // Store current page content before it gets potentially cleared or shadowed
-      // In monkey mode, the script might run after DOM is ready.
       fileName$.set(location.pathname.split('/').pop() || 'local-report.html');
       this._processFileContent(originalHTML);
     }
@@ -113,22 +114,44 @@ export class AppRoot extends LitElement {
 
       const file = e.dataTransfer?.files?.[0];
       if (file?.name.toLowerCase().endsWith('.html')) {
-        this._onFileLoadedFromDrop(file);
+        this._handleFile(file);
       }
     });
   }
 
-  private _onFileLoadedFromDrop(file: File) {
+  private _onFileSelected(e: CustomEvent<{ file: File }>) {
+    this._handleFile(e.detail.file);
+  }
+
+  private _handleFile(file: File) {
     fileName$.set(file.name);
     isLoading$.set(true);
 
     const reader = new FileReader();
     reader.onload = e => {
       const buffer = e.target?.result as ArrayBuffer;
-      const text = new TextDecoder('windows-1252').decode(buffer);
-      this._processFileContent(text);
+      this._decodeBuffer(buffer);
     };
     reader.readAsArrayBuffer(file);
+  }
+
+  /**
+   * Attempts to decode the buffer using UTF-8 first, then falling back to Windows-1252.
+   * This is a robust way to handle Erwin reports with special Portuguese characters.
+   */
+  private _decodeBuffer(buffer: ArrayBuffer) {
+    try {
+      // Try UTF-8 first. 'fatal: true' makes it throw if it encounters invalid sequences.
+      const utf8Decoder = new TextDecoder('utf-8', { fatal: true });
+      const text = utf8Decoder.decode(buffer);
+      this._processFileContent(text);
+    } catch (e) {
+      console.warn('UTF-8 decoding failed, falling back to windows-1252', e);
+      // If UTF-8 fails, it's likely Windows-1252 (common for Erwin/Portuguese)
+      const winDecoder = new TextDecoder('windows-1252');
+      const text = winDecoder.decode(buffer);
+      this._processFileContent(text);
+    }
   }
 
   private async _loadSampleData() {
@@ -136,30 +159,19 @@ export class AppRoot extends LitElement {
     isLoading$.set(true);
 
     try {
-      // Using fetch to get the sample file provided in the store
       const response = await fetch('./src/store/sample.html');
       if (!response.ok) throw new Error('Failed to load sample file');
-      const content = await response.text();
 
-      // Simulate parsing delay for visual verification
-      setTimeout(() => {
-        this._processFileContent(content);
-      }, 800);
+      // For fetch, we can also use arrayBuffer() to be consistent
+      const buffer = await response.arrayBuffer();
+      this._decodeBuffer(buffer);
     } catch (error) {
       console.error('Error loading sample data:', error);
       isLoading$.set(false);
     }
   }
 
-  private _onFileLoaded(e: CustomEvent<{ content: string; name: string }>) {
-    const { content, name } = e.detail;
-    fileName$.set(name);
-    isLoading$.set(true);
-    this._processFileContent(content);
-  }
-
   private _processFileContent(content: string) {
-    console.log('File content loaded, starting parser...', content.substring(0, 100));
     const rows = parseErwinHtml(content);
     rawData$.set(rows);
     initializeVisibility();

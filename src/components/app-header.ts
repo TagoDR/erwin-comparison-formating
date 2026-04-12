@@ -66,18 +66,13 @@ export class AppHeader extends LitElement {
   private _handleFile(file: File) {
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = e => {
-      const content = e.target?.result as string;
-      this.dispatchEvent(
-        new CustomEvent('file-loaded', {
-          detail: { content, name: file.name },
-          bubbles: true,
-          composed: true,
-        }),
-      );
-    };
-    reader.readAsText(file);
+    this.dispatchEvent(
+      new CustomEvent('file-selected', {
+        detail: { file },
+        bubbles: true,
+        composed: true,
+      }),
+    );
   }
 
   private _onDrop(e: DragEvent) {

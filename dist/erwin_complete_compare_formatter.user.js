@@ -2644,19 +2644,11 @@
 			}
 			_handleFile(file) {
 				if (!file) return;
-				const reader = new FileReader();
-				reader.onload = (e) => {
-					const content = e.target?.result;
-					this.dispatchEvent(new CustomEvent("file-loaded", {
-						detail: {
-							content,
-							name: file.name
-						},
-						bubbles: true,
-						composed: true
-					}));
-				};
-				reader.readAsText(file);
+				this.dispatchEvent(new CustomEvent("file-selected", {
+					detail: { file },
+					bubbles: true,
+					composed: true
+				}));
 			}
 			_onDrop(e) {
 				e.preventDefault();
@@ -3000,7 +2992,7 @@
 			render() {
 				const showData = !!this.fileName.value && !this.isLoading.value;
 				return b`
-	<div class="main-content" @file-loaded=${this._onFileLoaded}>
+	<div class="main-content" @file-selected=${this._onFileSelected}>
 	<app-header></app-header>
         <div class="display-area">
           ${showData ? b`
@@ -3046,19 +3038,35 @@
 					e.preventDefault();
 					e.stopPropagation();
 					const file = e.dataTransfer?.files?.[0];
-					if (file?.name.toLowerCase().endsWith(".html")) this._onFileLoadedFromDrop(file);
+					if (file?.name.toLowerCase().endsWith(".html")) this._handleFile(file);
 				});
 			}
-			_onFileLoadedFromDrop(file) {
+			_onFileSelected(e) {
+				this._handleFile(e.detail.file);
+			}
+			_handleFile(file) {
 				fileName$.set(file.name);
 				isLoading$.set(true);
 				const reader = new FileReader();
 				reader.onload = (e) => {
 					const buffer = e.target?.result;
-					const text = new TextDecoder("windows-1252").decode(buffer);
-					this._processFileContent(text);
+					this._decodeBuffer(buffer);
 				};
 				reader.readAsArrayBuffer(file);
+			}
+			/**
+			* Attempts to decode the buffer using UTF-8 first, then falling back to Windows-1252.
+			* This is a robust way to handle Erwin reports with special Portuguese characters.
+			*/
+			_decodeBuffer(buffer) {
+				try {
+					const text = new TextDecoder("utf-8", { fatal: true }).decode(buffer);
+					this._processFileContent(text);
+				} catch (e) {
+					console.warn("UTF-8 decoding failed, falling back to windows-1252");
+					const text = new TextDecoder("windows-1252").decode(buffer);
+					this._processFileContent(text);
+				}
 			}
 			async _loadSampleData() {
 				fileName$.set("sample.html");
@@ -3066,23 +3074,14 @@
 				try {
 					const response = await fetch("./src/store/sample.html");
 					if (!response.ok) throw new Error("Failed to load sample file");
-					const content = await response.text();
-					setTimeout(() => {
-						this._processFileContent(content);
-					}, 800);
+					const buffer = await response.arrayBuffer();
+					this._decodeBuffer(buffer);
 				} catch (error) {
 					console.error("Error loading sample data:", error);
 					isLoading$.set(false);
 				}
 			}
-			_onFileLoaded(e) {
-				const { content, name } = e.detail;
-				fileName$.set(name);
-				isLoading$.set(true);
-				this._processFileContent(content);
-			}
 			_processFileContent(content) {
-				console.log("File content loaded, starting parser...", content.substring(0, 100));
 				const rows = parseErwinHtml(content);
 				rawData$.set(rows);
 				initializeVisibility();
