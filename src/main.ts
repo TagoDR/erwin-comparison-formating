@@ -4,7 +4,7 @@ import { customElement } from 'lit/decorators.js';
 import { get, translate } from 'lit-translate';
 import { icons } from './assets/icons';
 import { parseErwinHtml } from './parser/html-parser';
-import { fileName$, initializeVisibility, isLoading$, rawData$ } from './store/data.store';
+import { fileName$, initializeVisibility, isLoading$, isUserscript$, rawData$ } from './store/data.store';
 
 // Import Global CSS
 import './index.css';
@@ -92,6 +92,7 @@ export class AppRoot extends LitElement {
 
     if (hasObject && hasLeft && hasRight) {
       console.log('Erwin Report detected via Userscript, transforming...');
+      isUserscript$.set(true);
       const originalHTML = document.documentElement.outerHTML;
 
       // Extract model name from the first tr after the header

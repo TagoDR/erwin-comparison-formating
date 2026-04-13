@@ -3,7 +3,7 @@ import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
 import { icons } from '../assets/icons';
-import { fileName$, filterName$, rawData$ } from '../store/data.store';
+import { fileName$, filterName$, isUserscript$, rawData$ } from '../store/data.store';
 import { changeLanguage, language$ } from '../store/i18n.store';
 import { theme$, toggleTheme } from '../store/theme.store';
 import headerStyles from './app-header.css?inline';
@@ -14,35 +14,45 @@ export class AppHeader extends LitElement {
   private fileName = new StoreController(this, fileName$);
   private theme = new StoreController(this, theme$);
   private language = new StoreController(this, language$);
+  private isUserscript = new StoreController(this, isUserscript$);
   @state() private isDragging = false;
 
   render() {
+    const isMonkey = this.isUserscript.value;
+
     return html`
       <div class="header-layout">
         <div class="brand">${translate('header.title')}</div>
+        ${isMonkey ? html`<div class="file-info">${this.fileName.value}</div>` : ''}
 
         ${
-          this.fileName.value
+          !isMonkey
             ? html`
-          <div class="file-info">
-            <span class="file-name">${this.fileName.value}</span>
-            <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
-               ${icons.x} <span>${translate('header.close')}</span>
-            </button>
-          </div>
+          ${
+            this.fileName.value
+              ? html`
+            <div class="file-info">
+              <span class="file-name">${this.fileName.value}</span>
+              <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
+                 ${icons.x} <span>${translate('header.close')}</span>
+              </button>
+            </div>
+          `
+              : html`
+            <div 
+              class="file-drop-zone ${this.isDragging ? 'dragging' : ''}"
+              @drop=${this._onDrop}
+              @dragover=${this._onDragOver}
+              @dragleave=${this._onDragLeave}
+            >
+              <span class="icon">${icons['file-diff']}</span>
+              <span>${translate('header.upload')}</span>
+              <input type="file" @change=${(e: Event) => this._handleFile((e.target as HTMLInputElement).files?.[0] as File)} />
+            </div>
+          `
+          }
         `
-            : html`
-          <div 
-            class="file-drop-zone ${this.isDragging ? 'dragging' : ''}"
-            @drop=${this._onDrop}
-            @dragover=${this._onDragOver}
-            @dragleave=${this._onDragLeave}
-          >
-            <span class="icon">${icons['file-diff']}</span>
-            <span>${translate('header.upload')}</span>
-            <input type="file" @change=${(e: Event) => this._handleFile((e.target as HTMLInputElement).files?.[0] as File)} />
-          </div>
-        `
+            : ''
         }
 
         <div class="header-controls">

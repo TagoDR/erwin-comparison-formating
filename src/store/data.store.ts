@@ -30,6 +30,7 @@ export interface StatsSummary {
 export const rawData$ = atom<ErwinRow[]>([]);
 export const isLoading$ = atom(false);
 export const fileName$ = atom<string | null>(null);
+export const isUserscript$ = atom<boolean>(false);
 
 // Filters State
 export const filterChange$ = atom<string>('');
@@ -220,7 +221,9 @@ export const enrichedData$ = computed(rawData$, data => {
         const orderRows = hoisted.filter(
           c =>
             c.parentId === row.id &&
-            (c.type === 'Column Order' || c.type === 'Attribute Order' || c.type === 'Attribute/Column Order'),
+            (c.type === 'Column Order' ||
+              c.type === 'Attribute Order' ||
+              c.type === 'Attribute/Column Order'),
         );
 
         const getCommaCount = (val: string) => {
@@ -236,7 +239,12 @@ export const enrichedData$ = computed(rawData$, data => {
         // Method B: Manual count of Attribute/Column rows under this Entity
         const childAttributes = childrenIds
           .map(cid => hoisted.find(r => r.id === cid))
-          .filter(r => r?.isHeader && !r.isGrouping && (r.type === 'Attribute/Column' || r.type === 'Attribute' || r.type === 'Column'));
+          .filter(
+            r =>
+              r?.isHeader &&
+              !r.isGrouping &&
+              (r.type === 'Attribute/Column' || r.type === 'Attribute' || r.type === 'Column'),
+          );
 
         const totalManualCount = childAttributes.length;
 
