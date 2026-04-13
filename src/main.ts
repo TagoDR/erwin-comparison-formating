@@ -1,7 +1,7 @@
 import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { translate } from 'lit-translate';
+import { get, translate } from 'lit-translate';
 import { icons } from './assets/icons';
 import { parseErwinHtml } from './parser/html-parser';
 import { fileName$, initializeVisibility, isLoading$, rawData$ } from './store/data.store';
@@ -92,12 +92,21 @@ export class AppRoot extends LitElement {
 
     if (hasObject && hasLeft && hasRight) {
       console.log('Erwin Report detected via Userscript, transforming...');
-      // When running as a userscript, the browser has already parsed the document.
-      // If the encoding was wrong, the textContent might already be mangled.
-      // However, usually the browser handles the local file encoding based on system locale or BOM.
       const originalHTML = document.documentElement.outerHTML;
 
-      fileName$.set(location.pathname.split('/').pop() || 'local-report.html');
+      // Extract model name from the first tr after the header
+      const firstRow = document.querySelector('tbody tr');
+      const modelNameCell =
+        firstRow?.querySelectorAll('td')[1] || firstRow?.querySelectorAll('td')[3];
+      const modelName =
+        modelNameCell?.textContent?.trim().replace(/\[Calculated\]/g, '') || 'Model';
+
+      const isoDate = new Date().toISOString().split('T')[0];
+      const comparisonLabel = get('header.comparison') || 'Comparison';
+      const newTitle = `${modelName} ${isoDate} (${comparisonLabel})`;
+
+      document.title = newTitle;
+      fileName$.set(newTitle);
       this._processFileContent(originalHTML);
     }
   }

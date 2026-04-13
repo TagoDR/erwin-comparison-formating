@@ -1,6 +1,9 @@
 {
   "header": {
     "title": "Formatador de Comparação do Erwin",
+    "comparison": "Comparação",
+    "flip": "Inverter",
+    "flip_tooltip": "Inverter lados dos modelos",
     "upload": "Arraste o HTML do Erwin aqui ou clique para carregar",
     "close": "Fechar Arquivo",
     "filters": {

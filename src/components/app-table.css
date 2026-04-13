@@ -102,7 +102,7 @@ tr[data-header="true"] .type-text {
 
 .copy-btn {
   opacity: 0.3;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
   padding: 0 2px;
   height: 16px;
   line-height: 1;
@@ -116,6 +116,11 @@ tr[data-header="true"] .type-text {
 
 tr:hover .copy-btn {
   opacity: 1;
+}
+
+.copy-success {
+  opacity: 1 !important;
+  color: #5cb85c !important;
 }
 
 /* Grouping Rows (Grayscale Palette) */
@@ -219,4 +224,61 @@ tr[data-header="true"][data-level="5"]:not([data-grouping="true"]) {
 .row-right {
   word-break: break-all;
   white-space: normal;
+}
+
+.empty-cell {
+  padding: 2rem 0 !important;
+}
+
+.callout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.callout-icon svg {
+  width: 2rem;
+  height: 2rem;
+  opacity: 0.5;
+}
+
+.content-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.value-text {
+  flex: 1;
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.len-badge {
+  font-size: 0.85rem;
+  padding: 1px 6px;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  min-width: 24px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.len-ok {
+  background-color: #5cb85c; /* green */
+}
+
+.len-warn {
+  background-color: #d9534f; /* red */
 }

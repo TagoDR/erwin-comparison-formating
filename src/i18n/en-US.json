@@ -1,6 +1,9 @@
 {
   "header": {
     "title": "Erwin Compare Formatter",
+    "comparison": "Comparison",
+    "flip": "Flip",
+    "flip_tooltip": "Switch Model sides",
     "upload": "Drop Erwin HTML here or click to upload",
     "close": "Close File",
     "filters": {

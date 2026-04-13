@@ -38,6 +38,7 @@ export const showProperties$ = atom<boolean>(false);
 export const toggledPropertiesIds$ = atom<Set<string>>(new Set());
 export const hiddenSubObjectsIds$ = atom<Set<string>>(new Set());
 export const checkedIds$ = atom<Set<string>>(new Set());
+export const isFlipped$ = atom<boolean>(false);
 
 // Useless rows must be removed/ignored/hidden
 const GROUPING_KEYWORDS = [
@@ -376,10 +377,15 @@ export const initializeVisibility = () => {
   showProperties$.set(false);
   toggledPropertiesIds$.set(new Set());
   hiddenSubObjectsIds$.set(new Set());
+  isFlipped$.set(false);
+};
+
+export const toggleFlip = () => {
+  isFlipped$.set(!isFlipped$.get());
 };
 
 // Computed stats for the stats panel
-export const statsSummary$ = computed(enrichedData$, data => {
+export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlipped) => {
   const summary: Record<string, StatsSummary> = {
     Tables: {
       type: 'Tables',
@@ -410,9 +416,15 @@ export const statsSummary$ = computed(enrichedData$, data => {
       if (row.isCalculated) {
         summary[key].calculated++;
       } else {
-        if (row.change === 'I') summary[key].inclusion++;
-        if (row.change === 'A') summary[key].alteration++;
-        if (row.change === 'E') summary[key].exclusion++;
+        let change = row.change;
+        if (isFlipped) {
+          if (change === 'I') change = 'E';
+          else if (change === 'E') change = 'I';
+        }
+
+        if (change === 'I') summary[key].inclusion++;
+        if (change === 'A') summary[key].alteration++;
+        if (change === 'E') summary[key].exclusion++;
       }
     };
 

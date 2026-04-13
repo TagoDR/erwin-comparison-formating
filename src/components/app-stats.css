@@ -12,16 +12,47 @@
 
 .left-stats {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 1.5rem;
 }
 
 .stats-container {
+  display: flex;
+  align-items: stretch;
   background: var(--bg-panel);
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
   overflow: hidden;
   min-width: 450px;
+}
+
+.flip-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  border: none;
+  border-right: 1px solid var(--border-subtle);
+  border-radius: 0;
+  padding: 0 0.75rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: var(--bg-main);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.flip-btn:hover {
+  background: var(--hover-bg);
+  color: var(--accent-blue);
+}
+
+.flip-btn svg {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .stats-table {

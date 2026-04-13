@@ -1,12 +1,13 @@
 import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
 import { icons } from '../assets/icons';
 import {
   checkedIds$,
   filteredData$,
   hiddenSubObjectsIds$,
+  isFlipped$,
   showProperties$,
   toggleCheck,
   toggledPropertiesIds$,
@@ -23,21 +24,17 @@ export class AppTable extends LitElement {
   private toggledProps = new StoreController(this, toggledPropertiesIds$);
   private hiddenSubs = new StoreController(this, hiddenSubObjectsIds$);
   private checked = new StoreController(this, checkedIds$);
+  private isFlipped = new StoreController(this, isFlipped$);
+
+  @state() private copiedId: string | null = null;
+  @state() private copiedSide: 'left' | 'right' | null = null;
 
   render() {
-    if (this.data.value.length === 0) {
-      return html`
-        <div class="callout">
-          <span class="callout-icon">${icons['clipboard-list']}</span>
-          ${translate('table.empty')}
-        </div>
-      `;
-    }
-
     const globalShowProps = this.showProps.value;
     const toggledPropsSet = this.toggledProps.value;
     const hiddenSubsSet = this.hiddenSubs.value;
     const checkedSet = this.checked.value;
+    const flipped = this.isFlipped.value;
 
     const allRows = this.data.value;
     const rowMap = new Map(allRows.map(r => [r.id, r]));
@@ -47,27 +44,22 @@ export class AppTable extends LitElement {
       const row = rowMap.get(rowId);
       if (!row) return false;
 
-      // Recursive check: if parent is hidden, child is hidden
       if (row.parentId) {
         const parent = rowMap.get(row.parentId);
         if (parent) {
-          // Property Visibility: XOR of global state and individual toggle
           if (!row.isHeader) {
             const isParentToggled = toggledPropsSet.has(row.parentId);
             const isVisible = globalShowProps ? !isParentToggled : isParentToggled;
             if (!isVisible) return true;
           }
-
-          // Sub-object Visibility: Explicitly hidden via right click
           if (row.isHeader && hiddenSubsSet.has(row.parentId)) return true;
-
-          // Ancestor check
           if (isRowHidden(row.parentId)) return true;
         }
       }
-
       return false;
     };
+
+    const visibleRows = allRows.filter(row => !isRowHidden(row.id));
 
     return html`
       <table class="table table-condensed table-hover table-container">
@@ -75,8 +67,8 @@ export class AppTable extends LitElement {
           <tr>
             <th class="col-check">${icons['square-check']}</th>
             <th class="col-type">${translate('table.col_type')}</th>
-            <th class="col-left">${translate('table.col_left')}</th>
-            <th class="col-right">${translate('table.col_right')}</th>
+            <th class="col-left">${flipped ? translate('table.col_right') : translate('table.col_left')}</th>
+            <th class="col-right">${flipped ? translate('table.col_left') : translate('table.col_right')}</th>
             <th class="col-prop">${translate('table.col_prop')}</th>
             <th class="col-change">${translate('table.col_change')}</th>
             <th class="col-view">${translate('table.col_view')}</th>
@@ -84,19 +76,38 @@ export class AppTable extends LitElement {
           </tr>
         </thead>
         <tbody>
-          ${allRows.map(row => {
-            if (isRowHidden(row.id)) return html``;
+          ${
+            visibleRows.length === 0
+              ? html`
+            <tr>
+              <td colspan="8" class="text-center empty-cell">
+                <div class="callout">
+                  <span class="callout-icon">${icons['clipboard-list']}</span>
+                  ${translate('table.empty')}
+                </div>
+              </td>
+            </tr>
+          `
+              : visibleRows.map(row => {
+                  const isIdentificationRow = row.isHeader && !row.isGrouping;
+                  const isNameProp = row.type.toLowerCase().includes('name');
+                  const showCopy = isIdentificationRow || isNameProp;
 
-            const isIdentificationRow = row.isHeader && !row.isGrouping;
-            const isNameProp = row.type === 'Name' || row.type === 'Physical Name';
-            const showCopy = isIdentificationRow || isNameProp;
+                  const level = row.indent;
+                  const isChecked = row.id ? checkedSet.has(row.id) : false;
 
-            const level = row.indent;
-            const isChecked = row.id ? checkedSet.has(row.id) : false;
+                  const leftVal = flipped ? row.rightModel : row.leftModel;
+                  const rightVal = flipped ? row.leftModel : row.rightModel;
 
-            return html`
+                  let change = row.change;
+                  if (flipped) {
+                    if (change === 'I') change = 'E';
+                    else if (change === 'E') change = 'I';
+                  }
+
+                  return html`
               <tr 
-                data-change="${row.change}" 
+                data-change="${change}" 
                 data-level="${level}"
                 data-prop="${row.prop}"
                 data-header="${row.isHeader || false}"
@@ -128,55 +139,86 @@ export class AppTable extends LitElement {
                   </div>
                 </td>
                 <td class="row-left">
-                  ${row.leftModel}
-                  ${
-                    showCopy && row.leftModel
-                      ? html`
-                    <button 
-                      class="btn btn-default btn-xs copy-btn" 
-                      title="${translate('table.copy_left')}" 
-                      @click=${(e: MouseEvent) => {
-                        e.stopPropagation();
-                        this._copyToClipboard(row.leftModel);
-                      }}
-                    >${icons.copy}</button>
-                  `
-                      : ''
-                  }
+                  <div class="content-wrapper">
+                    <span class="value-text">${leftVal}</span>
+                    <div class="row-actions">
+                      ${this._renderLenCounter(row.type, leftVal)}
+                      ${
+                        showCopy && leftVal
+                          ? html`
+                        <button 
+                          class="btn btn-default btn-xs copy-btn ${this.copiedId === row.id && this.copiedSide === 'left' ? 'copy-success' : ''}" 
+                          title="${translate('table.copy_left')}" 
+                          @click=${(e: MouseEvent) => {
+                            e.stopPropagation();
+                            this._handleCopy(row.id!, leftVal, 'left');
+                          }}
+                        >${this.copiedId === row.id && this.copiedSide === 'left' ? icons.check : icons.copy}</button>
+                      `
+                          : ''
+                      }
+                    </div>
+                  </div>
                 </td>
                 <td class="row-right">
-                  ${row.rightModel}
-                  ${
-                    showCopy && row.rightModel
-                      ? html`
-                    <button 
-                      class="btn btn-default btn-xs copy-btn" 
-                      title="${translate('table.copy_right')}" 
-                      @click=${(e: MouseEvent) => {
-                        e.stopPropagation();
-                        this._copyToClipboard(row.rightModel);
-                      }}
-                    >${icons.copy}</button>
-                  `
-                      : ''
-                  }
+                  <div class="content-wrapper">
+                    <span class="value-text">${rightVal}</span>
+                    <div class="row-actions">
+                      ${this._renderLenCounter(row.type, rightVal)}
+                      ${
+                        showCopy && rightVal
+                          ? html`
+                        <button 
+                          class="btn btn-default btn-xs copy-btn ${this.copiedId === row.id && this.copiedSide === 'right' ? 'copy-success' : ''}" 
+                          title="${translate('table.copy_right')}" 
+                          @click=${(e: MouseEvent) => {
+                            e.stopPropagation();
+                            this._handleCopy(row.id!, rightVal, 'right');
+                          }}
+                        >${this.copiedId === row.id && this.copiedSide === 'right' ? icons.check : icons.copy}</button>
+                      `
+                          : ''
+                      }
+                    </div>
+                  </div>
                 </td>
                 <td class="row-prop">${row.prop}</td>
-                <td class="row-change">${isIdentificationRow ? row.change : ''}</td>
+                <td class="row-change">${isIdentificationRow ? change : ''}</td>
                 <td class="row-view">${isIdentificationRow ? row.view : ''}</td>
                 <td class="row-cal">${row.isCalculated ? 'C' : ''}</td>
               </tr>
             `;
-          })}
+                })
+          }
         </tbody>
       </table>
     `;
   }
 
-  private _copyToClipboard(text: string) {
+  private _renderLenCounter(type: string, value: string) {
+    if (!type.toLowerCase().includes('name') || !value) return '';
+
+    const getLen = (val: string) => {
+      const clean = val.includes(':') ? val.split(':')[1].trim() : val.trim();
+      return clean.length;
+    };
+
+    const len = getLen(value);
+    if (len === 0) return '';
+
+    const isWarn = len > 18;
+    return html`<span class="len-badge ${isWarn ? 'len-warn' : 'len-ok'}">${len}</span>`;
+  }
+
+  private _handleCopy(id: string, text: string, side: 'left' | 'right') {
     const cleanText = text.includes(':') ? text.split(':')[1].trim() : text.trim();
     navigator.clipboard.writeText(cleanText).then(() => {
-      console.log('Copied:', cleanText);
+      this.copiedId = id;
+      this.copiedSide = side;
+      setTimeout(() => {
+        this.copiedId = null;
+        this.copiedSide = null;
+      }, 2000);
     });
   }
 }

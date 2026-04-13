@@ -1,14 +1,15 @@
 import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { get, translate } from 'lit-translate';
 import { icons } from '../assets/icons';
 import {
+  enrichedData$,
   filterChange$,
   filterName$,
-  rawData$,
   showProperties$,
   statsSummary$,
+  toggleFlip,
   togglePropertiesGlobal,
 } from '../store/data.store';
 import statsStyles from './app-stats.css?inline';
@@ -20,6 +21,8 @@ export class AppStats extends LitElement {
   private nameFilter = new StoreController(this, filterName$);
   private showProps = new StoreController(this, showProperties$);
 
+  @state() private isCopying = false;
+
   render() {
     if (this.stats.value.length === 0) return html``;
 
@@ -27,6 +30,9 @@ export class AppStats extends LitElement {
       <div class="layout-stats">
         <div class="left-stats">
           <div class="stats-container">
+            <button class="btn btn-primary btn-xs flip-btn" @click=${toggleFlip} title="${translate('header.flip_tooltip')}">
+               ${icons['switch-horizontal']} <span>${translate('header.flip')}</span>
+            </button>
             <table class="table table-condensed stats-table">
               <thead>
                 <tr>
@@ -85,7 +91,8 @@ export class AppStats extends LitElement {
 
         <div class="action-panel">
           <button type="button" class="btn btn-primary btn-block action-btn" @click=${this._copyTablesToClipboard}>
-            ${icons['clipboard-list']} <span>${translate('stats.actions.copy_tables')}</span>
+            ${this.isCopying ? icons.check : icons['clipboard-list']} 
+            <span>${this.isCopying ? translate('stats.messages.copied') : translate('stats.actions.copy_tables')}</span>
           </button>
           <button type="button" class="btn btn-default btn-block action-btn" @click=${togglePropertiesGlobal}>
             ${this.showProps.value ? icons['filter-off'] : icons.filter} 
@@ -107,19 +114,19 @@ export class AppStats extends LitElement {
   }
 
   private _copyTablesToClipboard() {
-    const tables = rawData$
+    const tables = enrichedData$
       .get()
-      .filter(row => row.isHeader && row.type.toLowerCase().includes('table'))
-      .map(row => {
-        // Extracting table name after ':'
-        const parts = row.type.split(':');
-        return parts.length > 1 ? parts[1].trim() : row.type.trim();
-      })
+      .filter(row => row.isHeader && row.prop === 'Ent' && (row.leftModel || row.rightModel))
+      .map(row => row.leftModel || row.rightModel)
+      .filter((v, i, a) => v && a.indexOf(v) === i)
       .join('\n');
 
     if (tables) {
       navigator.clipboard.writeText(tables).then(() => {
-        alert(get('stats.messages.copied'));
+        this.isCopying = true;
+        setTimeout(() => {
+          this.isCopying = false;
+        }, 2000);
       });
     } else {
       alert(get('stats.messages.no_tables'));
