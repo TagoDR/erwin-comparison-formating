@@ -143,7 +143,7 @@ export class AppTable extends LitElement {
                   <div class="content-wrapper">
                     <span class="value-text">${leftVal}</span>
                     <div class="row-actions">
-                      ${this._renderLenCounter(row.type, leftVal)}
+                      ${this._renderLenCounter(row, leftVal)}
                       ${
                         showCopy && leftVal
                           ? html`
@@ -165,7 +165,7 @@ export class AppTable extends LitElement {
                   <div class="content-wrapper">
                     <span class="value-text">${rightVal}</span>
                     <div class="row-actions">
-                      ${this._renderLenCounter(row.type, rightVal)}
+                      ${this._renderLenCounter(row, rightVal)}
                       ${
                         showCopy && rightVal
                           ? html`
@@ -206,8 +206,11 @@ export class AppTable extends LitElement {
     return html`<span class="attr-badge">${display}</span>`;
   }
 
-  private _renderLenCounter(type: string, value: string) {
-    if (!type.toLowerCase().includes('name') || !value) return '';
+  private _renderLenCounter(row: any, value: string) {
+    const isNameProp = row.type.toLowerCase().includes('name');
+    const isIdentificationRow = row.isHeader && !row.isGrouping;
+    
+    if (!(isNameProp || isIdentificationRow) || !value) return '';
 
     const getLen = (val: string) => {
       const clean = val.includes(':') ? val.split(':')[1].trim() : val.trim();
