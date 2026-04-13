@@ -475,8 +475,13 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
       }
 
       // Track tables with > 11 attributes
-      if (isTable && row.attributeCount && row.attributeCount > 11) {
-        summary['Tables'].largeTablesCount!++;
+      if (
+        isTable &&
+        row.attributeCount &&
+        row.attributeCount > 11 &&
+        summary.Tables.largeTablesCount
+      ) {
+        summary.Tables.largeTablesCount++;
       }
     };
 

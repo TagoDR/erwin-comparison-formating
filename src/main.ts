@@ -4,7 +4,13 @@ import { customElement } from 'lit/decorators.js';
 import { get, translate } from 'lit-translate';
 import { icons } from './assets/icons';
 import { parseErwinHtml } from './parser/html-parser';
-import { fileName$, initializeVisibility, isLoading$, isUserscript$, rawData$ } from './store/data.store';
+import {
+  fileName$,
+  initializeVisibility,
+  isLoading$,
+  isUserscript$,
+  rawData$,
+} from './store/data.store';
 
 // Import Global CSS
 import './index.css';
@@ -99,8 +105,7 @@ export class AppRoot extends LitElement {
       const firstRow = document.querySelector('tbody tr');
       const modelNameCell =
         firstRow?.querySelectorAll('td')[1] || firstRow?.querySelectorAll('td')[3];
-      const modelName =
-        modelNameCell?.textContent?.trim().replace(/\[Calculated\]/g, '') || 'Model';
+      const modelName = modelNameCell?.textContent?.trim().replace(/\[Calculated]/g, '') || 'Model';
 
       const isoDate = new Date().toISOString().split('T')[0];
       const comparisonLabel = get('header.comparison') || 'Comparison';

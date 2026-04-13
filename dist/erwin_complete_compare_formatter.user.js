@@ -888,6 +888,9 @@
 	var init_en_US = __esmMin((() => {
 		header$3 = {
 			"title": "Erwin Compare Formatter",
+			"comparison": "Comparison",
+			"flip": "Flip",
+			"flip_tooltip": "Switch Model sides",
 			"upload": "Drop Erwin HTML here or click to upload",
 			"close": "Close File",
 			"filters": {
@@ -951,6 +954,9 @@
 	var init_es_ES = __esmMin((() => {
 		header$2 = {
 			"title": "Formateador de Comparación Erwin",
+			"comparison": "Comparación",
+			"flip": "Invertir",
+			"flip_tooltip": "Cambiar lados de los modelos",
 			"upload": "Suelte el HTML de Erwin aquí o haga clic para cargar",
 			"close": "Cerrar archivo",
 			"filters": {
@@ -1014,6 +1020,9 @@
 	var init_fr_FR = __esmMin((() => {
 		header$1 = {
 			"title": "Erwin Compare Formatter",
+			"comparison": "Comparaison",
+			"flip": "Inverser",
+			"flip_tooltip": "Inverser les côtés des modèles",
 			"upload": "Déposez le fichier HTML Erwin ici ou cliquez pour télécharger",
 			"close": "Fermer le fichier",
 			"filters": {
@@ -1077,6 +1086,9 @@
 	var init_pt_BR = __esmMin((() => {
 		header = {
 			"title": "Formatador de Comparação do Erwin",
+			"comparison": "Comparação",
+			"flip": "Inverter",
+			"flip_tooltip": "Inverter lados dos modelos",
 			"upload": "Arraste o HTML do Erwin aqui ou clique para carregar",
 			"close": "Fechar Arquivo",
 			"filters": {
@@ -2112,6 +2124,12 @@
 		init_unsafe_svg$1();
 	}));
 	//#endregion
+	//#region src/assets/icons/check.svg
+	var check_default;
+	var init_check = __esmMin((() => {
+		check_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-check\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M5 12l5 5l10 -10\" /></svg>";
+	}));
+	//#endregion
 	//#region src/assets/icons/clipboard-copy.svg
 	var clipboard_copy_default;
 	var init_clipboard_copy = __esmMin((() => {
@@ -2172,6 +2190,12 @@
 		sun_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-sun\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\"/>\r\n    <path d=\"M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7\"/>\r\n</svg>";
 	}));
 	//#endregion
+	//#region src/assets/icons/switch-horizontal.svg
+	var switch_horizontal_default;
+	var init_switch_horizontal = __esmMin((() => {
+		switch_horizontal_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-switch-horizontal\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M16 3l4 4l-4 4\" /><path d=\"M10 7l10 0\" /><path d=\"M8 13l-4 4l4 4\" /><path d=\"M4 17l9 0\" /></svg>";
+	}));
+	//#endregion
 	//#region src/assets/icons/x.svg
 	var x_default;
 	var init_x = __esmMin((() => {
@@ -2183,6 +2207,7 @@
 	var init_icons = __esmMin((() => {
 		init_lit();
 		init_unsafe_svg();
+		init_check();
 		init_clipboard_copy();
 		init_clipboard_list();
 		init_copy();
@@ -2193,18 +2218,21 @@
 		init_moon();
 		init_square_check();
 		init_sun();
+		init_switch_horizontal();
 		init_x();
 		icons = {
+			check: b`${o(check_default)}`,
 			"clipboard-copy": b`${o(clipboard_copy_default)}`,
 			"clipboard-list": b`${o(clipboard_list_default)}`,
 			copy: b`${o(copy_default)}`,
 			"file-diff": b`${o(file_diff_default)}`,
 			"file-upload": b`${o(file_upload_default)}`,
-			"filter-off": b`${o(filter_off_default)}`,
 			filter: b`${o(filter_default)}`,
+			"filter-off": b`${o(filter_off_default)}`,
 			moon: b`${o(moon_default)}`,
 			"square-check": b`${o(square_check_default)}`,
 			sun: b`${o(sun_default)}`,
+			"switch-horizontal": b`${o(switch_horizontal_default)}`,
 			x: b`${o(x_default)}`
 		};
 	}));
@@ -2249,18 +2277,20 @@
 	var init_html_parser = __esmMin((() => {}));
 	//#endregion
 	//#region src/store/data.store.ts
-	var rawData$, isLoading$, fileName$, filterChange$, filterName$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, GROUPING_KEYWORDS, HEADER_KEYWORDS, getObjectShortCode, enrichedData$, filteredData$, togglePropertiesGlobal, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, statsSummary$;
+	var rawData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, GROUPING_KEYWORDS, HEADER_KEYWORDS, getObjectShortCode, enrichedData$, filteredData$, togglePropertiesGlobal, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, toggleFlip, statsSummary$;
 	var init_data_store = __esmMin((() => {
 		init_nanostores();
 		rawData$ = /* @__PURE__ */ atom([]);
 		isLoading$ = /* @__PURE__ */ atom(false);
 		fileName$ = /* @__PURE__ */ atom(null);
+		isUserscript$ = /* @__PURE__ */ atom(false);
 		filterChange$ = /* @__PURE__ */ atom("");
 		filterName$ = /* @__PURE__ */ atom("");
 		showProperties$ = /* @__PURE__ */ atom(false);
 		toggledPropertiesIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		hiddenSubObjectsIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		checkedIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
+		isFlipped$ = /* @__PURE__ */ atom(false);
 		GROUPING_KEYWORDS = [
 			"Attribute Storage Objects",
 			"Attributes",
@@ -2380,12 +2410,29 @@
 			for (let i = hoisted.length - 1; i >= 0; i--) {
 				const row = hoisted[i];
 				if (row.isHeader && !row.isGrouping) {
-					const nonGroupingChildren = (childrenMap.get(row.id) || []).filter((cid) => {
+					const childrenIds = childrenMap.get(row.id) || [];
+					const nonGroupingChildren = childrenIds.filter((cid) => {
 						return !hoisted.find((r) => r.id === cid)?.isGrouping;
 					});
 					if (nonGroupingChildren.length > 0) row.isCalculated = nonGroupingChildren.every((cid) => {
 						return hoisted.find((r) => r.id === cid)?.isCalculated;
 					});
+					if (row.type === "Entity/Table" || row.type === "Entity" || row.type === "Table") {
+						let leftMaxOrder = 0;
+						let rightMaxOrder = 0;
+						const orderRows = hoisted.filter((c) => c.parentId === row.id && (c.type === "Column Order" || c.type === "Attribute Order" || c.type === "Attribute/Column Order"));
+						const getCommaCount = (val) => {
+							if (!val || val.trim() === "") return 0;
+							return val.split(",").length;
+						};
+						orderRows.forEach((or) => {
+							leftMaxOrder = Math.max(leftMaxOrder, getCommaCount(or.leftModel));
+							rightMaxOrder = Math.max(rightMaxOrder, getCommaCount(or.rightModel));
+						});
+						const totalManualCount = childrenIds.map((cid) => hoisted.find((r) => r.id === cid)).filter((r) => r?.isHeader && !r.isGrouping && (r.type === "Attribute/Column" || r.type === "Attribute" || r.type === "Column")).length;
+						const finalCount = Math.max(leftMaxOrder, rightMaxOrder, totalManualCount);
+						if (finalCount > 0) row.attributeCount = finalCount;
+					}
 				}
 				if (row.parentId) {
 					const parentIndex = hoisted.findIndex((p) => p.id === row.parentId);
@@ -2499,8 +2546,12 @@
 			showProperties$.set(false);
 			toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
 			hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
+			isFlipped$.set(false);
 		};
-		statsSummary$ = /* @__PURE__ */ computed(enrichedData$, (data) => {
+		toggleFlip = () => {
+			isFlipped$.set(!isFlipped$.get());
+		};
+		statsSummary$ = /* @__PURE__ */ computed([enrichedData$, isFlipped$], (data, isFlipped) => {
 			const summary = {
 				Tables: {
 					type: "Tables",
@@ -2508,7 +2559,8 @@
 					inclusion: 0,
 					alteration: 0,
 					exclusion: 0,
-					calculated: 0
+					calculated: 0,
+					largeTablesCount: 0
 				},
 				Columns: {
 					type: "Columns",
@@ -2527,10 +2579,16 @@
 					summary[key].total++;
 					if (row.isCalculated) summary[key].calculated++;
 					else {
-						if (row.change === "I") summary[key].inclusion++;
-						if (row.change === "A") summary[key].alteration++;
-						if (row.change === "E") summary[key].exclusion++;
+						let change = row.change;
+						if (isFlipped) {
+							if (change === "I") change = "E";
+							else if (change === "E") change = "I";
+						}
+						if (change === "I") summary[key].inclusion++;
+						if (change === "A") summary[key].alteration++;
+						if (change === "E") summary[key].exclusion++;
 					}
+					if (isTable && row.attributeCount && row.attributeCount > 11 && summary.Tables.largeTablesCount) summary.Tables.largeTablesCount++;
 				};
 				if (isTable) increment("Tables");
 				if (isColumn) increment("Columns");
@@ -2595,35 +2653,40 @@
 				this.fileName = new import_lib$3.StoreController(this, fileName$);
 				this.theme = new import_lib$3.StoreController(this, theme$);
 				this.language = new import_lib$3.StoreController(this, language$);
+				this.isUserscript = new import_lib$3.StoreController(this, isUserscript$);
 				this.isDragging = false;
 			}
 			static {
 				this.styles = r$4(app_header_default);
 			}
 			render() {
+				const isMonkey = this.isUserscript.value;
 				return b`
       <div class="header-layout">
         <div class="brand">${translate("header.title")}</div>
+        ${isMonkey ? b`<div class="file-info">${this.fileName.value}</div>` : ""}
 
-        ${this.fileName.value ? b`
-          <div class="file-info">
-            <span class="file-name">${this.fileName.value}</span>
-            <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
-               ${icons.x} <span>${translate("header.close")}</span>
-            </button>
-          </div>
-        ` : b`
-          <div 
-            class="file-drop-zone ${this.isDragging ? "dragging" : ""}"
-            @drop=${this._onDrop}
-            @dragover=${this._onDragOver}
-            @dragleave=${this._onDragLeave}
-          >
-            <span class="icon">${icons["file-diff"]}</span>
-            <span>${translate("header.upload")}</span>
-            <input type="file" @change=${(e) => this._handleFile(e.target.files?.[0])} />
-          </div>
-        `}
+        ${!isMonkey ? b`
+          ${this.fileName.value ? b`
+            <div class="file-info">
+              <span class="file-name">${this.fileName.value}</span>
+              <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
+                 ${icons.x} <span>${translate("header.close")}</span>
+              </button>
+            </div>
+          ` : b`
+            <div 
+              class="file-drop-zone ${this.isDragging ? "dragging" : ""}"
+              @drop=${this._onDrop}
+              @dragover=${this._onDragOver}
+              @dragleave=${this._onDragLeave}
+            >
+              <span class="icon">${icons["file-diff"]}</span>
+              <span>${translate("header.upload")}</span>
+              <input type="file" @change=${(e) => this._handleFile(e.target.files?.[0])} />
+            </div>
+          `}
+        ` : ""}
 
         <div class="header-controls">
           <select class="lang-select" .value=${this.language.value} @change=${this._onLanguageChange}>
@@ -2680,7 +2743,7 @@
 	//#region src/components/app-stats.css?inline
 	var app_stats_default;
 	var init_app_stats$1 = __esmMin((() => {
-		app_stats_default = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.layout-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n}\r\n\r\n.left-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.stats-container {\r\n  background: var(--bg-panel);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 6px;\r\n  overflow: hidden;\r\n  min-width: 450px;\r\n}\r\n\r\n.stats-table {\r\n  width: 100%;\r\n  border-collapse: collapse;\r\n  font-size: 0.75rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\nth {\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 0.6rem;\r\n  text-align: left;\r\n  font-weight: 700;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  border-bottom: 2px solid var(--border-subtle);\r\n}\r\n\r\ntd {\r\n  padding: 0.3rem 0.6rem;\r\n  border-bottom: 1px solid var(--border-subtle);\r\n}\r\n\r\n.val-col {\r\n  text-align: center;\r\n  font-family: \"JetBrains Mono\", monospace;\r\n  font-size: 0.8rem;\r\n}\r\n\r\n/* --- Phase 1: Office 2010 Stats Summary Colors --- */\r\n\r\n/* Tables Row (Base Colors) */\r\ntr[data-type=\"Tables\"] {\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .type-col {\r\n  color: var(--text-on-dark);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Tables\"] .status-I {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-A {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-E {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-C {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .total-col {\r\n  background-color: var(--off-blue-40);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Columns Row (60% Lighter Colors) */\r\ntr[data-type=\"Columns\"] {\r\n  background-color: var(--off-blue-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .type-col {\r\n  color: var(--text-on-light);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Columns\"] .status-I {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-A {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-E {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-C {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .total-col {\r\n  background-color: var(--off-blue-80);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Filter Panel Styling */\r\n.filter-panel {\r\n  display: flex;\r\n  flex-direction: row;\r\n  gap: 1.5rem;\r\n  background: var(--bg-panel);\r\n  padding: 0.6rem 1.2rem;\r\n  border-radius: 6px;\r\n  border: 1px solid var(--border-subtle);\r\n  align-items: flex-end;\r\n}\r\n\r\n.filter-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.3rem;\r\n}\r\n\r\n.filter-item label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.filter-item .form-control {\r\n  height: 1.8rem;\r\n  padding: 0.2rem 0.5rem;\r\n  font-size: 0.75rem;\r\n  min-width: 120px;\r\n}\r\n\r\n.search-input-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 4px;\r\n  padding: 0 0.5rem;\r\n  height: 1.8rem;\r\n}\r\n\r\n.search-input-wrapper input {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  font-size: 0.75rem;\r\n  width: 150px;\r\n  outline: none;\r\n}\r\n\r\n.search-input-wrapper svg {\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n}\r\n\r\n/* Action Panel on the right */\r\n.action-panel {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.5rem;\r\n  justify-content: center;\r\n}\r\n\r\n.action-btn {\r\n  background: var(--border-subtle);\r\n  color: var(--text-primary);\r\n  border: 1px solid var(--border-subtle);\r\n  padding: 0.3rem 0.8rem;\r\n  border-radius: 4px;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  min-width: 150px;\r\n}\r\n\r\n.action-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.action-btn:active {\r\n  transform: translateY(1px);\r\n}\r\n\r\n.layout-stats svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
+		app_stats_default = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.layout-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n}\r\n\r\n.left-stats {\r\n  display: flex;\r\n  align-items: stretch;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.stats-container {\r\n  display: flex;\r\n  align-items: stretch;\r\n  background: var(--bg-panel);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 6px;\r\n  overflow: hidden;\r\n  min-width: 450px;\r\n}\r\n\r\n.flip-btn {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.25rem;\r\n  border: none;\r\n  border-right: 1px solid var(--border-subtle);\r\n  border-radius: 0;\r\n  padding: 0 0.75rem;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  background: var(--bg-main);\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.flip-btn:hover {\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.flip-btn svg {\r\n  width: 1.25rem;\r\n  height: 1.25rem;\r\n}\r\n\r\n.stats-table {\r\n  width: 100%;\r\n  border-collapse: collapse;\r\n  font-size: 0.75rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\nth {\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 0.6rem;\r\n  text-align: left;\r\n  font-weight: 700;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  border-bottom: 2px solid var(--border-subtle);\r\n}\r\n\r\ntd {\r\n  padding: 0.3rem 0.6rem;\r\n  border-bottom: 1px solid var(--border-subtle);\r\n}\r\n\r\n.val-col {\r\n  text-align: center;\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.val-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 6px;\r\n}\r\n\r\n.large-count-bubble {\r\n  padding: 2px 3px;\r\n  border-radius: 10px;\r\n  min-width: 16px;\r\n  text-align: center;\r\n  line-height: 1;\r\n  font-size: 0.75rem;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n}\r\n\r\n/* --- Phase 1: Office 2010 Stats Summary Colors --- */\r\n\r\n/* Tables Row (Base Colors) */\r\ntr[data-type=\"Tables\"] {\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .type-col {\r\n  color: var(--text-on-dark);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Tables\"] .status-I {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-A {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-E {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-C {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .total-col {\r\n  background-color: var(--off-blue-40);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Columns Row (60% Lighter Colors) */\r\ntr[data-type=\"Columns\"] {\r\n  background-color: var(--off-blue-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .type-col {\r\n  color: var(--text-on-light);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Columns\"] .status-I {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-A {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-E {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-C {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .total-col {\r\n  background-color: var(--off-blue-80);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Filter Panel Styling */\r\n.filter-panel {\r\n  display: flex;\r\n  flex-direction: row;\r\n  gap: 1.5rem;\r\n  background: var(--bg-panel);\r\n  padding: 0.6rem 1.2rem;\r\n  border-radius: 6px;\r\n  border: 1px solid var(--border-subtle);\r\n  align-items: flex-end;\r\n}\r\n\r\n.filter-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.3rem;\r\n}\r\n\r\n.filter-item label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.filter-item .form-control {\r\n  height: 1.8rem;\r\n  padding: 0.2rem 0.5rem;\r\n  font-size: 0.75rem;\r\n  min-width: 120px;\r\n}\r\n\r\n.search-input-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 4px;\r\n  padding: 0 0.5rem;\r\n  height: 1.8rem;\r\n}\r\n\r\n.search-input-wrapper input {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  font-size: 0.75rem;\r\n  width: 150px;\r\n  outline: none;\r\n}\r\n\r\n.search-input-wrapper svg {\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n}\r\n\r\n/* Action Panel on the right */\r\n.action-panel {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.5rem;\r\n  justify-content: center;\r\n}\r\n\r\n.action-btn {\r\n  background: var(--border-subtle);\r\n  color: var(--text-primary);\r\n  border: 1px solid var(--border-subtle);\r\n  padding: 0.3rem 0.8rem;\r\n  border-radius: 4px;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  min-width: 150px;\r\n}\r\n\r\n.action-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.action-btn:active {\r\n  transform: translateY(1px);\r\n}\r\n\r\n.layout-stats svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-stats.ts
@@ -2700,6 +2763,7 @@
 				this.stats = new import_lib$2.StoreController(this, statsSummary$);
 				this.nameFilter = new import_lib$2.StoreController(this, filterName$);
 				this.showProps = new import_lib$2.StoreController(this, showProperties$);
+				this.isCopying = false;
 			}
 			static {
 				this.styles = r$4(app_stats_default);
@@ -2710,6 +2774,9 @@
       <div class="layout-stats">
         <div class="left-stats">
           <div class="stats-container">
+            <button class="btn btn-primary btn-xs flip-btn" @click=${toggleFlip} title="${translate("header.flip_tooltip")}">
+               ${icons["switch-horizontal"]} <span>${translate("header.flip")}</span>
+            </button>
             <table class="table table-condensed stats-table">
               <thead>
                 <tr>
@@ -2725,7 +2792,12 @@
                 ${this.stats.value.map((s) => b`
                   <tr data-type="${s.type}">
                     <td class="type-col">${translate(`stats.row_${s.type.toLowerCase()}`)}</td>
-                    <td class="val-col total-col">${s.total}</td>
+                    <td class="val-col total-col">
+                      <div class="val-wrapper">
+                        ${s.total}
+                        ${s.type === "Tables" ? b`<span class="large-count-bubble" title="Tables with > 11 attributes">${s.largeTablesCount}</span>` : ""}
+                      </div>
+                    </td>
                     <td class="val-col status-I">${s.inclusion}</td>
                     <td class="val-col status-A">${s.alteration}</td>
                     <td class="val-col status-E">${s.exclusion}</td>
@@ -2766,7 +2838,8 @@
 
         <div class="action-panel">
           <button type="button" class="btn btn-primary btn-block action-btn" @click=${this._copyTablesToClipboard}>
-            ${icons["clipboard-list"]} <span>${translate("stats.actions.copy_tables")}</span>
+            ${this.isCopying ? icons.check : icons["clipboard-list"]} 
+            <span>${this.isCopying ? translate("stats.messages.copied") : translate("stats.actions.copy_tables")}</span>
           </button>
           <button type="button" class="btn btn-default btn-block action-btn" @click=${togglePropertiesGlobal}>
             ${this.showProps.value ? icons["filter-off"] : icons.filter} 
@@ -2785,23 +2858,24 @@
 				filterName$.set(val);
 			}
 			_copyTablesToClipboard() {
-				const tables = rawData$.get().filter((row) => row.isHeader && row.type.toLowerCase().includes("table")).map((row) => {
-					const parts = row.type.split(":");
-					return parts.length > 1 ? parts[1].trim() : row.type.trim();
-				}).join("\n");
+				const tables = enrichedData$.get().filter((row) => row.isHeader && row.prop === "Ent" && (row.leftModel || row.rightModel)).map((row) => row.leftModel || row.rightModel).filter((v, i, a) => v && a.indexOf(v) === i).join("\n");
 				if (tables) navigator.clipboard.writeText(tables).then(() => {
-					alert(get("stats.messages.copied"));
+					this.isCopying = true;
+					setTimeout(() => {
+						this.isCopying = false;
+					}, 2e3);
 				});
 				else alert(get("stats.messages.no_tables"));
 			}
 		};
+		__decorate([r()], AppStats.prototype, "isCopying", void 0);
 		AppStats = __decorate([t$2("app-stats")], AppStats);
 	}));
 	//#endregion
 	//#region src/components/app-table.css?inline
 	var app_table_default;
 	var init_app_table$1 = __esmMin((() => {
-		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: #cccccc;\r\n}\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.1;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n}\r\n\r\n.table-condensed > thead > tr > th {\r\n  border-top: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 0.1rem 0.4rem;\r\n  border-top: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n.clickable-row:hover {\r\n  filter: brightness(0.95);\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n  padding: 2px 4px;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.3;\r\n  transition: opacity 0.2s;\r\n  padding: 0 2px;\r\n  height: 16px;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 12px;\r\n  height: 12px;\r\n}\r\n\r\ntr:hover .copy-btn {\r\n  opacity: 1;\r\n}\r\n\r\n/* Grouping Rows (Grayscale Palette) */\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"],\r\ntr[data-grouping=\"true\"][data-level=\"4\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Status Colors (Office 2010 Palette) */\r\n\r\n/* Entity/Table Level */\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Attribute/Column Level */\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Other Objects (Absolute Orange Nesting) */\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l0);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l1);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-grouping=\"true\"]),\r\ntr[data-header=\"true\"][data-level=\"4\"]:not([data-grouping=\"true\"]),\r\ntr[data-header=\"true\"][data-level=\"5\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Checked row state: Preserves status colors but applies greyed-out effect */\r\n.checked-row {\r\n  opacity: 0.45;\r\n  filter: grayscale(0.3);\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.checked-row:hover {\r\n  opacity: 0.7;\r\n  filter: grayscale(0.1);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n  color: inherit;\r\n}\r\n\r\n.row-prop {\r\n  font-size: 0.75rem;\r\n  opacity: 0.7;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n  font-size: 0.7rem;\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n";
+		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n}\r\n\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n  border-collapse: separate; /* Changed to separate for better row hover stability */\r\n  border-spacing: 0;\r\n}\r\n\r\n/* Remove 3D effects from header */\r\n.table-condensed > thead > tr > th {\r\n  border: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  text-shadow: none;\r\n  box-shadow: none;\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 4px 8px;\r\n  border-bottom: 1px solid var(--border-color);\r\n  border-right: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-condensed > thead > tr > th:last-child,\r\n.table-condensed > tbody > tr > td:last-child {\r\n  border-right: none;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n/*\r\n   Whole row highlight using box-shadow on the row\r\n   and a persistent overlay on the cells.\r\n   Removed transition to prevent the \"flashing\" or \"dissipating\" feel.\r\n*/\r\n.clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.12);\r\n  background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));\r\n}\r\n\r\n[data-theme=\"light\"] .clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);\r\n  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.2;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Status Colors */\r\n\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l0);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l1);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-table.ts
@@ -2823,21 +2897,19 @@
 				this.toggledProps = new import_lib$1.StoreController(this, toggledPropertiesIds$);
 				this.hiddenSubs = new import_lib$1.StoreController(this, hiddenSubObjectsIds$);
 				this.checked = new import_lib$1.StoreController(this, checkedIds$);
+				this.isFlipped = new import_lib$1.StoreController(this, isFlipped$);
+				this.copiedId = null;
+				this.copiedSide = null;
 			}
 			static {
 				this.styles = r$4(app_table_default);
 			}
 			render() {
-				if (this.data.value.length === 0) return b`
-        <div class="callout">
-          <span class="callout-icon">${icons["clipboard-list"]}</span>
-          ${translate("table.empty")}
-        </div>
-      `;
 				const globalShowProps = this.showProps.value;
 				const toggledPropsSet = this.toggledProps.value;
 				const hiddenSubsSet = this.hiddenSubs.value;
 				const checkedSet = this.checked.value;
+				const flipped = this.isFlipped.value;
 				const allRows = this.data.value;
 				const rowMap = new Map(allRows.map((r) => [r.id, r]));
 				const isRowHidden = (rowId) => {
@@ -2856,14 +2928,15 @@
 					}
 					return false;
 				};
+				const visibleRows = allRows.filter((row) => !isRowHidden(row.id));
 				return b`
       <table class="table table-condensed table-hover table-container">
         <thead>
           <tr>
             <th class="col-check">${icons["square-check"]}</th>
             <th class="col-type">${translate("table.col_type")}</th>
-            <th class="col-left">${translate("table.col_left")}</th>
-            <th class="col-right">${translate("table.col_right")}</th>
+            <th class="col-left">${flipped ? translate("table.col_right") : translate("table.col_left")}</th>
+            <th class="col-right">${flipped ? translate("table.col_left") : translate("table.col_right")}</th>
             <th class="col-prop">${translate("table.col_prop")}</th>
             <th class="col-change">${translate("table.col_change")}</th>
             <th class="col-view">${translate("table.col_view")}</th>
@@ -2871,16 +2944,31 @@
           </tr>
         </thead>
         <tbody>
-          ${allRows.map((row) => {
-					if (isRowHidden(row.id)) return b``;
+          ${visibleRows.length === 0 ? b`
+            <tr>
+              <td colspan="8" class="text-center empty-cell">
+                <div class="callout">
+                  <span class="callout-icon">${icons["clipboard-list"]}</span>
+                  ${translate("table.empty")}
+                </div>
+              </td>
+            </tr>
+          ` : visibleRows.map((row) => {
 					const isIdentificationRow = row.isHeader && !row.isGrouping;
-					const isNameProp = row.type === "Name" || row.type === "Physical Name";
+					const isNameProp = row.type.toLowerCase().includes("name");
 					const showCopy = isIdentificationRow || isNameProp;
 					const level = row.indent;
 					const isChecked = row.id ? checkedSet.has(row.id) : false;
+					const leftVal = flipped ? row.rightModel : row.leftModel;
+					const rightVal = flipped ? row.leftModel : row.rightModel;
+					let change = row.change;
+					if (flipped) {
+						if (change === "I") change = "E";
+						else if (change === "E") change = "I";
+					}
 					return b`
               <tr 
-                data-change="${row.change}" 
+                data-change="${change}" 
                 data-level="${level}"
                 data-prop="${row.prop}"
                 data-header="${row.isHeader || false}"
@@ -2907,36 +2995,47 @@
                 <td class="row-type">
                   <div class="tree-node" style="padding-left: ${level * 3}px">
                     <span class="type-text">${row.type}</span>
+                    ${this._renderAttributeCounter(row)}
                   </div>
                 </td>
                 <td class="row-left">
-                  ${row.leftModel}
-                  ${showCopy && row.leftModel ? b`
-                    <button 
-                      class="btn btn-default btn-xs copy-btn" 
-                      title="${translate("table.copy_left")}" 
-                      @click=${(e) => {
+                  <div class="content-wrapper">
+                    <span class="value-text">${leftVal}</span>
+                    <div class="row-actions">
+                      ${this._renderLenCounter(row, leftVal)}
+                      ${showCopy && leftVal ? b`
+                        <button 
+                          class="btn btn-default btn-xs copy-btn ${this.copiedId === row.id && this.copiedSide === "left" ? "copy-success" : ""}" 
+                          title="${translate("table.copy_left")}" 
+                          @click=${(e) => {
 						e.stopPropagation();
-						this._copyToClipboard(row.leftModel);
+						this._handleCopy(row.id, leftVal, "left");
 					}}
-                    >${icons.copy}</button>
-                  ` : ""}
+                        >${this.copiedId === row.id && this.copiedSide === "left" ? icons.check : icons.copy}</button>
+                      ` : ""}
+                    </div>
+                  </div>
                 </td>
                 <td class="row-right">
-                  ${row.rightModel}
-                  ${showCopy && row.rightModel ? b`
-                    <button 
-                      class="btn btn-default btn-xs copy-btn" 
-                      title="${translate("table.copy_right")}" 
-                      @click=${(e) => {
+                  <div class="content-wrapper">
+                    <span class="value-text">${rightVal}</span>
+                    <div class="row-actions">
+                      ${this._renderLenCounter(row, rightVal)}
+                      ${showCopy && rightVal ? b`
+                        <button 
+                          class="btn btn-default btn-xs copy-btn ${this.copiedId === row.id && this.copiedSide === "right" ? "copy-success" : ""}" 
+                          title="${translate("table.copy_right")}" 
+                          @click=${(e) => {
 						e.stopPropagation();
-						this._copyToClipboard(row.rightModel);
+						this._handleCopy(row.id, rightVal, "right");
 					}}
-                    >${icons.copy}</button>
-                  ` : ""}
+                        >${this.copiedId === row.id && this.copiedSide === "right" ? icons.check : icons.copy}</button>
+                      ` : ""}
+                    </div>
+                  </div>
                 </td>
                 <td class="row-prop">${row.prop}</td>
-                <td class="row-change">${isIdentificationRow ? row.change : ""}</td>
+                <td class="row-change">${isIdentificationRow ? change : ""}</td>
                 <td class="row-view">${isIdentificationRow ? row.view : ""}</td>
                 <td class="row-cal">${row.isCalculated ? "C" : ""}</td>
               </tr>
@@ -2946,13 +3045,36 @@
       </table>
     `;
 			}
-			_copyToClipboard(text) {
+			_renderAttributeCounter(row) {
+				if (!(row.prop === "Ent" && row.isHeader)) return "";
+				const count = row.attributeCount;
+				return b`<span class="attr-badge">${count !== void 0 ? count : "?"}</span>`;
+			}
+			_renderLenCounter(row, value) {
+				const isNameProp = row.type.toLowerCase().includes("name");
+				const isIdentificationRow = row.isHeader && !row.isGrouping;
+				if (!(isNameProp || isIdentificationRow) || !value) return "";
+				const getLen = (val) => {
+					return (val.includes(":") ? val.split(":")[1].trim() : val.trim()).length;
+				};
+				const len = getLen(value);
+				if (len === 0) return "";
+				return b`<span class="len-badge ${len > 18 ? "len-warn" : "len-ok"}">${len}</span>`;
+			}
+			_handleCopy(id, text, side) {
 				const cleanText = text.includes(":") ? text.split(":")[1].trim() : text.trim();
 				navigator.clipboard.writeText(cleanText).then(() => {
-					console.log("Copied:", cleanText);
+					this.copiedId = id;
+					this.copiedSide = side;
+					setTimeout(() => {
+						this.copiedId = null;
+						this.copiedSide = null;
+					}, 2e3);
 				});
 			}
 		};
+		__decorate([r()], AppTable.prototype, "copiedId", void 0);
+		__decorate([r()], AppTable.prototype, "copiedSide", void 0);
 		AppTable = __decorate([t$2("app-table")], AppTable);
 	}));
 	//#endregion
@@ -3024,8 +3146,12 @@
 				const hasRight = ths.some((th) => th.textContent?.trim() === "Right");
 				if (hasObject && hasLeft && hasRight) {
 					console.log("Erwin Report detected via Userscript, transforming...");
+					isUserscript$.set(true);
 					const originalHTML = document.documentElement.outerHTML;
-					fileName$.set(location.pathname.split("/").pop() || "local-report.html");
+					const firstRow = document.querySelector("tbody tr");
+					const newTitle = `${(firstRow?.querySelectorAll("td")[1] || firstRow?.querySelectorAll("td")[3])?.textContent?.trim().replace(/\[Calculated]/g, "") || "Model"} ${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]} (${get("header.comparison") || "Comparison"})`;
+					document.title = newTitle;
+					fileName$.set(newTitle);
 					this._processFileContent(originalHTML);
 				}
 			}
@@ -3063,7 +3189,7 @@
 					const text = new TextDecoder("utf-8", { fatal: true }).decode(buffer);
 					this._processFileContent(text);
 				} catch (e) {
-					console.warn("UTF-8 decoding failed, falling back to windows-1252");
+					console.warn("UTF-8 decoding failed, falling back to windows-1252", e);
 					const text = new TextDecoder("windows-1252").decode(buffer);
 					this._processFileContent(text);
 				}

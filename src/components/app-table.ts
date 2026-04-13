@@ -5,6 +5,7 @@ import { translate } from 'lit-translate';
 import { icons } from '../assets/icons';
 import {
   checkedIds$,
+  type ErwinRow,
   filteredData$,
   hiddenSubObjectsIds$,
   isFlipped$,
@@ -37,7 +38,7 @@ export class AppTable extends LitElement {
     const flipped = this.isFlipped.value;
 
     const allRows = this.data.value;
-    const rowMap = new Map(allRows.map(r => [r.id!, r]));
+    const rowMap = new Map(allRows.map(r => [r.id, r]));
 
     const isRowHidden = (rowId: string | undefined): boolean => {
       if (!rowId) return false;
@@ -152,7 +153,7 @@ export class AppTable extends LitElement {
                           title="${translate('table.copy_left')}" 
                           @click=${(e: MouseEvent) => {
                             e.stopPropagation();
-                            this._handleCopy(row.id!, leftVal, 'left');
+                            this._handleCopy(row.id, leftVal, 'left');
                           }}
                         >${this.copiedId === row.id && this.copiedSide === 'left' ? icons.check : icons.copy}</button>
                       `
@@ -174,7 +175,7 @@ export class AppTable extends LitElement {
                           title="${translate('table.copy_right')}" 
                           @click=${(e: MouseEvent) => {
                             e.stopPropagation();
-                            this._handleCopy(row.id!, rightVal, 'right');
+                            this._handleCopy(row.id, rightVal, 'right');
                           }}
                         >${this.copiedId === row.id && this.copiedSide === 'right' ? icons.check : icons.copy}</button>
                       `
@@ -196,7 +197,7 @@ export class AppTable extends LitElement {
     `;
   }
 
-  private _renderAttributeCounter(row: any) {
+  private _renderAttributeCounter(row: ErwinRow) {
     const isEntity = row.prop === 'Ent' && row.isHeader;
     if (!isEntity) return '';
 
@@ -206,10 +207,10 @@ export class AppTable extends LitElement {
     return html`<span class="attr-badge">${display}</span>`;
   }
 
-  private _renderLenCounter(row: any, value: string) {
+  private _renderLenCounter(row: ErwinRow, value: string) {
     const isNameProp = row.type.toLowerCase().includes('name');
     const isIdentificationRow = row.isHeader && !row.isGrouping;
-    
+
     if (!(isNameProp || isIdentificationRow) || !value) return '';
 
     const getLen = (val: string) => {
