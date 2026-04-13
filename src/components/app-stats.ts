@@ -49,7 +49,12 @@ export class AppStats extends LitElement {
                   s => html`
                   <tr data-type="${s.type}">
                     <td class="type-col">${translate(`stats.row_${s.type.toLowerCase()}`)}</td>
-                    <td class="val-col total-col">${s.total}</td>
+                    <td class="val-col total-col">
+                      <div class="val-wrapper">
+                        ${s.total}
+                        ${s.type === 'Tables' /*&& s.largeTablesCount*/ ? html`<span class="large-count-bubble" title="Tables with > 11 attributes">${s.largeTablesCount}</span>` : ''}
+                      </div>
+                    </td>
                     <td class="val-col status-I">${s.inclusion}</td>
                     <td class="val-col status-A">${s.alteration}</td>
                     <td class="val-col status-E">${s.exclusion}</td>

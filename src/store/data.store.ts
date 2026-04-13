@@ -24,6 +24,7 @@ export interface StatsSummary {
   alteration: number;
   exclusion: number;
   calculated: number;
+  largeTablesCount?: number;
 }
 
 export const rawData$ = atom<ErwinRow[]>([]);
@@ -233,15 +234,12 @@ export const enrichedData$ = computed(rawData$, data => {
         });
 
         // Method B: Manual count of Attribute/Column rows under this Entity
-        // This is the primary "work measure" as it counts added, deleted, and changed columns as distinct entries in the report.
         const childAttributes = childrenIds
           .map(cid => hoisted.find(r => r.id === cid))
           .filter(r => r?.isHeader && !r.isGrouping && (r.type === 'Attribute/Column' || r.type === 'Attribute' || r.type === 'Column'));
 
         const totalManualCount = childAttributes.length;
 
-        // The count is the maximum found across all methods. 
-        // For 'A' tables, totalManualCount correctly sums up unique Attribute rows (I + E + A).
         const finalCount = Math.max(leftMaxOrder, rightMaxOrder, totalManualCount);
         if (finalCount > 0) {
           row.attributeCount = finalCount;
@@ -434,6 +432,7 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
       alteration: 0,
       exclusion: 0,
       calculated: 0,
+      largeTablesCount: 0,
     },
     Columns: {
       type: 'Columns',
@@ -465,6 +464,11 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
         if (change === 'I') summary[key].inclusion++;
         if (change === 'A') summary[key].alteration++;
         if (change === 'E') summary[key].exclusion++;
+      }
+
+      // Track tables with > 11 attributes
+      if (isTable && row.attributeCount && row.attributeCount > 11) {
+        summary['Tables'].largeTablesCount!++;
       }
     };
 
