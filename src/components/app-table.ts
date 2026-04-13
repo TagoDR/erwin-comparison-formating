@@ -151,7 +151,7 @@ export class AppTable extends LitElement {
                           title="${translate('table.copy_left')}" 
                           @click=${(e: MouseEvent) => {
                             e.stopPropagation();
-                            this._handleCopy(row.id!, leftVal, 'left');
+                            this._handleCopy(row.id, leftVal, 'left');
                           }}
                         >${this.copiedId === row.id && this.copiedSide === 'left' ? icons.check : icons.copy}</button>
                       `
@@ -173,7 +173,7 @@ export class AppTable extends LitElement {
                           title="${translate('table.copy_right')}" 
                           @click=${(e: MouseEvent) => {
                             e.stopPropagation();
-                            this._handleCopy(row.id!, rightVal, 'right');
+                            this._handleCopy(row.id, rightVal, 'right');
                           }}
                         >${this.copiedId === row.id && this.copiedSide === 'right' ? icons.check : icons.copy}</button>
                       `
