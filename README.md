@@ -5,10 +5,14 @@ A specialized utility to transform raw Erwin Data Modeler HTML difference report
 ## Features
 
 - **Presence-Based Change Detection**: Categorizes changes (I, A, E) strictly by the presence of data on either side.
+- **Robust Encoding Detection**: Automatically detects and handles legacy encodings (like Windows-1252) used in Portuguese Erwin reports, preventing character mangling.
+- **Flip Sides Logic**: Swap Work (Left) and Reference (Right) models globally with a single click. Inclusion/Exclusion logic updates automatically.
 - **Calculated Field Awareness**: Detects and marks objects where all properties are identical and explicitly marked as `[Calculated]`.
-- **Multilingual Support**: Supports Portuguese (Default), English, Spanish, and French with automatic browser detection.
+- **Character Counter**: Real-time length indicators (color-coded) for all name fields on both models (Green ≤ 18, Red > 18).
+- **Multilingual Support**: Fully localized interface supporting Portuguese, English, Spanish, and French.
 - **Hierarchical Interaction**: Intuitive Left-Click (Toggle properties) and Right-Click (Toggle sub-objects) for a clean navigation experience.
-- **Frozen Layout**: Fixed table structure ensures column widths remain stable during comparison.
+- **Visual Feedback**: Copy-to-clipboard actions provide instant visual confirmation with a green checkmark.
+- **Flat UI Design**: Modernized interface using a stable, high-performance table grid without legacy 3D effects.
 - **Offline Ready**: All builds are self-contained and require no internet connection.
 
 ## Installation and Usage
@@ -57,6 +61,6 @@ Output: `dist/erwin_complete_compare_formatter.user.js`
 - **Framework**: Lit (Web Components) + TypeScript
 - **State**: Nanostores
 - **i18n**: lit-translate
-- **UI**: Bootflat (Bootstrap 3)
+- **UI**: Bootflat (Bootstrap 3) + Custom Flat Theme
 - **Icons**: Tabler Icons
 - **Build**: Vite + Rollup

@@ -14,7 +14,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 - **Output Types:**
   - Single-file HTML (using `vite-plugin-singlefile`)
   - Tampermonkey Userscript (custom Rollup build with metadata)
-- **UI Framework:** [Bootflat](http://bootflat.github.io/) (based on Bootstrap 3) with a custom dark theme.
+- **UI Framework:** [Bootflat](http://bootflat.github.io/) (based on Bootstrap 3) with a custom **Flat Theme**.
 - **Icons:** Tabler Icons
 
 ## 3. UI/UX Requirements
@@ -28,15 +28,18 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 
 2. **Main Display:**
    - **Stats Panel:** Summary table with rows (General, Tables, Columns) and columns (Type, Total, Addition, Change, Deletion, Calculated).
-   - **Data Table Panel:** Fixed-layout table with frozen column widths.
+   - **Flip Functionality:** Integrated toggle to swap Work (Left) and Reference (Right) sides.
+   - **Data Table Panel:** Fixed-layout, **flat grid** table with frozen column widths.
 
 ### 3.2. Data Processing (Parser Logic)
 
 - **Indentation Parsing:** 6 spaces = 1 Level.
+- **Encoding:** Automated UTF-8 / Windows-1252 fallback for Portuguese character support.
 - **Difference Logic:**
   - **Addition (I):** Right Model is empty.
   - **Deletion (E):** Left Model is empty.
   - **Change (A):** Both models have values (regardless of whether they differ).
+  - **Flipped Mode:** (I) becomes (E) and vice-versa.
 - **Calculated Status (C):**
   - **Property:** Marked as calculated if `Left === Right` AND value ends with `[Calculated]`.
   - **Object (Header):** Inherits "Calculated" status only if ALL its non-grouping descendants are calculated.
@@ -49,6 +52,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 | **Left Click**    | Show/Hide the object's properties.             |
 | **Right Click**   | Show/Hide the object's sub-objects (children). |
 | **Global Toggle** | Master shortcut to Show/Hide all properties.   |
+| **Copy Icons**    | Copies value to clipboard with green checkmark feedback. |
 
 ## 4. Visual Encoding (Office 2010 Palette)
 
@@ -60,14 +64,10 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 | **Attribute/Column** | #D7E3BC (60%)    | #CCC1D9 (60%)   | #E5B9B7 (60%)  | #FBD5B5 (60%)       | Black |
 | **Properties**       | Transparent      | Transparent     | Transparent    | Transparent         | Theme |
 
-### 4.2. Other Objects (Absolute Nesting)
+### 4.2. Name Fields (Character Counter)
 
-Non-Table/Column headers follow the Orange scale based on indentation level:
-
-- **Level 0 (Root):** #E36C09 (Dark 25%)
-- **Level 1:** #F79646 (Base)
-- **Level 2:** #FAC08F (40% Lighter)
-- **Level 3+:** #FBD5B5 (60% Lighter)
+- **Bubble (Green):** Length ≤ 18 chars.
+- **Bubble (Red):** Length > 18 chars.
 
 ## 5. Build and Distribution
 
@@ -78,4 +78,4 @@ Non-Table/Column headers follow the Orange scale based on indentation level:
 
 ### 5.2. Userscript Behavior
 
-Automatically detects an Erwin report on local `.html` files, clears the original DOM, and injects the formatter interface.
+Automatically detects an Erwin report on local `.html` files, clears the original DOM, and injects the formatter interface. Title is automatically renamed to `${ModelName} ${YYYY-MM-DD} (${LocalizedComparison})`.
