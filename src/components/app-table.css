@@ -219,3 +219,17 @@ tr[data-header="true"][data-level="3"]:not([data-grouping="true"]) { background-
 
 .len-ok { background-color: #5cb85c; }
 .len-warn { background-color: #d9534f; }
+
+.attr-badge {
+  font-size: 0.75rem;
+  padding: 1px 6px;
+  border-radius: 12px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-weight: bold;
+  margin-left: auto;
+  min-width: 20px;
+  text-align: center;
+  line-height: 1;
+}

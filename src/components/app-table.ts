@@ -37,7 +37,7 @@ export class AppTable extends LitElement {
     const flipped = this.isFlipped.value;
 
     const allRows = this.data.value;
-    const rowMap = new Map(allRows.map(r => [r.id, r]));
+    const rowMap = new Map(allRows.map(r => [r.id!, r]));
 
     const isRowHidden = (rowId: string | undefined): boolean => {
       if (!rowId) return false;
@@ -136,6 +136,7 @@ export class AppTable extends LitElement {
                 <td class="row-type">
                   <div class="tree-node" style="padding-left: ${level * 3}px">
                     <span class="type-text">${row.type}</span>
+                    ${this._renderAttributeCounter(row)}
                   </div>
                 </td>
                 <td class="row-left">
@@ -151,7 +152,7 @@ export class AppTable extends LitElement {
                           title="${translate('table.copy_left')}" 
                           @click=${(e: MouseEvent) => {
                             e.stopPropagation();
-                            this._handleCopy(row.id, leftVal, 'left');
+                            this._handleCopy(row.id!, leftVal, 'left');
                           }}
                         >${this.copiedId === row.id && this.copiedSide === 'left' ? icons.check : icons.copy}</button>
                       `
@@ -173,7 +174,7 @@ export class AppTable extends LitElement {
                           title="${translate('table.copy_right')}" 
                           @click=${(e: MouseEvent) => {
                             e.stopPropagation();
-                            this._handleCopy(row.id, rightVal, 'right');
+                            this._handleCopy(row.id!, rightVal, 'right');
                           }}
                         >${this.copiedId === row.id && this.copiedSide === 'right' ? icons.check : icons.copy}</button>
                       `
@@ -193,6 +194,16 @@ export class AppTable extends LitElement {
         </tbody>
       </table>
     `;
+  }
+
+  private _renderAttributeCounter(row: any) {
+    const isEntity = row.prop === 'Ent' && row.isHeader;
+    if (!isEntity) return '';
+
+    const count = row.attributeCount;
+    const display = count !== undefined ? count : '?';
+
+    return html`<span class="attr-badge">${display}</span>`;
   }
 
   private _renderLenCounter(type: string, value: string) {

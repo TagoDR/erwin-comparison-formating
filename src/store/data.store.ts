@@ -14,6 +14,7 @@ export interface ErwinRow {
   isCalculated?: boolean;
   leftModel: string;
   rightModel: string;
+  attributeCount?: number;
 }
 
 export interface StatsSummary {
@@ -206,6 +207,45 @@ export const enrichedData$ = computed(rawData$, data => {
           const child = hoisted.find(r => r.id === cid);
           return child?.isCalculated;
         });
+      }
+
+      // Attribute Counting Logic for Entities/Tables
+      const isEntity = row.type === 'Entity/Table' || row.type === 'Entity' || row.type === 'Table';
+      if (isEntity) {
+        let leftMaxOrder = 0;
+        let rightMaxOrder = 0;
+
+        // Method A: Check for Order properties
+        const orderRows = hoisted.filter(
+          c =>
+            c.parentId === row.id &&
+            (c.type === 'Column Order' || c.type === 'Attribute Order' || c.type === 'Attribute/Column Order'),
+        );
+
+        const getCommaCount = (val: string) => {
+          if (!val || val.trim() === '') return 0;
+          return val.split(',').length;
+        };
+
+        orderRows.forEach(or => {
+          leftMaxOrder = Math.max(leftMaxOrder, getCommaCount(or.leftModel));
+          rightMaxOrder = Math.max(rightMaxOrder, getCommaCount(or.rightModel));
+        });
+
+        // Method B: Manual count of Attribute/Column rows under this Entity
+        // This is the primary "work measure" as it counts added, deleted, and changed columns as distinct entries in the report.
+        const childAttributes = childrenIds
+          .map(cid => hoisted.find(r => r.id === cid))
+          .filter(r => r?.isHeader && !r.isGrouping && (r.type === 'Attribute/Column' || r.type === 'Attribute' || r.type === 'Column'));
+
+        const totalManualCount = childAttributes.length;
+
+        // The count is the maximum found across all methods. 
+        // For 'A' tables, totalManualCount correctly sums up unique Attribute rows (I + E + A).
+        const finalCount = Math.max(leftMaxOrder, rightMaxOrder, totalManualCount);
+        if (finalCount > 0) {
+          row.attributeCount = finalCount;
+        }
       }
     }
 
