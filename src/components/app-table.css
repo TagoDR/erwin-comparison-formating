@@ -124,7 +124,7 @@ tr[data-header="true"] .type-text {
 }
 
 .copy-btn {
-  opacity: 0.2;
+  opacity: 0.5;
   transition: all 0.2s;
   padding: 2px 4px;
   height: auto;
@@ -145,6 +145,7 @@ tr[data-header="true"] .type-text {
   opacity: 1;
   border-color: var(--border-subtle);
   background: var(--bg-panel);
+  color: var(--off-aqua-base);
 }
 
 .copy-success {
