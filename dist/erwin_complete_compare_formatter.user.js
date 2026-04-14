@@ -667,16 +667,48 @@
 		init_lang_changed_base();
 	}));
 	//#endregion
-	//#region node_modules/nanostores/clean-stores/index.js
-	var clean;
-	var init_clean_stores = __esmMin((() => {
-		clean = Symbol("clean");
-	}));
+	//#region src/parser/html-parser.ts
+	/**
+	* Parses the HTML content from Erwin's Complete Compare report.
+	* @param html The raw HTML string.
+	* @returns An array of ErwinRow.
+	*/
+	function parseErwinHtml(html) {
+		const doc = new DOMParser().parseFromString(html, "text/html");
+		const rows = [];
+		doc.querySelectorAll("tbody tr").forEach((tr) => {
+			const tds = tr.querySelectorAll("td");
+			if (tds.length < 4) return;
+			const objectTd = tds[0];
+			const rawLeft = tds[1].textContent?.trim() || "";
+			const rawRight = tds[3].textContent?.trim() || "";
+			const leftModel = rawLeft.replace(/\[Calculated\]/g, "").trim();
+			const rightModel = rawRight.replace(/\[Calculated\]/g, "").trim();
+			const rawTypeText = objectTd.textContent || "";
+			const type = rawTypeText.trim();
+			const leadingWhitespace = rawTypeText.match(/^[\s\u00a0]*/)?.[0] || "";
+			const indent = Math.floor(leadingWhitespace.length / 6);
+			let change = "";
+			if (leftModel && rightModel) change = "A";
+			else if (leftModel) change = "I";
+			else if (rightModel) change = "E";
+			rows.push({
+				type,
+				indent,
+				leftModel: rawLeft,
+				rightModel: rawRight,
+				change,
+				prop: "",
+				view: ""
+			});
+		});
+		return rows;
+	}
+	var init_html_parser = __esmMin((() => {}));
 	//#endregion
 	//#region node_modules/nanostores/atom/index.js
 	var listenerQueue, lqIndex, QUEUE_ITEMS_PER_LISTENER, epoch, atom;
 	var init_atom = __esmMin((() => {
-		init_clean_stores();
 		listenerQueue = [];
 		lqIndex = 0;
 		QUEUE_ITEMS_PER_LISTENER = 4;
@@ -726,11 +758,6 @@
 				},
 				value: initialValue
 			};
-			if (process.env.NODE_ENV !== "production") $atom[clean] = () => {
-				listeners = [];
-				$atom.lc = 0;
-				$atom.off();
-			};
 			return $atom;
 		};
 	}));
@@ -738,7 +765,6 @@
 	//#region node_modules/nanostores/lifecycle/index.js
 	var MOUNT, UNMOUNT, REVERT_MUTATION, on, STORE_UNMOUNT_DELAY, onMount;
 	var init_lifecycle = __esmMin((() => {
-		init_clean_stores();
 		MOUNT = 5;
 		UNMOUNT = 6;
 		REVERT_MUTATION = 10;
@@ -790,15 +816,6 @@
 						}
 					}, STORE_UNMOUNT_DELAY);
 				};
-				if (process.env.NODE_ENV !== "production") {
-					let originClean = $store[clean];
-					$store[clean] = () => {
-						for (let destroy of $store.events[UNMOUNT]) destroy();
-						$store.events[UNMOUNT] = [];
-						$store.active = false;
-						originClean();
-					};
-				}
 				return () => {
 					$store.listen = originListen;
 					$store.off = originOff;
@@ -807,28 +824,11 @@
 		};
 	}));
 	//#endregion
-	//#region node_modules/nanostores/warn/index.js
-	function warn(text) {
-		if (!warned[text]) {
-			warned[text] = true;
-			if (typeof console !== "undefined" && console.warn) {
-				console.groupCollapsed("Nano Stores: " + text);
-				console.trace("Source of deprecated call");
-				console.groupEnd();
-			}
-		}
-	}
-	var warned;
-	var init_warn = __esmMin((() => {
-		warned = {};
-	}));
-	//#endregion
 	//#region node_modules/nanostores/computed/index.js
 	var computedStore, computed;
 	var init_computed = __esmMin((() => {
 		init_atom();
 		init_lifecycle();
-		init_warn();
 		computedStore = (stores, cb, batched) => {
 			if (!Array.isArray(stores)) stores = [stores];
 			let previousArgs;
@@ -840,12 +840,10 @@
 				if (!previousArgs || args.some((arg, i) => arg !== previousArgs[i])) {
 					previousArgs = args;
 					let value = cb(...args);
-					if (value && value.then && value.t) {
-						if (process.env.NODE_ENV !== "production") warn("Use @nanostores/async for async computed. We will remove Promise support in computed() in Nano Stores 2.0");
-						value.then((asyncValue) => {
-							if (previousArgs === args) $computed.set(asyncValue);
-						});
-					} else {
+					if (value && value.then && value.t) value.then((asyncValue) => {
+						if (previousArgs === args) $computed.set(asyncValue);
+					});
+					else {
 						$computed.set(value);
 						currentEpoch = epoch;
 					}
@@ -877,10 +875,330 @@
 	//#region node_modules/nanostores/index.js
 	var init_nanostores = __esmMin((() => {
 		init_atom();
-		init_clean_stores();
 		init_computed();
-		init_warn();
 		init_lifecycle();
+	}));
+	//#endregion
+	//#region src/store/data.store.ts
+	var rawData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, GROUPING_KEYWORDS, HEADER_KEYWORDS, getObjectShortCode, enrichedData$, filteredData$, togglePropertiesGlobal, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, toggleFlip, statsSummary$;
+	var init_data_store = __esmMin((() => {
+		init_nanostores();
+		rawData$ = /* @__PURE__ */ atom([]);
+		isLoading$ = /* @__PURE__ */ atom(false);
+		fileName$ = /* @__PURE__ */ atom(null);
+		isUserscript$ = /* @__PURE__ */ atom(false);
+		filterChange$ = /* @__PURE__ */ atom("");
+		filterName$ = /* @__PURE__ */ atom("");
+		showProperties$ = /* @__PURE__ */ atom(false);
+		toggledPropertiesIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
+		hiddenSubObjectsIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
+		checkedIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
+		isFlipped$ = /* @__PURE__ */ atom(false);
+		GROUPING_KEYWORDS = [
+			"Attribute Storage Objects",
+			"Attributes",
+			"Attributes/Columns",
+			"Collections",
+			"Columns",
+			"Default Constraint Usages",
+			"Default Values",
+			"Domains",
+			"ER Diagrams",
+			"Entities",
+			"Entities/Tables",
+			"Fields",
+			"Indexes",
+			"Keys Groups",
+			"Keys Groups/Indexes",
+			"Partition Description Objects",
+			"Physical Storage Objects",
+			"Range Partitions Info Objects",
+			"Range Partitions",
+			"Relationships",
+			"Sequences",
+			"Subject Areas",
+			"Subtype Symbols",
+			"Tables",
+			"Tablespaces",
+			"Views"
+		];
+		HEADER_KEYWORDS = [
+			"Attribute",
+			"Attribute/Column",
+			"Collection",
+			"Column",
+			"Default Constrain Usage",
+			"Default Value",
+			"Domain",
+			"ER Diagram",
+			"Entity",
+			"Entity/Table",
+			"Field",
+			"Index",
+			"Key Group",
+			"Key Group/Index",
+			"Model",
+			"Physical Storage Object",
+			"Range Partition",
+			"Relationship",
+			"Sequence",
+			"Subject Area",
+			"Subtype Symbol",
+			"Table",
+			"Tablespace",
+			"View"
+		];
+		getObjectShortCode = (type) => {
+			const t = type.toLowerCase().trim();
+			if (t === "entity/table" || t === "entity" || t === "table" || t === "collection") return "Ent";
+			if (t === "attribute/column" || t === "attribute" || t === "column" || t === "field") return "Atr";
+			if (t === "relationship") return "FK";
+			if (t === "tablespace") return "TB";
+			if (t === "index" || t === "key group/index" || t === "key group") return "IX";
+			if (t === "view") return "VW";
+			if (t === "model") return "M";
+			return "";
+		};
+		enrichedData$ = /* @__PURE__ */ computed(rawData$, (data) => {
+			const withInitialState = data.map((row, index) => {
+				const cleanedType = row.type.split(":")[0].trim();
+				const isGrouping = GROUPING_KEYWORDS.some((kw) => cleanedType === kw);
+				const isHeader = isGrouping || row.isHeader || HEADER_KEYWORDS.some((kw) => cleanedType === kw);
+				let type = row.type;
+				const originalType = type;
+				if (isHeader && !isGrouping && type.includes(":")) type = cleanedType;
+				let view = row.view;
+				if (!view) {
+					if (type === "Entity/Table") view = "L/P";
+					else if (type === "Attribute/Column") view = "L/P";
+					else if (type === "Entity" || type === "Attribute") view = "L";
+					else if (type === "Table" || type === "Column") view = "P";
+				}
+				return {
+					...row,
+					type,
+					originalType,
+					id: `row-${index}`,
+					isHeader,
+					isGrouping,
+					view,
+					isCalculated: row.leftModel === row.rightModel && row.leftModel.endsWith("[Calculated]") && row.rightModel.endsWith("[Calculated]")
+				};
+			});
+			const headerStack = [];
+			const hoisted = [...withInitialState.map((row) => {
+				while (headerStack.length > 0 && headerStack[headerStack.length - 1].indent >= row.indent) headerStack.pop();
+				let parentId = "";
+				for (let i = headerStack.length - 1; i >= 0; i--) if (!headerStack[i].isGrouping) {
+					parentId = headerStack[i].id;
+					break;
+				}
+				if (row.isHeader) headerStack.push({
+					id: row.id,
+					indent: row.indent,
+					isGrouping: row.isGrouping || false
+				});
+				return {
+					...row,
+					parentId
+				};
+			})];
+			const childrenMap = /* @__PURE__ */ new Map();
+			hoisted.forEach((r) => {
+				if (r.parentId) {
+					const list = childrenMap.get(r.parentId) || [];
+					list.push(r.id);
+					childrenMap.set(r.parentId, list);
+				}
+			});
+			for (let i = hoisted.length - 1; i >= 0; i--) {
+				const row = hoisted[i];
+				if (row.isHeader && !row.isGrouping) {
+					const childrenIds = childrenMap.get(row.id) || [];
+					const nonGroupingChildren = childrenIds.filter((cid) => {
+						return !hoisted.find((r) => r.id === cid)?.isGrouping;
+					});
+					if (nonGroupingChildren.length > 0) row.isCalculated = nonGroupingChildren.every((cid) => {
+						return hoisted.find((r) => r.id === cid)?.isCalculated;
+					});
+					if (row.type === "Entity/Table" || row.type === "Entity" || row.type === "Table") {
+						let leftMaxOrder = 0;
+						let rightMaxOrder = 0;
+						const orderRows = hoisted.filter((c) => c.parentId === row.id && (c.type === "Column Order List" || c.type === "Attribute Order List"));
+						const getCommaCount = (val) => {
+							if (!val || val.trim() === "") return 0;
+							return val.split(",").length;
+						};
+						orderRows.forEach((or) => {
+							leftMaxOrder = Math.max(leftMaxOrder, getCommaCount(or.leftModel));
+							rightMaxOrder = Math.max(rightMaxOrder, getCommaCount(or.rightModel));
+						});
+						const totalManualCount = childrenIds.map((cid) => hoisted.find((r) => r.id === cid)).filter((r) => r?.isHeader && !r.isGrouping && (r.type === "Attribute/Column" || r.type === "Attribute" || r.type === "Column")).length;
+						const finalCount = Math.max(leftMaxOrder, rightMaxOrder, totalManualCount);
+						if (finalCount > 0) row.attributeCount = finalCount;
+					}
+				}
+				if (row.parentId) {
+					const parentIndex = hoisted.findIndex((p) => p.id === row.parentId);
+					if (parentIndex !== -1) {
+						const parent = hoisted[parentIndex];
+						if (row.type === "Logical Only" && row.leftModel === "true") parent.view = "L";
+						else if (row.type === "Physical Only" && row.leftModel === "true") parent.view = "P";
+					}
+				}
+			}
+			let lastPropCode = "O";
+			return hoisted.map((row) => {
+				const code = row.isHeader ? getObjectShortCode(row.type) : "";
+				if (code) lastPropCode = code;
+				return {
+					...row,
+					prop: lastPropCode
+				};
+			}).filter((row) => !row.isGrouping);
+		});
+		filteredData$ = /* @__PURE__ */ computed([
+			enrichedData$,
+			filterChange$,
+			filterName$
+		], (data, change, name) => {
+			let result = data;
+			if (change) {
+				const matches = /* @__PURE__ */ new Set();
+				data.forEach((r) => {
+					if (r.isHeader && r.prop === "Ent" && r.change === change) {
+						const addWithDescendants = (id) => {
+							matches.add(id);
+							data.forEach((child) => {
+								if (child.parentId === id) addWithDescendants(child.id);
+							});
+						};
+						addWithDescendants(r.id);
+					}
+				});
+				result = result.filter((r) => matches.has(r.id));
+			}
+			if (name) {
+				const search = name.toLowerCase();
+				const hits = /* @__PURE__ */ new Set();
+				data.forEach((r) => {
+					const typeMatch = (r.originalType || r.type).toLowerCase().includes(search);
+					const leftMatch = r.leftModel.toLowerCase().includes(search);
+					const rightMatch = r.rightModel.toLowerCase().includes(search);
+					if (r.isHeader && (typeMatch || leftMatch || rightMatch)) hits.add(r.id);
+					else if ((r.type === "Name" || r.type === "Physical Name") && (leftMatch || rightMatch)) hits.add(r.id);
+				});
+				const finalIds = /* @__PURE__ */ new Set();
+				const addWithDescendants = (id) => {
+					if (finalIds.has(id)) return;
+					finalIds.add(id);
+					data.forEach((r) => {
+						if (r.parentId === id) addWithDescendants(r.id);
+					});
+				};
+				const addAncestors = (id) => {
+					let curr = data.find((r) => r.id === id);
+					while (curr?.parentId) {
+						finalIds.add(curr.parentId);
+						curr = data.find((r) => r.id === curr?.parentId);
+					}
+				};
+				hits.forEach((id) => {
+					const row = data.find((r) => r.id === id);
+					if (!row) return;
+					const objectId = !row.isHeader && row.parentId ? row.parentId : id;
+					addWithDescendants(objectId);
+					addAncestors(objectId);
+				});
+				result = result.filter((r) => finalIds.has(r.id));
+			}
+			return result;
+		});
+		togglePropertiesGlobal = () => {
+			const nextValue = !showProperties$.get();
+			showProperties$.set(nextValue);
+			toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
+		};
+		togglePropertiesIndividual = (id) => {
+			const current = new Set(toggledPropertiesIds$.get());
+			if (current.has(id)) current.delete(id);
+			else current.add(id);
+			toggledPropertiesIds$.set(current);
+		};
+		toggleSubObjects = (id) => {
+			const current = new Set(hiddenSubObjectsIds$.get());
+			if (current.has(id)) current.delete(id);
+			else current.add(id);
+			hiddenSubObjectsIds$.set(current);
+		};
+		toggleCheck = (id) => {
+			const currentChecked = new Set(checkedIds$.get());
+			if (!currentChecked.has(id)) {
+				currentChecked.add(id);
+				const currentHiddenSubs = new Set(hiddenSubObjectsIds$.get());
+				currentHiddenSubs.add(id);
+				hiddenSubObjectsIds$.set(currentHiddenSubs);
+				const globalShow = showProperties$.get();
+				const currentToggled = new Set(toggledPropertiesIds$.get());
+				if (globalShow) currentToggled.add(id);
+				else currentToggled.delete(id);
+				toggledPropertiesIds$.set(currentToggled);
+			} else currentChecked.delete(id);
+			checkedIds$.set(currentChecked);
+		};
+		initializeVisibility = () => {
+			showProperties$.set(false);
+			toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
+			hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
+			isFlipped$.set(false);
+		};
+		toggleFlip = () => {
+			isFlipped$.set(!isFlipped$.get());
+		};
+		statsSummary$ = /* @__PURE__ */ computed([enrichedData$, isFlipped$], (data, isFlipped) => {
+			const summary = {
+				Tables: {
+					type: "Tables",
+					total: 0,
+					inclusion: 0,
+					alteration: 0,
+					exclusion: 0,
+					calculated: 0,
+					largeTablesCount: 0
+				},
+				Columns: {
+					type: "Columns",
+					total: 0,
+					inclusion: 0,
+					alteration: 0,
+					exclusion: 0,
+					calculated: 0
+				}
+			};
+			data.forEach((row) => {
+				if (!row.isHeader || row.isGrouping || !row.change) return;
+				const isTable = row.prop === "Ent";
+				const isColumn = row.prop === "Atr";
+				const increment = (key) => {
+					summary[key].total++;
+					if (row.isCalculated) summary[key].calculated++;
+					else {
+						let change = row.change;
+						if (isFlipped) {
+							if (change === "I") change = "E";
+							else if (change === "E") change = "I";
+						}
+						if (change === "I") summary[key].inclusion++;
+						if (change === "A") summary[key].alteration++;
+						if (change === "E") summary[key].exclusion++;
+					}
+					if (isTable && row.attributeCount && row.attributeCount > 11) summary.Tables.largeTablesCount = (summary.Tables.largeTablesCount || 0) + 1;
+				};
+				if (isTable) increment("Tables");
+				if (isColumn) increment("Columns");
+			});
+			return Object.values(summary);
+		});
 	}));
 	//#endregion
 	//#region src/i18n/en-US.json
@@ -2237,366 +2555,6 @@
 		};
 	}));
 	//#endregion
-	//#region src/parser/html-parser.ts
-	/**
-	* Parses the HTML content from Erwin's Complete Compare report.
-	* @param html The raw HTML string.
-	* @returns An array of ErwinRow.
-	*/
-	function parseErwinHtml(html) {
-		const doc = new DOMParser().parseFromString(html, "text/html");
-		const rows = [];
-		doc.querySelectorAll("tbody tr").forEach((tr) => {
-			const tds = tr.querySelectorAll("td");
-			if (tds.length < 4) return;
-			const objectTd = tds[0];
-			const rawLeft = tds[1].textContent?.trim() || "";
-			const rawRight = tds[3].textContent?.trim() || "";
-			const leftModel = rawLeft.replace(/\[Calculated\]/g, "").trim();
-			const rightModel = rawRight.replace(/\[Calculated\]/g, "").trim();
-			const rawTypeText = objectTd.textContent || "";
-			const type = rawTypeText.trim();
-			const leadingWhitespace = rawTypeText.match(/^[\s\u00a0]*/)?.[0] || "";
-			const indent = Math.floor(leadingWhitespace.length / 6);
-			let change = "";
-			if (leftModel && rightModel) change = "A";
-			else if (leftModel) change = "I";
-			else if (rightModel) change = "E";
-			rows.push({
-				type,
-				indent,
-				leftModel: rawLeft,
-				rightModel: rawRight,
-				change,
-				prop: "",
-				view: ""
-			});
-		});
-		return rows;
-	}
-	var init_html_parser = __esmMin((() => {}));
-	//#endregion
-	//#region src/store/data.store.ts
-	var rawData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, GROUPING_KEYWORDS, HEADER_KEYWORDS, getObjectShortCode, enrichedData$, filteredData$, togglePropertiesGlobal, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, toggleFlip, statsSummary$;
-	var init_data_store = __esmMin((() => {
-		init_nanostores();
-		rawData$ = /* @__PURE__ */ atom([]);
-		isLoading$ = /* @__PURE__ */ atom(false);
-		fileName$ = /* @__PURE__ */ atom(null);
-		isUserscript$ = /* @__PURE__ */ atom(false);
-		filterChange$ = /* @__PURE__ */ atom("");
-		filterName$ = /* @__PURE__ */ atom("");
-		showProperties$ = /* @__PURE__ */ atom(false);
-		toggledPropertiesIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
-		hiddenSubObjectsIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
-		checkedIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
-		isFlipped$ = /* @__PURE__ */ atom(false);
-		GROUPING_KEYWORDS = [
-			"Attribute Storage Objects",
-			"Attributes",
-			"Attributes/Columns",
-			"Collections",
-			"Columns",
-			"Default Constraint Usages",
-			"Default Values",
-			"Domains",
-			"ER Diagrams",
-			"Entities",
-			"Entities/Tables",
-			"Indexes",
-			"Keys Groups",
-			"Keys Groups/Indexes",
-			"Partition Description Objects",
-			"Physical Storage Objects",
-			"Range Partitions Info Objects",
-			"Range Partitions",
-			"Relationships",
-			"Sequences",
-			"Subject Areas",
-			"Subtype Symbols",
-			"Tables",
-			"Tablespaces",
-			"Views"
-		];
-		HEADER_KEYWORDS = [
-			"Attribute",
-			"Attribute/Column",
-			"Collection",
-			"Column",
-			"Default Constrain Usage",
-			"Default Value",
-			"Domain",
-			"ER Diagram",
-			"Entity",
-			"Entity/Table",
-			"Field",
-			"Index",
-			"Key Group",
-			"Key Group/Index",
-			"Model",
-			"Physical Storage Object",
-			"Range Partition",
-			"Relationship",
-			"Sequence",
-			"Subject Area",
-			"Subtype Symbol",
-			"Table",
-			"Tablespace",
-			"View"
-		];
-		getObjectShortCode = (type) => {
-			const t = type.toLowerCase();
-			if (t.includes("entity") || t.includes("table") || t.includes("collection")) return "Ent";
-			if (t.includes("attribute") || t.includes("column") || t.includes("field")) return "Atr";
-			if (t.includes("relationship")) return "FK";
-			if (t.includes("tablespace")) return "TB";
-			if (t.includes("index")) return "IX";
-			if (t.includes("view")) return "VW";
-			if (t.includes("model")) return "M";
-			return "";
-		};
-		enrichedData$ = /* @__PURE__ */ computed(rawData$, (data) => {
-			const withInitialState = data.map((row, index) => {
-				const cleanedType = row.type.split(":")[0].trim();
-				const isGrouping = GROUPING_KEYWORDS.some((kw) => cleanedType === kw);
-				const isHeader = isGrouping || row.isHeader || HEADER_KEYWORDS.some((kw) => cleanedType === kw);
-				let type = row.type;
-				const originalType = type;
-				if (isHeader && !isGrouping && type.includes(":")) type = cleanedType;
-				let view = row.view;
-				if (!view) {
-					if (type === "Entity/Table") view = "L/P";
-					else if (type === "Attribute/Column") view = "L/P";
-					else if (type === "Entity" || type === "Attribute") view = "L";
-					else if (type === "Table" || type === "Column") view = "P";
-				}
-				return {
-					...row,
-					type,
-					originalType,
-					id: `row-${index}`,
-					isHeader,
-					isGrouping,
-					view,
-					isCalculated: row.leftModel === row.rightModel && row.leftModel.endsWith("[Calculated]") && row.rightModel.endsWith("[Calculated]")
-				};
-			});
-			const headerStack = [];
-			const hoisted = [...withInitialState.map((row) => {
-				while (headerStack.length > 0 && headerStack[headerStack.length - 1].indent >= row.indent) headerStack.pop();
-				let parentId = "";
-				for (let i = headerStack.length - 1; i >= 0; i--) if (!headerStack[i].isGrouping) {
-					parentId = headerStack[i].id;
-					break;
-				}
-				if (row.isHeader) headerStack.push({
-					id: row.id,
-					indent: row.indent,
-					isGrouping: row.isGrouping || false
-				});
-				return {
-					...row,
-					parentId
-				};
-			})];
-			const childrenMap = /* @__PURE__ */ new Map();
-			hoisted.forEach((r) => {
-				if (r.parentId) {
-					const list = childrenMap.get(r.parentId) || [];
-					list.push(r.id);
-					childrenMap.set(r.parentId, list);
-				}
-			});
-			for (let i = hoisted.length - 1; i >= 0; i--) {
-				const row = hoisted[i];
-				if (row.isHeader && !row.isGrouping) {
-					const childrenIds = childrenMap.get(row.id) || [];
-					const nonGroupingChildren = childrenIds.filter((cid) => {
-						return !hoisted.find((r) => r.id === cid)?.isGrouping;
-					});
-					if (nonGroupingChildren.length > 0) row.isCalculated = nonGroupingChildren.every((cid) => {
-						return hoisted.find((r) => r.id === cid)?.isCalculated;
-					});
-					if (row.type === "Entity/Table" || row.type === "Entity" || row.type === "Table") {
-						let leftMaxOrder = 0;
-						let rightMaxOrder = 0;
-						const orderRows = hoisted.filter((c) => c.parentId === row.id && (c.type === "Column Order" || c.type === "Attribute Order" || c.type === "Attribute/Column Order"));
-						const getCommaCount = (val) => {
-							if (!val || val.trim() === "") return 0;
-							return val.split(",").length;
-						};
-						orderRows.forEach((or) => {
-							leftMaxOrder = Math.max(leftMaxOrder, getCommaCount(or.leftModel));
-							rightMaxOrder = Math.max(rightMaxOrder, getCommaCount(or.rightModel));
-						});
-						const totalManualCount = childrenIds.map((cid) => hoisted.find((r) => r.id === cid)).filter((r) => r?.isHeader && !r.isGrouping && (r.type === "Attribute/Column" || r.type === "Attribute" || r.type === "Column")).length;
-						const finalCount = Math.max(leftMaxOrder, rightMaxOrder, totalManualCount);
-						if (finalCount > 0) row.attributeCount = finalCount;
-					}
-				}
-				if (row.parentId) {
-					const parentIndex = hoisted.findIndex((p) => p.id === row.parentId);
-					if (parentIndex !== -1) {
-						const parent = hoisted[parentIndex];
-						if (row.type === "Logical Only" && row.leftModel === "true") parent.view = "L";
-						else if (row.type === "Physical Only" && row.leftModel === "true") parent.view = "P";
-					}
-				}
-			}
-			let lastPropCode = "O";
-			return hoisted.map((row) => {
-				const code = row.isHeader ? getObjectShortCode(row.type) : "";
-				if (code) lastPropCode = code;
-				return {
-					...row,
-					prop: lastPropCode
-				};
-			}).filter((row) => !row.isGrouping);
-		});
-		filteredData$ = /* @__PURE__ */ computed([
-			enrichedData$,
-			filterChange$,
-			filterName$
-		], (data, change, name) => {
-			let result = data;
-			if (change) {
-				const matches = /* @__PURE__ */ new Set();
-				data.forEach((r) => {
-					if (r.isHeader && r.prop === "Ent" && r.change === change) {
-						const addWithDescendants = (id) => {
-							matches.add(id);
-							data.forEach((child) => {
-								if (child.parentId === id) addWithDescendants(child.id);
-							});
-						};
-						addWithDescendants(r.id);
-					}
-				});
-				result = result.filter((r) => matches.has(r.id));
-			}
-			if (name) {
-				const search = name.toLowerCase();
-				const hits = /* @__PURE__ */ new Set();
-				data.forEach((r) => {
-					const typeMatch = (r.originalType || r.type).toLowerCase().includes(search);
-					const leftMatch = r.leftModel.toLowerCase().includes(search);
-					const rightMatch = r.rightModel.toLowerCase().includes(search);
-					if (r.isHeader && (typeMatch || leftMatch || rightMatch)) hits.add(r.id);
-					else if ((r.type === "Name" || r.type === "Physical Name") && (leftMatch || rightMatch)) hits.add(r.id);
-				});
-				const finalIds = /* @__PURE__ */ new Set();
-				const addWithDescendants = (id) => {
-					if (finalIds.has(id)) return;
-					finalIds.add(id);
-					data.forEach((r) => {
-						if (r.parentId === id) addWithDescendants(r.id);
-					});
-				};
-				const addAncestors = (id) => {
-					let curr = data.find((r) => r.id === id);
-					while (curr?.parentId) {
-						finalIds.add(curr.parentId);
-						curr = data.find((r) => r.id === curr?.parentId);
-					}
-				};
-				hits.forEach((id) => {
-					const row = data.find((r) => r.id === id);
-					if (!row) return;
-					const objectId = !row.isHeader && row.parentId ? row.parentId : id;
-					addWithDescendants(objectId);
-					addAncestors(objectId);
-				});
-				result = result.filter((r) => finalIds.has(r.id));
-			}
-			return result;
-		});
-		togglePropertiesGlobal = () => {
-			const nextValue = !showProperties$.get();
-			showProperties$.set(nextValue);
-			toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
-		};
-		togglePropertiesIndividual = (id) => {
-			const current = new Set(toggledPropertiesIds$.get());
-			if (current.has(id)) current.delete(id);
-			else current.add(id);
-			toggledPropertiesIds$.set(current);
-		};
-		toggleSubObjects = (id) => {
-			const current = new Set(hiddenSubObjectsIds$.get());
-			if (current.has(id)) current.delete(id);
-			else current.add(id);
-			hiddenSubObjectsIds$.set(current);
-		};
-		toggleCheck = (id) => {
-			const currentChecked = new Set(checkedIds$.get());
-			if (!currentChecked.has(id)) {
-				currentChecked.add(id);
-				const currentHiddenSubs = new Set(hiddenSubObjectsIds$.get());
-				currentHiddenSubs.add(id);
-				hiddenSubObjectsIds$.set(currentHiddenSubs);
-				const globalShow = showProperties$.get();
-				const currentToggled = new Set(toggledPropertiesIds$.get());
-				if (globalShow) currentToggled.add(id);
-				else currentToggled.delete(id);
-				toggledPropertiesIds$.set(currentToggled);
-			} else currentChecked.delete(id);
-			checkedIds$.set(currentChecked);
-		};
-		initializeVisibility = () => {
-			showProperties$.set(false);
-			toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
-			hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
-			isFlipped$.set(false);
-		};
-		toggleFlip = () => {
-			isFlipped$.set(!isFlipped$.get());
-		};
-		statsSummary$ = /* @__PURE__ */ computed([enrichedData$, isFlipped$], (data, isFlipped) => {
-			const summary = {
-				Tables: {
-					type: "Tables",
-					total: 0,
-					inclusion: 0,
-					alteration: 0,
-					exclusion: 0,
-					calculated: 0,
-					largeTablesCount: 0
-				},
-				Columns: {
-					type: "Columns",
-					total: 0,
-					inclusion: 0,
-					alteration: 0,
-					exclusion: 0,
-					calculated: 0
-				}
-			};
-			data.forEach((row) => {
-				if (!row.isHeader || row.isGrouping || !row.change) return;
-				const isTable = row.prop === "Ent";
-				const isColumn = row.prop === "Atr";
-				const increment = (key) => {
-					summary[key].total++;
-					if (row.isCalculated) summary[key].calculated++;
-					else {
-						let change = row.change;
-						if (isFlipped) {
-							if (change === "I") change = "E";
-							else if (change === "E") change = "I";
-						}
-						if (change === "I") summary[key].inclusion++;
-						if (change === "A") summary[key].alteration++;
-						if (change === "E") summary[key].exclusion++;
-					}
-					if (isTable && row.attributeCount && row.attributeCount > 11 && summary.Tables.largeTablesCount) summary.Tables.largeTablesCount++;
-				};
-				if (isTable) increment("Tables");
-				if (isColumn) increment("Columns");
-			});
-			return Object.values(summary);
-		});
-	}));
-	//#endregion
 	//#region src/index.css
 	var init_src = __esmMin((() => {}));
 	//#endregion
@@ -2622,7 +2580,7 @@
 	//#region src/components/app-header.css?inline
 	var app_header_default;
 	var init_app_header$1 = __esmMin((() => {
-		app_header_default = ":host {\r\n  display: block;\r\n  position: sticky;\r\n  top: 0;\r\n  z-index: 1000;\r\n  background: var(--bg-panel);\r\n  border-bottom: 2px solid var(--border-subtle);\r\n  padding: 0.5rem 1.5rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-layout {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  height: 2.5rem;\r\n}\r\n\r\n.brand {\r\n  font-size: 1.125rem;\r\n  font-weight: 800;\r\n  letter-spacing: -0.025em;\r\n  white-space: nowrap;\r\n}\r\n\r\n.file-drop-zone {\r\n  flex: 1;\r\n  margin: 0 3rem;\r\n  border: 2px dashed var(--border-subtle);\r\n  border-radius: 6px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.75rem;\r\n  padding: 0.1rem 1rem;\r\n  font-size: 0.8125rem;\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s ease;\r\n  position: relative;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-drop-zone.dragging {\r\n  border-color: var(--accent-blue);\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.file-drop-zone input[type=\"file\"] {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-info {\r\n  flex: 1;\r\n  margin: 0 3rem;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 1.5rem;\r\n  border-radius: 4px;\r\n  border: 1px solid var(--border-subtle);\r\n}\r\n\r\n.file-name {\r\n  color: var(--accent-blue);\r\n  font-weight: 600;\r\n  font-family: monospace;\r\n  font-size: 0.875rem;\r\n  max-width: 400px;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.close-btn {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  padding: 0.2rem 0.8rem;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n  font-size: 0.7rem;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.close-btn span {\r\n  line-height: 1;\r\n}\r\n\r\n.header-controls {\r\n  display: flex;\r\n  flex-direction: row;\r\n  align-items: center;\r\n  gap: 12px;\r\n}\r\n\r\n.version-tag {\r\n  font-size: 10px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  font-weight: bold;\r\n  pointer-events: none;\r\n  order: 3;\r\n}\r\n\r\n.lang-select {\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-size: 11px;\r\n  font-weight: bold;\r\n  padding: 2px 4px;\r\n  border-radius: 4px;\r\n  cursor: pointer;\r\n  outline: none;\r\n}\r\n\r\n.theme-toggle {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  padding: 2px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  border-radius: 4px;\r\n  transition: background 0.2s;\r\n  order: 2;\r\n}\r\n\r\n.theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n[data-theme=\"dark\"] .theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n.header-layout svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
+		app_header_default = ":host {\r\n  display: block;\r\n  position: sticky;\r\n  top: 0;\r\n  z-index: 1000;\r\n  background: var(--bg-panel);\r\n  border-bottom: 2px solid var(--border-subtle);\r\n  padding: 0.5rem 1.5rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-layout {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  height: 2.5rem;\r\n}\r\n\r\n.brand {\r\n  flex-basis: 400px;\r\n  font-size: 1.125rem;\r\n  font-weight: 800;\r\n  letter-spacing: -0.025em;\r\n  white-space: nowrap;\r\n}\r\n\r\n.file-drop-zone {\r\n  flex: 1;\r\n  border: 2px dashed var(--border-subtle);\r\n  border-radius: 6px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.75rem;\r\n  padding: 0.1rem 1rem;\r\n  font-size: 0.8125rem;\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s ease;\r\n  position: relative;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-drop-zone.dragging {\r\n  border-color: var(--accent-blue);\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.file-drop-zone input[type=\"file\"] {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-info {\r\n  flex: 1;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 1.5rem;\r\n  border-radius: 4px;\r\n  border: 1px solid var(--border-subtle);\r\n}\r\n\r\n.file-name {\r\n  color: var(--accent-blue);\r\n  font-weight: 600;\r\n  font-family: monospace;\r\n  font-size: 0.875rem;\r\n  max-width: 400px;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.close-btn {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  padding: 0.2rem 0.8rem;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n  font-size: 0.7rem;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.close-btn span {\r\n  line-height: 1;\r\n}\r\n\r\n.header-controls {\r\n  flex-basis: 400px;\r\n  display: flex;\r\n  flex-direction: row;\r\n  align-items: center;\r\n  justify-content: flex-end;\r\n  gap: 12px;\r\n}\r\n\r\n.version-tag {\r\n  font-size: 10px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  font-weight: bold;\r\n  pointer-events: none;\r\n  order: 3;\r\n}\r\n\r\n.lang-select {\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-size: 11px;\r\n  font-weight: bold;\r\n  padding: 2px 4px;\r\n  border-radius: 4px;\r\n  cursor: pointer;\r\n  outline: none;\r\n}\r\n\r\n.theme-toggle {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  padding: 2px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  border-radius: 4px;\r\n  transition: background 0.2s;\r\n  order: 2;\r\n}\r\n\r\n.theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n[data-theme=\"dark\"] .theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n.header-layout svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
 	}));
 	//#endregion
 	//#region \0@oxc-project+runtime@0.124.0/helpers/decorate.js
@@ -2743,7 +2701,7 @@
 	//#region src/components/app-stats.css?inline
 	var app_stats_default;
 	var init_app_stats$1 = __esmMin((() => {
-		app_stats_default = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.layout-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n}\r\n\r\n.left-stats {\r\n  display: flex;\r\n  align-items: stretch;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.stats-container {\r\n  display: flex;\r\n  align-items: stretch;\r\n  background: var(--bg-panel);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 6px;\r\n  overflow: hidden;\r\n  min-width: 450px;\r\n}\r\n\r\n.flip-btn {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.25rem;\r\n  border: none;\r\n  border-right: 1px solid var(--border-subtle);\r\n  border-radius: 0;\r\n  padding: 0 0.75rem;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  background: var(--bg-main);\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.flip-btn:hover {\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.flip-btn svg {\r\n  width: 1.25rem;\r\n  height: 1.25rem;\r\n}\r\n\r\n.stats-table {\r\n  width: 100%;\r\n  border-collapse: collapse;\r\n  font-size: 0.75rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\nth {\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 0.6rem;\r\n  text-align: left;\r\n  font-weight: 700;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  border-bottom: 2px solid var(--border-subtle);\r\n}\r\n\r\ntd {\r\n  padding: 0.3rem 0.6rem;\r\n  border-bottom: 1px solid var(--border-subtle);\r\n}\r\n\r\n.val-col {\r\n  text-align: center;\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.val-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 6px;\r\n}\r\n\r\n.large-count-bubble {\r\n  padding: 2px 3px;\r\n  border-radius: 10px;\r\n  min-width: 16px;\r\n  text-align: center;\r\n  line-height: 1;\r\n  font-size: 0.75rem;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n}\r\n\r\n/* --- Phase 1: Office 2010 Stats Summary Colors --- */\r\n\r\n/* Tables Row (Base Colors) */\r\ntr[data-type=\"Tables\"] {\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .type-col {\r\n  color: var(--text-on-dark);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Tables\"] .status-I {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-A {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-E {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-C {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .total-col {\r\n  background-color: var(--off-blue-40);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Columns Row (60% Lighter Colors) */\r\ntr[data-type=\"Columns\"] {\r\n  background-color: var(--off-blue-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .type-col {\r\n  color: var(--text-on-light);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Columns\"] .status-I {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-A {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-E {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-C {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .total-col {\r\n  background-color: var(--off-blue-80);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Filter Panel Styling */\r\n.filter-panel {\r\n  display: flex;\r\n  flex-direction: row;\r\n  gap: 1.5rem;\r\n  background: var(--bg-panel);\r\n  padding: 0.6rem 1.2rem;\r\n  border-radius: 6px;\r\n  border: 1px solid var(--border-subtle);\r\n  align-items: flex-end;\r\n}\r\n\r\n.filter-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.3rem;\r\n}\r\n\r\n.filter-item label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.filter-item .form-control {\r\n  height: 1.8rem;\r\n  padding: 0.2rem 0.5rem;\r\n  font-size: 0.75rem;\r\n  min-width: 120px;\r\n}\r\n\r\n.search-input-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 4px;\r\n  padding: 0 0.5rem;\r\n  height: 1.8rem;\r\n}\r\n\r\n.search-input-wrapper input {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  font-size: 0.75rem;\r\n  width: 150px;\r\n  outline: none;\r\n}\r\n\r\n.search-input-wrapper svg {\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n}\r\n\r\n/* Action Panel on the right */\r\n.action-panel {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.5rem;\r\n  justify-content: center;\r\n}\r\n\r\n.action-btn {\r\n  background: var(--border-subtle);\r\n  color: var(--text-primary);\r\n  border: 1px solid var(--border-subtle);\r\n  padding: 0.3rem 0.8rem;\r\n  border-radius: 4px;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  min-width: 150px;\r\n}\r\n\r\n.action-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.action-btn:active {\r\n  transform: translateY(1px);\r\n}\r\n\r\n.layout-stats svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
+		app_stats_default = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.layout-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n}\r\n\r\n.left-stats {\r\n  display: flex;\r\n  align-items: stretch;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.stats-container {\r\n  display: flex;\r\n  align-items: stretch;\r\n  background: var(--bg-panel);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 6px;\r\n  overflow: hidden;\r\n  min-width: 450px;\r\n}\r\n\r\n.flip-btn {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.25rem;\r\n  border: none;\r\n  border-right: 1px solid var(--border-subtle);\r\n  border-radius: 0;\r\n  padding: 0 0.75rem;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  background: var(--bg-main);\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.flip-btn:hover {\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.flip-btn svg {\r\n  width: 1.25rem;\r\n  height: 1.25rem;\r\n}\r\n\r\n.stats-table {\r\n  width: 100%;\r\n  border-collapse: collapse;\r\n  font-size: 0.75rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\nth {\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 0.6rem;\r\n  text-align: left;\r\n  font-weight: 700;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  border-bottom: 2px solid var(--border-subtle);\r\n}\r\n\r\ntd {\r\n  padding: 0.3rem 0.6rem;\r\n  border-bottom: 1px solid var(--border-subtle);\r\n}\r\n\r\n.val-col {\r\n  text-align: center;\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.val-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 6px;\r\n}\r\n\r\n.large-count-bubble {\r\n  padding: 2px 3px;\r\n  border-radius: 10px;\r\n  min-width: 16px;\r\n  text-align: center;\r\n  line-height: 1;\r\n  font-size: 0.75rem;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n}\r\n\r\n/* --- Phase 1: Office 2010 Stats Summary Colors --- */\r\n\r\n/* Tables Row (Base Colors) */\r\ntr[data-type=\"Tables\"] {\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .type-col {\r\n  color: var(--text-on-dark);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Tables\"] .status-I {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-A {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-E {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-C {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .total-col {\r\n  background-color: var(--off-blue-40);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Columns Row (60% Lighter Colors) */\r\ntr[data-type=\"Columns\"] {\r\n  background-color: var(--off-blue-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .type-col {\r\n  color: var(--text-on-light);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Columns\"] .status-I {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-A {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-E {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-C {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .total-col {\r\n  background-color: var(--off-blue-80);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Filter Panel Styling */\r\n.filter-panel {\r\n  display: flex;\r\n  flex-direction: row;\r\n  gap: 1.5rem;\r\n  background: var(--bg-panel);\r\n  padding: 0.6rem 1.2rem;\r\n  border-radius: 6px;\r\n  border: 1px solid var(--border-subtle);\r\n  align-items: flex-end;\r\n}\r\n\r\n.filter-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.3rem;\r\n}\r\n\r\n.filter-item label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.filter-item .form-control {\r\n  height: 1.8rem;\r\n  padding: 0.2rem 0.5rem;\r\n  font-size: 0.75rem;\r\n  min-width: 120px;\r\n}\r\n\r\n.search-input-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 4px;\r\n  padding: 0 0.5rem;\r\n  height: 1.8rem;\r\n}\r\n\r\n.search-input-wrapper input {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  font-size: 0.75rem;\r\n  width: 150px;\r\n  outline: none;\r\n}\r\n\r\n.search-input-wrapper svg {\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n}\r\n\r\n/* Action Panel on the right */\r\n.action-panel {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.5rem;\r\n  justify-content: center;\r\n}\r\n\r\n.action-btn {\r\n  background: var(--bg-main);\r\n  color: var(--text-primary);\r\n  border: 1px solid var(--border-subtle);\r\n  padding: 0.4rem 1rem;\r\n  border-radius: 4px;\r\n  font-size: 0.7rem;\r\n  font-weight: bold;\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.6rem;\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  min-width: 160px;\r\n  box-shadow: 0 2px 4px rgba(0,0,0,0.1);\r\n}\r\n\r\n.action-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.action-btn:active {\r\n  transform: translateY(1px);\r\n}\r\n\r\n.layout-stats svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-stats.ts
@@ -2875,7 +2833,7 @@
 	//#region src/components/app-table.css?inline
 	var app_table_default;
 	var init_app_table$1 = __esmMin((() => {
-		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n}\r\n\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n  border-collapse: separate; /* Changed to separate for better row hover stability */\r\n  border-spacing: 0;\r\n}\r\n\r\n/* Remove 3D effects from header */\r\n.table-condensed > thead > tr > th {\r\n  border: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  text-shadow: none;\r\n  box-shadow: none;\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 4px 8px;\r\n  border-bottom: 1px solid var(--border-color);\r\n  border-right: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-condensed > thead > tr > th:last-child,\r\n.table-condensed > tbody > tr > td:last-child {\r\n  border-right: none;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n/*\r\n   Whole row highlight using box-shadow on the row\r\n   and a persistent overlay on the cells.\r\n   Removed transition to prevent the \"flashing\" or \"dissipating\" feel.\r\n*/\r\n.clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.12);\r\n  background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));\r\n}\r\n\r\n[data-theme=\"light\"] .clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);\r\n  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.2;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Status Colors */\r\n\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l0);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l1);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n";
+		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n}\r\n\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n  border-collapse: separate; /* Changed to separate for better row hover stability */\r\n  border-spacing: 0;\r\n}\r\n\r\n/* Remove 3D effects from header */\r\n.table-condensed > thead > tr > th {\r\n  border: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  text-shadow: none;\r\n  box-shadow: none;\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 4px 8px;\r\n  border-bottom: 1px solid var(--border-color);\r\n  border-right: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-condensed > thead > tr > th:last-child,\r\n.table-condensed > tbody > tr > td:last-child {\r\n  border-right: none;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n/*\r\n   Whole row highlight using box-shadow on the row\r\n   and a persistent overlay on the cells.\r\n   Removed transition to prevent the \"flashing\" or \"dissipating\" feel.\r\n*/\r\n.clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.12);\r\n  background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));\r\n}\r\n\r\n[data-theme=\"light\"] .clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);\r\n  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Status Colors */\r\n\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l0);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l1);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-table.ts
@@ -3052,7 +3010,7 @@
 			}
 			_renderLenCounter(row, value) {
 				const isNameProp = row.type.toLowerCase().includes("name");
-				const isIdentificationRow = row.isHeader && !row.isGrouping;
+				const isIdentificationRow = row.isHeader && !row.isGrouping && (row.prop === "Ent" || row.prop === "Atr");
 				if (!(isNameProp || isIdentificationRow) || !value) return "";
 				const getLen = (val) => {
 					return (val.includes(":") ? val.split(":")[1].trim() : val.trim()).length;
@@ -3106,10 +3064,9 @@
 			}
 			firstUpdated() {
 				fileName$.subscribe((name) => {
-					document.title = name ? `Erwin: ${name}` : "Erwin Compare Formatter";
+					document.title = name ? name : "Erwin Compare Formatter";
 				});
 				this._setupGlobalDragDrop();
-				this._detectAndTransformUserscript();
 			}
 			render() {
 				const showData = !!this.fileName.value && !this.isLoading.value;
@@ -3138,22 +3095,6 @@
         ` : ""}
       </div>
     `;
-			}
-			_detectAndTransformUserscript() {
-				const ths = Array.from(document.querySelectorAll("table th"));
-				const hasObject = ths.some((th) => th.textContent?.trim() === "Object");
-				const hasLeft = ths.some((th) => th.textContent?.trim() === "Left");
-				const hasRight = ths.some((th) => th.textContent?.trim() === "Right");
-				if (hasObject && hasLeft && hasRight) {
-					console.log("Erwin Report detected via Userscript, transforming...");
-					isUserscript$.set(true);
-					const originalHTML = document.documentElement.outerHTML;
-					const firstRow = document.querySelector("tbody tr");
-					const newTitle = `${(firstRow?.querySelectorAll("td")[1] || firstRow?.querySelectorAll("td")[3])?.textContent?.trim().replace(/\[Calculated]/g, "") || "Model"} ${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]} (${get("header.comparison") || "Comparison"})`;
-					document.title = newTitle;
-					fileName$.set(newTitle);
-					this._processFileContent(originalHTML);
-				}
 			}
 			_setupGlobalDragDrop() {
 				window.addEventListener("dragover", (e) => {
@@ -3218,16 +3159,32 @@
 	}));
 	//#endregion
 	//#region src/index.ts
+	init_lit_translate();
+	init_html_parser();
+	init_data_store();
 	init_i18n_store();
 	function isErwinReport() {
 		const ths = Array.from(document.querySelectorAll("table th"));
-		const hasObject = ths.some((th) => th.textContent?.trim() === "Object");
-		const hasLeft = ths.some((th) => th.textContent?.trim() === "Left");
-		const hasRight = ths.some((th) => th.textContent?.trim() === "Right");
-		return hasObject && hasLeft && hasRight;
+		const hasType = ths.some((th) => th.textContent?.trim() === "Type");
+		const hasLeftValue = ths.some((th) => th.textContent?.trim() === "Left Value");
+		const hasRightValue = ths.some((th) => th.textContent?.trim() === "Right Value");
+		return hasType && hasLeftValue && hasRightValue;
 	}
 	initI18n().then(() => {
-		if (isErwinReport()) document.body.innerHTML = "<app-root></app-root>";
+		if (isErwinReport()) {
+			console.log("Erwin Report detected via Userscript, transforming...");
+			isUserscript$.set(true);
+			const originalHTML = document.documentElement.outerHTML;
+			window.__ERWIN_ORIGINAL_HTML__ = originalHTML;
+			const firstRow = document.querySelector("tbody tr");
+			const newTitle = `${(firstRow?.querySelectorAll("td")[1] || firstRow?.querySelectorAll("td")[3])?.textContent?.trim().replace(/\[Calculated]/g, "") || "Model"} ${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]} (${get("header.comparison") || "Comparison"})`;
+			document.title = newTitle;
+			fileName$.set(newTitle);
+			const rows = parseErwinHtml(originalHTML);
+			rawData$.set(rows);
+			initializeVisibility();
+			document.body.innerHTML = "<app-root></app-root>";
+		}
 		Promise.resolve().then(() => (init_main(), main_exports));
 	});
 	//#endregion
