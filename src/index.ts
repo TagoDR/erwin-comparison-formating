@@ -1,12 +1,21 @@
+import { get } from 'lit-translate';
+import { parseErwinHtml } from './parser/html-parser';
+import { fileName$, initializeVisibility, isUserscript$, rawData$ } from './store/data.store';
 import { initI18n } from './store/i18n.store';
+
+declare global {
+  interface Window {
+    __ERWIN_ORIGINAL_HTML__?: string;
+  }
+}
 
 // Function to detect Erwin Report
 function isErwinReport() {
   const ths = Array.from(document.querySelectorAll('table th'));
-  const hasObject = ths.some(th => th.textContent?.trim() === 'Object');
-  const hasLeft = ths.some(th => th.textContent?.trim() === 'Left');
-  const hasRight = ths.some(th => th.textContent?.trim() === 'Right');
-  return hasObject && hasLeft && hasRight;
+  const hasType = ths.some(th => th.textContent?.trim() === 'Type');
+  const hasLeftValue = ths.some(th => th.textContent?.trim() === 'Left Value');
+  const hasRightValue = ths.some(th => th.textContent?.trim() === 'Right Value');
+  return hasType && hasLeftValue && hasRightValue;
 }
 
 // Initialize i18n before everything
@@ -14,8 +23,30 @@ initI18n().then(() => {
   // If we are in a Userscript environment and detect an Erwin report,
   // we might want to clear the body to avoid showing the raw table below our app
   if (isErwinReport()) {
-    // We wait for the DOM to be fully loaded if needed,
-    // but usually userscripts run at document-end or document-idle
+    console.log('Erwin Report detected via Userscript, transforming...');
+    isUserscript$.set(true);
+
+    const originalHTML = document.documentElement.outerHTML;
+    window.__ERWIN_ORIGINAL_HTML__ = originalHTML;
+
+    // Extract model name from the first tr after the header
+    const firstRow = document.querySelector('tbody tr');
+    const modelNameCell =
+      firstRow?.querySelectorAll('td')[1] || firstRow?.querySelectorAll('td')[3];
+    const modelName = modelNameCell?.textContent?.trim().replace(/\[Calculated]/g, '') || 'Model';
+
+    const isoDate = new Date().toISOString().split('T')[0];
+    const comparisonLabel = get('header.comparison') || 'Comparison';
+    const newTitle = `${modelName} ${isoDate} (${comparisonLabel})`;
+
+    document.title = newTitle;
+    fileName$.set(newTitle);
+
+    // Process content immediately
+    const rows = parseErwinHtml(originalHTML);
+    rawData$.set(rows);
+    initializeVisibility();
+
     document.body.innerHTML = '<app-root></app-root>';
   }
 

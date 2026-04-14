@@ -1,14 +1,13 @@
 import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { get, translate } from 'lit-translate';
+import { translate } from 'lit-translate';
 import { icons } from './assets/icons';
 import { parseErwinHtml } from './parser/html-parser';
 import {
   fileName$,
   initializeVisibility,
   isLoading$,
-  isUserscript$,
   rawData$,
 } from './store/data.store';
 
@@ -42,9 +41,6 @@ export class AppRoot extends LitElement {
 
     // Phase 2: Global Drag & Drop Support
     this._setupGlobalDragDrop();
-
-    // Userscript: Auto-transform if Erwin report is detected in the current document
-    this._detectAndTransformUserscript();
   }
 
   render() {
@@ -87,34 +83,6 @@ export class AppRoot extends LitElement {
         }
       </div>
     `;
-  }
-
-  private _detectAndTransformUserscript() {
-    // Look for typical Erwin Report markers: a table with specific headers
-    const ths = Array.from(document.querySelectorAll('table th'));
-    const hasObject = ths.some(th => th.textContent?.trim() === 'Object');
-    const hasLeft = ths.some(th => th.textContent?.trim() === 'Left');
-    const hasRight = ths.some(th => th.textContent?.trim() === 'Right');
-
-    if (hasObject && hasLeft && hasRight) {
-      console.log('Erwin Report detected via Userscript, transforming...');
-      isUserscript$.set(true);
-      const originalHTML = document.documentElement.outerHTML;
-
-      // Extract model name from the first tr after the header
-      const firstRow = document.querySelector('tbody tr');
-      const modelNameCell =
-        firstRow?.querySelectorAll('td')[1] || firstRow?.querySelectorAll('td')[3];
-      const modelName = modelNameCell?.textContent?.trim().replace(/\[Calculated]/g, '') || 'Model';
-
-      const isoDate = new Date().toISOString().split('T')[0];
-      const comparisonLabel = get('header.comparison') || 'Comparison';
-      const newTitle = `${modelName} ${isoDate} (${comparisonLabel})`;
-
-      document.title = newTitle;
-      fileName$.set(newTitle);
-      this._processFileContent(originalHTML);
-    }
   }
 
   private _setupGlobalDragDrop() {
