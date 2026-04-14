@@ -4,12 +4,7 @@ import { customElement } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
 import { icons } from './assets/icons';
 import { parseErwinHtml } from './parser/html-parser';
-import {
-  fileName$,
-  initializeVisibility,
-  isLoading$,
-  rawData$,
-} from './store/data.store';
+import { fileName$, initializeVisibility, isLoading$, rawData$ } from './store/data.store';
 
 // Import Global CSS
 import './index.css';

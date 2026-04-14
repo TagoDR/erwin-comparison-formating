@@ -15,6 +15,8 @@ declare let unsafeWindow: Window & { [key: string]: any };
  */
 declare let window: Window & { [key: string]: any };
 
+declare const __IS_PUBLIC__: boolean;
+
 declare module '*.svg' {
   const content: string;
   export default content;

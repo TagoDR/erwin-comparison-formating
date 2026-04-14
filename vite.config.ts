@@ -22,6 +22,7 @@ export default defineConfig(({ mode }): UserConfig => {
   const baseConfig: UserConfig = {
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode === 'development' ? 'development' : 'production'),
+      __IS_PUBLIC__: JSON.stringify(true),
     },
   };
 

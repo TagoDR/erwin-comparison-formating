@@ -22,7 +22,7 @@ export class AppHeader extends LitElement {
 
     return html`
       <div class="header-layout">
-        <div class="brand">${translate('header.title')}</div>
+        ${__IS_PUBLIC__ ? html`<div class="brand">${translate('header.title')}</div>` : ''}
         ${isMonkey ? html`<div class="file-info">${this.fileName.value}</div>` : ''}
 
         ${
@@ -56,12 +56,18 @@ export class AppHeader extends LitElement {
         }
 
         <div class="header-controls">
+          ${
+            __IS_PUBLIC__
+              ? html`
           <select class="lang-select" .value=${this.language.value} @change=${this._onLanguageChange}>
             <option value="pt-BR">PT</option>
             <option value="en-US">EN</option>
             <option value="fr-FR">FR</option>
             <option value="es-ES">ES</option>
           </select>
+          `
+              : ''
+          }
 
           <button class="theme-toggle" @click=${toggleTheme} title="Change Theme">
             ${this.theme.value === 'dark' ? icons.sun : icons.moon}

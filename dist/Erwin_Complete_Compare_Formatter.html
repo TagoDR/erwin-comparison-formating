@@ -181,11 +181,12 @@
 }\r
 \r
 .brand {\r
-  flex-basis: 400px;\r
+  flex-basis: 10%;\r
   font-size: 1.125rem;\r
   font-weight: 800;\r
   letter-spacing: -0.025em;\r
   white-space: nowrap;\r
+  margin-right: 15px;\r
 }\r
 \r
 .file-drop-zone {\r
@@ -259,12 +260,13 @@
 }\r
 \r
 .header-controls {\r
-  flex-basis: 400px;\r
+  flex-basis: 10%;\r
   display: flex;\r
   flex-direction: row;\r
   align-items: center;\r
   justify-content: flex-end;\r
   gap: 12px;\r
+  margin-left: 15px;\r
 }\r
 \r
 .version-tag {\r
@@ -316,7 +318,7 @@
 }\r
 `}));function Q(e,t,n,r){var i=arguments.length,a=i<3?t:r===null?r=Object.getOwnPropertyDescriptor(t,n):r,o;if(typeof Reflect==`object`&&typeof Reflect.decorate==`function`)a=Reflect.decorate(e,t,n,r);else for(var s=e.length-1;s>=0;s--)(o=e[s])&&(a=(i<3?o(a):i>3?o(t,n,a):o(t,n))||a);return i>3&&a&&Object.defineProperty(t,n,a),a}var Hi=t((()=>{})),Ui,Wi,Gi=t((()=>{Ui=Nn(),Ir(),Zr(),E(),Ni(),zi(),Vi(),Hi(),Wi=class extends Y{constructor(...e){super(...e),this.fileName=new Ui.StoreController(this,A),this.theme=new Ui.StoreController(this,Li),this.language=new Ui.StoreController(this,xn),this.isUserscript=new Ui.StoreController(this,Ot),this.isDragging=!1}static{this.styles=F(Bi)}render(){let e=this.isUserscript.value;return G`
       <div class="header-layout">
-        <div class="brand">${T(`header.title`)}</div>
+        ${G`<div class="brand">${T(`header.title`)}</div>`}
         ${e?G`<div class="file-info">${this.fileName.value}</div>`:``}
 
         ${e?``:G`
@@ -342,12 +344,14 @@
         `}
 
         <div class="header-controls">
+          ${G`
           <select class="lang-select" .value=${this.language.value} @change=${this._onLanguageChange}>
             <option value="pt-BR">PT</option>
             <option value="en-US">EN</option>
             <option value="fr-FR">FR</option>
             <option value="es-ES">ES</option>
           </select>
+          `}
 
           <button class="theme-toggle" @click=${Ri} title="Change Theme">
             ${this.theme.value===`dark`?Z.sun:Z.moon}

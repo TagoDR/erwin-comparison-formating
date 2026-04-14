@@ -248,7 +248,7 @@ tr[data-type="Columns"] .total-col {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   min-width: 160px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .action-btn:hover {
