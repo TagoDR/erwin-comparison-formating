@@ -37,7 +37,7 @@ export class AppRoot extends LitElement {
 
     // Phase 2: Dynamic Page Title
     fileName$.subscribe(name => {
-      document.title = name ? `Erwin: ${name}` : 'Erwin Compare Formatter';
+      document.title = name ? name : 'Erwin Compare Formatter';
     });
 
     // Phase 2: Global Drag & Drop Support
