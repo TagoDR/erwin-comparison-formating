@@ -17,6 +17,7 @@
 }
 
 .brand {
+  flex-basis: 400px;
   font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: -0.025em;
@@ -25,7 +26,6 @@
 
 .file-drop-zone {
   flex: 1;
-  margin: 0 3rem;
   border: 2px dashed var(--border-subtle);
   border-radius: 6px;
   display: flex;
@@ -58,7 +58,6 @@
 
 .file-info {
   flex: 1;
-  margin: 0 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,9 +95,11 @@
 }
 
 .header-controls {
+  flex-basis: 400px;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: flex-end;
   gap: 12px;
 }
 
