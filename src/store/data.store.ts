@@ -221,9 +221,7 @@ export const enrichedData$ = computed(rawData$, data => {
         const orderRows = hoisted.filter(
           c =>
             c.parentId === row.id &&
-            (c.type === 'Column Order' ||
-              c.type === 'Attribute Order' ||
-              c.type === 'Attribute/Column Order'),
+            (c.type === 'Column Order List' || c.type === 'Attribute Order List'),
         );
 
         const getCommaCount = (val: string) => {
