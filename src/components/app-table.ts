@@ -209,7 +209,8 @@ export class AppTable extends LitElement {
 
   private _renderLenCounter(row: ErwinRow, value: string) {
     const isNameProp = row.type.toLowerCase().includes('name');
-    const isIdentificationRow = row.isHeader && !row.isGrouping;
+    const isIdentificationRow =
+      row.isHeader && !row.isGrouping && (row.prop === 'Ent' || row.prop === 'Atr');
 
     if (!(isNameProp || isIdentificationRow) || !value) return '';
 
