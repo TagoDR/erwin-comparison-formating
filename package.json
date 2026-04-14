@@ -30,5 +30,22 @@
     "vite-plugin-css-injected-by-js": "^4.0.1",
     "vite-plugin-singlefile": "^2.3.2",
     "vite-svg-loader": "^5.1.1"
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": "*.svg",
+        "options": {
+          "parser": "html"
+        }
+      }
+    ],
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "printWidth": 100,
+    "arrowParens": "avoid",
+    "endOfLine": "crlf",
+    "singleAttributePerLine": true
   }
 }
