@@ -19,9 +19,16 @@ const metadata: Metadata = {
 };
 
 export default defineConfig(({ mode }): UserConfig => {
+  const baseConfig: UserConfig = {
+    define: {
+      'process.env.NODE_ENV': JSON.stringify(mode === 'development' ? 'development' : 'production'),
+    },
+  };
+
   // STANDALONE BUILD (Single HTML File)
   if (mode === 'standalone' || mode === 'production') {
     return {
+      ...baseConfig,
       plugins: [
         svgLoader({ svgo: false, defaultImport: 'raw' }),
         viteSingleFile(),
@@ -46,6 +53,7 @@ export default defineConfig(({ mode }): UserConfig => {
 
   // USERSCRIPT BUILD (Tampermonkey)
   return {
+    ...baseConfig,
     plugins: [
       svgLoader({ svgo: false, defaultImport: 'raw' }),
       cssInjectedByJsPlugin(),
