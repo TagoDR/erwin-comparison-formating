@@ -57,6 +57,7 @@ const GROUPING_KEYWORDS = [
   'ER Diagrams',
   'Entities',
   'Entities/Tables',
+  'Fields',
   'Indexes',
   'Keys Groups',
   'Keys Groups/Indexes',
