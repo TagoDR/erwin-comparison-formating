@@ -103,14 +103,15 @@ const HEADER_KEYWORDS = [
 ];
 
 export const getObjectShortCode = (type: string): string => {
-  const t = type.toLowerCase();
-  if (t.includes('entity') || t.includes('table') || t.includes('collection')) return 'Ent';
-  if (t.includes('attribute') || t.includes('column') || t.includes('field')) return 'Atr';
-  if (t.includes('relationship')) return 'FK';
-  if (t.includes('tablespace')) return 'TB';
-  if (t.includes('index')) return 'IX';
-  if (t.includes('view')) return 'VW';
-  if (t.includes('model')) return 'M';
+  const t = type.toLowerCase().trim();
+  if (t === 'entity/table' || t === 'entity' || t === 'table' || t === 'collection') return 'Ent';
+  if (t === 'attribute/column' || t === 'attribute' || t === 'column' || t === 'field')
+    return 'Atr';
+  if (t === 'relationship') return 'FK';
+  if (t === 'tablespace') return 'TB';
+  if (t === 'index' || t === 'key group/index' || t === 'key group') return 'IX';
+  if (t === 'view') return 'VW';
+  if (t === 'model') return 'M';
   return '';
 };
 
@@ -473,13 +474,8 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
       }
 
       // Track tables with > 11 attributes
-      if (
-        isTable &&
-        row.attributeCount &&
-        row.attributeCount > 11 &&
-        summary.Tables.largeTablesCount
-      ) {
-        summary.Tables.largeTablesCount++;
+      if (isTable && row.attributeCount && row.attributeCount > 11) {
+        summary.Tables.largeTablesCount = (summary.Tables.largeTablesCount || 0) + 1;
       }
     };
 
