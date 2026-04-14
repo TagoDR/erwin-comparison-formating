@@ -35,6 +35,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 
 - **Indentation Parsing:** 6 spaces = 1 Level.
 - **Encoding:** Automated UTF-8 / Windows-1252 fallback for Portuguese character support.
+- **Header Structure:** Type, Left Value, Status, Right Value.
 - **Difference Logic:**
   - **Addition (I):** Right Model is empty.
   - **Deletion (E):** Left Model is empty.
@@ -47,12 +48,12 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 
 ### 3.3. Interactions
 
-| Interaction       | Effect                                         |
-| :---------------- | :--------------------------------------------- |
-| **Left Click**    | Show/Hide the object's properties.             |
-| **Right Click**   | Show/Hide the object's sub-objects (children). |
-| **Global Toggle** | Master shortcut to Show/Hide all properties.   |
-| **Copy Icons**    | Copies value to clipboard with green checkmark feedback. |
+| Interaction       | Effect                                                 |
+| :---------------- | :----------------------------------------------------- |
+| **Left Click**    | Show/Hide the object's properties.                     |
+| **Right Click**   | Show/Hide the object's sub-objects (children).         |
+| **Global Toggle** | Master shortcut to Show/Hide all properties.           |
+| **Copy Icons**    | Copies value to clipboard with **green** checkmark feedback. |
 
 ## 4. Visual Encoding (Office 2010 Palette)
 
@@ -66,6 +67,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 
 ### 4.2. Name Fields (Character Counter)
 
+- **Target Objects:** Entity/Table/Collection and Attribute/Column/Field only.
 - **Bubble (Green):** Length ≤ 18 chars.
 - **Bubble (Red):** Length > 18 chars.
 
