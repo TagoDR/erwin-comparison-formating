@@ -16,6 +16,29 @@
   border-spacing: 0;
 }
 
+.indent-dots {
+  display: flex;
+  gap: 2px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  font-family: monospace;
+  margin-right: 4px;
+}
+
+.dot {
+  width: 6px;
+  text-align: center;
+}
+
+tr[data-udp="true"] {
+  background-color: rgba(0, 128, 128, 0.2);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] tr[data-udp="true"] {
+  background-color: rgba(0, 128, 128, 0.4);
+}
+
 /* Remove 3D effects from header */
 .table-condensed > thead > tr > th {
   border: none;
@@ -173,46 +196,78 @@ tr[data-grouping="true"][data-level="3"] {
   color: var(--text-on-light);
 }
 
-tr[data-header="true"][data-prop="Ent"][data-change="I"]:not([data-grouping="true"]) {
+tr[data-header="true"][data-prop="Ent"][data-change="I"] {
   background-color: var(--off-green-base);
   color: var(--text-on-dark);
 }
-tr[data-header="true"][data-prop="Ent"][data-change="A"]:not([data-grouping="true"]) {
+tr[data-header="true"][data-prop="Ent"][data-change="A"] {
   background-color: var(--off-purple-base);
   color: var(--text-on-dark);
 }
-tr[data-header="true"][data-prop="Ent"][data-change="E"]:not([data-grouping="true"]) {
+tr[data-header="true"][data-prop="Ent"][data-change="E"] {
   background-color: var(--off-red-base);
   color: var(--text-on-dark);
 }
+tr[data-header="true"][data-prop="Ent"][data-calculated="true"] {
+  background-color: var(--off-orange-base);
+  color: var(--text-on-dark);
+}
 
-tr[data-header="true"][data-prop="Atr"][data-change="I"]:not([data-grouping="true"]) {
+tr[data-header="true"][data-prop="Atr"][data-change="I"] {
   background-color: var(--off-green-60);
   color: var(--text-on-light);
 }
-tr[data-header="true"][data-prop="Atr"][data-change="A"]:not([data-grouping="true"]) {
+tr[data-header="true"][data-prop="Atr"][data-change="A"] {
   background-color: var(--off-purple-60);
   color: var(--text-on-light);
 }
-tr[data-header="true"][data-prop="Atr"][data-change="E"]:not([data-grouping="true"]) {
+tr[data-header="true"][data-prop="Atr"][data-change="E"] {
   background-color: var(--off-red-60);
   color: var(--text-on-light);
 }
+tr[data-header="true"][data-prop="Atr"][data-calculated="true"] {
+  background-color: var(--off-orange-60);
+  color: var(--text-on-light);
+}
 
-tr[data-header="true"][data-level="0"]:not([data-grouping="true"]) {
-  background-color: var(--color-obj-l0);
+/* Orange Scale for Everything Else (Headers) */
+tr[data-header="true"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not([data-grouping="true"]) {
   color: var(--text-on-dark);
 }
-tr[data-header="true"][data-level="1"]:not([data-grouping="true"]) {
+
+tr[data-header="true"][data-level="0"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
+    [data-grouping="true"]
+  ),
+tr[data-header="true"][data-level="1"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
+    [data-grouping="true"]
+  ) {
   background-color: var(--color-obj-l1);
-  color: var(--text-on-dark);
 }
-tr[data-header="true"][data-level="2"]:not([data-grouping="true"]) {
+
+tr[data-header="true"][data-level="2"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
+    [data-grouping="true"]
+  ) {
   background-color: var(--color-obj-l2);
   color: var(--text-on-light);
 }
-tr[data-header="true"][data-level="3"]:not([data-grouping="true"]) {
+
+tr[data-header="true"][data-level="3"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
+    [data-grouping="true"]
+  ) {
   background-color: var(--color-obj-l3);
+  color: var(--text-on-light);
+}
+
+tr[data-header="true"][data-level="4"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
+    [data-grouping="true"]
+  ),
+tr[data-header="true"][data-level="5"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
+    [data-grouping="true"]
+  ),
+tr[data-header="true"][data-level="6"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
+    [data-grouping="true"]
+  ) {
+  background-color: var(--color-obj-l4);
   color: var(--text-on-light);
 }
 

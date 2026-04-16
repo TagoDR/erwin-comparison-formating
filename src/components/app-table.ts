@@ -64,83 +64,87 @@ export class AppTable extends LitElement {
 
     return html`
       <table class="table table-condensed table-hover table-container">
-        <thead>
-          <tr>
-            <th class="col-check">${icons['square-check']}</th>
-            <th class="col-type">${translate('table.col_type')}</th>
-            <th class="col-left">${flipped ? translate('table.col_right') : translate('table.col_left')}</th>
-            <th class="col-right">${flipped ? translate('table.col_left') : translate('table.col_right')}</th>
-            <th class="col-prop">${translate('table.col_prop')}</th>
-            <th class="col-change">${translate('table.col_change')}</th>
-            <th class="col-view">${translate('table.col_view')}</th>
-            <th class="col-cal">Cal</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${
-            visibleRows.length === 0
-              ? html`
+          <thead>
             <tr>
-              <td colspan="8" class="text-center empty-cell">
-                <div class="callout">
-                  <span class="callout-icon">${icons['clipboard-list']}</span>
-                  ${translate('table.empty')}
-                </div>
-              </td>
+              <th class="col-check">${icons['square-check']}</th>
+              <th class="col-type">${translate('table.col_type')}</th>
+              <th class="col-left">${flipped ? translate('table.col_right') : translate('table.col_left')}</th>
+              <th class="col-right">${flipped ? translate('table.col_left') : translate('table.col_right')}</th>
+              <th class="col-prop">${translate('table.col_prop')}</th>
+              <th class="col-change">${translate('table.col_change')}</th>
+              <th class="col-view">${translate('table.col_view')}</th>
+              <th class="col-cal">Cal</th>
             </tr>
-          `
-              : visibleRows.map(row => {
-                  const isIdentificationRow = row.isHeader && !row.isGrouping;
-                  const isNameProp = row.type.toLowerCase().includes('name');
-                  const showCopy = isIdentificationRow || isNameProp;
-
-                  const level = row.indent;
-                  const isChecked = row.id ? checkedSet.has(row.id) : false;
-
-                  const leftVal = flipped ? row.rightModel : row.leftModel;
-                  const rightVal = flipped ? row.leftModel : row.rightModel;
-
-                  let change = row.change;
-                  if (flipped) {
-                    if (change === 'I') change = 'E';
-                    else if (change === 'E') change = 'I';
-                  }
-
-                  return html`
-              <tr 
-                data-change="${change}" 
-                data-level="${level}"
-                data-prop="${row.prop}"
-                data-header="${row.isHeader || false}"
-                data-grouping="${row.isGrouping || false}"
-                data-calculated="${row.isCalculated || false}"
-                class="${isChecked ? 'checked-row' : ''} ${isIdentificationRow ? 'clickable-row' : ''}"
-                @click=${() => {
-                  if (isIdentificationRow && row.id) {
-                    togglePropertiesIndividual(row.id);
-                  }
-                }}
-                @contextmenu=${(e: MouseEvent) => {
-                  if (isIdentificationRow && row.id) {
-                    e.preventDefault();
-                    toggleSubObjects(row.id);
-                  }
-                }}
-              >
-                <td class="col-check" @click=${(e: Event) => e.stopPropagation()}>
-                   <input 
-                    type="checkbox" 
-                    .checked=${isChecked}
-                    @change=${() => row.id && toggleCheck(row.id)}
-                   />
-                </td>
-                <td class="row-type">
-                  <div class="tree-node" style="padding-left: ${level * 3}px">
-                    <span class="type-text">${row.type}</span>
-                    ${this._renderAttributeCounter(row)}
+          </thead>
+          <tbody>
+            ${
+              visibleRows.length === 0
+                ? html`
+              <tr>
+                <td colspan="8" class="text-center empty-cell">
+                  <div class="callout">
+                    <span class="callout-icon">${icons['clipboard-list']}</span>
+                    ${translate('table.empty')}
                   </div>
                 </td>
-                <td class="row-left">
+              </tr>
+            `
+                : visibleRows.map(row => {
+                    const isIdentificationRow = row.isHeader && !row.isGrouping;
+                    const isNameProp = row.type.toLowerCase().includes('name');
+                    const showCopy = isIdentificationRow || isNameProp;
+
+                    const level = row.indent;
+                    const isChecked = row.id ? checkedSet.has(row.id) : false;
+
+                    const leftVal = flipped ? row.rightModel : row.leftModel;
+                    const rightVal = flipped ? row.leftModel : row.rightModel;
+
+                    let change = row.change;
+                    if (flipped) {
+                      if (change === 'I') change = 'E';
+                      else if (change === 'E') change = 'I';
+                    }
+
+                    return html`
+                <tr 
+                  data-change="${change}" 
+                  data-level="${level}"
+                  data-prop="${row.prop}"
+                  data-header="${row.isHeader || false}"
+                  data-grouping="${row.isGrouping || false}"
+                  data-calculated="${row.isCalculated || false}"
+                  data-udp="${row.isUDP || false}"
+                  class="${isChecked ? 'checked-row' : ''} ${isIdentificationRow ? 'clickable-row' : ''}"
+                  @click=${() => {
+                    if (isIdentificationRow && row.id) {
+                      togglePropertiesIndividual(row.id);
+                    }
+                  }}
+                  @contextmenu=${(e: MouseEvent) => {
+                    if (isIdentificationRow && row.id) {
+                      e.preventDefault();
+                      toggleSubObjects(row.id);
+                    }
+                  }}
+                >
+                  <td class="col-check" @click=${(e: Event) => e.stopPropagation()}>
+                     <input 
+                      type="checkbox" 
+                      .checked=${isChecked}
+                      @change=${() => row.id && toggleCheck(row.id)}
+                     />
+                  </td>
+                  <td class="row-type">
+                    <div class="tree-node">
+                      <div class="indent-dots">
+                        ${Array.from({ length: level }).map(() => html`<span class="dot">·</span>`)}
+                      </div>
+                      <span class="type-text">${row.type}</span>
+                      ${this._renderAttributeCounter(row)}
+                    </div>
+                  </td>
+                  <td class="row-left">
                   <div class="content-wrapper">
                     <span class="value-text">${leftVal}</span>
                     <div class="row-actions">
@@ -190,8 +194,8 @@ export class AppTable extends LitElement {
                 <td class="row-cal">${row.isCalculated ? 'C' : ''}</td>
               </tr>
             `;
-                })
-          }
+                  })
+            }
         </tbody>
       </table>
     `;

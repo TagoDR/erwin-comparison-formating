@@ -40,9 +40,11 @@ export function parseErwinHtml(html: string): ErwinRow[] {
     }
 
     // UDP highlighting for properties
-    const isUDP = 
-      ((type.startsWith('Entity.Physical.') || type.startsWith('Entity.Logical.')) && leadingWhitespace.length === 15) ||
-      ((type.startsWith('Attribute.Physical.') || type.startsWith('Attribute.Logical.')) && leadingWhitespace.length === 18);
+    const isUDP =
+      ((type.startsWith('Entity.Physical.') || type.startsWith('Entity.Logical.')) &&
+        leadingWhitespace.length === 15) ||
+      ((type.startsWith('Attribute.Physical.') || type.startsWith('Attribute.Logical.')) &&
+        leadingWhitespace.length === 18);
 
     rows.push({
       type,
@@ -53,7 +55,7 @@ export function parseErwinHtml(html: string): ErwinRow[] {
       change,
       prop: '',
       view: '',
-      isUDP
+      isUDP,
     });
   });
 

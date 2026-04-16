@@ -494,6 +494,7 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
 
 // Expose to window for debugging
 if (typeof window !== 'undefined') {
+  // biome-ignore lint/suspicious/noExplicitAny: Global variable
   (window as any).erwinData = {
     rawData$,
     enrichedData$,

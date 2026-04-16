@@ -26,7 +26,8 @@
   min-width: 450px;
 }
 
-.flip-btn, .copy-side-btn {
+.flip-btn,
+.copy-side-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,12 +53,14 @@
   border-left: 1px solid var(--border-subtle);
 }
 
-.flip-btn:hover, .copy-side-btn:hover {
+.flip-btn:hover,
+.copy-side-btn:hover {
   background: var(--hover-bg);
   color: var(--accent-blue);
 }
 
-.flip-btn svg, .copy-side-btn svg {
+.flip-btn svg,
+.copy-side-btn svg {
   width: 1.25rem;
   height: 1.25rem;
 }
@@ -241,8 +244,8 @@ tr[data-type="Columns"] .total-col {
 }
 
 .main-switch {
-  font-size: 0.75rem !important;
-  color: var(--accent-blue) !important;
+  font-size: 0.75rem;
+  color: var(--accent-blue);
 }
 
 .stacked-switches {
@@ -289,8 +292,8 @@ tr[data-type="Columns"] .total-col {
   right: 0;
   bottom: 0;
   background-color: #7f8c8d;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -301,8 +304,8 @@ tr[data-type="Columns"] .total-col {
   left: 2px;
   bottom: 2px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
