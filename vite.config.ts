@@ -32,7 +32,7 @@ export default defineConfig(({ mode }): UserConfig => {
       ...baseConfig,
       plugins: [
         svgLoader({ svgo: false, defaultImport: 'raw' }),
-        viteSingleFile(),
+        viteSingleFile({ removeViteModuleLoader: true }),
         {
           name: 'rename-index',
           closeBundle() {
