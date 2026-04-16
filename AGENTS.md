@@ -8,7 +8,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 
 ## 2. Technical Stack
 
-- **Framework:** Vite with TypeScript
+- **Framework:** Vite 6+ with TypeScript
 - **State Management:** [Nanostores](https://github.com/nanostores/nanostores) for [Lit](https://lit.dev/)
 - **i18n:** [lit-translate](https://github.com/andreasbm/lit-translate)
 - **Output Types:**
@@ -27,24 +27,30 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
    - **Global Controls:** Language selector (PT, EN, ES, FR) and Theme toggle (Dark/Light).
 
 2. **Main Display:**
-   - **Stats Panel:** Summary table with rows (General, Tables, Columns) and columns (Type, Total, Addition, Change, Deletion, Calculated).
-   - **Flip Functionality:** Integrated toggle to swap Work (Left) and Reference (Right) sides.
-   - **Data Table Panel:** Fixed-layout, **flat grid** table with frozen column widths.
+   - **Stats Panel:** Summary table with integrated action buttons.
+     - **Flip Side:** Button on the left side of the table.
+     - **Copy Tables:** Button on the right side of the table.
+   - **Filter Panel:** Consolidated row below stats.
+     - **Search:** Text filter for object names.
+     - **Change Filter:** Select by Addition/Change/Deletion.
+     - **Toggles:** Grouped switches for "Show Properties", "Only Entities", and "Only Ent+Atr".
+   - **Data Table Panel:** Fixed-layout grid with hierarchy visualization.
 
 ### 3.2. Data Processing (Parser Logic)
 
-- **Indentation Parsing:** 6 spaces = 1 Level.
+- **Indentation Parsing:** **3 spaces = 1 Level**.
+- **Hierarchy Representation:** Indentation is visualized using middle dots (`·`) for each level.
+- **Classification (`HEADERS_CONFIG`):** Objects are identified as headers based on their specific type and raw space count (e.g., `Entity/Table` at 9 spaces, `Attribute/Column` at 18 spaces).
 - **Encoding:** Automated UTF-8 / Windows-1252 fallback for Portuguese character support.
-- **Header Structure:** Type, Left Value, Status, Right Value.
 - **Difference Logic:**
   - **Addition (I):** Right Model is empty.
   - **Deletion (E):** Left Model is empty.
-  - **Change (A):** Both models have values (regardless of whether they differ).
+  - **Change (A):** Both models have values.
   - **Flipped Mode:** (I) becomes (E) and vice-versa.
 - **Calculated Status (C):**
-  - **Property:** Marked as calculated if `Left === Right` AND value ends with `[Calculated]`.
-  - **Object (Header):** Inherits "Calculated" status only if ALL its non-grouping descendants are calculated.
-- **Grouping Rows:** Grouping rows (e.g., "Entities/Tables") are filtered from view but used to establish hierarchical parenting for sub-object toggling.
+  - **Property:** Marked if `Left === Right` AND both end with `[Calculated]`.
+  - **Object (Header):** Inherits status only if ALL its non-grouping descendants are calculated.
+- **UDP (User Defined Properties):** Special teal highlighting for rows starting with specific naming patterns (e.g., `Entity.Physical.*`) at exact indentation levels.
 
 ### 3.3. Interactions
 
@@ -52,8 +58,8 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 | :---------------- | :----------------------------------------------------- |
 | **Left Click**    | Show/Hide the object's properties.                     |
 | **Right Click**   | Show/Hide the object's sub-objects (children).         |
-| **Global Toggle** | Master shortcut to Show/Hide all properties.           |
-| **Copy Icons**    | Copies value to clipboard with **green** checkmark feedback. |
+| **Global Toggles**| switches to filter Only Entities or Only Entities + Attributes. |
+| **Copy Icons**    | Copies value to clipboard with checkmark feedback.      |
 
 ## 4. Visual Encoding (Office 2010 Palette)
 
@@ -63,7 +69,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 | :------------------- | :--------------- | :-------------- | :------------- | :------------------ | :---- |
 | **Table/Entity**     | #9BBB59 (Base)   | #8064A2 (Base)  | #C0504D (Base) | #F79646 (Base)      | White |
 | **Attribute/Column** | #D7E3BC (60%)    | #CCC1D9 (60%)   | #E5B9B7 (60%)  | #FBD5B5 (60%)       | Black |
-| **Properties**       | Transparent      | Transparent     | Transparent    | Transparent         | Theme |
+| **Orange Scale**     | metadata headers use orange scale (d25, base, 40, 60, 80) based on indent level (0-6). | Theme |
 
 ### 4.2. Name Fields (Character Counter)
 
@@ -73,11 +79,5 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 
 ## 5. Build and Distribution
 
-### 5.1. Build Commands
-
-- `npm run build`: Standard standalone app.
-- `npm run build:monkey`: Unminified Userscript for Tampermonkey.
-
-### 5.2. Userscript Behavior
-
-Automatically detects an Erwin report on local `.html` files, clears the original DOM, and injects the formatter interface. Title is automatically renamed to `${ModelName} ${YYYY-MM-DD} (${LocalizedComparison})`.
+- `npm run build`: Generates both Standalone and Userscript outputs.
+- **Userscript Behavior:** Automatically detects Erwin reports on local files, clears original DOM, and injects the UI.
