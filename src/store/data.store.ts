@@ -19,6 +19,15 @@ export interface ErwinRow {
   attributeCount?: number;
   hasProperties?: boolean;
   hasSubObjects?: boolean;
+  isUnderHiddenHeader?: boolean;
+}
+
+/** Internal type used during data enrichment to ensure ID presence */
+interface EnrichedRow extends ErwinRow {
+  id: string;
+  isHeader: boolean;
+  isGrouping: boolean;
+  isHeaderHidden: boolean;
 }
 
 export interface StatsSummary {
@@ -119,20 +128,20 @@ export const enrichedData$ = computed(rawData$, data => {
   const rowCount = data.length;
   if (rowCount === 0) return [];
 
-  const rowsById = new Map<string, ErwinRow>();
+  const rowsById = new Map<string, EnrichedRow>();
   const childrenMap = new Map<string, string[]>();
 
   // 1. Initial Pass: ID assignment, Classification, and Parentage (Top-Down)
   const headerStack: { id: string; indent: number; isGrouping: boolean; isHidden: boolean }[] = [];
 
-  const processed = data.map((row, index) => {
+  const processed: EnrichedRow[] = data.map((row, index) => {
     const cleanedType = row.type.trim();
     const isGrouping = GROUPING_KEYWORDS.some(kw => cleanedType === kw);
     const headerMatch = HEADERS_CONFIG.find(
       h => h.object === cleanedType && h.indentation.includes(row.rawIndent),
     );
 
-    const enriched: any = {
+    const enriched: EnrichedRow = {
       ...row,
       id: `row-${index}`,
       isHeader: isGrouping || !!headerMatch,
@@ -146,8 +155,7 @@ export const enrichedData$ = computed(rawData$, data => {
 
     if (!enriched.view) {
       const type = enriched.type;
-      if (type === 'Entity/Table') enriched.view = 'L/P';
-      else if (type === 'Attribute/Column') enriched.view = 'L/P';
+      if (type === 'Entity/Table' || type === 'Attribute/Column') enriched.view = 'L/P';
       else if (type === 'Entity' || type === 'Attribute') enriched.view = 'L';
       else if (type === 'Table' || type === 'Column') enriched.view = 'P';
     }
@@ -182,8 +190,8 @@ export const enrichedData$ = computed(rawData$, data => {
       headerStack.push({
         id: enriched.id,
         indent: enriched.indent,
-        isGrouping: enriched.isGrouping || false,
-        isHidden: enriched.isHeaderHidden || false,
+        isGrouping: enriched.isGrouping,
+        isHidden: enriched.isHeaderHidden,
       });
     }
 
@@ -196,7 +204,7 @@ export const enrichedData$ = computed(rawData$, data => {
     const row = processed[i];
 
     if (row.isHeader && !row.isGrouping) {
-      const childrenIds = childrenMap.get(row.id!) || [];
+      const childrenIds = childrenMap.get(row.id) || [];
       if (childrenIds.length > 0) {
         let allCalculated = true;
         let hasProps = false;
@@ -261,7 +269,7 @@ export const enrichedData$ = computed(rawData$, data => {
     })
     .filter(row => {
       const isEmpty = !row.leftModel.trim() && !row.rightModel.trim();
-      return !row.isGrouping && !isEmpty && !(row as any).isUnderHiddenHeader;
+      return !row.isGrouping && !isEmpty && !row.isUnderHiddenHeader;
     });
 });
 
@@ -290,10 +298,12 @@ export const filteredData$ = computed(
     const rowsById = new Map<string, ErwinRow>();
     const childrenMap = new Map<string, string[]>();
     for (const r of data) {
-      rowsById.set(r.id!, r);
+      const id = r.id;
+      if (!id) continue;
+      rowsById.set(id, r);
       if (r.parentId) {
         const list = childrenMap.get(r.parentId) || [];
-        list.push(r.id!);
+        list.push(id);
         childrenMap.set(r.parentId, list);
       }
     }
@@ -314,9 +324,9 @@ export const filteredData$ = computed(
       };
 
       for (const r of data) {
-        if (r.isCalculated) addFamily(r.id!);
+        if (r.isCalculated && r.id) addFamily(r.id);
       }
-      result = result.filter(r => !familyOfCalculatedIds.has(r.id!));
+      result = result.filter(r => r.id && !familyOfCalculatedIds.has(r.id));
     }
 
     // 2. Entity Filters (Drill-down mode)
@@ -349,12 +359,12 @@ export const filteredData$ = computed(
           ? r.isHeader && r.prop === 'Ent'
           : r.isHeader && (r.prop === 'Ent' || r.prop === 'Atr');
 
-        if (isTarget) {
-          addWithAncestors(r.id!);
-          addDescendants(r.id!);
+        if (isTarget && r.id) {
+          addWithAncestors(r.id);
+          addDescendants(r.id);
         }
       }
-      result = result.filter(r => familyIds.has(r.id!));
+      result = result.filter(r => r.id && familyIds.has(r.id));
     }
 
     // 3. Change Filter
@@ -370,11 +380,11 @@ export const filteredData$ = computed(
       };
 
       for (const r of result) {
-        if (r.isHeader && r.prop === 'Ent' && r.change === change) {
-          addDescendants(r.id!);
+        if (r.isHeader && r.prop === 'Ent' && r.change === change && r.id) {
+          addDescendants(r.id);
         }
       }
-      result = result.filter(r => matches.has(r.id!));
+      result = result.filter(r => r.id && matches.has(r.id));
     }
 
     // 4. Name Filter
@@ -387,10 +397,14 @@ export const filteredData$ = computed(
         const leftMatch = r.leftModel.toLowerCase().includes(search);
         const rightMatch = r.rightModel.toLowerCase().includes(search);
 
-        if (r.isHeader && (typeMatch || leftMatch || rightMatch)) {
-          hits.add(r.id!);
-        } else if ((r.type === 'Name' || r.type === 'Physical Name') && (leftMatch || rightMatch)) {
-          hits.add(r.id!);
+        if (r.isHeader && (typeMatch || leftMatch || rightMatch) && r.id) {
+          hits.add(r.id);
+        } else if (
+          (r.type === 'Name' || r.type === 'Physical Name') &&
+          (leftMatch || rightMatch) &&
+          r.id
+        ) {
+          hits.add(r.id);
         }
       }
 
@@ -420,7 +434,7 @@ export const filteredData$ = computed(
         addDescendants(objectId);
         addAncestors(objectId);
       }
-      result = result.filter(r => finalIds.has(r.id!));
+      result = result.filter(r => r.id && finalIds.has(r.id));
     }
 
     return result;
@@ -501,39 +515,39 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
     },
   };
 
-  data.forEach(row => {
-    if (!row.isHeader || row.isGrouping || !row.change) return;
+  for (const row of data) {
+    if (!row.isHeader || row.isGrouping || !row.change) continue;
     const isTable = row.prop === 'Ent';
     const isColumn = row.prop === 'Atr';
 
     const increment = (key: string) => {
-      summary[key].total++;
+      const stats = summary[key];
+      stats.total++;
       if (row.isCalculated) {
-        summary[key].calculated++;
+        stats.calculated++;
       } else {
         let change = row.change;
         if (isFlipped) {
           if (change === 'I') change = 'E';
           else if (change === 'E') change = 'I';
         }
-        if (change === 'I') summary[key].inclusion++;
-        if (change === 'A') summary[key].alteration++;
-        if (change === 'E') summary[key].exclusion++;
+        if (change === 'I') stats.inclusion++;
+        if (change === 'A') stats.alteration++;
+        if (change === 'E') stats.exclusion++;
       }
       if (isTable && row.attributeCount && row.attributeCount > 11) {
-        summary.Tables.largeTablesCount = (summary.Tables.largeTablesCount || 0) + 1;
+        stats.largeTablesCount = (stats.largeTablesCount || 0) + 1;
       }
     };
 
     if (isTable) increment('Tables');
     if (isColumn) increment('Columns');
-  });
+  }
   return Object.values(summary);
 });
 
 if (typeof window !== 'undefined') {
-  // biome-ignore lint/suspicious/noExplicitAny: Global variable
-  (window as any).erwinData = {
+  (window as unknown as { erwinData: Record<string, unknown> }).erwinData = {
     rawData$,
     enrichedData$,
     filteredData$,

@@ -13,7 +13,7 @@ A specialized utility to transform raw Erwin Data Modeler HTML difference report
 - **High Performance**: Optimized data engine designed to handle large HTML reports (up to 50MB+) with Map-based processing.
 - **Hierarchy Visualization**: 
   - Structural guide using middle dots (`·`) for indentation levels.
-  - **Interactive Indicators**: Dynamic icons (`chevron`, `schema`) show property and sub-object visibility status.
+  - **Interactive Indicators**: Dynamic icons (`chevron`, `sitemap`) show property and sub-object visibility status.
 - **UDP Awareness**: Automatic teal highlighting for **User Defined Properties** (UDP).
 - **Integrated Actions**:
   - **Flip Side**: Swap Work (Left) and Reference (Right) models globally.

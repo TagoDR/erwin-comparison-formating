@@ -17,7 +17,7 @@ import IconSun from './sun.svg';
 import IconSwitchHorizontal from './switch-horizontal.svg';
 import IconX from './x.svg';
 
-export const icons = {
+const icons = {
   check: html`${unsafeSVG(IconCheck)}`,
   'chevron-down': html`${unsafeSVG(IconChevronDown)}`,
   'clipboard-copy': html`${unsafeSVG(IconClipboardCopy)}`,
@@ -35,3 +35,4 @@ export const icons = {
   'switch-horizontal': html`${unsafeSVG(IconSwitchHorizontal)}`,
   x: html`${unsafeSVG(IconX)}`,
 };
+export default icons;

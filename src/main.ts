@@ -2,7 +2,7 @@ import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
-import { icons } from './assets/icons';
+import icons from './assets/icons';
 import { parseErwinHtml } from './parser/html-parser';
 import { fileName$, initializeVisibility, isLoading$, rawData$ } from './store/data.store';
 

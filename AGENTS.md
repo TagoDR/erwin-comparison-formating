@@ -33,7 +33,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
    - **Filter Panel:** 
      - Grouped switches: "Show Properties", "**Hide Calculated**" (ON by default), "Only Entities", and "Only Ent+Atr".
      - Search and status filters.
-   - **Data Table Panel:** Fixed-layout grid with hierarchy visualization and **dynamic indicators** (rotating chevrons and schema icons).
+   - **Data Table Panel:** Fixed-layout grid with hierarchy visualization and **dynamic indicators** (rotating chevrons and sitemap icons).
 
 ### 3.2. Data Processing (Parser Logic)
 
@@ -43,6 +43,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 - **Permanent Filters:** Grouping rows, empty rows (both sides empty), and specifically hidden metadata families (e.g., ER Diagrams) are permanently removed from the data pipeline.
 - **UDP (User Defined Properties):** Automatic teal highlighting based on naming patterns.
 - **Calculated Status (C):** Root objects inherit "Calculated" status only if ALL descendants are identical.
+- **Dynamic Icons:** Header rows display `chevron-down` (for properties) and `sitemap` (for children) icons that rotate or change state based on visibility.
 
 ### 3.3. Interactions
 

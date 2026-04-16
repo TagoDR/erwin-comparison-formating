@@ -1086,8 +1086,7 @@
 				};
 				if (!enriched.view) {
 					const type = enriched.type;
-					if (type === "Entity/Table") enriched.view = "L/P";
-					else if (type === "Attribute/Column") enriched.view = "L/P";
+					if (type === "Entity/Table" || type === "Attribute/Column") enriched.view = "L/P";
 					else if (type === "Entity" || type === "Attribute") enriched.view = "L";
 					else if (type === "Table" || type === "Column") enriched.view = "P";
 				}
@@ -1109,8 +1108,8 @@
 				if (enriched.isHeader) headerStack.push({
 					id: enriched.id,
 					indent: enriched.indent,
-					isGrouping: enriched.isGrouping || false,
-					isHidden: enriched.isHeaderHidden || false
+					isGrouping: enriched.isGrouping,
+					isHidden: enriched.isHeaderHidden
 				});
 				rowsById.set(enriched.id, enriched);
 				return enriched;
@@ -1178,10 +1177,12 @@
 			const rowsById = /* @__PURE__ */ new Map();
 			const childrenMap = /* @__PURE__ */ new Map();
 			for (const r of data) {
-				rowsById.set(r.id, r);
+				const id = r.id;
+				if (!id) continue;
+				rowsById.set(id, r);
 				if (r.parentId) {
 					const list = childrenMap.get(r.parentId) || [];
-					list.push(r.id);
+					list.push(id);
 					childrenMap.set(r.parentId, list);
 				}
 			}
@@ -1194,8 +1195,8 @@
 					const children = childrenMap.get(id);
 					if (children) for (const cid of children) addFamily(cid);
 				};
-				for (const r of data) if (r.isCalculated) addFamily(r.id);
-				result = result.filter((r) => !familyOfCalculatedIds.has(r.id));
+				for (const r of data) if (r.isCalculated && r.id) addFamily(r.id);
+				result = result.filter((r) => r.id && !familyOfCalculatedIds.has(r.id));
 			}
 			if (onlyEntities || onlyEntitiesAndAttributes) {
 				const familyIds = /* @__PURE__ */ new Set();
@@ -1216,11 +1217,11 @@
 						}
 					}
 				};
-				for (const r of result) if (onlyEntities ? r.isHeader && r.prop === "Ent" : r.isHeader && (r.prop === "Ent" || r.prop === "Atr")) {
+				for (const r of result) if ((onlyEntities ? r.isHeader && r.prop === "Ent" : r.isHeader && (r.prop === "Ent" || r.prop === "Atr")) && r.id) {
 					addWithAncestors(r.id);
 					addDescendants(r.id);
 				}
-				result = result.filter((r) => familyIds.has(r.id));
+				result = result.filter((r) => r.id && familyIds.has(r.id));
 			}
 			if (change) {
 				const matches = /* @__PURE__ */ new Set();
@@ -1229,8 +1230,8 @@
 					const children = childrenMap.get(id);
 					if (children) for (const cid of children) addDescendants(cid);
 				};
-				for (const r of result) if (r.isHeader && r.prop === "Ent" && r.change === change) addDescendants(r.id);
-				result = result.filter((r) => matches.has(r.id));
+				for (const r of result) if (r.isHeader && r.prop === "Ent" && r.change === change && r.id) addDescendants(r.id);
+				result = result.filter((r) => r.id && matches.has(r.id));
 			}
 			if (name) {
 				const search = name.toLowerCase();
@@ -1239,8 +1240,8 @@
 					const typeMatch = (r.originalType || r.type).toLowerCase().includes(search);
 					const leftMatch = r.leftModel.toLowerCase().includes(search);
 					const rightMatch = r.rightModel.toLowerCase().includes(search);
-					if (r.isHeader && (typeMatch || leftMatch || rightMatch)) hits.add(r.id);
-					else if ((r.type === "Name" || r.type === "Physical Name") && (leftMatch || rightMatch)) hits.add(r.id);
+					if (r.isHeader && (typeMatch || leftMatch || rightMatch) && r.id) hits.add(r.id);
+					else if ((r.type === "Name" || r.type === "Physical Name") && (leftMatch || rightMatch) && r.id) hits.add(r.id);
 				}
 				const finalIds = /* @__PURE__ */ new Set();
 				const addDescendants = (id) => {
@@ -1264,7 +1265,7 @@
 					addDescendants(objectId);
 					addAncestors(objectId);
 				}
-				result = result.filter((r) => finalIds.has(r.id));
+				result = result.filter((r) => r.id && finalIds.has(r.id));
 			}
 			return result;
 		});
@@ -1329,28 +1330,29 @@
 					calculated: 0
 				}
 			};
-			data.forEach((row) => {
-				if (!row.isHeader || row.isGrouping || !row.change) return;
+			for (const row of data) {
+				if (!row.isHeader || row.isGrouping || !row.change) continue;
 				const isTable = row.prop === "Ent";
 				const isColumn = row.prop === "Atr";
 				const increment = (key) => {
-					summary[key].total++;
-					if (row.isCalculated) summary[key].calculated++;
+					const stats = summary[key];
+					stats.total++;
+					if (row.isCalculated) stats.calculated++;
 					else {
 						let change = row.change;
 						if (isFlipped) {
 							if (change === "I") change = "E";
 							else if (change === "E") change = "I";
 						}
-						if (change === "I") summary[key].inclusion++;
-						if (change === "A") summary[key].alteration++;
-						if (change === "E") summary[key].exclusion++;
+						if (change === "I") stats.inclusion++;
+						if (change === "A") stats.alteration++;
+						if (change === "E") stats.exclusion++;
 					}
-					if (isTable && row.attributeCount && row.attributeCount > 11) summary.Tables.largeTablesCount = (summary.Tables.largeTablesCount || 0) + 1;
+					if (isTable && row.attributeCount && row.attributeCount > 11) stats.largeTablesCount = (stats.largeTablesCount || 0) + 1;
 				};
 				if (isTable) increment("Tables");
 				if (isColumn) increment("Columns");
-			});
+			}
 			return Object.values(summary);
 		});
 		if (typeof window !== "undefined") window.erwinData = {
@@ -3141,13 +3143,13 @@
 				};
 				const visibleRows = allRows.filter((row) => !isRowHidden(row.id));
 				const areSubObjectsHidden = (row) => {
-					let isHidden = hiddenSubsSet.has(row.id);
+					let isHidden = hiddenSubsSet.has(row.id ?? "");
 					if (onlyEntities && row.prop === "Ent" && row.hasSubObjects) isHidden = !isHidden;
 					if (onlyEntitiesAndAttributes && row.prop === "Atr" && row.hasSubObjects) isHidden = !isHidden;
 					return isHidden;
 				};
 				const arePropertiesHidden = (row) => {
-					const isParentToggled = toggledPropsSet.has(row.id);
+					const isParentToggled = toggledPropsSet.has(row.id ?? "");
 					return !(globalShowProps ? !isParentToggled : isParentToggled);
 				};
 				return b`

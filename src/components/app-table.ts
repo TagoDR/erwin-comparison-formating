@@ -2,7 +2,7 @@ import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
-import { icons } from '../assets/icons';
+import icons from '../assets/icons';
 import {
   checkedIds$,
   type ErwinRow,
@@ -88,7 +88,7 @@ export class AppTable extends LitElement {
     const visibleRows = allRows.filter(row => !isRowHidden(row.id));
 
     const areSubObjectsHidden = (row: ErwinRow): boolean => {
-      let isHidden = hiddenSubsSet.has(row.id!);
+      let isHidden = hiddenSubsSet.has(row.id ?? '');
       // If "Only Entities" is on, and this is an Entity, its children are hidden by default
       if (onlyEntities && row.prop === 'Ent' && row.hasSubObjects) {
         // Special case: if children are also Entities (recursive), they are NOT hidden by default
@@ -103,7 +103,7 @@ export class AppTable extends LitElement {
     };
 
     const arePropertiesHidden = (row: ErwinRow): boolean => {
-      const isParentToggled = toggledPropsSet.has(row.id!);
+      const isParentToggled = toggledPropsSet.has(row.id ?? '');
       const isVisible = globalShowProps ? !isParentToggled : isParentToggled;
       return !isVisible;
     };
