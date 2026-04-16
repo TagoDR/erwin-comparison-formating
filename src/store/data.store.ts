@@ -9,9 +9,11 @@ export interface ErwinRow {
   change: 'I' | 'A' | 'E' | '';
   view: string;
   indent: number;
+  rawIndent: number;
   isHeader?: boolean;
   isGrouping?: boolean;
   isCalculated?: boolean;
+  isUDP?: boolean;
   leftModel: string;
   rightModel: string;
   attributeCount?: number;
@@ -35,6 +37,9 @@ export const isUserscript$ = atom<boolean>(false);
 // Filters State
 export const filterChange$ = atom<string>('');
 export const filterName$ = atom<string>('');
+export const hideAllProperties$ = atom<boolean>(false);
+export const onlyEntities$ = atom<boolean>(false);
+export const onlyEntitiesAndAttributes$ = atom<boolean>(false);
 
 // Interaction State
 export const showProperties$ = atom<boolean>(false);
@@ -75,46 +80,32 @@ const GROUPING_KEYWORDS = [
 ];
 
 // Object Identifier rows, will group properties
-const HEADER_KEYWORDS = [
-  'Attribute',
-  'Attribute/Column',
-  'Collection',
-  'Column',
-  'Default Constrain Usage',
-  'Default Value',
-  'Domain',
-  'ER Diagram',
-  'Entity',
-  'Entity/Table',
-  'Field',
-  'Index',
-  'Key Group',
-  'Key Group/Index',
-  'Model',
-  'Physical Storage Object',
-  'Range Partition',
-  'Relationship',
-  'Sequence',
-  'Subject Area',
-  'Subtype Symbol',
-  'Table',
-  'Tablespace',
-  // 'Theme',
-  'View',
+export const HEADERS_CONFIG = [
+  { prop: 'Atr', object: 'Attribute', indentation: [15] },
+  { prop: 'Atr', object: 'Attribute/Column', indentation: [15] },
+  { prop: 'Ent', object: 'Collection', indentation: [9] },
+  { prop: 'Atr', object: 'Column', indentation: [15] },
+  { prop: 'O', object: 'Default Constrain Usage', indentation: [18] },
+  { prop: 'O', object: 'Default Value', indentation: [6] },
+  { prop: 'O', object: 'Domain', indentation: [6] },
+  { prop: 'M', object: 'ER Diagram', indentation: [6, 9] },
+  { prop: 'Ent', object: 'Entity', indentation: [9] },
+  { prop: 'Ent', object: 'Entity/Table', indentation: [9] },
+  { prop: 'Atr', object: 'Field', indentation: [15, 18, 21, 24, 27, 32] },
+  { prop: 'IX', object: 'Index', indentation: [15] },
+  { prop: 'IX', object: 'Key Group/Index', indentation: [15] },
+  { prop: 'O', object: 'Model', indentation: [3] },
+  { prop: 'O', object: 'Physical Storage Object', indentation: [15, 18] },
+  { prop: 'O', object: 'Range Partition', indentation: [18] },
+  { prop: 'FK', object: 'Relationship', indentation: [15] },
+  { prop: 'O', object: 'Sequence', indentation: [3] },
+  { prop: 'M', object: 'Subject Area', indentation: [6] },
+  { prop: 'FK', object: 'Subtype Symbol', indentation: [15] },
+  { prop: 'Ent', object: 'Table', indentation: [9] },
+  { prop: 'O', object: 'Tablespace', indentation: [6] },
+  { prop: 'O', object: 'Theme', indentation: [6] },
+  { prop: 'Ent', object: 'View', indentation: [9] },
 ];
-
-export const getObjectShortCode = (type: string): string => {
-  const t = type.toLowerCase().trim();
-  if (t === 'entity/table' || t === 'entity' || t === 'table' || t === 'collection') return 'Ent';
-  if (t === 'attribute/column' || t === 'attribute' || t === 'column' || t === 'field')
-    return 'Atr';
-  if (t === 'relationship') return 'FK';
-  if (t === 'tablespace') return 'TB';
-  if (t === 'index' || t === 'key group/index' || t === 'key group') return 'IX';
-  if (t === 'view') return 'VW';
-  if (t === 'model') return 'M';
-  return '';
-};
 
 /**
  * Computed store that process raw rows to add recursive parenting, status hoisting and filtering.
@@ -125,7 +116,11 @@ export const enrichedData$ = computed(rawData$, data => {
     // Clean type for matching and headers: remove name if present (e.g. "Entity/Table: CLI" -> "Entity/Table")
     const cleanedType = row.type.split(':')[0].trim();
     const isGrouping = GROUPING_KEYWORDS.some(kw => cleanedType === kw);
-    const isHeader = isGrouping || row.isHeader || HEADER_KEYWORDS.some(kw => cleanedType === kw);
+
+    const headerMatch = HEADERS_CONFIG.find(
+      h => h.object === cleanedType && h.indentation.includes(row.rawIndent),
+    );
+    const isHeader = isGrouping || !!headerMatch;
 
     let type = row.type;
     const originalType = type;
@@ -150,6 +145,7 @@ export const enrichedData$ = computed(rawData$, data => {
       isHeader,
       isGrouping,
       view,
+      prop: headerMatch?.prop || '',
       // A property is calculated if it's exactly the same AND ends with [Calculated] both sides
       isCalculated:
         row.leftModel === row.rightModel &&
@@ -271,13 +267,14 @@ export const enrichedData$ = computed(rawData$, data => {
     }
   }
 
-  // 3. Final polish: Prop code and Filter out grouping rows
-  let lastPropCode = 'O';
+  // 3. Final polish: Prop code propagation and Filter out grouping rows
+  let currentPropCode = 'O';
   const result = hoisted
     .map(row => {
-      const code = row.isHeader ? getObjectShortCode(row.type) : '';
-      if (code) lastPropCode = code;
-      return { ...row, prop: lastPropCode };
+      if (row.isHeader && row.prop) {
+        currentPropCode = row.prop;
+      }
+      return { ...row, prop: row.isHeader ? row.prop : currentPropCode };
     })
     .filter(row => !row.isGrouping);
 
@@ -288,17 +285,24 @@ export const enrichedData$ = computed(rawData$, data => {
  * Filtered data based on search, type and change filters.
  */
 export const filteredData$ = computed(
-  [enrichedData$, filterChange$, filterName$],
-  (data, change, name) => {
+  [enrichedData$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$],
+  (data, change, name, onlyEntities, onlyEntitiesAndAttributes) => {
     let result = data;
 
-    // 1. Change Filter (Rule 1: observe at table level only)
+    // 1. Entity Filters
+    if (onlyEntities) {
+      result = result.filter(r => r.isHeader && r.prop === 'Ent');
+    } else if (onlyEntitiesAndAttributes) {
+      result = result.filter(r => r.isHeader && (r.prop === 'Ent' || r.prop === 'Atr'));
+    }
+
+    // 2. Change Filter (Rule 1: observe at table level only)
     if (change) {
       const matches = new Set<string>();
+      const searchData = onlyEntities || onlyEntitiesAndAttributes ? result : data;
 
-      data.forEach(r => {
+      searchData.forEach(r => {
         // Only apply filter to entities (prop === 'Ent')
-        // Special case: "C" for Calculated if we want to filter by it, but the user didn't ask for a filter yet.
         if (r.isHeader && r.prop === 'Ent' && r.change === change) {
           // Show header and all its descendants
           const addWithDescendants = (id: string) => {
@@ -314,12 +318,13 @@ export const filteredData$ = computed(
       result = result.filter(r => matches.has(r.id));
     }
 
-    // 2. Name Filter (Rule 3)
+    // 3. Name Filter (Rule 3)
     if (name) {
       const search = name.toLowerCase();
       const hits = new Set<string>();
+      const searchData = onlyEntities || onlyEntitiesAndAttributes ? result : data;
 
-      data.forEach(r => {
+      searchData.forEach(r => {
         const typeMatch = (r.originalType || r.type).toLowerCase().includes(search);
         const leftMatch = r.leftModel.toLowerCase().includes(search);
         const rightMatch = r.rightModel.toLowerCase().includes(search);
@@ -486,3 +491,17 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
 
   return Object.values(summary);
 });
+
+// Expose to window for debugging
+if (typeof window !== 'undefined') {
+  (window as any).erwinData = {
+    rawData$,
+    enrichedData$,
+    filteredData$,
+    filterChange$,
+    filterName$,
+    showProperties$,
+    onlyEntities$,
+    onlyEntitiesAndAttributes$,
+  };
+}

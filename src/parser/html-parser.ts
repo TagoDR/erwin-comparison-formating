@@ -26,10 +26,9 @@ export function parseErwinHtml(html: string): ErwinRow[] {
     const rawTypeText = objectTd.textContent || '';
     const type = rawTypeText.trim();
 
-    // Calculate indent: typically 6 spaces per level.
-    // We count leading spaces or non-breaking spaces (\u00a0)
+    // Calculate indent: 3 spaces = 1 level.
     const leadingWhitespace = rawTypeText.match(/^[\s\u00a0]*/)?.[0] || '';
-    const indent = Math.floor(leadingWhitespace.length / 6);
+    const indent = Math.floor(leadingWhitespace.length / 3);
 
     let change: 'I' | 'A' | 'E' | '' = '';
     if (leftModel && rightModel) {
@@ -40,14 +39,21 @@ export function parseErwinHtml(html: string): ErwinRow[] {
       change = 'E';
     }
 
+    // UDP highlighting for properties
+    const isUDP = 
+      ((type.startsWith('Entity.Physical.') || type.startsWith('Entity.Logical.')) && leadingWhitespace.length === 15) ||
+      ((type.startsWith('Attribute.Physical.') || type.startsWith('Attribute.Logical.')) && leadingWhitespace.length === 18);
+
     rows.push({
       type,
       indent,
+      rawIndent: leadingWhitespace.length,
       leftModel: rawLeft, // Keep original for display
       rightModel: rawRight, // Keep original for display
       change,
       prop: '',
       view: '',
+      isUDP
     });
   });
 
