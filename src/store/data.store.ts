@@ -51,6 +51,7 @@ export const isFlipped$ = atom<boolean>(false);
 // Useless rows must be removed/ignored/hidden
 const GROUPING_KEYWORDS = [
   // 'model',
+  'Annotations',
   'Attribute Storage Objects',
   'Attributes',
   'Attributes/Columns',
@@ -81,30 +82,31 @@ const GROUPING_KEYWORDS = [
 
 // Object Identifier rows, will group properties
 export const HEADERS_CONFIG = [
-  { prop: 'Atr', object: 'Attribute', indentation: [15] },
-  { prop: 'Atr', object: 'Attribute/Column', indentation: [15] },
-  { prop: 'Ent', object: 'Collection', indentation: [9] },
-  { prop: 'Atr', object: 'Column', indentation: [15] },
-  { prop: 'O', object: 'Default Constrain Usage', indentation: [18] },
-  { prop: 'O', object: 'Default Value', indentation: [6] },
-  { prop: 'O', object: 'Domain', indentation: [6] },
-  { prop: 'M', object: 'ER Diagram', indentation: [6, 9] },
-  { prop: 'Ent', object: 'Entity', indentation: [9] },
-  { prop: 'Ent', object: 'Entity/Table', indentation: [9] },
-  { prop: 'Atr', object: 'Field', indentation: [15, 18, 21, 24, 27, 32] },
-  { prop: 'IX', object: 'Index', indentation: [15] },
-  { prop: 'IX', object: 'Key Group/Index', indentation: [15] },
+  { prop: 'O', object: 'Annotation', indentation: [3 * 3] },
+  { prop: 'Atr', object: 'Attribute', indentation: [5 * 3] },
+  { prop: 'Atr', object: 'Attribute/Column', indentation: [5 * 3] },
+  { prop: 'Ent', object: 'Collection', indentation: [3 * 3] },
+  { prop: 'Atr', object: 'Column', indentation: [5 * 3] },
+  { prop: 'O', object: 'Default Constrain Usage', indentation: [7 * 3] },
+  { prop: 'O', object: 'Default Value', indentation: [3 * 3] },
+  { prop: 'O', object: 'Domain', indentation: [3 * 3] },
+  { prop: 'M', object: 'ER Diagram', indentation: [3 * 3, 4 * 3], hide: true },
+  { prop: 'Ent', object: 'Entity', indentation: [3 * 3] },
+  { prop: 'Ent', object: 'Entity/Table', indentation: [3 * 3] },
+  { prop: 'Atr', object: 'Field', indentation: [5 * 3, 6 * 3, 7 * 3, 8 * 3, 9 * 3, 10 * 3] },
+  { prop: 'IX', object: 'Index', indentation: [5 * 3] },
+  { prop: 'IX', object: 'Key Group/Index', indentation: [5 * 3] },
   { prop: 'O', object: 'Model', indentation: [3] },
-  { prop: 'O', object: 'Physical Storage Object', indentation: [15, 18] },
-  { prop: 'O', object: 'Range Partition', indentation: [18] },
-  { prop: 'FK', object: 'Relationship', indentation: [15] },
-  { prop: 'O', object: 'Sequence', indentation: [3] },
-  { prop: 'M', object: 'Subject Area', indentation: [6] },
-  { prop: 'FK', object: 'Subtype Symbol', indentation: [15] },
-  { prop: 'Ent', object: 'Table', indentation: [9] },
-  { prop: 'O', object: 'Tablespace', indentation: [6] },
-  { prop: 'O', object: 'Theme', indentation: [6] },
-  { prop: 'Ent', object: 'View', indentation: [9] },
+  { prop: 'O', object: 'Physical Storage Object', indentation: [5 * 3, 7 * 3] },
+  { prop: 'O', object: 'Range Partition', indentation: [6 * 3] },
+  { prop: 'FK', object: 'Relationship', indentation: [5 * 3] },
+  { prop: 'O', object: 'Sequence', indentation: [3 * 3] },
+  { prop: 'M', object: 'Subject Area', indentation: [3 * 3], hide: true },
+  { prop: 'FK', object: 'Subtype Symbol', indentation: [5 * 3] },
+  { prop: 'Ent', object: 'Table', indentation: [3 * 3 * 3] },
+  { prop: 'O', object: 'Tablespace', indentation: [3 * 3] },
+  { prop: 'O', object: 'Theme', indentation: [3 * 3] },
+  { prop: 'Ent', object: 'View', indentation: [3 * 3] },
 ];
 
 /**
@@ -114,7 +116,7 @@ export const enrichedData$ = computed(rawData$, data => {
   // 1. Assign IDs and Parentage based on indentation
   const withInitialState = data.map((row, index) => {
     // Clean type for matching and headers: remove name if present (e.g. "Entity/Table: CLI" -> "Entity/Table")
-    const cleanedType = row.type.split(':')[0].trim();
+    const cleanedType = row.type.trim();
     const isGrouping = GROUPING_KEYWORDS.some(kw => cleanedType === kw);
 
     const headerMatch = HEADERS_CONFIG.find(
@@ -122,11 +124,8 @@ export const enrichedData$ = computed(rawData$, data => {
     );
     const isHeader = isGrouping || !!headerMatch;
 
-    let type = row.type;
+    const type = row.type;
     const originalType = type;
-    if (isHeader && !isGrouping && type.includes(':')) {
-      type = cleanedType;
-    }
 
     // Initial View Classification based on keywords
     let view = row.view;
@@ -148,9 +147,8 @@ export const enrichedData$ = computed(rawData$, data => {
       prop: headerMatch?.prop || '',
       // A property is calculated if it's exactly the same AND ends with [Calculated] both sides
       isCalculated:
-        row.leftModel === row.rightModel &&
-        row.leftModel.endsWith('[Calculated]') &&
-        row.rightModel.endsWith('[Calculated]'),
+        row.leftModel === row.rightModel ||
+        (row.leftModel.endsWith('[Calculated]') && row.rightModel.endsWith('[Calculated]')),
     };
   });
 
