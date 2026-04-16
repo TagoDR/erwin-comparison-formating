@@ -40,6 +40,7 @@ export const filterName$ = atom<string>('');
 export const hideAllProperties$ = atom<boolean>(false);
 export const onlyEntities$ = atom<boolean>(false);
 export const onlyEntitiesAndAttributes$ = atom<boolean>(false);
+export const hideCalculated$ = atom<boolean>(true);
 
 // Interaction State
 export const showProperties$ = atom<boolean>(false);
@@ -307,11 +308,49 @@ export const filteredData$ = computed(
     onlyEntities$,
     onlyEntitiesAndAttributes$,
     showProperties$,
+    hideCalculated$,
   ],
-  (data, change, name, onlyEntities, onlyEntitiesAndAttributes) => {
+  (
+    data,
+    change,
+    name,
+    onlyEntities,
+    onlyEntitiesAndAttributes,
+    _showProperties,
+    hideCalculated,
+  ) => {
     let result = data;
 
-    // 1. Entity Filters
+    // 1. Strong Filter: Hide Calculated
+    if (hideCalculated) {
+      const calculatedIds = new Set<string>();
+      const familyOfCalculatedIds = new Set<string>();
+
+      // Identify root calculated objects
+      data.forEach(r => {
+        if (r.isCalculated) calculatedIds.add(r.id);
+      });
+
+      // Build family to remove (calculates + all descendants)
+      data.forEach(r => {
+        const isDescendant = Array.from(calculatedIds).some(cid => {
+          let curr = r;
+          while (curr.parentId) {
+            if (curr.parentId === cid) return true;
+            curr = data.find(p => p.id === curr.parentId) || ({} as any);
+          }
+          return false;
+        });
+
+        if (calculatedIds.has(r.id) || isDescendant) {
+          familyOfCalculatedIds.add(r.id);
+        }
+      });
+
+      result = result.filter(r => !familyOfCalculatedIds.has(r.id));
+    }
+
+    // 2. Entity Filters
     if (onlyEntities || onlyEntitiesAndAttributes) {
       const targetIds = new Set<string>();
       const familyIds = new Set<string>();
@@ -560,6 +599,7 @@ if (typeof window !== 'undefined') {
     filterChange$,
     filterName$,
     showProperties$,
+    hideCalculated$,
     onlyEntities$,
     onlyEntitiesAndAttributes$,
   };

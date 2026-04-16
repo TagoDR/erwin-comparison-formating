@@ -7,6 +7,7 @@ import {
   enrichedData$,
   filterChange$,
   filterName$,
+  hideCalculated$,
   onlyEntities$,
   onlyEntitiesAndAttributes$,
   showProperties$,
@@ -22,9 +23,10 @@ export class AppStats extends LitElement {
   private stats = new StoreController(this, statsSummary$);
   private nameFilter = new StoreController(this, filterName$);
   private showProps = new StoreController(this, showProperties$);
+  private hideCalc = new StoreController(this, hideCalculated$);
   private onlyEnt = new StoreController(this, onlyEntities$);
-  private onlyEntAtr = new StoreController(this, onlyEntitiesAndAttributes$);
 
+  private onlyEntAtr = new StoreController(this, onlyEntitiesAndAttributes$);
   @state() private isCopying = false;
 
   render() {
@@ -101,21 +103,30 @@ export class AppStats extends LitElement {
             </div>
 
             <div class="filter-switches">
-              <label class="switch-label main-switch">
-                <div class="switch">
-                  <input type="checkbox" .checked=${this.showProps.value} @change=${togglePropertiesGlobal}>
-                  <span class="slider round"></span>
-                </div>
-                <span>${translate('stats.actions.show_props')}</span>
-              </label>
+              <div class="stacked-switches main-stacked">
+                <label class="switch-label main-switch">
+                  <div class="switch">
+                    <input type="checkbox" .checked=${this.showProps.value} @change=${togglePropertiesGlobal}>
+                    <span class="slider round"></span>
+                  </div>
+                  <span>${translate('stats.actions.show_props')}</span>
+                </label>
+
+                <label class="switch-label">
+                  <div class="switch">
+                    <input type="checkbox" .checked=${this.hideCalc.value} @change=${(e: any) => hideCalculated$.set(e.target.checked)}>
+                    <span class="slider round"></span>
+                  </div>
+                  <span>HIDE CALCULATED</span>
+                </label>
+              </div>
 
               <div class="stacked-switches">
                 <label class="switch-label">
                   <div class="switch">
-                    <input type="checkbox" .checked=${this.onlyEnt.value} @change=${(e: Event) => {
-                      onlyEntities$.set((e.target as HTMLInputElement)?.checked);
-                      if ((e.target as HTMLInputElement)?.checked)
-                        onlyEntitiesAndAttributes$.set(false);
+                    <input type="checkbox" .checked=${this.onlyEnt.value} @change=${(e: any) => {
+                      onlyEntities$.set(e.target.checked);
+                      if (e.target.checked) onlyEntitiesAndAttributes$.set(false);
                     }}>
                     <span class="slider round"></span>
                   </div>
@@ -124,11 +135,9 @@ export class AppStats extends LitElement {
 
                 <label class="switch-label">
                   <div class="switch">
-                    <input type="checkbox" .checked=${this.onlyEntAtr.value} @change=${(
-                      e: Event,
-                    ) => {
-                      onlyEntitiesAndAttributes$.set((e.target as HTMLInputElement)?.checked);
-                      if ((e.target as HTMLInputElement)?.checked) onlyEntities$.set(false);
+                    <input type="checkbox" .checked=${this.onlyEntAtr.value} @change=${(e: any) => {
+                      onlyEntitiesAndAttributes$.set(e.target.checked);
+                      if (e.target.checked) onlyEntities$.set(false);
                     }}>
                     <span class="slider round"></span>
                   </div>
