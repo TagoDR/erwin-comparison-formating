@@ -291,32 +291,50 @@ export const filteredData$ = computed(
     onlyEntitiesAndAttributes$,
     showProperties$,
   ],
-  (data, change, name, onlyEntities, onlyEntitiesAndAttributes, showProperties) => {
+  (data, change, name, onlyEntities, onlyEntitiesAndAttributes) => {
     let result = data;
 
     // 1. Entity Filters
     if (onlyEntities || onlyEntitiesAndAttributes) {
-      result = result.filter(r => {
-        const isTargetHeader = onlyEntities
+      const targetIds = new Set<string>();
+      const familyIds = new Set<string>();
+
+      // A. Identify Target Headers (Entities or Entities + Attributes)
+      data.forEach(r => {
+        const isTarget = onlyEntities
           ? r.isHeader && r.prop === 'Ent'
           : r.isHeader && (r.prop === 'Ent' || r.prop === 'Atr');
-
-        // If it's a target header, keep it
-        if (isTargetHeader) return true;
-
-        // If showProperties is ON, keep properties belonging to visible target headers
-        if (showProperties && !r.isHeader && r.parentId) {
-          const parent = data.find(p => p.id === r.parentId);
-          if (parent) {
-            const isParentVisible = onlyEntities
-              ? parent.prop === 'Ent'
-              : parent.prop === 'Ent' || parent.prop === 'Atr';
-            return isParentVisible;
-          }
-        }
-
-        return false;
+        if (isTarget) targetIds.add(r.id);
       });
+
+      // B. Build the "Family": Ancestors and Descendants of Targets
+      data.forEach(r => {
+        // 1. Keep if it's an ancestor of a target
+        const isAncestor = Array.from(targetIds).some(tid => {
+          let curr = data.find(p => p.id === tid);
+          while (curr?.parentId) {
+            if (curr.parentId === r.id) return true;
+            curr = data.find(p => p.id === curr?.parentId);
+          }
+          return false;
+        });
+
+        // 2. Keep if it's a descendant of a target (including properties)
+        const isDescendant = Array.from(targetIds).some(tid => {
+          let curr = r;
+          while (curr.parentId) {
+            if (curr.parentId === tid) return true;
+            curr = data.find(p => p.id === curr.parentId) || ({} as any);
+          }
+          return false;
+        });
+
+        if (targetIds.has(r.id) || isAncestor || isDescendant) {
+          familyIds.add(r.id);
+        }
+      });
+
+      result = result.filter(r => familyIds.has(r.id));
     }
 
     // 2. Change Filter (Rule 1: observe at table level only)

@@ -9,6 +9,8 @@ import {
   filteredData$,
   hiddenSubObjectsIds$,
   isFlipped$,
+  onlyEntities$,
+  onlyEntitiesAndAttributes$,
   showProperties$,
   toggleCheck,
   toggledPropertiesIds$,
@@ -26,6 +28,8 @@ export class AppTable extends LitElement {
   private hiddenSubs = new StoreController(this, hiddenSubObjectsIds$);
   private checked = new StoreController(this, checkedIds$);
   private isFlipped = new StoreController(this, isFlipped$);
+  private onlyEnt = new StoreController(this, onlyEntities$);
+  private onlyEntAtr = new StoreController(this, onlyEntitiesAndAttributes$);
 
   @state() private copiedId: string | null = null;
   @state() private copiedSide: 'left' | 'right' | null = null;
@@ -36,6 +40,8 @@ export class AppTable extends LitElement {
     const hiddenSubsSet = this.hiddenSubs.value;
     const checkedSet = this.checked.value;
     const flipped = this.isFlipped.value;
+    const onlyEntities = this.onlyEnt.value;
+    const onlyEntitiesAndAttributes = this.onlyEntAtr.value;
 
     const allRows = this.data.value;
     const rowMap = new Map(allRows.map(r => [r.id, r]));
@@ -48,12 +54,31 @@ export class AppTable extends LitElement {
       if (row.parentId) {
         const parent = rowMap.get(row.parentId);
         if (parent) {
+          // 1. Property Visibility (Left Click)
           if (!row.isHeader) {
             const isParentToggled = toggledPropsSet.has(row.parentId);
             const isVisible = globalShowProps ? !isParentToggled : isParentToggled;
             if (!isVisible) return true;
           }
-          if (row.isHeader && hiddenSubsSet.has(row.parentId)) return true;
+
+          // 2. Sub-Object Visibility (Right Click)
+          if (row.isHeader) {
+            let isHidden = hiddenSubsSet.has(row.parentId);
+
+            // Default Collapse Logic for "Only X" modes
+            // If "Only Entities" is on, everything under an Entity is hidden by default
+            if (onlyEntities && parent.prop === 'Ent' && row.prop !== 'Ent') {
+              isHidden = !isHidden; // Toggle meaning of hiddenSubsSet
+            }
+            // If "Only Ent+Atr" is on, everything under an Attribute is hidden by default
+            if (onlyEntitiesAndAttributes && parent.prop === 'Atr') {
+              isHidden = !isHidden;
+            }
+
+            if (isHidden) return true;
+          }
+
+          // 3. Recursive check for ancestor visibility
           if (isRowHidden(row.parentId)) return true;
         }
       }
