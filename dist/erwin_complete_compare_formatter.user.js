@@ -687,19 +687,22 @@
 			const rawTypeText = objectTd.textContent || "";
 			const type = rawTypeText.trim();
 			const leadingWhitespace = rawTypeText.match(/^[\s\u00a0]*/)?.[0] || "";
-			const indent = Math.floor(leadingWhitespace.length / 6);
+			const indent = Math.floor(leadingWhitespace.length / 3);
 			let change = "";
 			if (leftModel && rightModel) change = "A";
 			else if (leftModel) change = "I";
 			else if (rightModel) change = "E";
+			const isUDP = (type.startsWith("Entity.Physical.") || type.startsWith("Entity.Logical.")) && leadingWhitespace.length === 15 || (type.startsWith("Attribute.Physical.") || type.startsWith("Attribute.Logical.")) && leadingWhitespace.length === 18;
 			rows.push({
 				type,
 				indent,
+				rawIndent: leadingWhitespace.length,
 				leftModel: rawLeft,
 				rightModel: rawRight,
 				change,
 				prop: "",
-				view: ""
+				view: "",
+				isUDP
 			});
 		});
 		return rows;
@@ -880,7 +883,7 @@
 	}));
 	//#endregion
 	//#region src/store/data.store.ts
-	var rawData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, GROUPING_KEYWORDS, HEADER_KEYWORDS, getObjectShortCode, enrichedData$, filteredData$, togglePropertiesGlobal, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, toggleFlip, statsSummary$;
+	var rawData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, GROUPING_KEYWORDS, HEADERS_CONFIG, enrichedData$, filteredData$, togglePropertiesGlobal, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, toggleFlip, statsSummary$;
 	var init_data_store = __esmMin((() => {
 		init_nanostores();
 		rawData$ = /* @__PURE__ */ atom([]);
@@ -889,6 +892,8 @@
 		isUserscript$ = /* @__PURE__ */ atom(false);
 		filterChange$ = /* @__PURE__ */ atom("");
 		filterName$ = /* @__PURE__ */ atom("");
+		onlyEntities$ = /* @__PURE__ */ atom(false);
+		onlyEntitiesAndAttributes$ = /* @__PURE__ */ atom(false);
 		showProperties$ = /* @__PURE__ */ atom(false);
 		toggledPropertiesIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		hiddenSubObjectsIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
@@ -922,48 +927,141 @@
 			"Tablespaces",
 			"Views"
 		];
-		HEADER_KEYWORDS = [
-			"Attribute",
-			"Attribute/Column",
-			"Collection",
-			"Column",
-			"Default Constrain Usage",
-			"Default Value",
-			"Domain",
-			"ER Diagram",
-			"Entity",
-			"Entity/Table",
-			"Field",
-			"Index",
-			"Key Group",
-			"Key Group/Index",
-			"Model",
-			"Physical Storage Object",
-			"Range Partition",
-			"Relationship",
-			"Sequence",
-			"Subject Area",
-			"Subtype Symbol",
-			"Table",
-			"Tablespace",
-			"View"
+		HEADERS_CONFIG = [
+			{
+				prop: "Atr",
+				object: "Attribute",
+				indentation: [15]
+			},
+			{
+				prop: "Atr",
+				object: "Attribute/Column",
+				indentation: [15]
+			},
+			{
+				prop: "Ent",
+				object: "Collection",
+				indentation: [9]
+			},
+			{
+				prop: "Atr",
+				object: "Column",
+				indentation: [15]
+			},
+			{
+				prop: "O",
+				object: "Default Constrain Usage",
+				indentation: [18]
+			},
+			{
+				prop: "O",
+				object: "Default Value",
+				indentation: [6]
+			},
+			{
+				prop: "O",
+				object: "Domain",
+				indentation: [6]
+			},
+			{
+				prop: "M",
+				object: "ER Diagram",
+				indentation: [6, 9]
+			},
+			{
+				prop: "Ent",
+				object: "Entity",
+				indentation: [9]
+			},
+			{
+				prop: "Ent",
+				object: "Entity/Table",
+				indentation: [9]
+			},
+			{
+				prop: "Atr",
+				object: "Field",
+				indentation: [
+					15,
+					18,
+					21,
+					24,
+					27,
+					32
+				]
+			},
+			{
+				prop: "IX",
+				object: "Index",
+				indentation: [15]
+			},
+			{
+				prop: "IX",
+				object: "Key Group/Index",
+				indentation: [15]
+			},
+			{
+				prop: "O",
+				object: "Model",
+				indentation: [3]
+			},
+			{
+				prop: "O",
+				object: "Physical Storage Object",
+				indentation: [15, 18]
+			},
+			{
+				prop: "O",
+				object: "Range Partition",
+				indentation: [18]
+			},
+			{
+				prop: "FK",
+				object: "Relationship",
+				indentation: [15]
+			},
+			{
+				prop: "O",
+				object: "Sequence",
+				indentation: [3]
+			},
+			{
+				prop: "M",
+				object: "Subject Area",
+				indentation: [6]
+			},
+			{
+				prop: "FK",
+				object: "Subtype Symbol",
+				indentation: [15]
+			},
+			{
+				prop: "Ent",
+				object: "Table",
+				indentation: [9]
+			},
+			{
+				prop: "O",
+				object: "Tablespace",
+				indentation: [6]
+			},
+			{
+				prop: "O",
+				object: "Theme",
+				indentation: [6]
+			},
+			{
+				prop: "Ent",
+				object: "View",
+				indentation: [9]
+			}
 		];
-		getObjectShortCode = (type) => {
-			const t = type.toLowerCase().trim();
-			if (t === "entity/table" || t === "entity" || t === "table" || t === "collection") return "Ent";
-			if (t === "attribute/column" || t === "attribute" || t === "column" || t === "field") return "Atr";
-			if (t === "relationship") return "FK";
-			if (t === "tablespace") return "TB";
-			if (t === "index" || t === "key group/index" || t === "key group") return "IX";
-			if (t === "view") return "VW";
-			if (t === "model") return "M";
-			return "";
-		};
 		enrichedData$ = /* @__PURE__ */ computed(rawData$, (data) => {
 			const withInitialState = data.map((row, index) => {
 				const cleanedType = row.type.split(":")[0].trim();
 				const isGrouping = GROUPING_KEYWORDS.some((kw) => cleanedType === kw);
-				const isHeader = isGrouping || row.isHeader || HEADER_KEYWORDS.some((kw) => cleanedType === kw);
+				const headerMatch = HEADERS_CONFIG.find((h) => h.object === cleanedType && h.indentation.includes(row.rawIndent));
+				const isHeader = isGrouping || !!headerMatch;
 				let type = row.type;
 				const originalType = type;
 				if (isHeader && !isGrouping && type.includes(":")) type = cleanedType;
@@ -982,6 +1080,7 @@
 					isHeader,
 					isGrouping,
 					view,
+					prop: headerMatch?.prop || "",
 					isCalculated: row.leftModel === row.rightModel && row.leftModel.endsWith("[Calculated]") && row.rightModel.endsWith("[Calculated]")
 				};
 			});
@@ -1047,25 +1146,35 @@
 					}
 				}
 			}
-			let lastPropCode = "O";
+			let currentPropCode = "O";
 			return hoisted.map((row) => {
-				const code = row.isHeader ? getObjectShortCode(row.type) : "";
-				if (code) lastPropCode = code;
+				if (row.isHeader && row.prop) currentPropCode = row.prop;
 				return {
 					...row,
-					prop: lastPropCode
+					prop: row.isHeader ? row.prop : currentPropCode
 				};
 			}).filter((row) => !row.isGrouping);
 		});
 		filteredData$ = /* @__PURE__ */ computed([
 			enrichedData$,
 			filterChange$,
-			filterName$
-		], (data, change, name) => {
+			filterName$,
+			onlyEntities$,
+			onlyEntitiesAndAttributes$,
+			showProperties$
+		], (data, change, name, onlyEntities, onlyEntitiesAndAttributes, showProperties) => {
 			let result = data;
+			if (onlyEntities || onlyEntitiesAndAttributes) result = result.filter((r) => {
+				if (onlyEntities ? r.isHeader && r.prop === "Ent" : r.isHeader && (r.prop === "Ent" || r.prop === "Atr")) return true;
+				if (showProperties && !r.isHeader && r.parentId) {
+					const parent = data.find((p) => p.id === r.parentId);
+					if (parent) return onlyEntities ? parent.prop === "Ent" : parent.prop === "Ent" || parent.prop === "Atr";
+				}
+				return false;
+			});
 			if (change) {
 				const matches = /* @__PURE__ */ new Set();
-				data.forEach((r) => {
+				(onlyEntities || onlyEntitiesAndAttributes ? result : data).forEach((r) => {
 					if (r.isHeader && r.prop === "Ent" && r.change === change) {
 						const addWithDescendants = (id) => {
 							matches.add(id);
@@ -1081,7 +1190,7 @@
 			if (name) {
 				const search = name.toLowerCase();
 				const hits = /* @__PURE__ */ new Set();
-				data.forEach((r) => {
+				(onlyEntities || onlyEntitiesAndAttributes ? result : data).forEach((r) => {
 					const typeMatch = (r.originalType || r.type).toLowerCase().includes(search);
 					const leftMatch = r.leftModel.toLowerCase().includes(search);
 					const rightMatch = r.rightModel.toLowerCase().includes(search);
@@ -1199,6 +1308,16 @@
 			});
 			return Object.values(summary);
 		});
+		if (typeof window !== "undefined") window.erwinData = {
+			rawData$,
+			enrichedData$,
+			filteredData$,
+			filterChange$,
+			filterName$,
+			showProperties$,
+			onlyEntities$,
+			onlyEntitiesAndAttributes$
+		};
 	}));
 	//#endregion
 	//#region src/i18n/en-US.json
@@ -2703,7 +2822,7 @@
 	//#region src/components/app-stats.css?inline
 	var app_stats_default;
 	var init_app_stats$1 = __esmMin((() => {
-		app_stats_default = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.layout-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n}\r\n\r\n.left-stats {\r\n  display: flex;\r\n  align-items: stretch;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.stats-container {\r\n  display: flex;\r\n  align-items: stretch;\r\n  background: var(--bg-panel);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 6px;\r\n  overflow: hidden;\r\n  min-width: 450px;\r\n}\r\n\r\n.flip-btn {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.25rem;\r\n  border: none;\r\n  border-right: 1px solid var(--border-subtle);\r\n  border-radius: 0;\r\n  padding: 0 0.75rem;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  background: var(--bg-main);\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.flip-btn:hover {\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.flip-btn svg {\r\n  width: 1.25rem;\r\n  height: 1.25rem;\r\n}\r\n\r\n.stats-table {\r\n  width: 100%;\r\n  border-collapse: collapse;\r\n  font-size: 0.75rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\nth {\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 0.6rem;\r\n  text-align: left;\r\n  font-weight: 700;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  border-bottom: 2px solid var(--border-subtle);\r\n}\r\n\r\ntd {\r\n  padding: 0.3rem 0.6rem;\r\n  border-bottom: 1px solid var(--border-subtle);\r\n}\r\n\r\n.val-col {\r\n  text-align: center;\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.val-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 6px;\r\n}\r\n\r\n.large-count-bubble {\r\n  padding: 2px 3px;\r\n  border-radius: 10px;\r\n  min-width: 16px;\r\n  text-align: center;\r\n  line-height: 1;\r\n  font-size: 0.75rem;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n}\r\n\r\n/* --- Phase 1: Office 2010 Stats Summary Colors --- */\r\n\r\n/* Tables Row (Base Colors) */\r\ntr[data-type=\"Tables\"] {\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .type-col {\r\n  color: var(--text-on-dark);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Tables\"] .status-I {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-A {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-E {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-C {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .total-col {\r\n  background-color: var(--off-blue-40);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Columns Row (60% Lighter Colors) */\r\ntr[data-type=\"Columns\"] {\r\n  background-color: var(--off-blue-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .type-col {\r\n  color: var(--text-on-light);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Columns\"] .status-I {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-A {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-E {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-C {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .total-col {\r\n  background-color: var(--off-blue-80);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Filter Panel Styling */\r\n.filter-panel {\r\n  display: flex;\r\n  flex-direction: row;\r\n  gap: 1.5rem;\r\n  background: var(--bg-panel);\r\n  padding: 0.6rem 1.2rem;\r\n  border-radius: 6px;\r\n  border: 1px solid var(--border-subtle);\r\n  align-items: flex-end;\r\n}\r\n\r\n.filter-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.3rem;\r\n}\r\n\r\n.filter-item label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.filter-item .form-control {\r\n  height: 1.8rem;\r\n  padding: 0.2rem 0.5rem;\r\n  font-size: 0.75rem;\r\n  min-width: 120px;\r\n}\r\n\r\n.search-input-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 4px;\r\n  padding: 0 0.5rem;\r\n  height: 1.8rem;\r\n}\r\n\r\n.search-input-wrapper input {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  font-size: 0.75rem;\r\n  width: 150px;\r\n  outline: none;\r\n}\r\n\r\n.search-input-wrapper svg {\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n}\r\n\r\n/* Action Panel on the right */\r\n.action-panel {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.5rem;\r\n  justify-content: center;\r\n}\r\n\r\n.action-btn {\r\n  background: var(--bg-main);\r\n  color: var(--text-primary);\r\n  border: 1px solid var(--border-subtle);\r\n  padding: 0.4rem 1rem;\r\n  border-radius: 4px;\r\n  font-size: 0.7rem;\r\n  font-weight: bold;\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.6rem;\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  min-width: 160px;\r\n  box-shadow: 0 2px 4px rgba(0,0,0,0.1);\r\n}\r\n\r\n.action-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.action-btn:active {\r\n  transform: translateY(1px);\r\n}\r\n\r\n.layout-stats svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
+		app_stats_default = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.layout-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n}\r\n\r\n.left-stats {\r\n  display: flex;\r\n  align-items: stretch;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.stats-container {\r\n  display: flex;\r\n  align-items: stretch;\r\n  background: var(--bg-panel);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 6px;\r\n  overflow: hidden;\r\n  min-width: 450px;\r\n}\r\n\r\n.flip-btn,\r\n.copy-side-btn {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.25rem;\r\n  border: none;\r\n  border-radius: 0;\r\n  padding: 0 0.75rem;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  background: var(--bg-main);\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.flip-btn {\r\n  border-right: 1px solid var(--border-subtle);\r\n}\r\n\r\n.copy-side-btn {\r\n  border-left: 1px solid var(--border-subtle);\r\n}\r\n\r\n.flip-btn:hover,\r\n.copy-side-btn:hover {\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.flip-btn svg,\r\n.copy-side-btn svg {\r\n  width: 1.25rem;\r\n  height: 1.25rem;\r\n}\r\n\r\n.stats-table {\r\n  width: 100%;\r\n  border-collapse: collapse;\r\n  font-size: 0.75rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\nth {\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 0.6rem;\r\n  text-align: left;\r\n  font-weight: 700;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  border-bottom: 2px solid var(--border-subtle);\r\n}\r\n\r\ntd {\r\n  padding: 0.3rem 0.6rem;\r\n  border-bottom: 1px solid var(--border-subtle);\r\n}\r\n\r\n.val-col {\r\n  text-align: center;\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.val-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 6px;\r\n}\r\n\r\n.large-count-bubble {\r\n  padding: 2px 3px;\r\n  border-radius: 10px;\r\n  min-width: 16px;\r\n  text-align: center;\r\n  line-height: 1;\r\n  font-size: 0.75rem;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n}\r\n\r\n/* --- Phase 1: Office 2010 Stats Summary Colors --- */\r\n\r\n/* Tables Row (Base Colors) */\r\ntr[data-type=\"Tables\"] {\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .type-col {\r\n  color: var(--text-on-dark);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Tables\"] .status-I {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-A {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-E {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-C {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .total-col {\r\n  background-color: var(--off-blue-40);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Columns Row (60% Lighter Colors) */\r\ntr[data-type=\"Columns\"] {\r\n  background-color: var(--off-blue-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .type-col {\r\n  color: var(--text-on-light);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Columns\"] .status-I {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-A {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-E {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-C {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .total-col {\r\n  background-color: var(--off-blue-80);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Filter Panel Styling */\r\n.filter-panel {\r\n  display: flex;\r\n  flex-direction: row;\r\n  gap: 1.5rem;\r\n  background: var(--bg-panel);\r\n  padding: 0.6rem 1.2rem;\r\n  border-radius: 6px;\r\n  border: 1px solid var(--border-subtle);\r\n  align-items: center;\r\n}\r\n\r\n.filter-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.3rem;\r\n}\r\n\r\n.filter-item label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.filter-item .form-control {\r\n  height: 1.8rem;\r\n  padding: 0.2rem 0.5rem;\r\n  font-size: 0.75rem;\r\n  min-width: 120px;\r\n}\r\n\r\n.search-input-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 4px;\r\n  padding: 0 0.5rem;\r\n  height: 1.8rem;\r\n}\r\n\r\n.search-input-wrapper input {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  font-size: 0.75rem;\r\n  width: 150px;\r\n  outline: none;\r\n}\r\n\r\n.search-input-wrapper svg {\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n}\r\n\r\n.filter-switches {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 1.5rem;\r\n  padding-left: 1.5rem;\r\n  border-left: 1px solid var(--border-subtle);\r\n  align-self: stretch;\r\n}\r\n\r\n.main-switch {\r\n  font-size: 0.75rem;\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.stacked-switches {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.4rem;\r\n  justify-content: center;\r\n}\r\n\r\n.switch-label {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  font-size: 0.65rem;\r\n  font-weight: bold;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  margin-bottom: 0;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.02em;\r\n}\r\n\r\n/* The switch - the box around the slider */\r\n.switch {\r\n  position: relative;\r\n  display: inline-block;\r\n  width: 32px;\r\n  height: 16px;\r\n}\r\n\r\n/* Hide default HTML checkbox */\r\n.switch input {\r\n  opacity: 0;\r\n  width: 0;\r\n  height: 0;\r\n}\r\n\r\n/* The slider */\r\n.slider {\r\n  position: absolute;\r\n  cursor: pointer;\r\n  top: 0;\r\n  left: 0;\r\n  right: 0;\r\n  bottom: 0;\r\n  background-color: #7f8c8d;\r\n  -webkit-transition: 0.4s;\r\n  transition: 0.4s;\r\n}\r\n\r\n.slider:before {\r\n  position: absolute;\r\n  content: \"\";\r\n  height: 12px;\r\n  width: 12px;\r\n  left: 2px;\r\n  bottom: 2px;\r\n  background-color: white;\r\n  -webkit-transition: 0.4s;\r\n  transition: 0.4s;\r\n}\r\n\r\ninput:checked + .slider {\r\n  background-color: #2ecc71;\r\n}\r\n\r\ninput:focus + .slider {\r\n  box-shadow: 0 0 1px #2ecc71;\r\n}\r\n\r\ninput:checked + .slider:before {\r\n  -webkit-transform: translateX(16px);\r\n  -ms-transform: translateX(16px);\r\n  transform: translateX(16px);\r\n}\r\n\r\n/* Rounded sliders */\r\n.slider.round {\r\n  border-radius: 16px;\r\n}\r\n\r\n.slider.round:before {\r\n  border-radius: 50%;\r\n}\r\n\r\n/* Action Panel on the right */\r\n.action-panel {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.5rem;\r\n  justify-content: center;\r\n}\r\n\r\n.action-btn {\r\n  background: var(--bg-main);\r\n  color: var(--text-primary);\r\n  border: 1px solid var(--border-subtle);\r\n  padding: 0.4rem 1rem;\r\n  border-radius: 4px;\r\n  font-size: 0.7rem;\r\n  font-weight: bold;\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.6rem;\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  min-width: 160px;\r\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n.action-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.action-btn:active {\r\n  transform: translateY(1px);\r\n}\r\n\r\n.layout-stats svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-stats.ts
@@ -2723,6 +2842,8 @@
 				this.stats = new import_lib$2.StoreController(this, statsSummary$);
 				this.nameFilter = new import_lib$2.StoreController(this, filterName$);
 				this.showProps = new import_lib$2.StoreController(this, showProperties$);
+				this.onlyEnt = new import_lib$2.StoreController(this, onlyEntities$);
+				this.onlyEntAtr = new import_lib$2.StoreController(this, onlyEntitiesAndAttributes$);
 				this.isCopying = false;
 			}
 			static {
@@ -2766,6 +2887,10 @@
                 `)}
               </tbody>
             </table>
+            <button class="btn btn-primary btn-xs copy-side-btn" @click=${this._copyTablesToClipboard} title="${translate("stats.actions.copy_tables")}">
+               ${this.isCopying ? icons.check : icons["clipboard-list"]} 
+               <span>${this.isCopying ? translate("stats.messages.copied") : translate("stats.actions.copy_tables")}</span>
+            </button>
           </div>
 
           <div class="filter-panel">
@@ -2793,18 +2918,41 @@
                 <option value="E">${translate("changes.deletion")}</option>
               </select>
             </div>
-          </div>
-        </div>
 
-        <div class="action-panel">
-          <button type="button" class="btn btn-primary btn-block action-btn" @click=${this._copyTablesToClipboard}>
-            ${this.isCopying ? icons.check : icons["clipboard-list"]} 
-            <span>${this.isCopying ? translate("stats.messages.copied") : translate("stats.actions.copy_tables")}</span>
-          </button>
-          <button type="button" class="btn btn-default btn-block action-btn" @click=${togglePropertiesGlobal}>
-            ${this.showProps.value ? icons["filter-off"] : icons.filter} 
-            <span>${this.showProps.value ? translate("stats.actions.hide_props") : translate("stats.actions.show_props")}</span>
-          </button>
+            <div class="filter-switches">
+              <label class="switch-label main-switch">
+                <div class="switch">
+                  <input type="checkbox" .checked=${this.showProps.value} @change=${togglePropertiesGlobal}>
+                  <span class="slider round"></span>
+                </div>
+                <span>${translate("stats.actions.show_props")}</span>
+              </label>
+
+              <div class="stacked-switches">
+                <label class="switch-label">
+                  <div class="switch">
+                    <input type="checkbox" .checked=${this.onlyEnt.value} @change=${(e) => {
+					onlyEntities$.set(e.target?.checked);
+					if (e.target?.checked) onlyEntitiesAndAttributes$.set(false);
+				}}>
+                    <span class="slider round"></span>
+                  </div>
+                  <span>ONLY ENTITIES</span>
+                </label>
+
+                <label class="switch-label">
+                  <div class="switch">
+                    <input type="checkbox" .checked=${this.onlyEntAtr.value} @change=${(e) => {
+					onlyEntitiesAndAttributes$.set(e.target?.checked);
+					if (e.target?.checked) onlyEntities$.set(false);
+				}}>
+                    <span class="slider round"></span>
+                  </div>
+                  <span>ONLY ENT+ATR</span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -2835,7 +2983,7 @@
 	//#region src/components/app-table.css?inline
 	var app_table_default;
 	var init_app_table$1 = __esmMin((() => {
-		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n}\r\n\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n  border-collapse: separate; /* Changed to separate for better row hover stability */\r\n  border-spacing: 0;\r\n}\r\n\r\n/* Remove 3D effects from header */\r\n.table-condensed > thead > tr > th {\r\n  border: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  text-shadow: none;\r\n  box-shadow: none;\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 4px 8px;\r\n  border-bottom: 1px solid var(--border-color);\r\n  border-right: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-condensed > thead > tr > th:last-child,\r\n.table-condensed > tbody > tr > td:last-child {\r\n  border-right: none;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n/*\r\n   Whole row highlight using box-shadow on the row\r\n   and a persistent overlay on the cells.\r\n   Removed transition to prevent the \"flashing\" or \"dissipating\" feel.\r\n*/\r\n.clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.12);\r\n  background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));\r\n}\r\n\r\n[data-theme=\"light\"] .clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);\r\n  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Status Colors */\r\n\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l0);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l1);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-grouping=\"true\"]) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n";
+		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n}\r\n\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n  border-collapse: separate; /* Changed to separate for better row hover stability */\r\n  border-spacing: 0;\r\n}\r\n\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\ntr[data-udp=\"true\"] {\r\n  background-color: rgba(0, 128, 128, 0.2);\r\n  color: var(--text-primary);\r\n}\r\n\r\n[data-theme=\"dark\"] tr[data-udp=\"true\"] {\r\n  background-color: rgba(0, 128, 128, 0.4);\r\n}\r\n\r\n/* Remove 3D effects from header */\r\n.table-condensed > thead > tr > th {\r\n  border: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  text-shadow: none;\r\n  box-shadow: none;\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 4px 8px;\r\n  border-bottom: 1px solid var(--border-color);\r\n  border-right: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-condensed > thead > tr > th:last-child,\r\n.table-condensed > tbody > tr > td:last-child {\r\n  border-right: none;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n/*\r\n   Whole row highlight using box-shadow on the row\r\n   and a persistent overlay on the cells.\r\n   Removed transition to prevent the \"flashing\" or \"dissipating\" feel.\r\n*/\r\n.clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.12);\r\n  background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));\r\n}\r\n\r\n[data-theme=\"light\"] .clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);\r\n  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Status Colors */\r\n\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Orange Scale for Everything Else (Headers) */\r\ntr[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not([data-grouping=\"true\"]) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-table.ts
@@ -2891,29 +3039,29 @@
 				const visibleRows = allRows.filter((row) => !isRowHidden(row.id));
 				return b`
       <table class="table table-condensed table-hover table-container">
-        <thead>
-          <tr>
-            <th class="col-check">${icons["square-check"]}</th>
-            <th class="col-type">${translate("table.col_type")}</th>
-            <th class="col-left">${flipped ? translate("table.col_right") : translate("table.col_left")}</th>
-            <th class="col-right">${flipped ? translate("table.col_left") : translate("table.col_right")}</th>
-            <th class="col-prop">${translate("table.col_prop")}</th>
-            <th class="col-change">${translate("table.col_change")}</th>
-            <th class="col-view">${translate("table.col_view")}</th>
-            <th class="col-cal">Cal</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${visibleRows.length === 0 ? b`
+          <thead>
             <tr>
-              <td colspan="8" class="text-center empty-cell">
-                <div class="callout">
-                  <span class="callout-icon">${icons["clipboard-list"]}</span>
-                  ${translate("table.empty")}
-                </div>
-              </td>
+              <th class="col-check">${icons["square-check"]}</th>
+              <th class="col-type">${translate("table.col_type")}</th>
+              <th class="col-left">${flipped ? translate("table.col_right") : translate("table.col_left")}</th>
+              <th class="col-right">${flipped ? translate("table.col_left") : translate("table.col_right")}</th>
+              <th class="col-prop">${translate("table.col_prop")}</th>
+              <th class="col-change">${translate("table.col_change")}</th>
+              <th class="col-view">${translate("table.col_view")}</th>
+              <th class="col-cal">Cal</th>
             </tr>
-          ` : visibleRows.map((row) => {
+          </thead>
+          <tbody>
+            ${visibleRows.length === 0 ? b`
+              <tr>
+                <td colspan="8" class="text-center empty-cell">
+                  <div class="callout">
+                    <span class="callout-icon">${icons["clipboard-list"]}</span>
+                    ${translate("table.empty")}
+                  </div>
+                </td>
+              </tr>
+            ` : visibleRows.map((row) => {
 					const isIdentificationRow = row.isHeader && !row.isGrouping;
 					const isNameProp = row.type.toLowerCase().includes("name");
 					const showCopy = isIdentificationRow || isNameProp;
@@ -2927,38 +3075,42 @@
 						else if (change === "E") change = "I";
 					}
 					return b`
-              <tr 
-                data-change="${change}" 
-                data-level="${level}"
-                data-prop="${row.prop}"
-                data-header="${row.isHeader || false}"
-                data-grouping="${row.isGrouping || false}"
-                data-calculated="${row.isCalculated || false}"
-                class="${isChecked ? "checked-row" : ""} ${isIdentificationRow ? "clickable-row" : ""}"
-                @click=${() => {
+                <tr 
+                  data-change="${change}" 
+                  data-level="${level}"
+                  data-prop="${row.prop}"
+                  data-header="${row.isHeader || false}"
+                  data-grouping="${row.isGrouping || false}"
+                  data-calculated="${row.isCalculated || false}"
+                  data-udp="${row.isUDP || false}"
+                  class="${isChecked ? "checked-row" : ""} ${isIdentificationRow ? "clickable-row" : ""}"
+                  @click=${() => {
 						if (isIdentificationRow && row.id) togglePropertiesIndividual(row.id);
 					}}
-                @contextmenu=${(e) => {
+                  @contextmenu=${(e) => {
 						if (isIdentificationRow && row.id) {
 							e.preventDefault();
 							toggleSubObjects(row.id);
 						}
 					}}
-              >
-                <td class="col-check" @click=${(e) => e.stopPropagation()}>
-                   <input 
-                    type="checkbox" 
-                    .checked=${isChecked}
-                    @change=${() => row.id && toggleCheck(row.id)}
-                   />
-                </td>
-                <td class="row-type">
-                  <div class="tree-node" style="padding-left: ${level * 3}px">
-                    <span class="type-text">${row.type}</span>
-                    ${this._renderAttributeCounter(row)}
-                  </div>
-                </td>
-                <td class="row-left">
+                >
+                  <td class="col-check" @click=${(e) => e.stopPropagation()}>
+                     <input 
+                      type="checkbox" 
+                      .checked=${isChecked}
+                      @change=${() => row.id && toggleCheck(row.id)}
+                     />
+                  </td>
+                  <td class="row-type">
+                    <div class="tree-node">
+                      <div class="indent-dots">
+                        ${Array.from({ length: level }).map(() => b`<span class="dot">·</span>`)}
+                      </div>
+                      <span class="type-text">${row.type}</span>
+                      ${this._renderAttributeCounter(row)}
+                    </div>
+                  </td>
+                  <td class="row-left">
                   <div class="content-wrapper">
                     <span class="value-text">${leftVal}</span>
                     <div class="row-actions">
