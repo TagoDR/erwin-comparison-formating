@@ -883,7 +883,7 @@
 	}));
 	//#endregion
 	//#region src/store/data.store.ts
-	var rawData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, GROUPING_KEYWORDS, HEADERS_CONFIG, enrichedData$, filteredData$, togglePropertiesGlobal, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, toggleFlip, statsSummary$;
+	var rawData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, GROUPING_KEYWORDS, HEADERS_CONFIG, enrichedData$, filteredData$, togglePropertiesGlobal, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, toggleFlip, statsSummary$;
 	var init_data_store = __esmMin((() => {
 		init_nanostores();
 		rawData$ = /* @__PURE__ */ atom([]);
@@ -894,12 +894,14 @@
 		filterName$ = /* @__PURE__ */ atom("");
 		onlyEntities$ = /* @__PURE__ */ atom(false);
 		onlyEntitiesAndAttributes$ = /* @__PURE__ */ atom(false);
+		hideCalculated$ = /* @__PURE__ */ atom(true);
 		showProperties$ = /* @__PURE__ */ atom(false);
 		toggledPropertiesIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		hiddenSubObjectsIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		checkedIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		isFlipped$ = /* @__PURE__ */ atom(false);
 		GROUPING_KEYWORDS = [
+			"Annotations",
 			"Attribute Storage Objects",
 			"Attributes",
 			"Attributes/Columns",
@@ -929,6 +931,11 @@
 		];
 		HEADERS_CONFIG = [
 			{
+				prop: "O",
+				object: "Annotation",
+				indentation: [9]
+			},
+			{
 				prop: "Atr",
 				object: "Attribute",
 				indentation: [15]
@@ -951,22 +958,23 @@
 			{
 				prop: "O",
 				object: "Default Constrain Usage",
-				indentation: [18]
+				indentation: [21]
 			},
 			{
 				prop: "O",
 				object: "Default Value",
-				indentation: [6]
+				indentation: [9]
 			},
 			{
 				prop: "O",
 				object: "Domain",
-				indentation: [6]
+				indentation: [9]
 			},
 			{
 				prop: "M",
 				object: "ER Diagram",
-				indentation: [6, 9]
+				indentation: [9, 12],
+				hide: true
 			},
 			{
 				prop: "Ent",
@@ -987,7 +995,7 @@
 					21,
 					24,
 					27,
-					32
+					30
 				]
 			},
 			{
@@ -1008,7 +1016,7 @@
 			{
 				prop: "O",
 				object: "Physical Storage Object",
-				indentation: [15, 18]
+				indentation: [15, 21]
 			},
 			{
 				prop: "O",
@@ -1023,12 +1031,13 @@
 			{
 				prop: "O",
 				object: "Sequence",
-				indentation: [3]
+				indentation: [9]
 			},
 			{
 				prop: "M",
 				object: "Subject Area",
-				indentation: [6]
+				indentation: [9],
+				hide: true
 			},
 			{
 				prop: "FK",
@@ -1038,17 +1047,17 @@
 			{
 				prop: "Ent",
 				object: "Table",
-				indentation: [9]
+				indentation: [27]
 			},
 			{
 				prop: "O",
 				object: "Tablespace",
-				indentation: [6]
+				indentation: [9]
 			},
 			{
 				prop: "O",
 				object: "Theme",
-				indentation: [6]
+				indentation: [9]
 			},
 			{
 				prop: "Ent",
@@ -1057,103 +1066,104 @@
 			}
 		];
 		enrichedData$ = /* @__PURE__ */ computed(rawData$, (data) => {
-			const withInitialState = data.map((row, index) => {
-				const cleanedType = row.type.split(":")[0].trim();
+			const rowCount = data.length;
+			if (rowCount === 0) return [];
+			const rowsById = /* @__PURE__ */ new Map();
+			const childrenMap = /* @__PURE__ */ new Map();
+			const headerStack = [];
+			const processed = data.map((row, index) => {
+				const cleanedType = row.type.trim();
 				const isGrouping = GROUPING_KEYWORDS.some((kw) => cleanedType === kw);
 				const headerMatch = HEADERS_CONFIG.find((h) => h.object === cleanedType && h.indentation.includes(row.rawIndent));
-				const isHeader = isGrouping || !!headerMatch;
-				let type = row.type;
-				const originalType = type;
-				if (isHeader && !isGrouping && type.includes(":")) type = cleanedType;
-				let view = row.view;
-				if (!view) {
-					if (type === "Entity/Table") view = "L/P";
-					else if (type === "Attribute/Column") view = "L/P";
-					else if (type === "Entity" || type === "Attribute") view = "L";
-					else if (type === "Table" || type === "Column") view = "P";
-				}
-				return {
+				const enriched = {
 					...row,
-					type,
-					originalType,
 					id: `row-${index}`,
-					isHeader,
+					isHeader: isGrouping || !!headerMatch,
 					isGrouping,
-					view,
+					isHeaderHidden: headerMatch?.hide || false,
 					prop: headerMatch?.prop || "",
-					isCalculated: row.leftModel === row.rightModel && row.leftModel.endsWith("[Calculated]") && row.rightModel.endsWith("[Calculated]")
+					isCalculated: row.leftModel === row.rightModel || row.leftModel.endsWith("[Calculated]") && row.rightModel.endsWith("[Calculated]")
 				};
-			});
-			const headerStack = [];
-			const hoisted = [...withInitialState.map((row) => {
-				while (headerStack.length > 0 && headerStack[headerStack.length - 1].indent >= row.indent) headerStack.pop();
+				if (!enriched.view) {
+					const type = enriched.type;
+					if (type === "Entity/Table") enriched.view = "L/P";
+					else if (type === "Attribute/Column") enriched.view = "L/P";
+					else if (type === "Entity" || type === "Attribute") enriched.view = "L";
+					else if (type === "Table" || type === "Column") enriched.view = "P";
+				}
+				while (headerStack.length > 0 && headerStack[headerStack.length - 1].indent >= enriched.indent) headerStack.pop();
 				let parentId = "";
-				for (let i = headerStack.length - 1; i >= 0; i--) if (!headerStack[i].isGrouping) {
-					parentId = headerStack[i].id;
-					break;
+				let isUnderHiddenHeader = enriched.isHeaderHidden || false;
+				for (let j = headerStack.length - 1; j >= 0; j--) {
+					const stackItem = headerStack[j];
+					if (!stackItem.isGrouping && !parentId) parentId = stackItem.id;
+					if (stackItem.isHidden) isUnderHiddenHeader = true;
 				}
-				if (row.isHeader) headerStack.push({
-					id: row.id,
-					indent: row.indent,
-					isGrouping: row.isGrouping || false
+				enriched.parentId = parentId;
+				enriched.isUnderHiddenHeader = isUnderHiddenHeader;
+				if (parentId) {
+					const list = childrenMap.get(parentId) || [];
+					list.push(enriched.id);
+					childrenMap.set(parentId, list);
+				}
+				if (enriched.isHeader) headerStack.push({
+					id: enriched.id,
+					indent: enriched.indent,
+					isGrouping: enriched.isGrouping || false,
+					isHidden: enriched.isHeaderHidden || false
 				});
-				return {
-					...row,
-					parentId
-				};
-			})];
-			const childrenMap = /* @__PURE__ */ new Map();
-			hoisted.forEach((r) => {
-				if (r.parentId) {
-					const list = childrenMap.get(r.parentId) || [];
-					list.push(r.id);
-					childrenMap.set(r.parentId, list);
-				}
+				rowsById.set(enriched.id, enriched);
+				return enriched;
 			});
-			for (let i = hoisted.length - 1; i >= 0; i--) {
-				const row = hoisted[i];
+			for (let i = rowCount - 1; i >= 0; i--) {
+				const row = processed[i];
 				if (row.isHeader && !row.isGrouping) {
 					const childrenIds = childrenMap.get(row.id) || [];
-					const nonGroupingChildren = childrenIds.filter((cid) => {
-						return !hoisted.find((r) => r.id === cid)?.isGrouping;
-					});
-					if (nonGroupingChildren.length > 0) row.isCalculated = nonGroupingChildren.every((cid) => {
-						return hoisted.find((r) => r.id === cid)?.isCalculated;
-					});
-					if (row.type === "Entity/Table" || row.type === "Entity" || row.type === "Table") {
-						let leftMaxOrder = 0;
-						let rightMaxOrder = 0;
-						const orderRows = hoisted.filter((c) => c.parentId === row.id && (c.type === "Column Order List" || c.type === "Attribute Order List"));
-						const getCommaCount = (val) => {
-							if (!val || val.trim() === "") return 0;
-							return val.split(",").length;
-						};
-						orderRows.forEach((or) => {
-							leftMaxOrder = Math.max(leftMaxOrder, getCommaCount(or.leftModel));
-							rightMaxOrder = Math.max(rightMaxOrder, getCommaCount(or.rightModel));
-						});
-						const totalManualCount = childrenIds.map((cid) => hoisted.find((r) => r.id === cid)).filter((r) => r?.isHeader && !r.isGrouping && (r.type === "Attribute/Column" || r.type === "Attribute" || r.type === "Column")).length;
-						const finalCount = Math.max(leftMaxOrder, rightMaxOrder, totalManualCount);
-						if (finalCount > 0) row.attributeCount = finalCount;
+					if (childrenIds.length > 0) {
+						let allCalculated = true;
+						let hasProps = false;
+						let hasSubs = false;
+						let attrCount = 0;
+						for (const cid of childrenIds) {
+							const child = rowsById.get(cid);
+							if (!child || child.isGrouping) continue;
+							if (!child.isCalculated) allCalculated = false;
+							if (!child.isHeader) hasProps = true;
+							if (child.isHeader) hasSubs = true;
+							if (child.isHeader && (child.type === "Attribute/Column" || child.type === "Attribute" || child.type === "Column")) attrCount++;
+						}
+						row.isCalculated = allCalculated;
+						row.hasProperties = hasProps;
+						row.hasSubObjects = hasSubs;
+						if ((row.type === "Entity/Table" || row.type === "Entity" || row.type === "Table") && attrCount === 0) for (const cid of childrenIds) {
+							const child = rowsById.get(cid);
+							if (child?.type === "Column Order List" || child?.type === "Attribute Order List") {
+								const count = Math.max(child.leftModel ? child.leftModel.split(",").length : 0, child.rightModel ? child.rightModel.split(",").length : 0);
+								attrCount = Math.max(attrCount, count);
+							}
+						}
+						if (attrCount > 0) row.attributeCount = attrCount;
 					}
 				}
-				if (row.parentId) {
-					const parentIndex = hoisted.findIndex((p) => p.id === row.parentId);
-					if (parentIndex !== -1) {
-						const parent = hoisted[parentIndex];
+				if (row.parentId && !row.isHeader) {
+					const parent = rowsById.get(row.parentId);
+					if (parent) {
 						if (row.type === "Logical Only" && row.leftModel === "true") parent.view = "L";
 						else if (row.type === "Physical Only" && row.leftModel === "true") parent.view = "P";
 					}
 				}
 			}
 			let currentPropCode = "O";
-			return hoisted.map((row) => {
+			return processed.map((row) => {
 				if (row.isHeader && row.prop) currentPropCode = row.prop;
 				return {
 					...row,
 					prop: row.isHeader ? row.prop : currentPropCode
 				};
-			}).filter((row) => !row.isGrouping);
+			}).filter((row) => {
+				const isEmpty = !row.leftModel.trim() && !row.rightModel.trim();
+				return !row.isGrouping && !isEmpty && !row.isUnderHiddenHeader;
+			});
 		});
 		filteredData$ = /* @__PURE__ */ computed([
 			enrichedData$,
@@ -1161,64 +1171,99 @@
 			filterName$,
 			onlyEntities$,
 			onlyEntitiesAndAttributes$,
-			showProperties$
-		], (data, change, name, onlyEntities, onlyEntitiesAndAttributes, showProperties) => {
-			let result = data;
-			if (onlyEntities || onlyEntitiesAndAttributes) result = result.filter((r) => {
-				if (onlyEntities ? r.isHeader && r.prop === "Ent" : r.isHeader && (r.prop === "Ent" || r.prop === "Atr")) return true;
-				if (showProperties && !r.isHeader && r.parentId) {
-					const parent = data.find((p) => p.id === r.parentId);
-					if (parent) return onlyEntities ? parent.prop === "Ent" : parent.prop === "Ent" || parent.prop === "Atr";
+			showProperties$,
+			hideCalculated$
+		], (data, change, name, onlyEntities, onlyEntitiesAndAttributes, _showProperties, hideCalculated) => {
+			if (data.length === 0) return [];
+			const rowsById = /* @__PURE__ */ new Map();
+			const childrenMap = /* @__PURE__ */ new Map();
+			for (const r of data) {
+				rowsById.set(r.id, r);
+				if (r.parentId) {
+					const list = childrenMap.get(r.parentId) || [];
+					list.push(r.id);
+					childrenMap.set(r.parentId, list);
 				}
-				return false;
-			});
+			}
+			let result = data;
+			if (hideCalculated) {
+				const familyOfCalculatedIds = /* @__PURE__ */ new Set();
+				const addFamily = (id) => {
+					if (familyOfCalculatedIds.has(id)) return;
+					familyOfCalculatedIds.add(id);
+					const children = childrenMap.get(id);
+					if (children) for (const cid of children) addFamily(cid);
+				};
+				for (const r of data) if (r.isCalculated) addFamily(r.id);
+				result = result.filter((r) => !familyOfCalculatedIds.has(r.id));
+			}
+			if (onlyEntities || onlyEntitiesAndAttributes) {
+				const familyIds = /* @__PURE__ */ new Set();
+				const addWithAncestors = (id) => {
+					let currId = id;
+					while (currId) {
+						if (familyIds.has(currId)) break;
+						familyIds.add(currId);
+						currId = rowsById.get(currId)?.parentId;
+					}
+				};
+				const addDescendants = (id) => {
+					const children = childrenMap.get(id);
+					if (children) {
+						for (const cid of children) if (!familyIds.has(cid)) {
+							familyIds.add(cid);
+							addDescendants(cid);
+						}
+					}
+				};
+				for (const r of result) if (onlyEntities ? r.isHeader && r.prop === "Ent" : r.isHeader && (r.prop === "Ent" || r.prop === "Atr")) {
+					addWithAncestors(r.id);
+					addDescendants(r.id);
+				}
+				result = result.filter((r) => familyIds.has(r.id));
+			}
 			if (change) {
 				const matches = /* @__PURE__ */ new Set();
-				(onlyEntities || onlyEntitiesAndAttributes ? result : data).forEach((r) => {
-					if (r.isHeader && r.prop === "Ent" && r.change === change) {
-						const addWithDescendants = (id) => {
-							matches.add(id);
-							data.forEach((child) => {
-								if (child.parentId === id) addWithDescendants(child.id);
-							});
-						};
-						addWithDescendants(r.id);
-					}
-				});
+				const addDescendants = (id) => {
+					matches.add(id);
+					const children = childrenMap.get(id);
+					if (children) for (const cid of children) addDescendants(cid);
+				};
+				for (const r of result) if (r.isHeader && r.prop === "Ent" && r.change === change) addDescendants(r.id);
 				result = result.filter((r) => matches.has(r.id));
 			}
 			if (name) {
 				const search = name.toLowerCase();
 				const hits = /* @__PURE__ */ new Set();
-				(onlyEntities || onlyEntitiesAndAttributes ? result : data).forEach((r) => {
+				for (const r of result) {
 					const typeMatch = (r.originalType || r.type).toLowerCase().includes(search);
 					const leftMatch = r.leftModel.toLowerCase().includes(search);
 					const rightMatch = r.rightModel.toLowerCase().includes(search);
 					if (r.isHeader && (typeMatch || leftMatch || rightMatch)) hits.add(r.id);
 					else if ((r.type === "Name" || r.type === "Physical Name") && (leftMatch || rightMatch)) hits.add(r.id);
-				});
+				}
 				const finalIds = /* @__PURE__ */ new Set();
-				const addWithDescendants = (id) => {
+				const addDescendants = (id) => {
 					if (finalIds.has(id)) return;
 					finalIds.add(id);
-					data.forEach((r) => {
-						if (r.parentId === id) addWithDescendants(r.id);
-					});
+					const children = childrenMap.get(id);
+					if (children) for (const cid of children) addDescendants(cid);
 				};
 				const addAncestors = (id) => {
-					let curr = data.find((r) => r.id === id);
-					while (curr?.parentId) {
-						finalIds.add(curr.parentId);
-						curr = data.find((r) => r.id === curr?.parentId);
+					let currId = id;
+					while (currId) {
+						if (finalIds.has(currId)) break;
+						finalIds.add(currId);
+						currId = rowsById.get(currId)?.parentId;
 					}
 				};
-				hits.forEach((id) => {
-					const row = data.find((r) => r.id === id);
-					if (!row) return;
+				for (const id of hits) {
+					const row = rowsById.get(id);
+					if (!row) continue;
 					const objectId = !row.isHeader && row.parentId ? row.parentId : id;
-					addWithDescendants(objectId);
+					addDescendants(objectId);
 					addAncestors(objectId);
-				});
+				}
 				result = result.filter((r) => finalIds.has(r.id));
 			}
 			return result;
@@ -1315,6 +1360,7 @@
 			filterChange$,
 			filterName$,
 			showProperties$,
+			hideCalculated$,
 			onlyEntities$,
 			onlyEntitiesAndAttributes$
 		};
@@ -1349,7 +1395,10 @@
 			"actions": {
 				"copy_tables": "COPY TABLES",
 				"show_props": "SHOW PROPERTIES",
-				"hide_props": "HIDE PROPERTIES"
+				"hide_props": "HIDE PROPERTIES",
+				"hide_calculated": "HIDE CALCULATED",
+				"only_entities": "ONLY ENTITIES",
+				"only_ent_atr": "ONLY ENT+ATR"
 			},
 			"messages": {
 				"copied": "Table name list copied to clipboard!",
@@ -1415,7 +1464,10 @@
 			"actions": {
 				"copy_tables": "COPIAR TABLAS",
 				"show_props": "MOSTRAR PROPIEDADES",
-				"hide_props": "OCULTAR PROPIEDADES"
+				"hide_props": "OCULTAR PROPIEDADES",
+				"hide_calculated": "OCULTAR CALCULADOS",
+				"only_entities": "SOLO ENTIDADES",
+				"only_ent_atr": "SOLO ENT+ATR"
 			},
 			"messages": {
 				"copied": "¡Lista de nombres de tablas copiada al portapapeles!",
@@ -1481,7 +1533,10 @@
 			"actions": {
 				"copy_tables": "COPIER LES TABLES",
 				"show_props": "AFFICHER LES PROPRIÉTÉS",
-				"hide_props": "MASQUER LES PROPRIÉTÉS"
+				"hide_props": "MASQUER LES PROPRIÉTÉS",
+				"hide_calculated": "MASQUER LES CALCULÉS",
+				"only_entities": "UNIQUEMENT ENTITÉS",
+				"only_ent_atr": "UNIQUEMENT ENT+ATR"
 			},
 			"messages": {
 				"copied": "Liste des noms de tables copiée dans le presse-papiers !",
@@ -1547,7 +1602,10 @@
 			"actions": {
 				"copy_tables": "COPIAR TABELAS",
 				"show_props": "MOSTRAR PROPRIEDADES",
-				"hide_props": "ESCONDER PROPRIEDADES"
+				"hide_props": "ESCONDER PROPRIEDADES",
+				"hide_calculated": "ESCONDER CALCULADOS",
+				"only_entities": "SOMENTE ENTIDADES",
+				"only_ent_atr": "SOMENTE ENT+ATR"
 			},
 			"messages": {
 				"copied": "Lista de tabelas copiada para a área de transferência!",
@@ -2567,6 +2625,12 @@
 		check_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-check\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M5 12l5 5l10 -10\" /></svg>";
 	}));
 	//#endregion
+	//#region src/assets/icons/chevron-down.svg
+	var chevron_down_default;
+	var init_chevron_down = __esmMin((() => {
+		chevron_down_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-chevron-down\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M6 9l6 6l6 -6\" /></svg>";
+	}));
+	//#endregion
 	//#region src/assets/icons/clipboard-copy.svg
 	var clipboard_copy_default;
 	var init_clipboard_copy = __esmMin((() => {
@@ -2615,6 +2679,18 @@
 		moon_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"\r\n     stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\r\n     class=\"icon icon-tabler icons-tabler-outline icon-tabler-moon\">\r\n    <path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/>\r\n    <path d=\"M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008\"/>\r\n</svg>";
 	}));
 	//#endregion
+	//#region src/assets/icons/schema.svg
+	var schema_default;
+	var init_schema = __esmMin((() => {
+		schema_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-schema\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M5 2h5v4h-5l0 -4\" /><path d=\"M15 10h5v4h-5l0 -4\" /><path d=\"M5 18h5v4h-5l0 -4\" /><path d=\"M5 10h5v4h-5l0 -4\" /><path d=\"M10 12h5\" /><path d=\"M7.5 6v4\" /><path d=\"M7.5 14v4\" /></svg>";
+	}));
+	//#endregion
+	//#region src/assets/icons/schema-off.svg
+	var schema_off_default;
+	var init_schema_off = __esmMin((() => {
+		schema_off_default = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"icon icon-tabler icons-tabler-outline icon-tabler-schema-off\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M6 2h4v4m-4 0h-1v-1\" /><path d=\"M15 11v-1h5v4h-2\" /><path d=\"M5 18h5v4h-5l0 -4\" /><path d=\"M5 10h5v4h-5l0 -4\" /><path d=\"M10 12h2\" /><path d=\"M7.5 7.5v2.5\" /><path d=\"M7.5 14v4\" /><path d=\"M3 3l18 18\" /></svg>";
+	}));
+	//#endregion
 	//#region src/assets/icons/square-check.svg
 	var square_check_default;
 	var init_square_check = __esmMin((() => {
@@ -2645,6 +2721,7 @@
 		init_lit();
 		init_unsafe_svg();
 		init_check();
+		init_chevron_down();
 		init_clipboard_copy();
 		init_clipboard_list();
 		init_copy();
@@ -2653,12 +2730,15 @@
 		init_filter();
 		init_filter_off();
 		init_moon();
+		init_schema();
+		init_schema_off();
 		init_square_check();
 		init_sun();
 		init_switch_horizontal();
 		init_x();
 		icons = {
 			check: b`${o(check_default)}`,
+			"chevron-down": b`${o(chevron_down_default)}`,
 			"clipboard-copy": b`${o(clipboard_copy_default)}`,
 			"clipboard-list": b`${o(clipboard_list_default)}`,
 			copy: b`${o(copy_default)}`,
@@ -2667,6 +2747,8 @@
 			filter: b`${o(filter_default)}`,
 			"filter-off": b`${o(filter_off_default)}`,
 			moon: b`${o(moon_default)}`,
+			schema: b`${o(schema_default)}`,
+			"schema-off": b`${o(schema_off_default)}`,
 			"square-check": b`${o(square_check_default)}`,
 			sun: b`${o(sun_default)}`,
 			"switch-horizontal": b`${o(switch_horizontal_default)}`,
@@ -2842,6 +2924,7 @@
 				this.stats = new import_lib$2.StoreController(this, statsSummary$);
 				this.nameFilter = new import_lib$2.StoreController(this, filterName$);
 				this.showProps = new import_lib$2.StoreController(this, showProperties$);
+				this.hideCalc = new import_lib$2.StoreController(this, hideCalculated$);
 				this.onlyEnt = new import_lib$2.StoreController(this, onlyEntities$);
 				this.onlyEntAtr = new import_lib$2.StoreController(this, onlyEntitiesAndAttributes$);
 				this.isCopying = false;
@@ -2920,35 +3003,45 @@
             </div>
 
             <div class="filter-switches">
-              <label class="switch-label main-switch">
-                <div class="switch">
-                  <input type="checkbox" .checked=${this.showProps.value} @change=${togglePropertiesGlobal}>
-                  <span class="slider round"></span>
-                </div>
-                <span>${translate("stats.actions.show_props")}</span>
-              </label>
+              <div class="stacked-switches main-stacked">
+                <label class="switch-label main-switch">
+                  <div class="switch">
+                    <input type="checkbox" .checked=${this.showProps.value} @change=${togglePropertiesGlobal}>
+                    <span class="slider round"></span>
+                  </div>
+                  <span>${translate("stats.actions.show_props")}</span>
+                </label>
+
+                <label class="switch-label">
+                  <div class="switch">
+                    <input type="checkbox" .checked=${this.hideCalc.value} @change=${(e) => hideCalculated$.set(e.target.checked)}>
+                    <span class="slider round"></span>
+                  </div>
+                  <span>${translate("stats.actions.hide_calculated")}</span>
+                </label>
+              </div>
 
               <div class="stacked-switches">
                 <label class="switch-label">
                   <div class="switch">
                     <input type="checkbox" .checked=${this.onlyEnt.value} @change=${(e) => {
-					onlyEntities$.set(e.target?.checked);
-					if (e.target?.checked) onlyEntitiesAndAttributes$.set(false);
+					onlyEntities$.set(e.target.checked);
+					if (e.target.checked) onlyEntitiesAndAttributes$.set(false);
 				}}>
                     <span class="slider round"></span>
                   </div>
-                  <span>ONLY ENTITIES</span>
+                  <span>${translate("stats.actions.only_entities")}</span>
                 </label>
 
                 <label class="switch-label">
                   <div class="switch">
                     <input type="checkbox" .checked=${this.onlyEntAtr.value} @change=${(e) => {
-					onlyEntitiesAndAttributes$.set(e.target?.checked);
-					if (e.target?.checked) onlyEntities$.set(false);
+					onlyEntitiesAndAttributes$.set(e.target.checked);
+					if (e.target.checked) onlyEntities$.set(false);
 				}}>
                     <span class="slider round"></span>
                   </div>
-                  <span>ONLY ENT+ATR</span>
+                  <span>${translate("stats.actions.only_ent_atr")}</span>
                 </label>
               </div>
             </div>
@@ -2983,7 +3076,7 @@
 	//#region src/components/app-table.css?inline
 	var app_table_default;
 	var init_app_table$1 = __esmMin((() => {
-		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n}\r\n\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n  border-collapse: separate; /* Changed to separate for better row hover stability */\r\n  border-spacing: 0;\r\n}\r\n\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\ntr[data-udp=\"true\"] {\r\n  background-color: rgba(0, 128, 128, 0.2);\r\n  color: var(--text-primary);\r\n}\r\n\r\n[data-theme=\"dark\"] tr[data-udp=\"true\"] {\r\n  background-color: rgba(0, 128, 128, 0.4);\r\n}\r\n\r\n/* Remove 3D effects from header */\r\n.table-condensed > thead > tr > th {\r\n  border: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  text-shadow: none;\r\n  box-shadow: none;\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 4px 8px;\r\n  border-bottom: 1px solid var(--border-color);\r\n  border-right: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-condensed > thead > tr > th:last-child,\r\n.table-condensed > tbody > tr > td:last-child {\r\n  border-right: none;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n/*\r\n   Whole row highlight using box-shadow on the row\r\n   and a persistent overlay on the cells.\r\n   Removed transition to prevent the \"flashing\" or \"dissipating\" feel.\r\n*/\r\n.clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.12);\r\n  background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));\r\n}\r\n\r\n[data-theme=\"light\"] .clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);\r\n  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Status Colors */\r\n\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Orange Scale for Everything Else (Headers) */\r\ntr[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not([data-grouping=\"true\"]) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n";
+		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n}\r\n\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n  border-collapse: separate; /* Changed to separate for better row hover stability */\r\n  border-spacing: 0;\r\n}\r\n\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\ntr[data-udp=\"true\"] {\r\n  background-color: rgba(0, 128, 128, 0.2);\r\n  color: var(--text-primary);\r\n}\r\n\r\n[data-theme=\"dark\"] tr[data-udp=\"true\"] {\r\n  background-color: rgba(0, 128, 128, 0.4);\r\n}\r\n\r\n/* Remove 3D effects from header */\r\n.table-condensed > thead > tr > th {\r\n  border: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  text-shadow: none;\r\n  box-shadow: none;\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 4px 8px;\r\n  border-bottom: 1px solid var(--border-color);\r\n  border-right: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-condensed > thead > tr > th:last-child,\r\n.table-condensed > tbody > tr > td:last-child {\r\n  border-right: none;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n/*\r\n   Whole row highlight using box-shadow on the row\r\n   and a persistent overlay on the cells.\r\n   Removed transition to prevent the \"flashing\" or \"dissipating\" feel.\r\n*/\r\n.clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.12);\r\n  background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));\r\n}\r\n\r\n[data-theme=\"light\"] .clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);\r\n  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Status Colors */\r\n\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Orange Scale for Everything Else (Headers) */\r\ntr[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not([data-grouping=\"true\"]) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-table.ts
@@ -3006,6 +3099,8 @@
 				this.hiddenSubs = new import_lib$1.StoreController(this, hiddenSubObjectsIds$);
 				this.checked = new import_lib$1.StoreController(this, checkedIds$);
 				this.isFlipped = new import_lib$1.StoreController(this, isFlipped$);
+				this.onlyEnt = new import_lib$1.StoreController(this, onlyEntities$);
+				this.onlyEntAtr = new import_lib$1.StoreController(this, onlyEntitiesAndAttributes$);
 				this.copiedId = null;
 				this.copiedSide = null;
 			}
@@ -3018,6 +3113,8 @@
 				const hiddenSubsSet = this.hiddenSubs.value;
 				const checkedSet = this.checked.value;
 				const flipped = this.isFlipped.value;
+				const onlyEntities = this.onlyEnt.value;
+				const onlyEntitiesAndAttributes = this.onlyEntAtr.value;
 				const allRows = this.data.value;
 				const rowMap = new Map(allRows.map((r) => [r.id, r]));
 				const isRowHidden = (rowId) => {
@@ -3025,18 +3122,34 @@
 					const row = rowMap.get(rowId);
 					if (!row) return false;
 					if (row.parentId) {
-						if (rowMap.get(row.parentId)) {
+						const parent = rowMap.get(row.parentId);
+						if (parent) {
 							if (!row.isHeader) {
 								const isParentToggled = toggledPropsSet.has(row.parentId);
 								if (!(globalShowProps ? !isParentToggled : isParentToggled)) return true;
 							}
-							if (row.isHeader && hiddenSubsSet.has(row.parentId)) return true;
+							if (row.isHeader) {
+								let isHidden = hiddenSubsSet.has(row.parentId);
+								if (onlyEntities && parent.prop === "Ent" && row.prop !== "Ent") isHidden = !isHidden;
+								if (onlyEntitiesAndAttributes && parent.prop === "Atr") isHidden = !isHidden;
+								if (isHidden) return true;
+							}
 							if (isRowHidden(row.parentId)) return true;
 						}
 					}
 					return false;
 				};
 				const visibleRows = allRows.filter((row) => !isRowHidden(row.id));
+				const areSubObjectsHidden = (row) => {
+					let isHidden = hiddenSubsSet.has(row.id);
+					if (onlyEntities && row.prop === "Ent" && row.hasSubObjects) isHidden = !isHidden;
+					if (onlyEntitiesAndAttributes && row.prop === "Atr" && row.hasSubObjects) isHidden = !isHidden;
+					return isHidden;
+				};
+				const arePropertiesHidden = (row) => {
+					const isParentToggled = toggledPropsSet.has(row.id);
+					return !(globalShowProps ? !isParentToggled : isParentToggled);
+				};
 				return b`
       <table class="table table-condensed table-hover table-container">
           <thead>
@@ -3108,6 +3221,19 @@
                       </div>
                       <span class="type-text">${row.type}</span>
                       ${this._renderAttributeCounter(row)}
+
+                      <div class="row-indicators">
+                        ${row.hasProperties ? b`
+                          <span class="icon-indicator prop-indicator ${!arePropertiesHidden(row) ? "expanded" : ""}">
+                            ${icons["chevron-down"]}
+                          </span>
+                        ` : ""}
+                        ${row.hasSubObjects ? b`
+                          <span class="icon-indicator sub-indicator">
+                            ${areSubObjectsHidden(row) ? icons["schema-off"] : icons.schema}
+                          </span>
+                        ` : ""}
+                      </div>
                     </div>
                   </td>
                   <td class="row-left">
@@ -3163,11 +3289,18 @@
 				return b`<span class="attr-badge">${count !== void 0 ? count : "?"}</span>`;
 			}
 			_renderLenCounter(row, value) {
-				const isNameProp = row.type.toLowerCase().includes("name");
+				const isPhysicalName = row.type === "Physical Name";
 				const isIdentificationRow = row.isHeader && !row.isGrouping && (row.prop === "Ent" || row.prop === "Atr");
-				if (!(isNameProp || isIdentificationRow) || !value) return "";
+				if (!(isPhysicalName || isIdentificationRow) || !value) return "";
 				const getLen = (val) => {
-					return (val.includes(":") ? val.split(":")[1].trim() : val.trim()).length;
+					let clean = val.trim();
+					clean = clean.replace(/\s*\[Calculated\]$/, "");
+					clean = clean.replace(/\s*\(FK\)$/, "");
+					if (clean.includes(".")) {
+						const parts = clean.split(".");
+						clean = parts[parts.length - 1];
+					}
+					return clean.length;
 				};
 				const len = getLen(value);
 				if (len === 0) return "";
@@ -3334,10 +3467,14 @@
 			const newTitle = `${(firstRow?.querySelectorAll("td")[1] || firstRow?.querySelectorAll("td")[3])?.textContent?.trim().replace(/\[Calculated]/g, "") || "Model"} ${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]} (${get("header.comparison") || "Comparison"})`;
 			document.title = newTitle;
 			fileName$.set(newTitle);
-			const rows = parseErwinHtml(originalHTML);
-			rawData$.set(rows);
-			initializeVisibility();
+			isLoading$.set(true);
 			document.body.innerHTML = "<app-root></app-root>";
+			setTimeout(() => {
+				const rows = parseErwinHtml(originalHTML);
+				rawData$.set(rows);
+				initializeVisibility();
+				isLoading$.set(false);
+			}, 100);
 		}
 		Promise.resolve().then(() => (init_main(), main_exports));
 	});
