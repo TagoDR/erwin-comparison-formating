@@ -87,6 +87,27 @@ export class AppTable extends LitElement {
 
     const visibleRows = allRows.filter(row => !isRowHidden(row.id));
 
+    const areSubObjectsHidden = (row: ErwinRow): boolean => {
+      let isHidden = hiddenSubsSet.has(row.id!);
+      // If "Only Entities" is on, and this is an Entity, its children are hidden by default
+      if (onlyEntities && row.prop === 'Ent' && row.hasSubObjects) {
+        // Special case: if children are also Entities (recursive), they are NOT hidden by default
+        // But in Erwin, usually children of Entities are Attributes.
+        isHidden = !isHidden;
+      }
+      // If "Only Ent+Atr" is on, and this is an Attribute, its children are hidden by default
+      if (onlyEntitiesAndAttributes && row.prop === 'Atr' && row.hasSubObjects) {
+        isHidden = !isHidden;
+      }
+      return isHidden;
+    };
+
+    const arePropertiesHidden = (row: ErwinRow): boolean => {
+      const isParentToggled = toggledPropsSet.has(row.id!);
+      const isVisible = globalShowProps ? !isParentToggled : isParentToggled;
+      return !isVisible;
+    };
+
     return html`
       <table class="table table-condensed table-hover table-container">
           <thead>
@@ -167,6 +188,27 @@ export class AppTable extends LitElement {
                       </div>
                       <span class="type-text">${row.type}</span>
                       ${this._renderAttributeCounter(row)}
+
+                      <div class="row-indicators">
+                        ${
+                          row.hasProperties
+                            ? html`
+                          <span class="icon-indicator prop-indicator ${!arePropertiesHidden(row) ? 'expanded' : ''}">
+                            ${icons['chevron-down']}
+                          </span>
+                        `
+                            : ''
+                        }
+                        ${
+                          row.hasSubObjects
+                            ? html`
+                          <span class="icon-indicator sub-indicator">
+                            ${areSubObjectsHidden(row) ? icons['schema-off'] : icons.schema}
+                          </span>
+                        `
+                            : ''
+                        }
+                      </div>
                     </div>
                   </td>
                   <td class="row-left">
@@ -245,7 +287,7 @@ export class AppTable extends LitElement {
 
     const getLen = (val: string) => {
       let clean = val.trim();
-      
+
       // 1. Remove [Calculated] and (FK) suffixes
       clean = clean.replace(/\s*\[Calculated\]$/, '');
       clean = clean.replace(/\s*\(FK\)$/, '');

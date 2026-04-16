@@ -117,6 +117,43 @@ tr[data-udp="true"] {
   min-height: 24px;
 }
 
+.row-indicators {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding-right: 4px;
+}
+
+.icon-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.icon-indicator svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.5;
+}
+
+.prop-indicator {
+  transform: rotate(-90deg);
+}
+
+.prop-indicator.expanded {
+  transform: rotate(0deg);
+  opacity: 1;
+}
+
+.sub-indicator path:nth-child(9) {
+  color: var(--btn-danger-bg);
+}
+
 .clickable-row {
   cursor: pointer;
   user-select: none;

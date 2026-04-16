@@ -17,6 +17,8 @@ export interface ErwinRow {
   leftModel: string;
   rightModel: string;
   attributeCount?: number;
+  hasProperties?: boolean;
+  hasSubObjects?: boolean;
 }
 
 export interface StatsSummary {
@@ -205,10 +207,12 @@ export const enrichedData$ = computed(rawData$, data => {
 
     if (row.isHeader && !row.isGrouping) {
       const childrenIds = childrenMap.get(row.id) || [];
-      const nonGroupingChildren = childrenIds.filter(cid => {
-        const child = hoisted.find(r => r.id === cid);
-        return !child?.isGrouping;
-      });
+      const children = childrenIds.map(cid => hoisted.find(r => r.id === cid));
+
+      row.hasProperties = children.some(c => !c?.isHeader);
+      row.hasSubObjects = children.some(c => c?.isHeader && !c?.isGrouping);
+
+      const nonGroupingChildren = children.filter(child => !child?.isGrouping);
 
       if (nonGroupingChildren.length > 0) {
         // A header is calculated if all its non-grouping children are calculated
