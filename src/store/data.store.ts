@@ -123,6 +123,7 @@ export const enrichedData$ = computed(rawData$, data => {
       h => h.object === cleanedType && h.indentation.includes(row.rawIndent),
     );
     const isHeader = isGrouping || !!headerMatch;
+    const isHeaderHidden = headerMatch?.hide || false;
 
     const type = row.type;
     const originalType = type;
@@ -143,6 +144,7 @@ export const enrichedData$ = computed(rawData$, data => {
       id: `row-${index}`,
       isHeader,
       isGrouping,
+      isHeaderHidden,
       view,
       prop: headerMatch?.prop || '',
       // A property is calculated if it's exactly the same AND ends with [Calculated] both sides
@@ -152,7 +154,7 @@ export const enrichedData$ = computed(rawData$, data => {
     };
   });
 
-  const headerStack: { id: string; indent: number; isGrouping: boolean }[] = [];
+  const headerStack: { id: string; indent: number; isGrouping: boolean; isHidden: boolean }[] = [];
   const withParents = withInitialState.map(row => {
     while (headerStack.length > 0 && headerStack[headerStack.length - 1].indent >= row.indent) {
       headerStack.pop();
@@ -160,18 +162,26 @@ export const enrichedData$ = computed(rawData$, data => {
 
     // Find the nearest non-grouping parent
     let parentId = '';
+    let isUnderHiddenHeader = row.isHeaderHidden || false;
     for (let i = headerStack.length - 1; i >= 0; i--) {
-      if (!headerStack[i].isGrouping) {
+      if (!headerStack[i].isGrouping && !parentId) {
         parentId = headerStack[i].id;
-        break;
+      }
+      if (headerStack[i].isHidden) {
+        isUnderHiddenHeader = true;
       }
     }
 
     if (row.isHeader) {
-      headerStack.push({ id: row.id, indent: row.indent, isGrouping: row.isGrouping || false });
+      headerStack.push({
+        id: row.id,
+        indent: row.indent,
+        isGrouping: row.isGrouping || false,
+        isHidden: row.isHeaderHidden || false,
+      });
     }
 
-    return { ...row, parentId };
+    return { ...row, parentId, isUnderHiddenHeader };
   });
 
   // 2. Hoisting (Bottom-Up)
@@ -265,7 +275,7 @@ export const enrichedData$ = computed(rawData$, data => {
     }
   }
 
-  // 3. Final polish: Prop code propagation and Filter out grouping rows
+  // 3. Final polish: Prop code propagation and Filter out grouping, empty and hidden rows
   let currentPropCode = 'O';
   const result = hoisted
     .map(row => {
@@ -274,7 +284,14 @@ export const enrichedData$ = computed(rawData$, data => {
       }
       return { ...row, prop: row.isHeader ? row.prop : currentPropCode };
     })
-    .filter(row => !row.isGrouping);
+    .filter(row => {
+      const isGrouping = row.isGrouping;
+      const isEmpty = !row.leftModel.trim() && !row.rightModel.trim();
+      const isHidden = row.isUnderHiddenHeader;
+
+      // Keep row if: Not grouping AND Not empty AND Not part of a hidden header family
+      return !isGrouping && !isEmpty && !isHidden;
+    });
 
   return result;
 });
