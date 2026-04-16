@@ -1,6 +1,12 @@
 import { get } from 'lit-translate';
 import { parseErwinHtml } from './parser/html-parser';
-import { fileName$, initializeVisibility, isUserscript$, rawData$ } from './store/data.store';
+import {
+  fileName$,
+  initializeVisibility,
+  isLoading$,
+  isUserscript$,
+  rawData$,
+} from './store/data.store';
 import { initI18n } from './store/i18n.store';
 
 declare global {
@@ -41,13 +47,18 @@ initI18n().then(() => {
 
     document.title = newTitle;
     fileName$.set(newTitle);
+    isLoading$.set(true);
 
-    // Process content immediately
-    const rows = parseErwinHtml(originalHTML);
-    rawData$.set(rows);
-    initializeVisibility();
-
+    // Inject App Root immediately to show loading spinner
     document.body.innerHTML = '<app-root></app-root>';
+
+    // Use setTimeout to allow initial render of app-root (spinner) before blocking thread for parsing
+    setTimeout(() => {
+      const rows = parseErwinHtml(originalHTML);
+      rawData$.set(rows);
+      initializeVisibility();
+      isLoading$.set(false);
+    }, 100);
   }
 
   import('./main');
