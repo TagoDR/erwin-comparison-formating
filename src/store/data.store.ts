@@ -285,15 +285,40 @@ export const enrichedData$ = computed(rawData$, data => {
  * Filtered data based on search, type and change filters.
  */
 export const filteredData$ = computed(
-  [enrichedData$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$],
-  (data, change, name, onlyEntities, onlyEntitiesAndAttributes) => {
+  [
+    enrichedData$,
+    filterChange$,
+    filterName$,
+    onlyEntities$,
+    onlyEntitiesAndAttributes$,
+    showProperties$,
+  ],
+  (data, change, name, onlyEntities, onlyEntitiesAndAttributes, showProperties) => {
     let result = data;
 
     // 1. Entity Filters
-    if (onlyEntities) {
-      result = result.filter(r => r.isHeader && r.prop === 'Ent');
-    } else if (onlyEntitiesAndAttributes) {
-      result = result.filter(r => r.isHeader && (r.prop === 'Ent' || r.prop === 'Atr'));
+    if (onlyEntities || onlyEntitiesAndAttributes) {
+      result = result.filter(r => {
+        const isTargetHeader = onlyEntities
+          ? r.isHeader && r.prop === 'Ent'
+          : r.isHeader && (r.prop === 'Ent' || r.prop === 'Atr');
+
+        // If it's a target header, keep it
+        if (isTargetHeader) return true;
+
+        // If showProperties is ON, keep properties belonging to visible target headers
+        if (showProperties && !r.isHeader && r.parentId) {
+          const parent = data.find(p => p.id === r.parentId);
+          if (parent) {
+            const isParentVisible = onlyEntities
+              ? parent.prop === 'Ent'
+              : parent.prop === 'Ent' || parent.prop === 'Atr';
+            return isParentVisible;
+          }
+        }
+
+        return false;
+      });
     }
 
     // 2. Change Filter (Rule 1: observe at table level only)
