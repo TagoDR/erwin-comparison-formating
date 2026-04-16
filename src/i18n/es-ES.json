@@ -25,7 +25,10 @@
     "actions": {
       "copy_tables": "COPIAR TABLAS",
       "show_props": "MOSTRAR PROPIEDADES",
-      "hide_props": "OCULTAR PROPIEDADES"
+      "hide_props": "OCULTAR PROPIEDADES",
+      "hide_calculated": "OCULTAR CALCULADOS",
+      "only_entities": "SOLO ENTIDADES",
+      "only_ent_atr": "SOLO ENT+ATR"
     },
     "messages": {
       "copied": "¡Lista de nombres de tablas copiada al portapapeles!",

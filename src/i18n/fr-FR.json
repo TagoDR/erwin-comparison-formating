@@ -25,7 +25,10 @@
     "actions": {
       "copy_tables": "COPIER LES TABLES",
       "show_props": "AFFICHER LES PROPRIÉTÉS",
-      "hide_props": "MASQUER LES PROPRIÉTÉS"
+      "hide_props": "MASQUER LES PROPRIÉTÉS",
+      "hide_calculated": "MASQUER LES CALCULÉS",
+      "only_entities": "UNIQUEMENT ENTITÉS",
+      "only_ent_atr": "UNIQUEMENT ENT+ATR"
     },
     "messages": {
       "copied": "Liste des noms de tables copiée dans le presse-papiers !",

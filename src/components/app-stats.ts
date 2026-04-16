@@ -117,7 +117,7 @@ export class AppStats extends LitElement {
                     <input type="checkbox" .checked=${this.hideCalc.value} @change=${(e: any) => hideCalculated$.set(e.target.checked)}>
                     <span class="slider round"></span>
                   </div>
-                  <span>HIDE CALCULATED</span>
+                  <span>${translate('stats.actions.hide_calculated')}</span>
                 </label>
               </div>
 
@@ -130,7 +130,7 @@ export class AppStats extends LitElement {
                     }}>
                     <span class="slider round"></span>
                   </div>
-                  <span>ONLY ENTITIES</span>
+                  <span>${translate('stats.actions.only_entities')}</span>
                 </label>
 
                 <label class="switch-label">
@@ -141,7 +141,7 @@ export class AppStats extends LitElement {
                     }}>
                     <span class="slider round"></span>
                   </div>
-                  <span>ONLY ENT+ATR</span>
+                  <span>${translate('stats.actions.only_ent_atr')}</span>
                 </label>
               </div>
             </div>

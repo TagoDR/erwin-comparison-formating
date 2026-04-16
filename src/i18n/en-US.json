@@ -25,7 +25,10 @@
     "actions": {
       "copy_tables": "COPY TABLES",
       "show_props": "SHOW PROPERTIES",
-      "hide_props": "HIDE PROPERTIES"
+      "hide_props": "HIDE PROPERTIES",
+      "hide_calculated": "HIDE CALCULATED",
+      "only_entities": "ONLY ENTITIES",
+      "only_ent_atr": "ONLY ENT+ATR"
     },
     "messages": {
       "copied": "Table name list copied to clipboard!",

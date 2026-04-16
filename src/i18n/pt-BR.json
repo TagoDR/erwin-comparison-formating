@@ -25,7 +25,10 @@
     "actions": {
       "copy_tables": "COPIAR TABELAS",
       "show_props": "MOSTRAR PROPRIEDADES",
-      "hide_props": "ESCONDER PROPRIEDADES"
+      "hide_props": "ESCONDER PROPRIEDADES",
+      "hide_calculated": "ESCONDER CALCULADOS",
+      "only_entities": "SOMENTE ENTIDADES",
+      "only_ent_atr": "SOMENTE ENT+ATR"
     },
     "messages": {
       "copied": "Lista de tabelas copiada para a área de transferência!",
