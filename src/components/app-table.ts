@@ -237,14 +237,25 @@ export class AppTable extends LitElement {
   }
 
   private _renderLenCounter(row: ErwinRow, value: string) {
-    const isNameProp = row.type.toLowerCase().includes('name');
+    const isPhysicalName = row.type === 'Physical Name';
     const isIdentificationRow =
       row.isHeader && !row.isGrouping && (row.prop === 'Ent' || row.prop === 'Atr');
 
-    if (!(isNameProp || isIdentificationRow) || !value) return '';
+    if (!(isPhysicalName || isIdentificationRow) || !value) return '';
 
     const getLen = (val: string) => {
-      const clean = val.includes(':') ? val.split(':')[1].trim() : val.trim();
+      let clean = val.trim();
+      
+      // 1. Remove [Calculated] and (FK) suffixes
+      clean = clean.replace(/\s*\[Calculated\]$/, '');
+      clean = clean.replace(/\s*\(FK\)$/, '');
+
+      // 2. Remove owner prefix (text before the last period)
+      if (clean.includes('.')) {
+        const parts = clean.split('.');
+        clean = parts[parts.length - 1];
+      }
+
       return clean.length;
     };
 
