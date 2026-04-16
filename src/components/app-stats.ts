@@ -7,6 +7,8 @@ import {
   enrichedData$,
   filterChange$,
   filterName$,
+  onlyEntities$,
+  onlyEntitiesAndAttributes$,
   showProperties$,
   statsSummary$,
   toggleFlip,
@@ -20,6 +22,8 @@ export class AppStats extends LitElement {
   private stats = new StoreController(this, statsSummary$);
   private nameFilter = new StoreController(this, filterName$);
   private showProps = new StoreController(this, showProperties$);
+  private onlyEnt = new StoreController(this, onlyEntities$);
+  private onlyEntAtr = new StoreController(this, onlyEntitiesAndAttributes$);
 
   @state() private isCopying = false;
 
@@ -64,6 +68,10 @@ export class AppStats extends LitElement {
                 )}
               </tbody>
             </table>
+            <button class="btn btn-primary btn-xs copy-side-btn" @click=${this._copyTablesToClipboard} title="${translate('stats.actions.copy_tables')}">
+               ${this.isCopying ? icons.check : icons['clipboard-list']} 
+               <span>${this.isCopying ? translate('stats.messages.copied') : translate('stats.actions.copy_tables')}</span>
+            </button>
           </div>
 
           <div class="filter-panel">
@@ -91,18 +99,41 @@ export class AppStats extends LitElement {
                 <option value="E">${translate('changes.deletion')}</option>
               </select>
             </div>
-          </div>
-        </div>
 
-        <div class="action-panel">
-          <button type="button" class="btn btn-primary btn-block action-btn" @click=${this._copyTablesToClipboard}>
-            ${this.isCopying ? icons.check : icons['clipboard-list']} 
-            <span>${this.isCopying ? translate('stats.messages.copied') : translate('stats.actions.copy_tables')}</span>
-          </button>
-          <button type="button" class="btn btn-default btn-block action-btn" @click=${togglePropertiesGlobal}>
-            ${this.showProps.value ? icons['filter-off'] : icons.filter} 
-            <span>${this.showProps.value ? translate('stats.actions.hide_props') : translate('stats.actions.show_props')}</span>
-          </button>
+            <div class="filter-switches">
+              <label class="switch-label main-switch">
+                <div class="switch">
+                  <input type="checkbox" .checked=${this.showProps.value} @change=${togglePropertiesGlobal}>
+                  <span class="slider round"></span>
+                </div>
+                <span>${translate('stats.actions.show_props')}</span>
+              </label>
+
+              <div class="stacked-switches">
+                <label class="switch-label">
+                  <div class="switch">
+                    <input type="checkbox" .checked=${this.onlyEnt.value} @change=${(e: any) => {
+                      onlyEntities$.set(e.target.checked);
+                      if (e.target.checked) onlyEntitiesAndAttributes$.set(false);
+                    }}>
+                    <span class="slider round"></span>
+                  </div>
+                  <span>ONLY ENTITIES</span>
+                </label>
+
+                <label class="switch-label">
+                  <div class="switch">
+                    <input type="checkbox" .checked=${this.onlyEntAtr.value} @change=${(e: any) => {
+                      onlyEntitiesAndAttributes$.set(e.target.checked);
+                      if (e.target.checked) onlyEntities$.set(false);
+                    }}>
+                    <span class="slider round"></span>
+                  </div>
+                  <span>ONLY ENT+ATR</span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `;
