@@ -53,7 +53,6 @@ export const isFlipped$ = atom<boolean>(false);
 
 // Useless rows must be removed/ignored/hidden
 const GROUPING_KEYWORDS = [
-  // 'model',
   'Annotations',
   'Attribute Storage Objects',
   'Attributes',
@@ -114,196 +113,158 @@ export const HEADERS_CONFIG = [
 
 /**
  * Computed store that process raw rows to add recursive parenting, status hoisting and filtering.
+ * Optimized for performance with large data sets (50MB+).
  */
 export const enrichedData$ = computed(rawData$, data => {
-  // 1. Assign IDs and Parentage based on indentation
-  const withInitialState = data.map((row, index) => {
-    // Clean type for matching and headers: remove name if present (e.g. "Entity/Table: CLI" -> "Entity/Table")
+  const rowCount = data.length;
+  if (rowCount === 0) return [];
+
+  const rowsById = new Map<string, ErwinRow>();
+  const childrenMap = new Map<string, string[]>();
+
+  // 1. Initial Pass: ID assignment, Classification, and Parentage (Top-Down)
+  const headerStack: { id: string; indent: number; isGrouping: boolean; isHidden: boolean }[] = [];
+
+  const processed = data.map((row, index) => {
     const cleanedType = row.type.trim();
     const isGrouping = GROUPING_KEYWORDS.some(kw => cleanedType === kw);
-
     const headerMatch = HEADERS_CONFIG.find(
       h => h.object === cleanedType && h.indentation.includes(row.rawIndent),
     );
-    const isHeader = isGrouping || !!headerMatch;
-    const isHeaderHidden = headerMatch?.hide || false;
 
-    const type = row.type;
-    const originalType = type;
-
-    // Initial View Classification based on keywords
-    let view = row.view;
-    if (!view) {
-      if (type === 'Entity/Table') view = 'L/P';
-      else if (type === 'Attribute/Column') view = 'L/P';
-      else if (type === 'Entity' || type === 'Attribute') view = 'L';
-      else if (type === 'Table' || type === 'Column') view = 'P';
-    }
-
-    return {
+    const enriched: any = {
       ...row,
-      type,
-      originalType,
       id: `row-${index}`,
-      isHeader,
+      isHeader: isGrouping || !!headerMatch,
       isGrouping,
-      isHeaderHidden,
-      view,
+      isHeaderHidden: headerMatch?.hide || false,
       prop: headerMatch?.prop || '',
-      // A property is calculated if it's exactly the same AND ends with [Calculated] both sides
       isCalculated:
         row.leftModel === row.rightModel ||
         (row.leftModel.endsWith('[Calculated]') && row.rightModel.endsWith('[Calculated]')),
     };
-  });
 
-  const headerStack: { id: string; indent: number; isGrouping: boolean; isHidden: boolean }[] = [];
-  const withParents = withInitialState.map(row => {
-    while (headerStack.length > 0 && headerStack[headerStack.length - 1].indent >= row.indent) {
+    if (!enriched.view) {
+      const type = enriched.type;
+      if (type === 'Entity/Table') enriched.view = 'L/P';
+      else if (type === 'Attribute/Column') enriched.view = 'L/P';
+      else if (type === 'Entity' || type === 'Attribute') enriched.view = 'L';
+      else if (type === 'Table' || type === 'Column') enriched.view = 'P';
+    }
+
+    // Stack management for parentId
+    while (
+      headerStack.length > 0 &&
+      headerStack[headerStack.length - 1].indent >= enriched.indent
+    ) {
       headerStack.pop();
     }
 
-    // Find the nearest non-grouping parent
     let parentId = '';
-    let isUnderHiddenHeader = row.isHeaderHidden || false;
-    for (let i = headerStack.length - 1; i >= 0; i--) {
-      if (!headerStack[i].isGrouping && !parentId) {
-        parentId = headerStack[i].id;
-      }
-      if (headerStack[i].isHidden) {
-        isUnderHiddenHeader = true;
-      }
+    let isUnderHiddenHeader = enriched.isHeaderHidden || false;
+
+    for (let j = headerStack.length - 1; j >= 0; j--) {
+      const stackItem = headerStack[j];
+      if (!stackItem.isGrouping && !parentId) parentId = stackItem.id;
+      if (stackItem.isHidden) isUnderHiddenHeader = true;
     }
 
-    if (row.isHeader) {
+    enriched.parentId = parentId;
+    enriched.isUnderHiddenHeader = isUnderHiddenHeader;
+
+    if (parentId) {
+      const list = childrenMap.get(parentId) || [];
+      list.push(enriched.id);
+      childrenMap.set(parentId, list);
+    }
+
+    if (enriched.isHeader) {
       headerStack.push({
-        id: row.id,
-        indent: row.indent,
-        isGrouping: row.isGrouping || false,
-        isHidden: row.isHeaderHidden || false,
+        id: enriched.id,
+        indent: enriched.indent,
+        isGrouping: enriched.isGrouping || false,
+        isHidden: enriched.isHeaderHidden || false,
       });
     }
 
-    return { ...row, parentId, isUnderHiddenHeader };
+    rowsById.set(enriched.id, enriched);
+    return enriched;
   });
 
-  // 2. Hoisting (Bottom-Up)
-  // We hoist View classification and also determine if a Header is "fully calculated"
-  // A header is fully calculated if ALL its descendants (properties and sub-headers) are calculated.
-  const hoisted = [...withParents];
-
-  // Track children for each header to verify "all descendants" rule
-  const childrenMap = new Map<string, string[]>();
-  hoisted.forEach(r => {
-    if (r.parentId) {
-      const list = childrenMap.get(r.parentId) || [];
-      list.push(r.id);
-      childrenMap.set(r.parentId, list);
-    }
-  });
-
-  for (let i = hoisted.length - 1; i >= 0; i--) {
-    const row = hoisted[i];
+  // 2. Status Hoisting (Bottom-Up)
+  for (let i = rowCount - 1; i >= 0; i--) {
+    const row = processed[i];
 
     if (row.isHeader && !row.isGrouping) {
-      const childrenIds = childrenMap.get(row.id) || [];
-      const children = childrenIds.map(cid => hoisted.find(r => r.id === cid));
+      const childrenIds = childrenMap.get(row.id!) || [];
+      if (childrenIds.length > 0) {
+        let allCalculated = true;
+        let hasProps = false;
+        let hasSubs = false;
+        let attrCount = 0;
 
-      row.hasProperties = children.some(c => !c?.isHeader);
-      row.hasSubObjects = children.some(c => c?.isHeader && !c?.isGrouping);
+        for (const cid of childrenIds) {
+          const child = rowsById.get(cid);
+          if (!child || child.isGrouping) continue;
 
-      const nonGroupingChildren = children.filter(child => !child?.isGrouping);
+          if (!child.isCalculated) allCalculated = false;
+          if (!child.isHeader) hasProps = true;
+          if (child.isHeader) hasSubs = true;
 
-      if (nonGroupingChildren.length > 0) {
-        // A header is calculated if all its non-grouping children are calculated
-        row.isCalculated = nonGroupingChildren.every(cid => {
-          const child = hoisted.find(r => r.id === cid);
-          return child?.isCalculated;
-        });
-      }
-
-      // Attribute Counting Logic for Entities/Tables
-      const isEntity = row.type === 'Entity/Table' || row.type === 'Entity' || row.type === 'Table';
-      if (isEntity) {
-        let leftMaxOrder = 0;
-        let rightMaxOrder = 0;
-
-        // Method A: Check for Order properties
-        const orderRows = hoisted.filter(
-          c =>
-            c.parentId === row.id &&
-            (c.type === 'Column Order List' || c.type === 'Attribute Order List'),
-        );
-
-        const getCommaCount = (val: string) => {
-          if (!val || val.trim() === '') return 0;
-          return val.split(',').length;
-        };
-
-        orderRows.forEach(or => {
-          leftMaxOrder = Math.max(leftMaxOrder, getCommaCount(or.leftModel));
-          rightMaxOrder = Math.max(rightMaxOrder, getCommaCount(or.rightModel));
-        });
-
-        // Method B: Manual count of Attribute/Column rows under this Entity
-        const childAttributes = childrenIds
-          .map(cid => hoisted.find(r => r.id === cid))
-          .filter(
-            r =>
-              r?.isHeader &&
-              !r.isGrouping &&
-              (r.type === 'Attribute/Column' || r.type === 'Attribute' || r.type === 'Column'),
-          );
-
-        const totalManualCount = childAttributes.length;
-
-        const finalCount = Math.max(leftMaxOrder, rightMaxOrder, totalManualCount);
-        if (finalCount > 0) {
-          row.attributeCount = finalCount;
+          if (
+            child.isHeader &&
+            (child.type === 'Attribute/Column' ||
+              child.type === 'Attribute' ||
+              child.type === 'Column')
+          ) {
+            attrCount++;
+          }
         }
+        row.isCalculated = allCalculated;
+        row.hasProperties = hasProps;
+        row.hasSubObjects = hasSubs;
+
+        if (
+          (row.type === 'Entity/Table' || row.type === 'Entity' || row.type === 'Table') &&
+          attrCount === 0
+        ) {
+          for (const cid of childrenIds) {
+            const child = rowsById.get(cid);
+            if (child?.type === 'Column Order List' || child?.type === 'Attribute Order List') {
+              const count = Math.max(
+                child.leftModel ? child.leftModel.split(',').length : 0,
+                child.rightModel ? child.rightModel.split(',').length : 0,
+              );
+              attrCount = Math.max(attrCount, count);
+            }
+          }
+        }
+        if (attrCount > 0) row.attributeCount = attrCount;
       }
     }
 
-    // Properties that are not headers contribute to parent view classification
-    if (row.parentId) {
-      const parentIndex = hoisted.findIndex(p => p.id === row.parentId);
-      if (parentIndex !== -1) {
-        const parent = hoisted[parentIndex];
-
-        // Hoist View classification
-        if (row.type === 'Logical Only' && row.leftModel === 'true') {
-          parent.view = 'L';
-        } else if (row.type === 'Physical Only' && row.leftModel === 'true') {
-          parent.view = 'P';
-        }
+    if (row.parentId && !row.isHeader) {
+      const parent = rowsById.get(row.parentId);
+      if (parent) {
+        if (row.type === 'Logical Only' && row.leftModel === 'true') parent.view = 'L';
+        else if (row.type === 'Physical Only' && row.leftModel === 'true') parent.view = 'P';
       }
     }
   }
 
-  // 3. Final polish: Prop code propagation and Filter out grouping, empty and hidden rows
+  // 3. Final polish and filter
   let currentPropCode = 'O';
-  const result = hoisted
+  return processed
     .map(row => {
-      if (row.isHeader && row.prop) {
-        currentPropCode = row.prop;
-      }
+      if (row.isHeader && row.prop) currentPropCode = row.prop;
       return { ...row, prop: row.isHeader ? row.prop : currentPropCode };
     })
     .filter(row => {
-      const isGrouping = row.isGrouping;
       const isEmpty = !row.leftModel.trim() && !row.rightModel.trim();
-      const isHidden = row.isUnderHiddenHeader;
-
-      // Keep row if: Not grouping AND Not empty AND Not part of a hidden header family
-      return !isGrouping && !isEmpty && !isHidden;
+      return !row.isGrouping && !isEmpty && !(row as any).isUnderHiddenHeader;
     });
-
-  return result;
 });
 
-/**
- * Filtered data based on search, type and change filters.
- */
 export const filteredData$ = computed(
   [
     enrichedData$,
@@ -323,151 +284,143 @@ export const filteredData$ = computed(
     _showProperties,
     hideCalculated,
   ) => {
+    const rowCount = data.length;
+    if (rowCount === 0) return [];
+
+    const rowsById = new Map<string, ErwinRow>();
+    const childrenMap = new Map<string, string[]>();
+    for (const r of data) {
+      rowsById.set(r.id!, r);
+      if (r.parentId) {
+        const list = childrenMap.get(r.parentId) || [];
+        list.push(r.id!);
+        childrenMap.set(r.parentId, list);
+      }
+    }
+
     let result = data;
 
     // 1. Strong Filter: Hide Calculated
     if (hideCalculated) {
-      const calculatedIds = new Set<string>();
       const familyOfCalculatedIds = new Set<string>();
 
-      // Identify root calculated objects
-      data.forEach(r => {
-        if (r.isCalculated) calculatedIds.add(r.id);
-      });
-
-      // Build family to remove (calculates + all descendants)
-      data.forEach(r => {
-        const isDescendant = Array.from(calculatedIds).some(cid => {
-          let curr = r;
-          while (curr.parentId) {
-            if (curr.parentId === cid) return true;
-            curr = data.find(p => p.id === curr.parentId) || ({} as any);
-          }
-          return false;
-        });
-
-        if (calculatedIds.has(r.id) || isDescendant) {
-          familyOfCalculatedIds.add(r.id);
+      const addFamily = (id: string) => {
+        if (familyOfCalculatedIds.has(id)) return;
+        familyOfCalculatedIds.add(id);
+        const children = childrenMap.get(id);
+        if (children) {
+          for (const cid of children) addFamily(cid);
         }
-      });
+      };
 
-      result = result.filter(r => !familyOfCalculatedIds.has(r.id));
+      for (const r of data) {
+        if (r.isCalculated) addFamily(r.id!);
+      }
+      result = result.filter(r => !familyOfCalculatedIds.has(r.id!));
     }
 
-    // 2. Entity Filters
+    // 2. Entity Filters (Drill-down mode)
     if (onlyEntities || onlyEntitiesAndAttributes) {
-      const targetIds = new Set<string>();
       const familyIds = new Set<string>();
 
-      // A. Identify Target Headers (Entities or Entities + Attributes)
-      data.forEach(r => {
+      const addWithAncestors = (id: string) => {
+        let currId: string | undefined = id;
+        while (currId) {
+          if (familyIds.has(currId)) break;
+          familyIds.add(currId);
+          currId = rowsById.get(currId)?.parentId;
+        }
+      };
+
+      const addDescendants = (id: string) => {
+        const children = childrenMap.get(id);
+        if (children) {
+          for (const cid of children) {
+            if (!familyIds.has(cid)) {
+              familyIds.add(cid);
+              addDescendants(cid);
+            }
+          }
+        }
+      };
+
+      for (const r of result) {
         const isTarget = onlyEntities
           ? r.isHeader && r.prop === 'Ent'
           : r.isHeader && (r.prop === 'Ent' || r.prop === 'Atr');
-        if (isTarget) targetIds.add(r.id);
-      });
 
-      // B. Build the "Family": Ancestors and Descendants of Targets
-      data.forEach(r => {
-        // 1. Keep if it's an ancestor of a target
-        const isAncestor = Array.from(targetIds).some(tid => {
-          let curr = data.find(p => p.id === tid);
-          while (curr?.parentId) {
-            if (curr.parentId === r.id) return true;
-            curr = data.find(p => p.id === curr?.parentId);
-          }
-          return false;
-        });
-
-        // 2. Keep if it's a descendant of a target (including properties)
-        const isDescendant = Array.from(targetIds).some(tid => {
-          let curr = r;
-          while (curr.parentId) {
-            if (curr.parentId === tid) return true;
-            curr = data.find(p => p.id === curr.parentId) || ({} as any);
-          }
-          return false;
-        });
-
-        if (targetIds.has(r.id) || isAncestor || isDescendant) {
-          familyIds.add(r.id);
+        if (isTarget) {
+          addWithAncestors(r.id!);
+          addDescendants(r.id!);
         }
-      });
-
-      result = result.filter(r => familyIds.has(r.id));
+      }
+      result = result.filter(r => familyIds.has(r.id!));
     }
 
-    // 2. Change Filter (Rule 1: observe at table level only)
+    // 3. Change Filter
     if (change) {
       const matches = new Set<string>();
-      const searchData = onlyEntities || onlyEntitiesAndAttributes ? result : data;
 
-      searchData.forEach(r => {
-        // Only apply filter to entities (prop === 'Ent')
-        if (r.isHeader && r.prop === 'Ent' && r.change === change) {
-          // Show header and all its descendants
-          const addWithDescendants = (id: string) => {
-            matches.add(id);
-            data.forEach(child => {
-              if (child.parentId === id) addWithDescendants(child.id);
-            });
-          };
-          addWithDescendants(r.id);
+      const addDescendants = (id: string) => {
+        matches.add(id);
+        const children = childrenMap.get(id);
+        if (children) {
+          for (const cid of children) addDescendants(cid);
         }
-      });
+      };
 
-      result = result.filter(r => matches.has(r.id));
+      for (const r of result) {
+        if (r.isHeader && r.prop === 'Ent' && r.change === change) {
+          addDescendants(r.id!);
+        }
+      }
+      result = result.filter(r => matches.has(r.id!));
     }
 
-    // 3. Name Filter (Rule 3)
+    // 4. Name Filter
     if (name) {
       const search = name.toLowerCase();
       const hits = new Set<string>();
-      const searchData = onlyEntities || onlyEntitiesAndAttributes ? result : data;
 
-      searchData.forEach(r => {
+      for (const r of result) {
         const typeMatch = (r.originalType || r.type).toLowerCase().includes(search);
         const leftMatch = r.leftModel.toLowerCase().includes(search);
         const rightMatch = r.rightModel.toLowerCase().includes(search);
 
-        // Match on identifier line (header) or Name/Physical Name properties
         if (r.isHeader && (typeMatch || leftMatch || rightMatch)) {
-          hits.add(r.id);
+          hits.add(r.id!);
         } else if ((r.type === 'Name' || r.type === 'Physical Name') && (leftMatch || rightMatch)) {
-          hits.add(r.id);
+          hits.add(r.id!);
         }
-      });
+      }
 
-      // Expanded results: full object (header + descendants) + all ancestors
       const finalIds = new Set<string>();
-
-      const addWithDescendants = (id: string) => {
+      const addDescendants = (id: string) => {
         if (finalIds.has(id)) return;
         finalIds.add(id);
-        data.forEach(r => {
-          if (r.parentId === id) addWithDescendants(r.id);
-        });
+        const children = childrenMap.get(id);
+        if (children) {
+          for (const cid of children) addDescendants(cid);
+        }
       };
 
       const addAncestors = (id: string) => {
-        let curr = data.find(r => r.id === id);
-        while (curr?.parentId) {
-          finalIds.add(curr.parentId);
-          curr = data.find(r => r.id === curr?.parentId);
+        let currId: string | undefined = id;
+        while (currId) {
+          if (finalIds.has(currId)) break;
+          finalIds.add(currId);
+          currId = rowsById.get(currId)?.parentId;
         }
       };
 
-      hits.forEach(id => {
-        const row = data.find(r => r.id === id);
-        if (!row) return;
-
-        // If it's a property (like Name), start from its parent header
+      for (const id of hits) {
+        const row = rowsById.get(id);
+        if (!row) continue;
         const objectId = !row.isHeader && row.parentId ? row.parentId : id;
-        addWithDescendants(objectId);
+        addDescendants(objectId);
         addAncestors(objectId);
-      });
-
-      result = result.filter(r => finalIds.has(r.id));
+      }
+      result = result.filter(r => finalIds.has(r.id!));
     }
 
     return result;
@@ -478,7 +431,6 @@ export const filteredData$ = computed(
 export const togglePropertiesGlobal = () => {
   const nextValue = !showProperties$.get();
   showProperties$.set(nextValue);
-  // Reset individual toggles when global toggle is used
   toggledPropertiesIds$.set(new Set());
 };
 
@@ -502,26 +454,18 @@ export const toggleCheck = (id: string) => {
 
   if (willBeChecked) {
     currentChecked.add(id);
-    // When checking, ensure its sub-objects are hidden
     const currentHiddenSubs = new Set(hiddenSubObjectsIds$.get());
     currentHiddenSubs.add(id);
     hiddenSubObjectsIds$.set(currentHiddenSubs);
 
-    // For properties, we want them hidden.
-    // If global showProperties is true, we must add to toggled set to hide it.
-    // If global showProperties is false, we must remove from toggled set to hide it.
     const globalShow = showProperties$.get();
     const currentToggled = new Set(toggledPropertiesIds$.get());
-    if (globalShow) {
-      currentToggled.add(id);
-    } else {
-      currentToggled.delete(id);
-    }
+    if (globalShow) currentToggled.add(id);
+    else currentToggled.delete(id);
     toggledPropertiesIds$.set(currentToggled);
   } else {
     currentChecked.delete(id);
   }
-
   checkedIds$.set(currentChecked);
 };
 
@@ -536,7 +480,6 @@ export const toggleFlip = () => {
   isFlipped$.set(!isFlipped$.get());
 };
 
-// Computed stats for the stats panel
 export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlipped) => {
   const summary: Record<string, StatsSummary> = {
     Tables: {
@@ -560,7 +503,6 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
 
   data.forEach(row => {
     if (!row.isHeader || row.isGrouping || !row.change) return;
-
     const isTable = row.prop === 'Ent';
     const isColumn = row.prop === 'Atr';
 
@@ -574,13 +516,10 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
           if (change === 'I') change = 'E';
           else if (change === 'E') change = 'I';
         }
-
         if (change === 'I') summary[key].inclusion++;
         if (change === 'A') summary[key].alteration++;
         if (change === 'E') summary[key].exclusion++;
       }
-
-      // Track tables with > 11 attributes
       if (isTable && row.attributeCount && row.attributeCount > 11) {
         summary.Tables.largeTablesCount = (summary.Tables.largeTablesCount || 0) + 1;
       }
@@ -589,11 +528,9 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
     if (isTable) increment('Tables');
     if (isColumn) increment('Columns');
   });
-
   return Object.values(summary);
 });
 
-// Expose to window for debugging
 if (typeof window !== 'undefined') {
   // biome-ignore lint/suspicious/noExplicitAny: Global variable
   (window as any).erwinData = {

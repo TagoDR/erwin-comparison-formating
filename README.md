@@ -6,19 +6,21 @@ A specialized utility to transform raw Erwin Data Modeler HTML difference report
 
 - **Presence-Based Change Detection**: Categorizes changes (I, A, E) strictly by the presence of data on either side.
 - **Advanced Filtering**: 
-  - Toggle all properties visibility with a single switch.
-  - **Only Entities**: Filter view to see only top-level objects.
-  - **Only Ent+Atr**: Focus on Entities and Attributes, hiding all other metadata.
-- **Hierarchy Visualization**: Clear structural guide using middle dots (`·`) for each indentation level (3 spaces per level).
-- **UDP Awareness**: Automatic teal highlighting for **User Defined Properties** (UDP) based on naming patterns and indentation.
+  - **Show Properties**: Toggle all metadata visibility.
+  - **Hide Calculated**: Strong filter (ON by default) to completely remove identical objects.
+  - **Only Entities**: Focus view on top-level objects (supports manual drill-down).
+  - **Only Ent+Atr**: Focus on Entities and Attributes (supports manual drill-down).
+- **High Performance**: Optimized data engine designed to handle large HTML reports (up to 50MB+) with Map-based processing.
+- **Hierarchy Visualization**: 
+  - Structural guide using middle dots (`·`) for indentation levels.
+  - **Interactive Indicators**: Dynamic icons (`chevron`, `schema`) show property and sub-object visibility status.
+- **UDP Awareness**: Automatic teal highlighting for **User Defined Properties** (UDP).
 - **Integrated Actions**:
   - **Flip Side**: Swap Work (Left) and Reference (Right) models globally.
-  - **Batch Copy**: Export the full list of table names with one click from the stats panel.
-- **Robust Encoding Detection**: Automatically handles legacy encodings (like Windows-1252) used in Portuguese Erwin reports.
-- **Character Counter**: Real-time length indicators (Green ≤ 18, Red > 18) for critical name fields.
-- **Multilingual Support**: Fully localized in Portuguese, English, Spanish, and French.
-- **Flat UI Design**: Modernized interface using an Office 2010 palette and high-performance grid.
-- **Offline Ready**: Fully self-contained builds requiring no external dependencies.
+  - **Batch Copy**: Export table name lists with a single click.
+- **Robust Encoding Detection**: Handles legacy encodings (Windows-1252) used in Portuguese Erwin reports.
+- **Smart Character Counter**: Real-time length indicators (Green ≤ 18, Red > 18) for Physical Names, stripping owner prefixes and tags like `[Calculated]` or `(FK)`.
+- **Multilingual Support**: Localized in Portuguese, English, Spanish, and French.
 
 ## Installation and Usage
 
@@ -26,7 +28,7 @@ A specialized utility to transform raw Erwin Data Modeler HTML difference report
 
 The standalone version is a single-file HTML application that works offline.
 
-- **Download:** [Download `Erwin_Complete_Compare_Formatter.html`](./dist/Erwin_Complete_Compare_Formatter.html?raw=1)
+- **Download:** [Download `Erwin_Complete_Compare_Formatter.html`](./dist/Erwin_Complete_Compare_Formatter.html?raw)
 - **Usage:** Open the file and drag your Erwin HTML report onto the interface.
 
 ### 2. Tampermonkey Userscript
@@ -34,8 +36,8 @@ The standalone version is a single-file HTML application that works offline.
 Automatically transforms any Erwin report opened locally.
 
 1.  Install **Tampermonkey** extension.
-2.  Install the script: [Install `erwin_complete_compare_formatter.user.js`](./dist/erwin_complete_compare_formatter.user.js?raw=1)
-3.  Enable **"Allow access to file URLs"** in extension settings to process local files.
+2.  Install the script: [Install `erwin_complete_compare_formatter.user.js`](./dist/erwin_complete_compare_formatter.user.js?raw)
+3.  Enable **"Allow access to file URLs"** in extension settings.
 
 ## Technical Stack
 
