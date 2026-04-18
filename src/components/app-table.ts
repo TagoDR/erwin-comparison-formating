@@ -65,6 +65,11 @@ export class AppTable extends LitElement {
           if (row.isHeader) {
             let isHidden = hiddenSubsSet.has(row.parentId);
 
+            // SPECIAL RULE: Right clicking Model does not hide Entities/Attributes
+            if (isHidden && parent.type === 'Model' && (row.prop === 'Ent' || row.prop === 'Atr')) {
+              isHidden = false;
+            }
+
             // Default Collapse Logic for "Only X" modes
             // If "Only Entities" is on, everything under an Entity is hidden by default
             if (onlyEntities && parent.prop === 'Ent' && row.prop !== 'Ent') {

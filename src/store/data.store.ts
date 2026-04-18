@@ -13,13 +13,13 @@ export interface ErwinRow {
   isHeader?: boolean;
   isGrouping?: boolean;
   isCalculated?: boolean;
+  isUnderHiddenHeader?: boolean;
   isUDP?: boolean;
   leftModel: string;
   rightModel: string;
   attributeCount?: number;
   hasProperties?: boolean;
   hasSubObjects?: boolean;
-  isUnderHiddenHeader?: boolean;
 }
 
 /** Internal type used during data enrichment to ensure ID presence */
@@ -364,7 +364,8 @@ export const filteredData$ = computed(
           addDescendants(r.id);
         }
       }
-      result = result.filter(r => r.id && familyIds.has(r.id));
+      // Filter out 'Model' node when onlyEntities is active, as requested.
+      result = result.filter(r => r.id && familyIds.has(r.id) && r.type !== 'Model');
     }
 
     // 3. Change Filter
