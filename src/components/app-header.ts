@@ -3,7 +3,7 @@ import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
 import icons from '../icons';
-import { fileName$, filterName$, isUserscript$, rawData$ } from '../store/data.store.js';
+import { fileName$, filterName$, isUserscript$, modelData$ } from '../store/data.store.js';
 import { changeLanguage, language$ } from '../store/i18n.store.js';
 import { theme$, toggleTheme } from '../store/theme.store.js';
 import headerStyles from './app-header.css?inline';
@@ -129,7 +129,7 @@ export class AppHeader extends LitElement {
    */
   private _closeFile() {
     fileName$.set(null);
-    rawData$.set([]);
+    modelData$.set(null);
     filterName$.set('');
   }
 

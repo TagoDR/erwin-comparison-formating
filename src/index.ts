@@ -5,7 +5,7 @@ import {
   initializeVisibility,
   isLoading$,
   isUserscript$,
-  rawData$,
+  modelData$,
 } from './store/data.store.js';
 import { initI18n } from './store/i18n.store.js';
 
@@ -63,8 +63,8 @@ initI18n().then(() => {
 
     // Use setTimeout to allow initial render of app-root (spinner) before blocking thread for parsing
     setTimeout(() => {
-      const rows = parseErwinHtml(originalHTML);
-      rawData$.set(rows);
+      const model = parseErwinHtml(originalHTML);
+      modelData$.set(model);
       initializeVisibility();
       isLoading$.set(false);
     }, 100);

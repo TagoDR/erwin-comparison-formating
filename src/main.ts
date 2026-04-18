@@ -2,9 +2,9 @@ import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
-import icons from './icons/';
+import icons from './icons';
 import { parseErwinHtml } from './parser/html-parser.js';
-import { fileName$, initializeVisibility, isLoading$, rawData$ } from './store/data.store.js';
+import { fileName$, initializeVisibility, isLoading$, modelData$ } from './store/data.store.js';
 
 // Import Global CSS
 import './index.css';
@@ -180,8 +180,8 @@ export class AppRoot extends LitElement {
    * @param content The decoded HTML string.
    */
   private _processFileContent(content: string) {
-    const rows = parseErwinHtml(content);
-    rawData$.set(rows);
+    const model = parseErwinHtml(content);
+    modelData$.set(model);
     initializeVisibility();
     isLoading$.set(false);
   }

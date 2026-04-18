@@ -173,7 +173,7 @@ export const HEADERS_CONFIG: readonly HeaderConfig[] = [
   { prop: 'O', object: 'Default Value', indentation: [3 * INDENT_SIZE], levels: [3] },
   { prop: 'O', object: 'Domain', indentation: [3 * INDENT_SIZE], levels: [3] },
   {
-    prop: 'M',
+    prop: 'O',
     object: 'ER Diagram',
     indentation: [3 * INDENT_SIZE, 4 * INDENT_SIZE],
     levels: [3, 4],
@@ -206,7 +206,7 @@ export const HEADERS_CONFIG: readonly HeaderConfig[] = [
   { prop: 'O', object: 'Range Partition', indentation: [6 * INDENT_SIZE], levels: [6] },
   { prop: 'FK', object: 'Relationship', indentation: [5 * INDENT_SIZE], levels: [5] },
   { prop: 'O', object: 'Sequence', indentation: [3 * INDENT_SIZE], levels: [3] },
-  { prop: 'M', object: 'Subject Area', indentation: [3 * INDENT_SIZE], levels: [3], hide: true },
+  { prop: 'O', object: 'Subject Area', indentation: [3 * INDENT_SIZE], levels: [3], hide: true },
   { prop: 'FK', object: 'Subtype Symbol', indentation: [5 * INDENT_SIZE], levels: [5] },
   { prop: 'Ent', object: 'Table', indentation: [3 * INDENT_SIZE], levels: [3] },
   { prop: 'O', object: 'Tablespace', indentation: [3 * INDENT_SIZE], levels: [3] },

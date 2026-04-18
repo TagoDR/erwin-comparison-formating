@@ -20,32 +20,29 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 ## 3. Project Structure & Index
 
 ### 3.1. Core Configuration
-
-- **`src/types.ts`**: Centralized TypeScript interfaces, constants, and global configurations. Defines data models for rows and statistics.
+- **`src/types.ts`**: Centralized TypeScript interfaces and constants. Defines the data models for rows, headers, and statistical summaries. Contains `HEADERS_CONFIG` (object classification rules) and `GROUPING_KEYWORDS`.
 - **`package.json`**: Build scripts, dependencies, and formatting configurations (Prettier/Biome).
-- **`vite.config.ts`**: Multi-mode build configuration. Includes `sampleGeneratorPlugin` for hot-reloading mock data during development.
 
 ### 3.2. Data Processing (Parser & Store)
-
-- **`src/parser/html-parser.ts`**: High-performance DOM parser. Converts raw Erwin HTML tables into a flat array of `EnrichedDiffRow` objects.
-- **`src/store/data.store.ts`**: State management core. Handles hierarchical enrichment, status hoisting, and complex UI filtering.
-- **`src/store/sample.ts`**: Source of truth for mock data (JSON format).
-- **`src/store/sample.html`**: Automatically generated HTML report used for testing the parser.
+- **`src/parser/html-parser.ts`**: High-performance DOM parser. Converts raw Erwin HTML tables into a structured **`ModelObject`** tree, accurately reflecting the source hierarchy.
+- **`src/store/data.store.ts`**: State management core. Contains logic for:
+  - **Enrichment**: Recursive tree traversal to generate flattened `EnrichedDiffRow` objects. Handles status hoisting (e.g., `isCalculated`) and smart attribute counting (via child objects or order lists).
+  - **Filtering**: Multi-layered search, status, and drill-down filters (Only Entities, Only Ent+Atr).
+  - **Interactions**: Global and individual visibility toggles for properties and sub-objects.
+- **`src/store/sample.ts`**: Source of truth for mock data used during development.
+- **`src/store/sample.html`**: Generated HTML report used for testing the parser (synced via Vite dev server).
 
 ### 3.3. UI Components (Lit)
-
-- **`src/components/app-header.ts`**: Top navigation bar containing file management and global controls.
-- **`src/components/app-stats.ts`**: Summary panel and filter dashboard.
-- **`src/components/app-table.ts`**: Main data grid with recursive visibility logic and hierarchical guides.
+- **`src/components/app-header.ts`**: Top navigation bar containing file upload, global search, and theme/language toggles.
+- **`src/components/app-stats.ts`**: Summary panel showing counts for Tables and Columns (added, changed, deleted). Supports filter triggering on cell click.
+- **`src/components/app-table.ts`**: Main data grid. Implements complex visibility logic and hierarchical visual guides (dots and indicators).
 
 ### 3.4. Assets & I18n
-
-- **`src/assets/icons.ts`**: Tabler Icons as SVG strings.
-- **`src/i18n/`**: Localization files for PT, EN, ES, and FR.
+- **`src/assets/icons.ts`**: Tabler Icons as SVG strings for optimized bundling.
+- **`src/i18n/`**: Localization files (JSON) for English, Portuguese, Spanish, and French.
 
 ### 3.5. Utility Scripts
-
-- **`scripts/generate-sample-html.ts`**: Logic to transform `sample.ts` JSON into `sample.html` table format. Used by both `package.json` scripts and the Vite development plugin.
+- **`scripts/generate-sample-html.ts`**: Core logic for transforming structured JSON into legacy Erwin HTML tables. Integrated into Vite for hot-reloading.
 
 ## 4. UI/UX Requirements
 
@@ -67,12 +64,13 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 
 ### 4.2. Data Processing (Parser Logic)
 
-- **Performance Engine:** Optimized for **50MB+ reports** using Map-based lookups and $O(1)$ family pre-calculations.
+- **Performance Engine:** Optimized for **50MB+ reports** using Map-based lookups and $O(1)$ constant-time family pre-calculations.
 - **Indentation Parsing:** **3 spaces = 1 Level**. Indentation is visualized using dots (`·`).
 - **Classification (`HEADERS_CONFIG`):** Exact space counting combined with type matching to identify object headers.
-- **Permanent Filters:** Grouping rows, empty rows, and hidden metadata families are permanently removed from the data pipeline.
+- **Permanent Filters:** Grouping rows, empty rows, and specifically hidden metadata families are permanently removed from the data pipeline.
 - **UDP (User Defined Properties):** Automatic teal highlighting based on naming patterns.
 - **Calculated Status (C):** Root objects inherit "Calculated" status only if ALL descendants are identical.
+- **Smart Attribute Counting**: Detects number of columns via actual child objects OR comma-separated order list properties.
 
 ### 4.3. Interactions
 
@@ -87,10 +85,10 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 
 ### 5.1. Status Colors
 
-| Object               | Addition (Green)                                              | Change (Purple) | Deletion (Red) | Calculated (Orange) | Text  |
-| :------------------- | :------------------------------------------------------------ | :-------------- | :------------- | :------------------ | :---- |
-| **Table/Entity**     | #9BBB59 (Base)                                                | #8064A2 (Base)  | #C0504D (Base) | #F79646 (Base)      | White |
-| **Attribute/Column** | #D7E3BC (60%)                                                 | #CCC1D9 (60%)   | #E5B9B7 (60%)  | #FBD5B5 (60%)       | Black |
+| Object               | Addition (Green) | Change (Purple) | Deletion (Red) | Calculated (Orange) | Text  |
+| :------------------- | :--------------- | :-------------- | :------------- | :------------------ | :---- |
+| **Table/Entity**     | #9BBB59 (Base)   | #8064A2 (Base)  | #C0504D (Base) | #F79646 (Base)      | White |
+| **Attribute/Column** | #D7E3BC (60%)    | #CCC1D9 (60%)   | #E5B9B7 (60%)  | #FBD5B5 (60%)       | Black |
 
 ### 5.2. Name Fields (Character Counter)
 
