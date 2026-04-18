@@ -55,15 +55,15 @@ export class AppStats extends LitElement {
                   s => html`
                   <tr data-type="${s.type}">
                     <td class="type-col">${translate(`stats.row_${s.type.toLowerCase()}`)}</td>
-                    <td class="val-col total-col">
+                    <td class="val-col total-col clickable-cell" @click=${() => this._handleCellClick(s.type, '')}>
                       <div class="val-wrapper">
                         ${s.total}
                         ${s.type === 'Tables' /*&& s.largeTablesCount*/ ? html`<span class="large-count-bubble" title="Tables with > 11 attributes">${s.largeTablesCount}</span>` : ''}
                       </div>
                     </td>
-                    <td class="val-col status-I">${s.inclusion}</td>
-                    <td class="val-col status-A">${s.alteration}</td>
-                    <td class="val-col status-E">${s.exclusion}</td>
+                    <td class="val-col status-I clickable-cell" @click=${() => this._handleCellClick(s.type, 'I')}>${s.inclusion}</td>
+                    <td class="val-col status-A clickable-cell" @click=${() => this._handleCellClick(s.type, 'A')}>${s.alteration}</td>
+                    <td class="val-col status-E clickable-cell" @click=${() => this._handleCellClick(s.type, 'E')}>${s.exclusion}</td>
                     <td class="val-col status-C">${s.calculated}</td>
                   </tr>
                 `,
@@ -162,6 +162,40 @@ export class AppStats extends LitElement {
   private _updateNameFilter(e: Event) {
     const val = (e.target as HTMLInputElement).value;
     filterName$.set(val);
+  }
+
+  private _handleCellClick(type: string, change: string) {
+    // Update change filter
+    filterChange$.set(change);
+
+    // Sync the select element if it exists
+    const select = this.renderRoot.querySelector('#change-filter') as HTMLSelectElement;
+    if (select) select.value = change;
+
+    // Handle switches
+    if (type === 'Tables') {
+      if (change === '') {
+        // Toggle if total clicked
+        const current = onlyEntities$.get();
+        onlyEntities$.set(!current);
+        if (!current) onlyEntitiesAndAttributes$.set(false);
+      } else {
+        // Force on if status clicked
+        onlyEntities$.set(true);
+        onlyEntitiesAndAttributes$.set(false);
+      }
+    } else if (type === 'Columns') {
+      if (change === '') {
+        // Toggle if total clicked
+        const current = onlyEntitiesAndAttributes$.get();
+        onlyEntitiesAndAttributes$.set(!current);
+        if (!current) onlyEntities$.set(false);
+      } else {
+        // Force on if status clicked
+        onlyEntitiesAndAttributes$.set(true);
+        onlyEntities$.set(false);
+      }
+    }
   }
 
   private _copyTablesToClipboard() {

@@ -88,6 +88,22 @@ td {
   border-bottom: 1px solid var(--border-subtle);
 }
 
+.clickable-cell {
+  cursor: pointer;
+  transition:
+    opacity 0.2s,
+    transform 0.1s;
+}
+
+.clickable-cell:hover {
+  opacity: 0.8;
+  filter: brightness(1.1);
+}
+
+.clickable-cell:active {
+  transform: scale(0.95);
+}
+
 .val-col {
   text-align: center;
   font-family: Futura, Helvetica, "JetBrains Mono", monospace;
