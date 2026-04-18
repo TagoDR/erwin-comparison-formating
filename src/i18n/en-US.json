@@ -9,7 +9,8 @@
     "filters": {
       "change": "Change",
       "category": "Category",
-      "name": "Search Name..."
+      "name": "Search Name...",
+      "clear_filters": "Clear all filters"
     }
   },
   "stats": {

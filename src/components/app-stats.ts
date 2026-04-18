@@ -10,6 +10,7 @@ import {
   hideCalculated$,
   onlyEntities$,
   onlyEntitiesAndAttributes$,
+  resetFilters,
   showProperties$,
   statsSummary$,
   toggleFlip,
@@ -22,6 +23,7 @@ export class AppStats extends LitElement {
   static styles = unsafeCSS(statsStyles);
   private stats = new StoreController(this, statsSummary$);
   private nameFilter = new StoreController(this, filterName$);
+  private changeFilter = new StoreController(this, filterChange$);
   private showProps = new StoreController(this, showProperties$);
   private hideCalc = new StoreController(this, hideCalculated$);
   private onlyEnt = new StoreController(this, onlyEntities$);
@@ -94,7 +96,7 @@ export class AppStats extends LitElement {
 
             <div class="filter-item">
               <label for="change-filter">${translate('header.filters.change')}</label>
-              <select id="change-filter" class="form-control" @change=${this._updateChangeFilter}>
+              <select id="change-filter" class="form-control" .value=${this.changeFilter.value} @change=${this._updateChangeFilter}>
                 <option value="">${translate('changes.all')}</option>
                 <option value="I">${translate('changes.addition')}</option>
                 <option value="A">${translate('changes.change')}</option>
@@ -147,6 +149,12 @@ export class AppStats extends LitElement {
                   <span>${translate('stats.actions.only_ent_atr')}</span>
                 </label>
               </div>
+            </div>
+
+            <div class="clear-filters-area">
+               <button class="btn btn-default btn-xs clear-btn" @click=${resetFilters} title="${translate('header.filters.clear_filters')}">
+                  ${icons['filter-off']}
+               </button>
             </div>
           </div>
         </div>

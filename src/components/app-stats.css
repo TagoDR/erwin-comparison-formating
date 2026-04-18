@@ -259,6 +259,37 @@ tr[data-type="Columns"] .total-col {
   align-self: stretch;
 }
 
+.clear-filters-area {
+  display: flex;
+  align-items: center;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--border-subtle);
+  align-self: stretch;
+}
+
+.clear-btn {
+  background: var(--bg-main);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.clear-btn path:nth-child(3) {
+  color: var(--btn-danger-border);
+}
+
+.clear-btn:hover {
+  background: var(--off-red-base);
+  border-color: var(--off-red-base);
+  color: white;
+}
+
 .main-switch {
   font-size: 0.75rem;
   color: var(--accent-blue);

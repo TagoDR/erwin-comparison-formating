@@ -488,6 +488,17 @@ export const initializeVisibility = () => {
   isFlipped$.set(false);
 };
 
+export const resetFilters = () => {
+  filterChange$.set('');
+  filterName$.set('');
+  onlyEntities$.set(false);
+  onlyEntitiesAndAttributes$.set(false);
+  hideCalculated$.set(true);
+  showProperties$.set(false);
+  toggledPropertiesIds$.set(new Set());
+  hiddenSubObjectsIds$.set(new Set());
+};
+
 export const toggleFlip = () => {
   isFlipped$.set(!isFlipped$.get());
 };

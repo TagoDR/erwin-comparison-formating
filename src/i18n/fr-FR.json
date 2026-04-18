@@ -9,7 +9,8 @@
     "filters": {
       "change": "Type de changement",
       "category": "Catégorie",
-      "name": "Filtrer par nom"
+      "name": "Filtrer par nom",
+      "clear_filters": "Réinitialiser les filtres"
     }
   },
   "stats": {

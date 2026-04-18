@@ -9,9 +9,11 @@
     "filters": {
       "change": "Tipo de Alteração",
       "category": "Categoria",
-      "name": "Filtrar por Nome"
-    }
-  },
+      "name": "Filtrar por nome",
+      "clear_filters": "Limpar todos os filtros"
+      }
+      },
+
   "stats": {
     "row_general": "Geral",
     "row_tables": "Tabelas",
