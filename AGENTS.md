@@ -17,9 +17,39 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 - **UI Framework:** [Bootflat](http://bootflat.github.io/) (based on Bootstrap 3) with a custom **Flat Theme**.
 - **Icons:** Tabler Icons
 
-## 3. UI/UX Requirements
+## 3. Project Structure & Index
 
-### 3.1. Layout
+### 3.1. Core Configuration
+
+- **`src/types.ts`**: Centralized TypeScript interfaces, constants, and global configurations. Defines data models for rows and statistics.
+- **`package.json`**: Build scripts, dependencies, and formatting configurations (Prettier/Biome).
+- **`vite.config.ts`**: Multi-mode build configuration. Includes `sampleGeneratorPlugin` for hot-reloading mock data during development.
+
+### 3.2. Data Processing (Parser & Store)
+
+- **`src/parser/html-parser.ts`**: High-performance DOM parser. Converts raw Erwin HTML tables into a flat array of `EnrichedDiffRow` objects.
+- **`src/store/data.store.ts`**: State management core. Handles hierarchical enrichment, status hoisting, and complex UI filtering.
+- **`src/store/sample.ts`**: Source of truth for mock data (JSON format).
+- **`src/store/sample.html`**: Automatically generated HTML report used for testing the parser.
+
+### 3.3. UI Components (Lit)
+
+- **`src/components/app-header.ts`**: Top navigation bar containing file management and global controls.
+- **`src/components/app-stats.ts`**: Summary panel and filter dashboard.
+- **`src/components/app-table.ts`**: Main data grid with recursive visibility logic and hierarchical guides.
+
+### 3.4. Assets & I18n
+
+- **`src/assets/icons.ts`**: Tabler Icons as SVG strings.
+- **`src/i18n/`**: Localization files for PT, EN, ES, and FR.
+
+### 3.5. Utility Scripts
+
+- **`scripts/generate-sample-html.ts`**: Logic to transform `sample.ts` JSON into `sample.html` table format. Used by both `package.json` scripts and the Vite development plugin.
+
+## 4. UI/UX Requirements
+
+### 4.1. Layout
 
 1. **Header (Static Top Bar):**
    - **Brand:** Localized title.
@@ -33,19 +63,18 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
    - **Filter Panel:**
      - Grouped switches: "Show Properties", "**Hide Calculated**" (ON by default), "Only Entities", and "Only Ent+Atr".
      - Search and status filters.
-   - **Data Table Panel:** Fixed-layout grid with hierarchy visualization and **dynamic indicators** (rotating chevrons and sitemap icons).
+   - **Data Table Panel:** Fixed-layout grid with hierarchy visualization and **dynamic indicators**.
 
-### 3.2. Data Processing (Parser Logic)
+### 4.2. Data Processing (Parser Logic)
 
-- **Performance Engine:** Optimized for **50MB+ reports** using Map-based lookups and $O(1)$ constant-time family pre-calculations.
+- **Performance Engine:** Optimized for **50MB+ reports** using Map-based lookups and $O(1)$ family pre-calculations.
 - **Indentation Parsing:** **3 spaces = 1 Level**. Indentation is visualized using dots (`·`).
 - **Classification (`HEADERS_CONFIG`):** Exact space counting combined with type matching to identify object headers.
-- **Permanent Filters:** Grouping rows, empty rows (both sides empty), and specifically hidden metadata families (e.g., ER Diagrams) are permanently removed from the data pipeline.
+- **Permanent Filters:** Grouping rows, empty rows, and hidden metadata families are permanently removed from the data pipeline.
 - **UDP (User Defined Properties):** Automatic teal highlighting based on naming patterns.
 - **Calculated Status (C):** Root objects inherit "Calculated" status only if ALL descendants are identical.
-- **Dynamic Icons:** Header rows display `chevron-down` (for properties) and `sitemap` (for children) icons that rotate or change state based on visibility.
 
-### 3.3. Interactions
+### 4.3. Interactions
 
 | Interaction      | Effect                                                                 |
 | :--------------- | :--------------------------------------------------------------------- |
@@ -54,24 +83,24 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 | **"Only" Modes** | Acts as "default collapsed" states; allow manual drill-down via click. |
 | **Copy Icons**   | Copies value to clipboard with feedback.                               |
 
-## 4. Visual Encoding (Office 2010 Palette)
+## 5. Visual Encoding (Office 2010 Palette)
 
-### 4.1. Status Colors
+### 5.1. Status Colors
 
 | Object               | Addition (Green)                                              | Change (Purple) | Deletion (Red) | Calculated (Orange) | Text  |
 | :------------------- | :------------------------------------------------------------ | :-------------- | :------------- | :------------------ | :---- |
 | **Table/Entity**     | #9BBB59 (Base)                                                | #8064A2 (Base)  | #C0504D (Base) | #F79646 (Base)      | White |
 | **Attribute/Column** | #D7E3BC (60%)                                                 | #CCC1D9 (60%)   | #E5B9B7 (60%)  | #FBD5B5 (60%)       | Black |
-| **Orange Scale**     | Metadata headers use a levels-based orange scale (Level 0-6). | Theme           |
 
-### 4.2. Name Fields (Character Counter)
+### 5.2. Name Fields (Character Counter)
 
 - **Target Objects:** Physical Name and Header rows only.
 - **Normalization:** Strips owner prefix, `[Calculated]`, and `(FK)` before counting.
 - **Threshold:** Green ≤ 18 chars, Red > 18 chars.
 
-## 5. Build and Distribution
+## 6. Build and Distribution
 
 - `npm run build`: Generates Standalone and Userscript outputs.
-- `npm run gen:sample`: Synchronizes `sample.html` with `sample.ts` JSON structure.
+- `npm run dev`: Starts dev server with **hot-reloading sample data** (via `sampleGeneratorPlugin`).
+- `npm run gen:sample`: Manually synchronize `sample.html` with `sample.ts`.
 - **Userscript UX:** Includes an immediate loading spinner to provide feedback during large file ingestion.

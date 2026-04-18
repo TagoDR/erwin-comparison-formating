@@ -1,10 +1,14 @@
 import * as fs from 'node:fs';
+import * as path from 'node:path';
 import userscript, { type Metadata } from 'userscript-metadata-generator';
-import { defineConfig, type UserConfig } from 'vite';
+import { defineConfig, type Plugin, type UserConfig } from 'vite';
 import viteBanner from 'vite-plugin-banner';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import svgLoader from 'vite-svg-loader';
+
+// Import generation logic
+import { buildSampleHtml } from './scripts/generate-sample-html.js';
 
 const metadata: Metadata = {
   name: 'Erwin Compare Formatter',
@@ -18,6 +22,42 @@ const metadata: Metadata = {
   runAt: 'document-end',
 };
 
+/**
+ * Custom Vite Plugin to regenerate sample.html whenever sample.ts changes.
+ */
+function sampleGeneratorPlugin(): Plugin {
+  const sampleTsPath = path.resolve(__dirname, 'src/store/sample.ts');
+  const sampleHtmlPath = path.resolve(__dirname, 'src/store/sample.html');
+
+  const updateHtml = async () => {
+    try {
+      // Use dynamic import with timestamp to bypass Node's module cache
+      const { sampleData } = await import(`${sampleTsPath}?t=${Date.now()}`);
+      const html = buildSampleHtml(sampleData);
+      fs.writeFileSync(sampleHtmlPath, html);
+      console.log('[SampleGenerator] Hot-reloaded src/store/sample.html');
+    } catch (err) {
+      console.error('[SampleGenerator] Error during hot-reload:', err);
+    }
+  };
+
+  return {
+    name: 'sample-generator-plugin',
+    configureServer(server) {
+      // Initial update on server start
+      updateHtml();
+
+      // Watch for changes specifically in the sample data source
+      server.watcher.on('change', async file => {
+        if (file === sampleTsPath) {
+          await updateHtml();
+          server.ws.send({ type: 'full-reload', path: '*' });
+        }
+      });
+    },
+  };
+}
+
 export default defineConfig(({ mode }): UserConfig => {
   const baseConfig: UserConfig = {
     define: {
@@ -25,6 +65,14 @@ export default defineConfig(({ mode }): UserConfig => {
       __IS_PUBLIC__: JSON.stringify(true),
     },
   };
+
+  // DEVELOPMENT MODE (Vite Dev Server)
+  if (mode === 'development') {
+    return {
+      ...baseConfig,
+      plugins: [svgLoader({ svgo: false, defaultImport: 'raw' }), sampleGeneratorPlugin()],
+    };
+  }
 
   // STANDALONE BUILD (Single HTML File)
   if (mode === 'standalone' || mode === 'production') {
@@ -44,7 +92,7 @@ export default defineConfig(({ mode }): UserConfig => {
       ],
       build: {
         minify: true,
-        cssMinify: false, // Avoid star hack errors
+        cssMinify: false,
         target: 'esnext',
         emptyOutDir: false,
         outDir: 'dist',
@@ -62,7 +110,7 @@ export default defineConfig(({ mode }): UserConfig => {
     ],
     build: {
       target: 'esnext',
-      minify: false, // Never minify userscript as requested
+      minify: false,
       cssMinify: false,
       emptyOutDir: false,
       outDir: 'dist',

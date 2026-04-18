@@ -2,12 +2,16 @@ import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
-import icons from '../assets/icons';
-import { fileName$, filterName$, isUserscript$, rawData$ } from '../store/data.store';
-import { changeLanguage, language$ } from '../store/i18n.store';
-import { theme$, toggleTheme } from '../store/theme.store';
+import icons from '../icons';
+import { fileName$, filterName$, isUserscript$, rawData$ } from '../store/data.store.js';
+import { changeLanguage, language$ } from '../store/i18n.store.js';
+import { theme$, toggleTheme } from '../store/theme.store.js';
 import headerStyles from './app-header.css?inline';
 
+/**
+ * Top navigation bar component.
+ * Provides file upload, global search, theme toggle, and language selection.
+ */
 @customElement('app-header')
 export class AppHeader extends LitElement {
   static styles = unsafeCSS(headerStyles);
@@ -79,6 +83,10 @@ export class AppHeader extends LitElement {
     `;
   }
 
+  /**
+   * Dispatches a custom event when a file is selected or dropped.
+   * @param file The File object selected by the user.
+   */
   private _handleFile(file: File) {
     if (!file) return;
 
@@ -91,6 +99,9 @@ export class AppHeader extends LitElement {
     );
   }
 
+  /**
+   * Handles file drop onto the drop zone.
+   */
   private _onDrop(e: DragEvent) {
     e.preventDefault();
     this.isDragging = false;
@@ -98,21 +109,33 @@ export class AppHeader extends LitElement {
     if (file) this._handleFile(file);
   }
 
+  /**
+   * Activates visual 'dragging' state on dragover.
+   */
   private _onDragOver(e: DragEvent) {
     e.preventDefault();
     this.isDragging = true;
   }
 
+  /**
+   * Deactivates visual 'dragging' state on dragleave.
+   */
   private _onDragLeave() {
     this.isDragging = false;
   }
 
+  /**
+   * Resets the data store and clears the current file view.
+   */
   private _closeFile() {
     fileName$.set(null);
     rawData$.set([]);
     filterName$.set('');
   }
 
+  /**
+   * Triggers a global language change.
+   */
   private _onLanguageChange(e: Event) {
     const val = (e.target as HTMLSelectElement).value;
     changeLanguage(val);

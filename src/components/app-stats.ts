@@ -2,7 +2,7 @@ import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { get, translate } from 'lit-translate';
-import icons from '../assets/icons';
+import icons from '../icons';
 import {
   enrichedData$,
   filterChange$,
@@ -15,9 +15,14 @@ import {
   statsSummary$,
   toggleFlip,
   togglePropertiesGlobal,
-} from '../store/data.store';
+} from '../store/data.store.js';
 import statsStyles from './app-stats.css?inline';
 
+/**
+ * Application statistics and filter panel component.
+ * Displays a summary of changes (additions, alterations, deletions) for tables and columns,
+ * and provides various filtering and interaction controls.
+ */
 @customElement('app-stats')
 export class AppStats extends LitElement {
   static styles = unsafeCSS(statsStyles);
@@ -162,16 +167,30 @@ export class AppStats extends LitElement {
     `;
   }
 
+  /**
+   * Updates the change filter based on user selection.
+   * @param e The change event from the select element.
+   */
   private _updateChangeFilter(e: Event) {
     const val = (e.target as HTMLSelectElement).value;
     filterChange$.set(val);
   }
 
+  /**
+   * Updates the name search filter based on user input.
+   * @param e The input event from the text field.
+   */
   private _updateNameFilter(e: Event) {
     const val = (e.target as HTMLInputElement).value;
     filterName$.set(val);
   }
 
+  /**
+   * Handles clicks on the statistics table cells to apply filters.
+   * Clicking on a total or change count will filter the main table accordingly.
+   * @param type The type of object clicked ('Tables' or 'Columns').
+   * @param change The change type ('I', 'A', 'E', or empty for total).
+   */
   private _handleCellClick(type: string, change: string) {
     // Update change filter
     filterChange$.set(change);
@@ -180,7 +199,7 @@ export class AppStats extends LitElement {
     const select = this.renderRoot.querySelector('#change-filter') as HTMLSelectElement;
     if (select) select.value = change;
 
-    // Handle switches
+    // Handle switches for drill-down modes
     if (type === 'Tables') {
       if (change === '') {
         // Toggle if total clicked
@@ -206,11 +225,15 @@ export class AppStats extends LitElement {
     }
   }
 
+  /**
+   * Copies the names of all identified tables to the clipboard.
+   * Provides visual feedback upon successful copy.
+   */
   private _copyTablesToClipboard() {
     const tables = enrichedData$
       .get()
-      .filter(row => row.isHeader && row.prop === 'Ent' && (row.leftModel || row.rightModel))
-      .map(row => row.leftModel || row.rightModel)
+      .filter(row => row.isHeader && row.prop === 'Ent' && (row.left || row.right))
+      .map(row => row.left || row.right)
       .filter((v, i, a) => v && a.indexOf(v) === i)
       .join('\n');
 

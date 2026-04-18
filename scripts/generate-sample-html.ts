@@ -1,5 +1,4 @@
 import { writeFileSync } from 'node:fs';
-import { sampleData } from '../src/store/sample.js';
 import {
   type DiffRow,
   type EnrichedDiffRow,
@@ -8,7 +7,13 @@ import {
   type ModelObject,
 } from '../src/types.js';
 
-function generateHtml() {
+/**
+ * Core logic to transform a structured ModelObject into the legacy Erwin HTML table format.
+ *
+ * @param sampleData The source JSON data.
+ * @returns A complete HTML document string.
+ */
+export function buildSampleHtml(sampleData: ModelObject): string {
   const rows: string[] = [];
 
   function processObject(obj: ModelObject) {
@@ -43,8 +48,6 @@ function generateHtml() {
   function renderRow(row: DiffRow | EnrichedDiffRow) {
     const spaces = row.spaces || row.level * INDENT_SIZE;
     const indent = '&nbsp;'.repeat(spaces);
-
-    // In DiffRow/EnrichedDiffRow, the properties are 'left' and 'right'
     const leftVal = row.left || '';
     const rightVal = row.right || '';
 
@@ -68,13 +71,12 @@ function generateHtml() {
 
   processObject(sampleData);
 
-  const fullHtml = `<html lang="en">
+  return `<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Report</title>
 </head>
 <body>
-
 <table border="1" height="*" >
     <caption>Table Description</caption>
     <thead valign="top">
@@ -89,12 +91,20 @@ function generateHtml() {
 ${rows.join('\n')}
     </tbody>
 </table>
-
 </body>
 </html>`;
-
-  writeFileSync('./src/store/sample.html', fullHtml);
-  console.log('Successfully regenerated src/store/sample.html');
 }
 
-generateHtml();
+// Standalone execution logic (for npm run gen:sample)
+if (import.meta.url.endsWith('generate-sample-html.ts')) {
+  (async () => {
+    try {
+      const { sampleData } = await import('../src/store/sample.js');
+      const html = buildSampleHtml(sampleData);
+      writeFileSync('./src/store/sample.html', html);
+      console.log('Successfully regenerated src/store/sample.html');
+    } catch (err) {
+      console.error('Error in standalone generation:', err);
+    }
+  })();
+}

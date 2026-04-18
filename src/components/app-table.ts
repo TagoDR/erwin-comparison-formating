@@ -2,10 +2,9 @@ import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
-import icons from '../assets/icons';
+import icons from '../icons';
 import {
   checkedIds$,
-  type EnrichedDiffRow,
   filteredData$,
   hiddenSubObjectsIds$,
   isFlipped$,
@@ -16,9 +15,15 @@ import {
   toggledPropertiesIds$,
   togglePropertiesIndividual,
   toggleSubObjects,
-} from '../store/data.store';
+} from '../store/data.store.js';
+import type { EnrichedDiffRow } from '../types.ts';
 import tableStyles from './app-table.css?inline';
 
+/**
+ * Main data grid component for displaying Erwin differences.
+ * Implements complex visibility logic for properties and sub-objects,
+ * hierarchical indentation guides, and interactive action buttons (copy, check).
+ */
 @customElement('app-table')
 export class AppTable extends LitElement {
   static styles = unsafeCSS(tableStyles);
@@ -46,6 +51,10 @@ export class AppTable extends LitElement {
     const allRows = this.data.value;
     const rowMap = new Map(allRows.map(r => [r.id, r]));
 
+    /**
+     * Determines if a row should be hidden based on global toggles, individual toggles,
+     * and the hierarchical state of its ancestors.
+     */
     const isRowHidden = (rowId: string | undefined): boolean => {
       if (!rowId) return false;
       const row = rowMap.get(rowId);
@@ -54,23 +63,23 @@ export class AppTable extends LitElement {
       if (row.parentId) {
         const parent = rowMap.get(row.parentId);
         if (parent) {
-          // 1. Property Visibility (Left Click)
+          // 1. Property Visibility (Left Click interaction on parent)
           if (!row.isHeader) {
             const isParentToggled = toggledPropsSet.has(row.parentId);
             const isVisible = globalShowProps ? !isParentToggled : isParentToggled;
             if (!isVisible) return true;
           }
 
-          // 2. Sub-Object Visibility (Right Click)
+          // 2. Sub-Object Visibility (Right Click interaction on parent)
           if (row.isHeader) {
             let isHidden = hiddenSubsSet.has(row.parentId);
 
-            // SPECIAL RULE: Right clicking Model does not hide Entities/Attributes
+            // SPECIAL RULE: Right clicking Model does not hide its direct Entity/Attribute children
             if (isHidden && parent.type === 'Model' && (row.prop === 'Ent' || row.prop === 'Atr')) {
               isHidden = false;
             }
 
-            // Default Collapse Logic for "Only X" modes
+            // Default Collapse Logic for "Only X" Modes (Drill-down behavior)
             if (onlyEntities && parent.prop === 'Ent' && row.prop !== 'Ent') {
               isHidden = !isHidden;
             }
@@ -81,7 +90,7 @@ export class AppTable extends LitElement {
             if (isHidden) return true;
           }
 
-          // 3. Recursive check for ancestor visibility
+          // 3. Recursive check for ancestor visibility (cascading hide)
           if (isRowHidden(row.parentId)) return true;
         }
       }
@@ -90,6 +99,7 @@ export class AppTable extends LitElement {
 
     const visibleRows = allRows.filter(row => !isRowHidden(row.id));
 
+    /** Returns true if the sub-objects of the given header row are currently hidden. */
     const areSubObjectsHidden = (row: EnrichedDiffRow): boolean => {
       let isHidden = hiddenSubsSet.has(row.id ?? '');
       if (onlyEntities && row.prop === 'Ent' && row.hasSubObjects) {
@@ -101,6 +111,7 @@ export class AppTable extends LitElement {
       return isHidden;
     };
 
+    /** Returns true if the properties of the given header row are currently hidden. */
     const arePropertiesHidden = (row: EnrichedDiffRow): boolean => {
       const isParentToggled = toggledPropsSet.has(row.id ?? '');
       const isVisible = globalShowProps ? !isParentToggled : isParentToggled;
@@ -267,6 +278,7 @@ export class AppTable extends LitElement {
     `;
   }
 
+  /** Renders a badge showing the number of attributes/columns for an entity/table. */
   private _renderAttributeCounter(row: EnrichedDiffRow) {
     const isEntity = row.prop === 'Ent' && row.isHeader;
     if (!isEntity) return '';
@@ -277,6 +289,7 @@ export class AppTable extends LitElement {
     return html`<span class="attr-badge">${display}</span>`;
   }
 
+  /** Renders a character counter badge for physical names, with warning state for lengths > 18. */
   private _renderLenCounter(row: EnrichedDiffRow, value: string) {
     const isPhysicalName = row.type === 'Physical Name';
     const isIdentificationRow =
@@ -284,14 +297,15 @@ export class AppTable extends LitElement {
 
     if (!(isPhysicalName || isIdentificationRow) || !value) return '';
 
+    /** Calculates normalized length by stripping technical suffixes and owner prefixes. */
     const getLen = (val: string) => {
       let clean = val.trim();
 
-      // 1. Remove [Calculated] and (FK) suffixes
+      // 1. Remove Erwin tags
       clean = clean.replace(/\s*\[Calculated\]$/, '');
       clean = clean.replace(/\s*\(FK\)$/, '');
 
-      // 2. Remove owner prefix (text before the last period)
+      // 2. Strip database owner prefix
       if (clean.includes('.')) {
         const parts = clean.split('.');
         clean = parts[parts.length - 1];
@@ -307,7 +321,11 @@ export class AppTable extends LitElement {
     return html`<span class="len-badge ${isWarn ? 'len-warn' : 'len-ok'}">${len}</span>`;
   }
 
+  /**
+   * Copies text to the clipboard and handles visual feedback state.
+   */
   private _handleCopy(id: string, text: string, side: 'left' | 'right') {
+    // Strip type prefix if present (e.g. "Physical Name: MY_TABLE" -> "MY_TABLE")
     const cleanText = text.includes(':') ? text.split(':')[1].trim() : text.trim();
     navigator.clipboard.writeText(cleanText).then(() => {
       this.copiedId = id;

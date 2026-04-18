@@ -2,39 +2,49 @@ import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
-import icons from './assets/icons';
-import { parseErwinHtml } from './parser/html-parser';
-import { fileName$, initializeVisibility, isLoading$, rawData$ } from './store/data.store';
+import icons from './icons/';
+import { parseErwinHtml } from './parser/html-parser.js';
+import { fileName$, initializeVisibility, isLoading$, rawData$ } from './store/data.store.js';
 
 // Import Global CSS
 import './index.css';
 import mainStyles from './main.css?inline';
 
 // Importing components
-import './components/app-header';
-import './components/app-stats';
-import './components/app-table';
+import './components/app-header.js';
+import './components/app-stats.js';
+import './components/app-table.js';
 
-// FLAG TO ENABLE SAMPLE DATA IN DEV MODE
+/**
+ * Flag to enable automatic loading of sample data during development.
+ */
 const USE_SAMPLE = import.meta.env.DEV && true;
 
+/**
+ * Root Component of the Application.
+ * Handles file loading, decoding (UTF-8/Windows-1252), and global Drag & Drop.
+ */
 @customElement('app-root')
 export class AppRoot extends LitElement {
   static styles = unsafeCSS(mainStyles);
   private isLoading = new StoreController(this, isLoading$);
   private fileName = new StoreController(this, fileName$);
 
+  /**
+   * Initializes the component.
+   * Sets up dynamic page titles, global drag-and-drop, and optionally loads sample data.
+   */
   firstUpdated() {
     if (USE_SAMPLE) {
       this._loadSampleData();
     }
 
-    // Phase 2: Dynamic Page Title
+    // Sync HTML document title with the loaded file name
     fileName$.subscribe(name => {
       document.title = name ? name : 'Erwin Compare Formatter';
     });
 
-    // Phase 2: Global Drag & Drop Support
+    // Setup global listeners for drag-and-drop file ingestion
     this._setupGlobalDragDrop();
   }
 
@@ -80,6 +90,9 @@ export class AppRoot extends LitElement {
     `;
   }
 
+  /**
+   * Configures global event listeners for the 'dragover' and 'drop' events.
+   */
   private _setupGlobalDragDrop() {
     window.addEventListener('dragover', e => {
       e.preventDefault();
@@ -97,10 +110,18 @@ export class AppRoot extends LitElement {
     });
   }
 
+  /**
+   * Handles the 'file-selected' event emitted by the app-header.
+   * @param e CustomEvent containing the selected File object.
+   */
   private _onFileSelected(e: CustomEvent<{ file: File }>) {
     this._handleFile(e.detail.file);
   }
 
+  /**
+   * Reads a file as an ArrayBuffer and triggers decoding.
+   * @param file The File object to process.
+   */
   private _handleFile(file: File) {
     fileName$.set(file.name);
     isLoading$.set(true);
@@ -114,24 +135,30 @@ export class AppRoot extends LitElement {
   }
 
   /**
-   * Attempts to decode the buffer using UTF-8 first, then falling back to Windows-1252.
-   * This is a robust way to handle Erwin reports with special Portuguese characters.
+   * Attempts to decode an ArrayBuffer using UTF-8 first, then falls back to Windows-1252.
+   * This is essential for handling Erwin reports generated on legacy systems or with
+   * specific regional settings (e.g., Portuguese Windows-1252).
+   *
+   * @param buffer The ArrayBuffer to decode.
    */
   private _decodeBuffer(buffer: ArrayBuffer) {
     try {
-      // Try UTF-8 first. 'fatal: true' makes it throw if it encounters invalid sequences.
+      // Try UTF-8 first. 'fatal: true' ensures it throws on invalid sequences.
       const utf8Decoder = new TextDecoder('utf-8', { fatal: true });
       const text = utf8Decoder.decode(buffer);
       this._processFileContent(text);
     } catch (e) {
       console.warn('UTF-8 decoding failed, falling back to windows-1252', e);
-      // If UTF-8 fails, it's likely Windows-1252 (common for Erwin/Portuguese)
+      // Fallback to Windows-1252 (commonly used for Erwin reports in Brazil)
       const winDecoder = new TextDecoder('windows-1252');
       const text = winDecoder.decode(buffer);
       this._processFileContent(text);
     }
   }
 
+  /**
+   * Loads the built-in sample.html file for demonstration/testing purposes.
+   */
   private async _loadSampleData() {
     fileName$.set('sample.html');
     isLoading$.set(true);
@@ -140,7 +167,6 @@ export class AppRoot extends LitElement {
       const response = await fetch('./src/store/sample.html');
       if (!response.ok) throw new Error('Failed to load sample file');
 
-      // For fetch, we can also use arrayBuffer() to be consistent
       const buffer = await response.arrayBuffer();
       this._decodeBuffer(buffer);
     } catch (error) {
@@ -149,6 +175,10 @@ export class AppRoot extends LitElement {
     }
   }
 
+  /**
+   * Final step of the file ingestion pipeline. Parses the HTML text and populates the store.
+   * @param content The decoded HTML string.
+   */
   private _processFileContent(content: string) {
     const rows = parseErwinHtml(content);
     rawData$.set(rows);

@@ -5,31 +5,62 @@ import {
   HEADERS_CONFIG,
   type Prop,
   type StatsSummary,
-} from '../types';
+} from '../types.js';
 
+/**
+ * Store for the raw rows parsed from the HTML report.
+ */
 export const rawData$ = atom<EnrichedDiffRow[]>([]);
+
+/**
+ * Loading state indicator.
+ */
 export const isLoading$ = atom(false);
+
+/**
+ * Name of the currently loaded file.
+ */
 export const fileName$ = atom<string | null>(null);
+
+/**
+ * Flag indicating if the app is running as a Tampermonkey userscript.
+ */
 export const isUserscript$ = atom<boolean>(false);
 
 // Filters State
+/** Change status filter ('I', 'A', 'E'). */
 export const filterChange$ = atom<string>('');
+/** Name/Type text search filter. */
 export const filterName$ = atom<string>('');
+/** Flag to hide all property rows globally. */
 export const hideAllProperties$ = atom<boolean>(false);
+/** Drill-down mode: show only Entity-level families. */
 export const onlyEntities$ = atom<boolean>(false);
+/** Drill-down mode: show only Entity and Attribute-level families. */
 export const onlyEntitiesAndAttributes$ = atom<boolean>(false);
+/** Strong filter: remove all identical objects. */
 export const hideCalculated$ = atom<boolean>(true);
 
 // Interaction State
+/** Global toggle for property visibility. */
 export const showProperties$ = atom<boolean>(false);
+/** Set of header IDs where property visibility has been manually toggled. */
 export const toggledPropertiesIds$ = atom<Set<string>>(new Set());
+/** Set of header IDs where sub-object visibility has been manually hidden. */
 export const hiddenSubObjectsIds$ = atom<Set<string>>(new Set());
+/** Set of checked row IDs for batch operations. */
 export const checkedIds$ = atom<Set<string>>(new Set());
+/** Flag for global side-swapping (Left <-> Right). */
 export const isFlipped$ = atom<boolean>(false);
 
 /**
  * Computed store that process raw rows to add recursive parenting, status hoisting and filtering.
  * Optimized for performance with large data sets (50MB+).
+ *
+ * Logic flow:
+ * 1. Top-Down: Assign IDs, classify headers vs properties, and establish parent-child links.
+ * 2. Bottom-Up: Hoist status (e.g., Calculated) and calculate child counts (e.g., Attribute Count).
+ * 3. Final Polish: Apply property classification inheritance and filter out useless rows.
  */
 export const enrichedData$ = computed(rawData$, data => {
   const rowCount = data.length;
@@ -174,6 +205,9 @@ export const enrichedData$ = computed(rawData$, data => {
     });
 });
 
+/**
+ * Computed store that applies all UI filters to the enriched dataset.
+ */
 export const filteredData$ = computed(
   [
     enrichedData$,
@@ -343,13 +377,14 @@ export const filteredData$ = computed(
   },
 );
 
-// Toggle functions
+/** Toggles property visibility globally. */
 export const togglePropertiesGlobal = () => {
   const nextValue = !showProperties$.get();
   showProperties$.set(nextValue);
   toggledPropertiesIds$.set(new Set());
 };
 
+/** Toggles property visibility for a specific object header. */
 export const togglePropertiesIndividual = (id: string) => {
   const current = new Set(toggledPropertiesIds$.get());
   if (current.has(id)) current.delete(id);
@@ -357,6 +392,7 @@ export const togglePropertiesIndividual = (id: string) => {
   toggledPropertiesIds$.set(current);
 };
 
+/** Toggles sub-object (children) visibility for a specific object header. */
 export const toggleSubObjects = (id: string) => {
   const current = new Set(hiddenSubObjectsIds$.get());
   if (current.has(id)) current.delete(id);
@@ -364,6 +400,7 @@ export const toggleSubObjects = (id: string) => {
   hiddenSubObjectsIds$.set(current);
 };
 
+/** Toggles selection state for a specific row. */
 export const toggleCheck = (id: string) => {
   const currentChecked = new Set(checkedIds$.get());
   const willBeChecked = !currentChecked.has(id);
@@ -385,6 +422,7 @@ export const toggleCheck = (id: string) => {
   checkedIds$.set(currentChecked);
 };
 
+/** Resets all interactive visibility states. */
 export const initializeVisibility = () => {
   showProperties$.set(false);
   toggledPropertiesIds$.set(new Set());
@@ -392,6 +430,7 @@ export const initializeVisibility = () => {
   isFlipped$.set(false);
 };
 
+/** Resets all filters to their default values. */
 export const resetFilters = () => {
   filterChange$.set('');
   filterName$.set('');
@@ -403,10 +442,12 @@ export const resetFilters = () => {
   hiddenSubObjectsIds$.set(new Set());
 };
 
+/** Swaps left and right models globally. */
 export const toggleFlip = () => {
   isFlipped$.set(!isFlipped$.get());
 };
 
+/** Computed store providing summary statistics for Tables and Columns. */
 export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlipped) => {
   const summary: Record<string, StatsSummary> = {
     Tables: {

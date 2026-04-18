@@ -9,7 +9,7 @@
     "build:standalone": "vite build --mode standalone",
     "build:monkey": "vite build --mode monkey",
     "preview": "vite preview",
-    "prettier": "prettier --write '**/*.{md,html,svg}'",
+    "prettier": "prettier --write \"**/*.{md,html,svg}\" \"!dist/**\" \"!node_modules/**\" \"!*.user.js\"",
     "biome": " biome check --write .",
     "gen:sample": "node --loader ts-node/esm scripts/generate-sample-html.ts"
   },

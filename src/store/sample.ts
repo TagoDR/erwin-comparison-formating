@@ -25,6 +25,100 @@ export const sampleData: ModelObject = {
     },
   ],
   children: {
+    Domains: [
+      {
+        id: {
+          level: 3,
+          spaces: 3 * INDENT_SIZE,
+          type: 'Domain',
+          left: 'Number',
+          right: 'Number',
+        },
+        properties: [
+          {
+            level: 4,
+            spaces: 4 * INDENT_SIZE,
+            type: 'Name',
+            left: 'Number',
+            right: 'Number',
+          },
+          {
+            level: 4,
+            spaces: 4 * INDENT_SIZE,
+            type: 'Logical Datatype',
+            left: 'Integer',
+            right: 'Smallint',
+          },
+        ],
+      },
+      {
+        id: {
+          level: 3,
+          spaces: 3 * INDENT_SIZE,
+          type: 'Domain',
+          left: 'String',
+          right: 'String',
+        },
+        properties: [
+          {
+            level: 4,
+            spaces: 4 * INDENT_SIZE,
+            type: 'Name',
+            left: 'String',
+            right: 'String',
+          },
+          {
+            level: 4,
+            spaces: 4 * INDENT_SIZE,
+            type: 'Logical Datatype',
+            left: 'VARCHAR(20)',
+            right: 'VARCHAR(255)',
+          },
+        ],
+      },
+    ],
+    'Subject Areas': [
+      {
+        id: {
+          level: 3,
+          spaces: 3 * INDENT_SIZE,
+          type: 'Subject Area',
+          left: 'Main',
+          right: 'Main',
+        },
+        properties: [
+          {
+            level: 4,
+            spaces: 4 * INDENT_SIZE,
+            type: 'Members',
+            left: 'CLI,OPR,USU',
+            right: 'CLI_PF,PRD,USU',
+          },
+        ],
+        children: {
+          'ER Diagrams': [
+            {
+              id: {
+                level: 4,
+                spaces: 4 * INDENT_SIZE,
+                type: 'ER Diagram',
+                left: 'Main Diagram',
+                right: 'Main Diagram',
+              },
+              properties: [
+                {
+                  level: 5,
+                  spaces: 5 * INDENT_SIZE,
+                  type: 'Members',
+                  left: 'CLI,OPR,USU',
+                  right: 'CLI_PF,PRD,USU',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
     'Entities/Tables': [
       {
         id: {
@@ -798,82 +892,6 @@ export const sampleData: ModelObject = {
                   right: 'String',
                 },
               ],
-            },
-          ],
-        },
-      },
-    ],
-    Domains: [
-      {
-        id: {
-          level: 3,
-          spaces: 3 * INDENT_SIZE,
-          type: 'Domain',
-          left: 'Number',
-          right: 'Number',
-        },
-        properties: [
-          {
-            level: 4,
-            spaces: 4 * INDENT_SIZE,
-            type: 'Name',
-            left: 'Number',
-            right: 'Number',
-          },
-          {
-            level: 4,
-            spaces: 4 * INDENT_SIZE,
-            type: 'Logical Datatype',
-            left: 'NUMERIC(18)',
-            right: 'NUMERIC(18)',
-          },
-        ],
-      },
-      {
-        id: {
-          level: 3,
-          spaces: 3 * INDENT_SIZE,
-          type: 'Domain',
-          left: 'String',
-          right: 'String',
-        },
-        properties: [
-          {
-            level: 4,
-            spaces: 4 * INDENT_SIZE,
-            type: 'Name',
-            left: 'String',
-            right: 'String',
-          },
-          {
-            level: 4,
-            spaces: 4 * INDENT_SIZE,
-            type: 'Logical Datatype',
-            left: 'VARCHAR(255)',
-            right: 'VARCHAR(255)',
-          },
-        ],
-      },
-    ],
-    'Subject Areas': [
-      {
-        id: {
-          level: 3,
-          spaces: 3 * INDENT_SIZE,
-          type: 'Subject Area',
-          left: 'Main',
-          right: 'Main',
-        },
-        children: {
-          'ER Diagrams': [
-            {
-              id: {
-                level: 4,
-                spaces: 4 * INDENT_SIZE,
-                type: 'ER Diagram',
-                left: 'Main Diagram',
-                right: 'Main Diagram',
-              },
             },
           ],
         },

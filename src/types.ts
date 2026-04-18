@@ -1,5 +1,11 @@
+/**
+ * Number of spaces representing a single indentation level in Erwin reports.
+ */
 export const INDENT_SIZE = 3;
 
+/**
+ * Keywords used by Erwin to group multiple objects of the same type.
+ */
 export type GroupingKeyword =
   | 'Annotations'
   | 'Attribute Storage Objects'
@@ -30,6 +36,9 @@ export type GroupingKeyword =
   | 'Themes'
   | 'Views';
 
+/**
+ * Keywords representing individual object headers in Erwin reports.
+ */
 export type HeaderKeyword =
   | 'Annotation'
   | 'Attribute'
@@ -57,10 +66,27 @@ export type HeaderKeyword =
   | 'Theme'
   | 'View';
 
+/**
+ * Property classification codes.
+ * Ent: Entity/Table, Atr: Attribute/Column, IX: Index, FK: Relationship, O: Other, M: Metadata.
+ */
 export type Prop = 'Ent' | 'Atr' | 'IX' | 'FK' | 'O' | 'M' | '';
+
+/**
+ * Change status codes.
+ * I: Inclusion (Added), A: Alteration (Changed), E: Exclusion (Deleted).
+ */
 export type Change = 'I' | 'A' | 'E' | '';
+
+/**
+ * View type codes.
+ * L: Logical, P: Physical, L/P: Both.
+ */
 export type View = 'L' | 'P' | 'L/P' | '';
 
+/**
+ * Represents a raw row from the Erwin HTML difference report.
+ */
 export interface DiffRow<T extends string = string> {
   level: number;
   spaces: number;
@@ -69,8 +95,14 @@ export interface DiffRow<T extends string = string> {
   right: string;
 }
 
+/**
+ * Specialized DiffRow for object headers.
+ */
 export interface HeaderRow extends DiffRow<HeaderKeyword> {}
 
+/**
+ * A DiffRow enriched with metadata during processing.
+ */
 export interface EnrichedDiffRow extends DiffRow<string> {
   id: string;
   parentId?: string;
@@ -87,10 +119,16 @@ export interface EnrichedDiffRow extends DiffRow<string> {
   hasSubObjects?: boolean;
 }
 
+/**
+ * Specialized EnrichedDiffRow for headers.
+ */
 export interface EnrichedHeaderRow extends EnrichedDiffRow {
   type: HeaderKeyword;
 }
 
+/**
+ * Configuration for identifying and classifying object headers based on indentation and type.
+ */
 export interface HeaderConfig {
   prop: Prop;
   object: HeaderKeyword;
@@ -99,12 +137,19 @@ export interface HeaderConfig {
   hide?: boolean;
 }
 
+/**
+ * Recursive structure representing an object and its properties/children.
+ * Used primarily for sample data generation and structured modeling.
+ */
 export interface ModelObject {
   id: HeaderRow | EnrichedHeaderRow;
   properties?: (DiffRow | EnrichedDiffRow)[];
   children?: Partial<Record<GroupingKeyword, ModelObject[]>>;
 }
 
+/**
+ * Statistical summary for a specific object category.
+ */
 export interface StatsSummary {
   type: string;
   total: number;
@@ -115,6 +160,9 @@ export interface StatsSummary {
   largeTablesCount?: number;
 }
 
+/**
+ * Global configuration mapping for all supported Erwin object headers.
+ */
 export const HEADERS_CONFIG: readonly HeaderConfig[] = [
   { prop: 'O', object: 'Annotation', indentation: [3 * INDENT_SIZE], levels: [3] },
   { prop: 'Atr', object: 'Attribute', indentation: [5 * INDENT_SIZE], levels: [5] },
@@ -129,7 +177,7 @@ export const HEADERS_CONFIG: readonly HeaderConfig[] = [
     object: 'ER Diagram',
     indentation: [3 * INDENT_SIZE, 4 * INDENT_SIZE],
     levels: [3, 4],
-    hide: false,
+    hide: true,
   },
   { prop: 'Ent', object: 'Entity', indentation: [3 * INDENT_SIZE], levels: [3] },
   { prop: 'Ent', object: 'Entity/Table', indentation: [3 * INDENT_SIZE], levels: [3] },
@@ -158,7 +206,7 @@ export const HEADERS_CONFIG: readonly HeaderConfig[] = [
   { prop: 'O', object: 'Range Partition', indentation: [6 * INDENT_SIZE], levels: [6] },
   { prop: 'FK', object: 'Relationship', indentation: [5 * INDENT_SIZE], levels: [5] },
   { prop: 'O', object: 'Sequence', indentation: [3 * INDENT_SIZE], levels: [3] },
-  { prop: 'M', object: 'Subject Area', indentation: [3 * INDENT_SIZE], levels: [3], hide: false },
+  { prop: 'M', object: 'Subject Area', indentation: [3 * INDENT_SIZE], levels: [3], hide: true },
   { prop: 'FK', object: 'Subtype Symbol', indentation: [5 * INDENT_SIZE], levels: [5] },
   { prop: 'Ent', object: 'Table', indentation: [3 * INDENT_SIZE], levels: [3] },
   { prop: 'O', object: 'Tablespace', indentation: [3 * INDENT_SIZE], levels: [3] },
@@ -166,6 +214,9 @@ export const HEADERS_CONFIG: readonly HeaderConfig[] = [
   { prop: 'Ent', object: 'View', indentation: [3 * INDENT_SIZE], levels: [3] },
 ] as const;
 
+/**
+ * List of grouping keywords used to filter out grouping rows during data processing.
+ */
 export const GROUPING_KEYWORDS: GroupingKeyword[] = [
   'Annotations',
   'Attribute Storage Objects',

@@ -1,21 +1,27 @@
 import { get } from 'lit-translate';
-import { parseErwinHtml } from './parser/html-parser';
+import { parseErwinHtml } from './parser/html-parser.js';
 import {
   fileName$,
   initializeVisibility,
   isLoading$,
   isUserscript$,
   rawData$,
-} from './store/data.store';
-import { initI18n } from './store/i18n.store';
+} from './store/data.store.js';
+import { initI18n } from './store/i18n.store.js';
 
 declare global {
   interface Window {
+    /** Stores the original Erwin HTML for potential reference or reload. */
     __ERWIN_ORIGINAL_HTML__?: string;
   }
 }
 
-// Function to detect Erwin Report
+/**
+ * Detects if the current document is a raw Erwin Data Modeler difference report
+ * by checking for the presence of specific table header columns.
+ *
+ * @returns True if 'Type', 'Left Value', and 'Right Value' headers are found.
+ */
 function isErwinReport() {
   const ths = Array.from(document.querySelectorAll('table th'));
   const hasType = ths.some(th => th.textContent?.trim() === 'Type');
@@ -26,8 +32,11 @@ function isErwinReport() {
 
 // Initialize i18n before everything
 initI18n().then(() => {
-  // If we are in a Userscript environment and detect an Erwin report,
-  // we might want to clear the body to avoid showing the raw table below our app
+  /**
+   * Userscript Mode Logic:
+   * If an Erwin report is detected, the script immediately clears the body,
+   * injects the <app-root> to show the loading spinner, and starts the parsing engine.
+   */
   if (isErwinReport()) {
     console.log('Erwin Report detected via Userscript, transforming...');
     isUserscript$.set(true);
@@ -35,7 +44,7 @@ initI18n().then(() => {
     const originalHTML = document.documentElement.outerHTML;
     window.__ERWIN_ORIGINAL_HTML__ = originalHTML;
 
-    // Extract model name from the first tr after the header
+    // Extract model name from the first tr after the header to use in the title
     const firstRow = document.querySelector('tbody tr');
     const modelNameCell =
       firstRow?.querySelectorAll('td')[1] || firstRow?.querySelectorAll('td')[3];
@@ -61,5 +70,6 @@ initI18n().then(() => {
     }, 100);
   }
 
-  import('./main');
+  // Load the main app components
+  import('./main.js');
 });
