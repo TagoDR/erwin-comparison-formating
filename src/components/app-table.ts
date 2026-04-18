@@ -5,7 +5,7 @@ import { translate } from 'lit-translate';
 import icons from '../assets/icons';
 import {
   checkedIds$,
-  type ErwinRow,
+  type EnrichedDiffRow,
   filteredData$,
   hiddenSubObjectsIds$,
   isFlipped$,
@@ -71,11 +71,9 @@ export class AppTable extends LitElement {
             }
 
             // Default Collapse Logic for "Only X" modes
-            // If "Only Entities" is on, everything under an Entity is hidden by default
             if (onlyEntities && parent.prop === 'Ent' && row.prop !== 'Ent') {
-              isHidden = !isHidden; // Toggle meaning of hiddenSubsSet
+              isHidden = !isHidden;
             }
-            // If "Only Ent+Atr" is on, everything under an Attribute is hidden by default
             if (onlyEntitiesAndAttributes && parent.prop === 'Atr') {
               isHidden = !isHidden;
             }
@@ -92,22 +90,18 @@ export class AppTable extends LitElement {
 
     const visibleRows = allRows.filter(row => !isRowHidden(row.id));
 
-    const areSubObjectsHidden = (row: ErwinRow): boolean => {
+    const areSubObjectsHidden = (row: EnrichedDiffRow): boolean => {
       let isHidden = hiddenSubsSet.has(row.id ?? '');
-      // If "Only Entities" is on, and this is an Entity, its children are hidden by default
       if (onlyEntities && row.prop === 'Ent' && row.hasSubObjects) {
-        // Special case: if children are also Entities (recursive), they are NOT hidden by default
-        // But in Erwin, usually children of Entities are Attributes.
         isHidden = !isHidden;
       }
-      // If "Only Ent+Atr" is on, and this is an Attribute, its children are hidden by default
       if (onlyEntitiesAndAttributes && row.prop === 'Atr' && row.hasSubObjects) {
         isHidden = !isHidden;
       }
       return isHidden;
     };
 
-    const arePropertiesHidden = (row: ErwinRow): boolean => {
+    const arePropertiesHidden = (row: EnrichedDiffRow): boolean => {
       const isParentToggled = toggledPropsSet.has(row.id ?? '');
       const isVisible = globalShowProps ? !isParentToggled : isParentToggled;
       return !isVisible;
@@ -145,11 +139,11 @@ export class AppTable extends LitElement {
                     const isNameProp = row.type.toLowerCase().includes('name');
                     const showCopy = isIdentificationRow || isNameProp;
 
-                    const level = row.indent;
+                    const level = row.level;
                     const isChecked = row.id ? checkedSet.has(row.id) : false;
 
-                    const leftVal = flipped ? row.rightModel : row.leftModel;
-                    const rightVal = flipped ? row.leftModel : row.rightModel;
+                    const leftVal = flipped ? row.right : row.left;
+                    const rightVal = flipped ? row.left : row.right;
 
                     let change = row.change;
                     if (flipped) {
@@ -273,7 +267,7 @@ export class AppTable extends LitElement {
     `;
   }
 
-  private _renderAttributeCounter(row: ErwinRow) {
+  private _renderAttributeCounter(row: EnrichedDiffRow) {
     const isEntity = row.prop === 'Ent' && row.isHeader;
     if (!isEntity) return '';
 
@@ -283,7 +277,7 @@ export class AppTable extends LitElement {
     return html`<span class="attr-badge">${display}</span>`;
   }
 
-  private _renderLenCounter(row: ErwinRow, value: string) {
+  private _renderLenCounter(row: EnrichedDiffRow, value: string) {
     const isPhysicalName = row.type === 'Physical Name';
     const isIdentificationRow =
       row.isHeader && !row.isGrouping && (row.prop === 'Ent' || row.prop === 'Atr');

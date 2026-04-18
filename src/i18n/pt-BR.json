@@ -11,8 +11,8 @@
       "category": "Categoria",
       "name": "Filtrar por nome",
       "clear_filters": "Limpar todos os filtros"
-      }
-      },
+    }
+  },
 
   "stats": {
     "row_general": "Geral",

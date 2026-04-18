@@ -1,46 +1,13 @@
 import { atom, computed } from 'nanostores';
+import {
+  type EnrichedDiffRow,
+  GROUPING_KEYWORDS,
+  HEADERS_CONFIG,
+  type Prop,
+  type StatsSummary,
+} from '../types';
 
-export interface ErwinRow {
-  id?: string;
-  parentId?: string;
-  type: string;
-  originalType?: string;
-  prop: string;
-  change: 'I' | 'A' | 'E' | '';
-  view: string;
-  indent: number;
-  rawIndent: number;
-  isHeader?: boolean;
-  isGrouping?: boolean;
-  isCalculated?: boolean;
-  isUnderHiddenHeader?: boolean;
-  isUDP?: boolean;
-  leftModel: string;
-  rightModel: string;
-  attributeCount?: number;
-  hasProperties?: boolean;
-  hasSubObjects?: boolean;
-}
-
-/** Internal type used during data enrichment to ensure ID presence */
-interface EnrichedRow extends ErwinRow {
-  id: string;
-  isHeader: boolean;
-  isGrouping: boolean;
-  isHeaderHidden: boolean;
-}
-
-export interface StatsSummary {
-  type: string;
-  total: number;
-  inclusion: number;
-  alteration: number;
-  exclusion: number;
-  calculated: number;
-  largeTablesCount?: number;
-}
-
-export const rawData$ = atom<ErwinRow[]>([]);
+export const rawData$ = atom<EnrichedDiffRow[]>([]);
 export const isLoading$ = atom(false);
 export const fileName$ = atom<string | null>(null);
 export const isUserscript$ = atom<boolean>(false);
@@ -60,66 +27,6 @@ export const hiddenSubObjectsIds$ = atom<Set<string>>(new Set());
 export const checkedIds$ = atom<Set<string>>(new Set());
 export const isFlipped$ = atom<boolean>(false);
 
-// Useless rows must be removed/ignored/hidden
-const GROUPING_KEYWORDS = [
-  'Annotations',
-  'Attribute Storage Objects',
-  'Attributes',
-  'Attributes/Columns',
-  'Collections',
-  'Columns',
-  'Default Constraint Usages',
-  'Default Values',
-  'Domains',
-  'ER Diagrams',
-  'Entities',
-  'Entities/Tables',
-  'Fields',
-  'Indexes',
-  'Keys Groups',
-  'Keys Groups/Indexes',
-  'Partition Description Objects',
-  'Physical Storage Objects',
-  'Range Partitions Info Objects',
-  'Range Partitions',
-  'Relationships',
-  'Sequences',
-  'Subject Areas',
-  'Subtype Symbols',
-  'Tables',
-  'Tablespaces',
-  'Views',
-];
-
-// Object Identifier rows, will group properties
-export const HEADERS_CONFIG = [
-  { prop: 'O', object: 'Annotation', indentation: [3 * 3] },
-  { prop: 'Atr', object: 'Attribute', indentation: [5 * 3] },
-  { prop: 'Atr', object: 'Attribute/Column', indentation: [5 * 3] },
-  { prop: 'Ent', object: 'Collection', indentation: [3 * 3] },
-  { prop: 'Atr', object: 'Column', indentation: [5 * 3] },
-  { prop: 'O', object: 'Default Constrain Usage', indentation: [7 * 3] },
-  { prop: 'O', object: 'Default Value', indentation: [3 * 3] },
-  { prop: 'O', object: 'Domain', indentation: [3 * 3] },
-  { prop: 'M', object: 'ER Diagram', indentation: [3 * 3, 4 * 3], hide: true },
-  { prop: 'Ent', object: 'Entity', indentation: [3 * 3] },
-  { prop: 'Ent', object: 'Entity/Table', indentation: [3 * 3] },
-  { prop: 'Atr', object: 'Field', indentation: [5 * 3, 6 * 3, 7 * 3, 8 * 3, 9 * 3, 10 * 3] },
-  { prop: 'IX', object: 'Index', indentation: [5 * 3] },
-  { prop: 'IX', object: 'Key Group/Index', indentation: [5 * 3] },
-  { prop: 'O', object: 'Model', indentation: [3] },
-  { prop: 'O', object: 'Physical Storage Object', indentation: [5 * 3, 7 * 3] },
-  { prop: 'O', object: 'Range Partition', indentation: [6 * 3] },
-  { prop: 'FK', object: 'Relationship', indentation: [5 * 3] },
-  { prop: 'O', object: 'Sequence', indentation: [3 * 3] },
-  { prop: 'M', object: 'Subject Area', indentation: [3 * 3], hide: true },
-  { prop: 'FK', object: 'Subtype Symbol', indentation: [5 * 3] },
-  { prop: 'Ent', object: 'Table', indentation: [3 * 3] },
-  { prop: 'O', object: 'Tablespace', indentation: [3 * 3] },
-  { prop: 'O', object: 'Theme', indentation: [3 * 3] },
-  { prop: 'Ent', object: 'View', indentation: [3 * 3] },
-];
-
 /**
  * Computed store that process raw rows to add recursive parenting, status hoisting and filtering.
  * Optimized for performance with large data sets (50MB+).
@@ -128,29 +35,29 @@ export const enrichedData$ = computed(rawData$, data => {
   const rowCount = data.length;
   if (rowCount === 0) return [];
 
-  const rowsById = new Map<string, EnrichedRow>();
+  const rowsById = new Map<string, EnrichedDiffRow>();
   const childrenMap = new Map<string, string[]>();
 
   // 1. Initial Pass: ID assignment, Classification, and Parentage (Top-Down)
-  const headerStack: { id: string; indent: number; isGrouping: boolean; isHidden: boolean }[] = [];
+  const headerStack: { id: string; level: number; isGrouping: boolean; isHidden: boolean }[] = [];
 
-  const processed: EnrichedRow[] = data.map((row, index) => {
+  const processed: EnrichedDiffRow[] = data.map((row, index) => {
     const cleanedType = row.type.trim();
     const isGrouping = GROUPING_KEYWORDS.some(kw => cleanedType === kw);
     const headerMatch = HEADERS_CONFIG.find(
-      h => h.object === cleanedType && h.indentation.includes(row.rawIndent),
+      h => h.object === cleanedType && h.indentation.includes(row.spaces),
     );
 
-    const enriched: EnrichedRow = {
+    const enriched: EnrichedDiffRow = {
       ...row,
-      id: `row-${index}`,
+      id: row.id || `row-${index}`,
       isHeader: isGrouping || !!headerMatch,
       isGrouping,
-      isHeaderHidden: headerMatch?.hide || false,
-      prop: headerMatch?.prop || '',
+      isUnderHiddenHeader: headerMatch?.hide || false,
+      prop: (headerMatch?.prop as Prop) || '',
       isCalculated:
-        row.leftModel === row.rightModel ||
-        (row.leftModel.endsWith('[Calculated]') && row.rightModel.endsWith('[Calculated]')),
+        row.left === row.right ||
+        (row.left.endsWith('[Calculated]') && row.right.endsWith('[Calculated]')),
     };
 
     if (!enriched.view) {
@@ -161,15 +68,12 @@ export const enrichedData$ = computed(rawData$, data => {
     }
 
     // Stack management for parentId
-    while (
-      headerStack.length > 0 &&
-      headerStack[headerStack.length - 1].indent >= enriched.indent
-    ) {
+    while (headerStack.length > 0 && headerStack[headerStack.length - 1].level >= enriched.level) {
       headerStack.pop();
     }
 
     let parentId = '';
-    let isUnderHiddenHeader = enriched.isHeaderHidden || false;
+    let isUnderHiddenHeader = enriched.isUnderHiddenHeader || false;
 
     for (let j = headerStack.length - 1; j >= 0; j--) {
       const stackItem = headerStack[j];
@@ -189,9 +93,9 @@ export const enrichedData$ = computed(rawData$, data => {
     if (enriched.isHeader) {
       headerStack.push({
         id: enriched.id,
-        indent: enriched.indent,
-        isGrouping: enriched.isGrouping,
-        isHidden: enriched.isHeaderHidden,
+        level: enriched.level,
+        isGrouping: enriched.isGrouping || false,
+        isHidden: !!headerMatch?.hide,
       });
     }
 
@@ -200,7 +104,7 @@ export const enrichedData$ = computed(rawData$, data => {
   });
 
   // 2. Status Hoisting (Bottom-Up)
-  for (let i = rowCount - 1; i >= 0; i--) {
+  for (let i = processed.length - 1; i >= 0; i--) {
     const row = processed[i];
 
     if (row.isHeader && !row.isGrouping) {
@@ -237,8 +141,8 @@ export const enrichedData$ = computed(rawData$, data => {
             const child = rowsById.get(cid);
             if (child?.type === 'Column Order List' || child?.type === 'Attribute Order List') {
               const count = Math.max(
-                child.leftModel ? child.leftModel.split(',').length : 0,
-                child.rightModel ? child.rightModel.split(',').length : 0,
+                child.left ? child.left.split(',').length : 0,
+                child.right ? child.right.split(',').length : 0,
               );
               attrCount = Math.max(attrCount, count);
             }
@@ -251,21 +155,21 @@ export const enrichedData$ = computed(rawData$, data => {
     if (row.parentId && !row.isHeader) {
       const parent = rowsById.get(row.parentId);
       if (parent) {
-        if (row.type === 'Logical Only' && row.leftModel === 'true') parent.view = 'L';
-        else if (row.type === 'Physical Only' && row.leftModel === 'true') parent.view = 'P';
+        if (row.type === 'Logical Only' && row.left === 'true') parent.view = 'L';
+        else if (row.type === 'Physical Only' && row.left === 'true') parent.view = 'P';
       }
     }
   }
 
   // 3. Final polish and filter
-  let currentPropCode = 'O';
+  let currentPropCode: Prop = 'O';
   return processed
     .map(row => {
       if (row.isHeader && row.prop) currentPropCode = row.prop;
       return { ...row, prop: row.isHeader ? row.prop : currentPropCode };
     })
     .filter(row => {
-      const isEmpty = !row.leftModel.trim() && !row.rightModel.trim();
+      const isEmpty = !row.left.trim() && !row.right.trim();
       return !row.isGrouping && !isEmpty && !row.isUnderHiddenHeader;
     });
 });
@@ -292,7 +196,7 @@ export const filteredData$ = computed(
     const rowCount = data.length;
     if (rowCount === 0) return [];
 
-    const rowsById = new Map<string, ErwinRow>();
+    const rowsById = new Map<string, EnrichedDiffRow>();
     const childrenMap = new Map<string, string[]>();
     for (const r of data) {
       const id = r.id;
@@ -391,9 +295,9 @@ export const filteredData$ = computed(
       const hits = new Set<string>();
 
       for (const r of result) {
-        const typeMatch = (r.originalType || r.type).toLowerCase().includes(search);
-        const leftMatch = r.leftModel.toLowerCase().includes(search);
-        const rightMatch = r.rightModel.toLowerCase().includes(search);
+        const typeMatch = r.type.toLowerCase().includes(search);
+        const leftMatch = r.left.toLowerCase().includes(search);
+        const rightMatch = r.right.toLowerCase().includes(search);
 
         if (r.isHeader && (typeMatch || leftMatch || rightMatch) && r.id) {
           hits.add(r.id);

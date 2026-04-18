@@ -1,17 +1,17 @@
-import type { ErwinRow } from '../store/data.store';
+import { type EnrichedDiffRow, INDENT_SIZE } from '../types';
 
 /**
  * Parses the HTML content from Erwin's Complete Compare report.
  * @param html The raw HTML string.
- * @returns An array of ErwinRow.
+ * @returns An array of EnrichedDiffRow.
  */
-export function parseErwinHtml(html: string): ErwinRow[] {
+export function parseErwinHtml(html: string): EnrichedDiffRow[] {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
-  const rows: ErwinRow[] = [];
+  const rows: EnrichedDiffRow[] = [];
   const trs = doc.querySelectorAll('tbody tr');
 
-  trs.forEach(tr => {
+  trs.forEach((tr, index) => {
     const tds = tr.querySelectorAll('td');
     if (tds.length < 4) return;
 
@@ -20,38 +20,40 @@ export function parseErwinHtml(html: string): ErwinRow[] {
     const rawRight = tds[3].textContent?.trim() || '';
 
     // Strip [Calculated] for comparison
-    const leftModel = rawLeft.replace(/\[Calculated\]/g, '').trim();
-    const rightModel = rawRight.replace(/\[Calculated\]/g, '').trim();
+    const leftClean = rawLeft.replace(/\[Calculated\]/g, '').trim();
+    const rightClean = rawRight.replace(/\[Calculated\]/g, '').trim();
 
     const rawTypeText = objectTd.textContent || '';
     const type = rawTypeText.trim();
 
     // Calculate indent: 3 spaces = 1 level.
     const leadingWhitespace = rawTypeText.match(/^[\s\u00a0]*/)?.[0] || '';
-    const indent = Math.floor(leadingWhitespace.length / 3);
+    const spaces = leadingWhitespace.length;
+    const level = Math.floor(spaces / INDENT_SIZE);
 
     let change: 'I' | 'A' | 'E' | '' = '';
-    if (leftModel && rightModel) {
+    if (leftClean && rightClean) {
       change = 'A';
-    } else if (leftModel) {
+    } else if (leftClean) {
       change = 'I';
-    } else if (rightModel) {
+    } else if (rightClean) {
       change = 'E';
     }
 
     // UDP highlighting for properties
     const isUDP =
       ((type.startsWith('Entity.Physical.') || type.startsWith('Entity.Logical.')) &&
-        leadingWhitespace.length === 15) ||
+        spaces === 5 * INDENT_SIZE) ||
       ((type.startsWith('Attribute.Physical.') || type.startsWith('Attribute.Logical.')) &&
-        leadingWhitespace.length === 18);
+        spaces === 6 * INDENT_SIZE);
 
     rows.push({
+      id: `row-${index}`,
       type,
-      indent,
-      rawIndent: leadingWhitespace.length,
-      leftModel: rawLeft, // Keep original for display
-      rightModel: rawRight, // Keep original for display
+      level,
+      spaces,
+      left: rawLeft,
+      right: rawRight,
       change,
       prop: '',
       view: '',
