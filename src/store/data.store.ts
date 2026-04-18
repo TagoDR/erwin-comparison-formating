@@ -114,7 +114,7 @@ export const HEADERS_CONFIG = [
   { prop: 'O', object: 'Sequence', indentation: [3 * 3] },
   { prop: 'M', object: 'Subject Area', indentation: [3 * 3], hide: true },
   { prop: 'FK', object: 'Subtype Symbol', indentation: [5 * 3] },
-  { prop: 'Ent', object: 'Table', indentation: [3 * 3 * 3] },
+  { prop: 'Ent', object: 'Table', indentation: [3 * 3] },
   { prop: 'O', object: 'Tablespace', indentation: [3 * 3] },
   { prop: 'O', object: 'Theme', indentation: [3 * 3] },
   { prop: 'Ent', object: 'View', indentation: [3 * 3] },
@@ -232,10 +232,7 @@ export const enrichedData$ = computed(rawData$, data => {
         row.hasProperties = hasProps;
         row.hasSubObjects = hasSubs;
 
-        if (
-          (row.type === 'Entity/Table' || row.type === 'Entity' || row.type === 'Table') &&
-          attrCount === 0
-        ) {
+        if (row.type === 'Entity/Table' || row.type === 'Entity' || row.type === 'Table') {
           for (const cid of childrenIds) {
             const child = rowsById.get(cid);
             if (child?.type === 'Column Order List' || child?.type === 'Attribute Order List') {
