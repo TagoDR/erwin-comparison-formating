@@ -82,7 +82,7 @@ export class AppStats extends LitElement {
             <div class="filter-item search-filter">
               <label for="name-filter">${translate('header.filters.name')}</label>
               <div class="search-input-wrapper">
-                  ${icons.filter}
+                  ${icons['list-search']}
                   <input 
                     id="name-filter"
                     type="text" 

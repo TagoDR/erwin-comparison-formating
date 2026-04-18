@@ -9,6 +9,7 @@ import IconFileDiff from './file-diff.svg';
 import IconFileUpload from './file-upload.svg';
 import IconFilter from './filter.svg';
 import IconFilterOff from './filter-off.svg';
+import IconListSearch from './list-search.svg';
 import IconMoon from './moon.svg';
 import IconSchema from './schema.svg';
 import IconSchemaOff from './schema-off.svg';
@@ -27,6 +28,7 @@ const icons = {
   'file-upload': html`${unsafeSVG(IconFileUpload)}`,
   filter: html`${unsafeSVG(IconFilter)}`,
   'filter-off': html`${unsafeSVG(IconFilterOff)}`,
+  'list-search': html`${unsafeSVG(IconListSearch)}`,
   moon: html`${unsafeSVG(IconMoon)}`,
   schema: html`${unsafeSVG(IconSchema)}`,
   'schema-off': html`${unsafeSVG(IconSchemaOff)}`,
