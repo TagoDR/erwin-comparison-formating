@@ -5,13 +5,13 @@ A specialized utility to transform raw Erwin Data Modeler HTML difference report
 ## Features
 
 - **Presence-Based Change Detection**: Categorizes changes (I, A, E) strictly by the presence of data on either side.
-- **Advanced Filtering**: 
+- **Advanced Filtering**:
   - **Show Properties**: Toggle all metadata visibility.
   - **Hide Calculated**: Strong filter (ON by default) to completely remove identical objects.
   - **Only Entities**: Focus view on top-level objects (supports manual drill-down).
   - **Only Ent+Atr**: Focus on Entities and Attributes (supports manual drill-down).
 - **High Performance**: Optimized data engine designed to handle large HTML reports (up to 50MB+) with Map-based processing.
-- **Hierarchy Visualization**: 
+- **Hierarchy Visualization**:
   - Structural guide using middle dots (`·`) for indentation levels.
   - **Interactive Indicators**: Dynamic icons (`chevron`, `sitemap`) show property and sub-object visibility status.
 - **UDP Awareness**: Automatic teal highlighting for **User Defined Properties** (UDP).
@@ -38,6 +38,16 @@ Automatically transforms any Erwin report opened locally.
 1.  Install **Tampermonkey** extension.
 2.  Install the script: [Install `erwin_complete_compare_formatter.user.js`](./dist/erwin_complete_compare_formatter.user.js?raw)
 3.  Enable **"Allow access to file URLs"** in extension settings.
+
+## Development
+
+### Available Scripts
+
+- `npm run dev`: Starts the development server.
+- `npm run build`: Generates Standalone and Userscript outputs in the `dist/` folder.
+- `npm run gen:sample`: Regenerates `src/store/sample.html` from `src/store/sample.ts` JSON data.
+- `npm run prettier`: Formats all Markdown, HTML, and SVG files.
+- `npm run biome`: Runs Biome check and applies fixes to the codebase.
 
 ## Technical Stack
 

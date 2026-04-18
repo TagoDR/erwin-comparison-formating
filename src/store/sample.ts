@@ -1,4 +1,4 @@
-import { INDENT_SIZE, type ModelObject } from '../types';
+import { INDENT_SIZE, type ModelObject } from '../types.js';
 
 export const sampleData: ModelObject = {
   id: {

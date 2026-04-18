@@ -1,624 +1,1763 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Report</title>
-</head>
-<body>
-
-<table border="1" height="*" >
-    <caption>Table Description</caption>
-    <thead>
-    <tr>
-        <th>Type</th>
-        <th>Left Value</th>
-        <th>Status</th>
-        <th>Right Value</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;Model</td>
-        <td>XXX - Oracle</td>
-        <td>not equal</td>
-        <td>Model_1</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td>XXX - Oracle</td>
-        <td>Not equal</td>
-        <td>Model_1</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Author</td>
-        <td>Company A</td>
-        <td>equal</td>
-        <td>Company A</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entity/Table</td>
-        <td>CLI</td>
-        <td>Not equal</td>
-        <td>CLI_PF</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Column Order List</td>
-        <td>NR_PTR,CD_PRD,Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16, Column17, Column18, Column19, Column20</td>
-        <td></td>
-        <td>NR_PTR,CD_OPR,Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16, Column17, Column18, Column19, Column20</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td>Client</td>
-        <td></td>
-        <td>Individual Client</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name</td>
-        <td>CLI</td>
-        <td></td>
-        <td>CLI_PF</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description</td>
-        <td>Client of interest to the institution</td>
-        <td></td>
-        <td>Registered Individual Client</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment</td>
-        <td>Client of interest to the institution [Calculated]</td>
-        <td></td>
-        <td>Registered Individual Client [Calculated]</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Max Rows</td>
-        <td>10000000</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Growth By</td>
-        <td>10000</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initial Rows</td>
-        <td>0</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attributes/Columns</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column</td>
-        <td>NR_PTR</td>
-        <td></td>
-        <td>NR_PTR</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td>Partition Number</td>
-        <td></td>
-        <td>Partition Number</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Only</td>
-        <td>true</td>
-        <td></td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme</td>
-        <td>A.Physical</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column</td>
-        <td>CD_OPR</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td>Operation Code</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Datatype</td>
-        <td>CHAR(8)</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Datatype</td>
-        <td>CHAR(8) [Calculated]</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name</td>
-        <td>CD_OPR</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Null Option</td>
-        <td>Not Null</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parent Domain</td>
-        <td>String</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description</td>
-        <td>System Operation Code</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment</td>
-        <td>System Operation Code [Calculated]</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Only</td>
-        <td>false</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Only</td>
-        <td>false</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme</td>
-        <td>Corporate</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column</td>
-        <td></td>
-        <td></td>
-        <td>CD_PRD</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td></td>
-        <td></td>
-        <td>Product Code</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Datatype</td>
-        <td></td>
-        <td></td>
-        <td>Integer</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Datatype</td>
-        <td></td>
-        <td></td>
-        <td>Integer [Calculated]</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name</td>
-        <td></td>
-        <td></td>
-        <td>CD_PRD</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description</td>
-        <td></td>
-        <td></td>
-        <td>Company Product Code</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment</td>
-        <td></td>
-        <td></td>
-        <td>Company Product Code [Calculated]</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Only</td>
-        <td></td>
-        <td></td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Only</td>
-        <td></td>
-        <td></td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme</td>
-        <td></td>
-        <td></td>
-        <td>Corporate</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Null Option</td>
-        <td></td>
-        <td></td>
-        <td>Not Null</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parent Domain</td>
-        <td></td>
-        <td></td>
-        <td>Number</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Relationships</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Relationship</td>
-        <td>FK_CLI_02</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td>FK_CLI_02</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Keys Groups/Indexes</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Key Group/Index</td>
-        <td>IX_CLI_02</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type</td>
-        <td>FK</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entity/Table</td>
-        <td>OPR</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td>Operation</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name</td>
-        <td>OPR</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description</td>
-        <td>System Operation</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment</td>
-        <td>System Operation [Calculated]</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Only</td>
-        <td>true</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Only</td>
-        <td>false</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme</td>
-        <td>Corporate</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attributes/Columns</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column</td>
-        <td>CD_OPR</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td>Operation Code</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Datatype</td>
-        <td>CHAR(8)</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Datatype</td>
-        <td>CHAR(8) [Calculated]</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name</td>
-        <td>CD_OPR</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Null Option</td>
-        <td>Not Null</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parent Domain</td>
-        <td>String</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description</td>
-        <td>System Operation Code</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment</td>
-        <td>System Operation Code [Calculated]</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Only</td>
-        <td>false</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Only</td>
-        <td>false</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme</td>
-        <td>Corporate</td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entity/Table</td>
-        <td></td>
-        <td></td>
-        <td>PRD</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td></td>
-        <td></td>
-        <td>Product</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name</td>
-        <td></td>
-        <td></td>
-        <td>PRD</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description</td>
-        <td></td>
-        <td></td>
-        <td>Company Product</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment</td>
-        <td></td>
-        <td></td>
-        <td>Company Product [Calculated]</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Only</td>
-        <td></td>
-        <td></td>
-        <td>true</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Only</td>
-        <td></td>
-        <td></td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme</td>
-        <td></td>
-        <td></td>
-        <td>Corporate</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attributes/Columns</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column</td>
-        <td></td>
-        <td></td>
-        <td>CD_PRD</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td></td>
-        <td></td>
-        <td>Product Code</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Datatype</td>
-        <td></td>
-        <td></td>
-        <td>Integer</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Datatype</td>
-        <td></td>
-        <td></td>
-        <td>Integer [Calculated]</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name</td>
-        <td></td>
-        <td></td>
-        <td>CD_PRD</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description</td>
-        <td></td>
-        <td></td>
-        <td>Company Product Code</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment</td>
-        <td></td>
-        <td></td>
-        <td>Company Product Code [Calculated]</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Only</td>
-        <td></td>
-        <td></td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Only</td>
-        <td></td>
-        <td></td>
-        <td>false</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme</td>
-        <td></td>
-        <td></td>
-        <td>Corporate</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Null Option</td>
-        <td></td>
-        <td></td>
-        <td>Not Null</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parent Domain</td>
-        <td></td>
-        <td></td>
-        <td>Number</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Domains</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Domain</td>
-        <td>Number</td>
-        <td></td>
-        <td>Number</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td>Number</td>
-        <td></td>
-        <td>Number</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Datatype</td>
-        <td>NUMERIC(18)</td>
-        <td></td>
-        <td>NUMERIC(18)</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Domain</td>
-        <td>String</td>
-        <td></td>
-        <td>String</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
-        <td>String</td>
-        <td></td>
-        <td>String</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Datatype</td>
-        <td>VARCHAR(255)</td>
-        <td></td>
-        <td>VARCHAR(255)</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subject Areas</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subject Area</td>
-        <td>Main</td>
-        <td></td>
-        <td>Main</td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ER Diagrams</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ER Diagram</td>
-        <td>Main Diagram</td>
-        <td></td>
-        <td>Main Diagram</td>
-    </tr>
-    </tbody>
-</table>
-
-</body>
+  </head>
+  <body>
+    <table
+      border="1"
+      height="*"
+    >
+      <caption>
+        Table Description
+      </caption>
+      <thead valign="top">
+        <tr>
+          <th>Type</th>
+          <th>Left Value</th>
+          <th>Status</th>
+          <th>Right Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;Model</td>
+          <td width="30%"><font color="#FF0000">XXX - Oracle</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Model_1</font></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</td>
+          <td width="30%"><font color="#FF0000">XXX - Oracle</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Model_1</font></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Author</td>
+          <td width="30%"><font color="#FF0000">Company A</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company A</font></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entities/Tables</td>
+          <td width="30%"></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entity/Table</td>
+          <td width="30%"><font color="#FF0000">CLI</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">CLI_PF</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Column Order
+            List
+          </td>
+          <td width="30%">
+            <font color="#FF0000"
+              >NR_PTR,CD_PRD,Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8,
+              Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16,
+              Column17, Column18, Column19, Column20</font
+            >
+          </td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%">
+            <font color="#0000FF"
+              >NR_PTR,CD_OPR,Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8,
+              Column9, Column10, Column11, Column12, Column13, Column14, Column15, Column16,
+              Column17, Column18, Column19, Column20</font
+            >
+          </td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000">Client</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Individual Client</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name
+          </td>
+          <td width="30%"><font color="#FF0000">CLI</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">CLI_PF</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description
+          </td>
+          <td width="30%"><font color="#FF0000">Client of interest to the institution</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Registered Individual Client</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment
+          </td>
+          <td width="30%">
+            <font color="#FF0000">Client of interest to the institution [Calculated]</font>
+          </td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%">
+            <font color="#0000FF">Registered Individual Client [Calculated]</font>
+          </td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Max Rows
+          </td>
+          <td width="30%"><font color="#FF0000">10000000</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Growth By
+          </td>
+          <td width="30%"><font color="#FF0000">10000</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initial Rows
+          </td>
+          <td width="30%"><font color="#FF0000">0</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attributes/Columns
+          </td>
+          <td width="30%"></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column
+          </td>
+          <td width="30%"><font color="#FF0000">NR_PTR</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">NR_PTR</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000">Partition Number</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Partition Number</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000">true</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">false</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme
+          </td>
+          <td width="30%"><font color="#FF0000">A.Physical</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column
+          </td>
+          <td width="30%"><font color="#FF0000">CD_OPR</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000">Operation Code</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical
+            Datatype
+          </td>
+          <td width="30%"><font color="#FF0000">CHAR(8)</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Datatype
+          </td>
+          <td width="30%"><font color="#FF0000">CHAR(8) [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Name
+          </td>
+          <td width="30%"><font color="#FF0000">CD_OPR</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Null
+            Option
+          </td>
+          <td width="30%"><font color="#FF0000">Not Null</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parent
+            Domain
+          </td>
+          <td width="30%"><font color="#FF0000">String</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description
+          </td>
+          <td width="30%"><font color="#FF0000">System Operation Code</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment
+          </td>
+          <td width="30%"><font color="#FF0000">System Operation Code [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000">false</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000">false</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme
+          </td>
+          <td width="30%"><font color="#FF0000">Corporate</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">CD_PRD</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Product Code</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical
+            Datatype
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Integer</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Datatype
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Integer [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Name
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">CD_PRD</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company Product Code</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company Product Code [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">false</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">false</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Corporate</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Null
+            Option
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Not Null</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parent
+            Domain
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Number</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Relationships
+          </td>
+          <td width="30%"></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Relationship
+          </td>
+          <td width="30%"><font color="#FF0000">FK_CLI_02</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000">FK_CLI_02</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Keys
+            Groups/Indexes
+          </td>
+          <td width="30%"></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Key
+            Group/Index
+          </td>
+          <td width="30%"><font color="#FF0000">IX_CLI_02</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type
+          </td>
+          <td width="30%"><font color="#FF0000">FK</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entity/Table</td>
+          <td width="30%"><font color="#FF0000">OPR</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000">Operation</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name
+          </td>
+          <td width="30%"><font color="#FF0000">OPR</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description
+          </td>
+          <td width="30%"><font color="#FF0000">System Operation</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment
+          </td>
+          <td width="30%"><font color="#FF0000">System Operation [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Only
+          </td>
+          <td width="30%"><font color="#FF0000">true</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Only
+          </td>
+          <td width="30%"><font color="#FF0000">false</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme
+          </td>
+          <td width="30%"><font color="#FF0000">Corporate</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attributes/Columns
+          </td>
+          <td width="30%"></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column
+          </td>
+          <td width="30%"><font color="#FF0000">CD_OPR</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000">Operation Code</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical
+            Datatype
+          </td>
+          <td width="30%"><font color="#FF0000">CHAR(8)</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Datatype
+          </td>
+          <td width="30%"><font color="#FF0000">CHAR(8) [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Name
+          </td>
+          <td width="30%"><font color="#FF0000">CD_OPR</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Null
+            Option
+          </td>
+          <td width="30%"><font color="#FF0000">Not Null</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parent
+            Domain
+          </td>
+          <td width="30%"><font color="#FF0000">String</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description
+          </td>
+          <td width="30%"><font color="#FF0000">System Operation Code</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment
+          </td>
+          <td width="30%"><font color="#FF0000">System Operation Code [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000">false</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000">false</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme
+          </td>
+          <td width="30%"><font color="#FF0000">Corporate</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entity/Table</td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">PRD</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Product</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">PRD</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company Product</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company Product [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Only
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">true</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Only
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">false</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Corporate</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attributes/Columns
+          </td>
+          <td width="30%"></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">CD_PRD</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Product Code</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical
+            Datatype
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Integer</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Datatype
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Integer [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Name
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">CD_PRD</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company Product Code</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company Product Code [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">false</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">false</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Corporate</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Null
+            Option
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Not Null</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parent
+            Domain
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Not Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Number</font></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entity/Table</td>
+          <td width="30%"><font color="#FF0000">USU</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">USU</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000">User [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">User [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Name
+          </td>
+          <td width="30%"><font color="#FF0000">USU [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">USU [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description
+          </td>
+          <td width="30%"><font color="#FF0000">Company User</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company User</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment
+          </td>
+          <td width="30%"><font color="#FF0000">Company User [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company User [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Only
+          </td>
+          <td width="30%"><font color="#FF0000">true</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">true</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical Only
+          </td>
+          <td width="30%"><font color="#FF0000">false [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">false [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme
+          </td>
+          <td width="30%"><font color="#FF0000">Corporate</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Corporate</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attributes/Columns
+          </td>
+          <td width="30%"></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attribute/Column
+          </td>
+          <td width="30%"><font color="#FF0000">CD_USU</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">CD_USU</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000">User Code</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">User Code</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical
+            Datatype
+          </td>
+          <td width="30%"><font color="#FF0000">CHAR(8)</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">CHAR(8)</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Datatype
+          </td>
+          <td width="30%"><font color="#FF0000">CHAR(8) [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">CHAR(8) [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Name
+          </td>
+          <td width="30%"><font color="#FF0000">CD_USU</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">CD_USU</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description
+          </td>
+          <td width="30%"><font color="#FF0000">Company User Code</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company User Code</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comment
+          </td>
+          <td width="30%"><font color="#FF0000">Company User Code [Calculated]</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Company User Code [Calculated]</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000">false</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">false</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Physical
+            Only
+          </td>
+          <td width="30%"><font color="#FF0000">false</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">false</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Theme
+          </td>
+          <td width="30%"><font color="#FF0000"></font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF"></font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Null
+            Option
+          </td>
+          <td width="30%"><font color="#FF0000">Not Null</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Not Null</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parent
+            Domain
+          </td>
+          <td width="30%"><font color="#FF0000">String</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">String</font></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Domains</td>
+          <td width="30%"></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Domain</td>
+          <td width="30%"><font color="#FF0000">Number</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Number</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000">Number</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Number</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Datatype
+          </td>
+          <td width="30%"><font color="#FF0000">NUMERIC(18)</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">NUMERIC(18)</font></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Domain</td>
+          <td width="30%"><font color="#FF0000">String</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">String</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name
+          </td>
+          <td width="30%"><font color="#FF0000">String</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">String</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logical Datatype
+          </td>
+          <td width="30%"><font color="#FF0000">VARCHAR(255)</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">VARCHAR(255)</font></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subject Areas</td>
+          <td width="30%"></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"></td>
+        </tr>
+        <tr>
+          <td width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subject Area</td>
+          <td width="30%"><font color="#FF0000">Main</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Main</font></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ER Diagrams
+          </td>
+          <td width="30%"></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"></td>
+        </tr>
+        <tr>
+          <td width="30%">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ER Diagram
+          </td>
+          <td width="30%"><font color="#FF0000">Main Diagram</font></td>
+          <td
+            width="50"
+            align="center"
+            nowrap
+          >
+            Equal
+          </td>
+          <td width="30%"><font color="#0000FF">Main Diagram</font></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
 </html>

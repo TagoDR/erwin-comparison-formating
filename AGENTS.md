@@ -30,7 +30,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
    - **Stats Panel:** Summary table with integrated action buttons.
      - **Flip Side:** Global side-swapping.
      - **Copy Tables:** Quick export of table names.
-   - **Filter Panel:** 
+   - **Filter Panel:**
      - Grouped switches: "Show Properties", "**Hide Calculated**" (ON by default), "Only Entities", and "Only Ent+Atr".
      - Search and status filters.
    - **Data Table Panel:** Fixed-layout grid with hierarchy visualization and **dynamic indicators** (rotating chevrons and sitemap icons).
@@ -47,22 +47,22 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 
 ### 3.3. Interactions
 
-| Interaction       | Effect                                                 |
-| :---------------- | :----------------------------------------------------- |
-| **Left Click**    | Toggle property visibility for the selected object.    |
-| **Right Click**   | Toggle sub-object (children) visibility.               |
-| **"Only" Modes**  | Acts as "default collapsed" states; allow manual drill-down via click. |
-| **Copy Icons**    | Copies value to clipboard with feedback.                |
+| Interaction      | Effect                                                                 |
+| :--------------- | :--------------------------------------------------------------------- |
+| **Left Click**   | Toggle property visibility for the selected object.                    |
+| **Right Click**  | Toggle sub-object (children) visibility.                               |
+| **"Only" Modes** | Acts as "default collapsed" states; allow manual drill-down via click. |
+| **Copy Icons**   | Copies value to clipboard with feedback.                               |
 
 ## 4. Visual Encoding (Office 2010 Palette)
 
 ### 4.1. Status Colors
 
-| Object               | Addition (Green) | Change (Purple) | Deletion (Red) | Calculated (Orange) | Text  |
-| :------------------- | :--------------- | :-------------- | :------------- | :------------------ | :---- |
-| **Table/Entity**     | #9BBB59 (Base)   | #8064A2 (Base)  | #C0504D (Base) | #F79646 (Base)      | White |
-| **Attribute/Column** | #D7E3BC (60%)    | #CCC1D9 (60%)   | #E5B9B7 (60%)  | #FBD5B5 (60%)       | Black |
-| **Orange Scale**     | Metadata headers use a levels-based orange scale (Level 0-6).              | Theme |
+| Object               | Addition (Green)                                              | Change (Purple) | Deletion (Red) | Calculated (Orange) | Text  |
+| :------------------- | :------------------------------------------------------------ | :-------------- | :------------- | :------------------ | :---- |
+| **Table/Entity**     | #9BBB59 (Base)                                                | #8064A2 (Base)  | #C0504D (Base) | #F79646 (Base)      | White |
+| **Attribute/Column** | #D7E3BC (60%)                                                 | #CCC1D9 (60%)   | #E5B9B7 (60%)  | #FBD5B5 (60%)       | Black |
+| **Orange Scale**     | Metadata headers use a levels-based orange scale (Level 0-6). | Theme           |
 
 ### 4.2. Name Fields (Character Counter)
 
@@ -73,4 +73,5 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 ## 5. Build and Distribution
 
 - `npm run build`: Generates Standalone and Userscript outputs.
+- `npm run gen:sample`: Synchronizes `sample.html` with `sample.ts` JSON structure.
 - **Userscript UX:** Includes an immediate loading spinner to provide feedback during large file ingestion.
