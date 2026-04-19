@@ -387,11 +387,48 @@ export const toggleSubObjects = (id: string) => {
   hiddenSubObjectsIds$.set(current);
 };
 
-/** Toggles row selection for batch operations. */
+/** Toggles row selection for batch operations. 
+ * Automatically hides properties and sub-objects when checked, but allows manual toggle back.
+ */
 export const toggleCheck = (id: string) => {
   const currentChecked = new Set(checkedIds$.get());
-  if (currentChecked.has(id)) currentChecked.delete(id);
-  else currentChecked.add(id);
+  const becomingChecked = !currentChecked.has(id);
+  
+  const propsToggled = new Set(toggledPropertiesIds$.get());
+  const subsHidden = new Set(hiddenSubObjectsIds$.get());
+
+  if (becomingChecked) {
+    currentChecked.add(id);
+    
+    // Hide Properties
+    const globalShow = showProperties$.get();
+    if (globalShow) propsToggled.add(id); // global ON -> toggle to HIDE
+    else propsToggled.delete(id); // global OFF -> hidden by default, ensure NO toggle
+
+    // Hide Sub-objects
+    const onlyEnt = onlyEntities$.get();
+    const onlyEntAtr = onlyEntitiesAndAttributes$.get();
+    const row = enrichedData$.get().find(r => r.id === id);
+    
+    let baseSubHidden = false;
+    if (row) {
+        // Determine if it's hidden by mode default
+        if (onlyEnt && row.prop === 'Ent' && row.hasSubObjects) baseSubHidden = true;
+        if (onlyEntAtr && row.prop === 'Atr' && row.hasSubObjects) baseSubHidden = true;
+    }
+    
+    if (baseSubHidden) subsHidden.delete(id); // If it's hidden by mode, untoggle it to KEEP it hidden
+    else subsHidden.add(id); // If it's shown by default, toggle it to HIDE it
+    
+  } else {
+    currentChecked.delete(id);
+    // When unchecking, we return to the default (untoggled) state
+    propsToggled.delete(id);
+    subsHidden.delete(id);
+  }
+  
+  toggledPropertiesIds$.set(propsToggled);
+  hiddenSubObjectsIds$.set(subsHidden);
   checkedIds$.set(currentChecked);
 };
 
