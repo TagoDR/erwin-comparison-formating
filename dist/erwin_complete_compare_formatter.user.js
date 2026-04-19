@@ -144,20 +144,20 @@
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit-html/directive.js
-	var t$7, e$8, i$7;
+	var t$8, e$9, i$8;
 	var init_directive$2 = __esmMin((() => {
-		t$7 = {
+		t$8 = {
 			ATTRIBUTE: 1,
 			CHILD: 2,
 			PROPERTY: 3,
 			BOOLEAN_ATTRIBUTE: 4,
 			EVENT: 5,
 			ELEMENT: 6
-		}, e$8 = (t) => (...e) => ({
+		}, e$9 = (t) => (...e) => ({
 			_$litDirective$: t,
 			values: e
 		});
-		i$7 = class {
+		i$8 = class {
 			constructor(t) {}
 			get _$AU() {
 				return this._$AM._$AU;
@@ -182,30 +182,30 @@
 	//#region node_modules/lit-translate/node_modules/lit-html/lit-html.js
 	function P$1(t, i) {
 		if (!Array.isArray(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
-		return void 0 !== e$7 ? e$7.createHTML(i) : i;
+		return void 0 !== e$8 ? e$8.createHTML(i) : i;
 	}
 	function S$2(t, i, s = t, e) {
 		var o, n, l, h;
 		if (i === T$1) return i;
 		let r = void 0 !== e ? null === (o = s._$Co) || void 0 === o ? void 0 : o[e] : s._$Cl;
-		const u = d$3(i) ? void 0 : i._$litDirective$;
+		const u = d$4(i) ? void 0 : i._$litDirective$;
 		return (null == r ? void 0 : r.constructor) !== u && (null === (n = null == r ? void 0 : r._$AO) || void 0 === n || n.call(r, !1), void 0 === u ? r = void 0 : (r = new u(t), r._$AT(t, s, e)), void 0 !== e ? (null !== (l = (h = s)._$Co) && void 0 !== l ? l : h._$Co = [])[e] = r : s._$Cl = r), void 0 !== r && (i = S$2(t, r._$AS(t, i.values), r, e)), i;
 	}
-	var t$6, i$6, s$5, e$7, o$9, n$6, l$4, h$4, r$7, u$3, d$3, c$5, v$2, a$3, f$3, _$1, m$2, p$3, g$1, $$1, y$2, w$1, T$1, A$1, E$1, C$1, V$1, N$1, M$1, R$1, k$1, H$1, I$1, L$1, z$1, Z$1, j$1, B$1, init_lit_html$1 = __esmMin((() => {
-		i$6 = window, s$5 = i$6.trustedTypes, e$7 = s$5 ? s$5.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, o$9 = "$lit$", n$6 = `lit$${(Math.random() + "").slice(9)}$`, l$4 = "?" + n$6, h$4 = `<${l$4}>`, r$7 = document, u$3 = () => r$7.createComment(""), d$3 = (t) => null === t || "object" != typeof t && "function" != typeof t, c$5 = Array.isArray, v$2 = (t) => c$5(t) || "function" == typeof (null == t ? void 0 : t[Symbol.iterator]), a$3 = "[ 	\n\f\r]", f$3 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _$1 = /-->/g, m$2 = />/g, p$3 = RegExp(`>|${a$3}(?:([^\\s"'>=/]+)(${a$3}*=${a$3}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), g$1 = /'/g, $$1 = /"/g, y$2 = /^(?:script|style|textarea|title)$/i, w$1 = (t) => (i, ...s) => ({
+	var t$7, i$7, s$6, e$8, o$9, n$7, l$5, h$5, r$8, u$5, d$4, c$7, v$3, a$3, f$4, _$1, m$3, p$4, g$1, $$1, y$2, w$1, T$1, A$1, E$1, C$1, V$1, N$1, M$2, R$1, k$1, H$1, I$1, L$1, z$1, Z$1, j$2, B$1, init_lit_html$1 = __esmMin((() => {
+		i$7 = window, s$6 = i$7.trustedTypes, e$8 = s$6 ? s$6.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, o$9 = "$lit$", n$7 = `lit$${(Math.random() + "").slice(9)}$`, l$5 = "?" + n$7, h$5 = `<${l$5}>`, r$8 = document, u$5 = () => r$8.createComment(""), d$4 = (t) => null === t || "object" != typeof t && "function" != typeof t, c$7 = Array.isArray, v$3 = (t) => c$7(t) || "function" == typeof (null == t ? void 0 : t[Symbol.iterator]), a$3 = "[ 	\n\f\r]", f$4 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _$1 = /-->/g, m$3 = />/g, p$4 = RegExp(`>|${a$3}(?:([^\\s"'>=/]+)(${a$3}*=${a$3}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), g$1 = /'/g, $$1 = /"/g, y$2 = /^(?:script|style|textarea|title)$/i, w$1 = (t) => (i, ...s) => ({
 			_$litType$: t,
 			strings: i,
 			values: s
-		}), w$1(1), w$1(2), T$1 = Symbol.for("lit-noChange"), A$1 = Symbol.for("lit-nothing"), E$1 = /* @__PURE__ */ new WeakMap(), C$1 = r$7.createTreeWalker(r$7, 129, null, !1);
+		}), w$1(1), w$1(2), T$1 = Symbol.for("lit-noChange"), A$1 = Symbol.for("lit-nothing"), E$1 = /* @__PURE__ */ new WeakMap(), C$1 = r$8.createTreeWalker(r$8, 129, null, !1);
 		V$1 = (t, i) => {
 			const s = t.length - 1, e = [];
-			let l, r = 2 === i ? "<svg>" : "", u = f$3;
+			let l, r = 2 === i ? "<svg>" : "", u = f$4;
 			for (let i = 0; i < s; i++) {
 				const s = t[i];
 				let d, c, v = -1, a = 0;
-				for (; a < s.length && (u.lastIndex = a, c = u.exec(s), null !== c);) a = u.lastIndex, u === f$3 ? "!--" === c[1] ? u = _$1 : void 0 !== c[1] ? u = m$2 : void 0 !== c[2] ? (y$2.test(c[2]) && (l = RegExp("</" + c[2], "g")), u = p$3) : void 0 !== c[3] && (u = p$3) : u === p$3 ? ">" === c[0] ? (u = null != l ? l : f$3, v = -1) : void 0 === c[1] ? v = -2 : (v = u.lastIndex - c[2].length, d = c[1], u = void 0 === c[3] ? p$3 : "\"" === c[3] ? $$1 : g$1) : u === $$1 || u === g$1 ? u = p$3 : u === _$1 || u === m$2 ? u = f$3 : (u = p$3, l = void 0);
-				const w = u === p$3 && t[i + 1].startsWith("/>") ? " " : "";
-				r += u === f$3 ? s + h$4 : v >= 0 ? (e.push(d), s.slice(0, v) + o$9 + s.slice(v) + n$6 + w) : s + n$6 + (-2 === v ? (e.push(void 0), i) : w);
+				for (; a < s.length && (u.lastIndex = a, c = u.exec(s), null !== c);) a = u.lastIndex, u === f$4 ? "!--" === c[1] ? u = _$1 : void 0 !== c[1] ? u = m$3 : void 0 !== c[2] ? (y$2.test(c[2]) && (l = RegExp("</" + c[2], "g")), u = p$4) : void 0 !== c[3] && (u = p$4) : u === p$4 ? ">" === c[0] ? (u = null != l ? l : f$4, v = -1) : void 0 === c[1] ? v = -2 : (v = u.lastIndex - c[2].length, d = c[1], u = void 0 === c[3] ? p$4 : "\"" === c[3] ? $$1 : g$1) : u === $$1 || u === g$1 ? u = p$4 : u === _$1 || u === m$3 ? u = f$4 : (u = p$4, l = void 0);
+				const w = u === p$4 && t[i + 1].startsWith("/>") ? " " : "";
+				r += u === f$4 ? s + h$5 : v >= 0 ? (e.push(d), s.slice(0, v) + o$9 + s.slice(v) + n$7 + w) : s + n$7 + (-2 === v ? (e.push(void 0), i) : w);
 			}
 			return [P$1(t, r + (t[s] || "<?>") + (2 === i ? "</svg>" : "")), e];
 		};
@@ -223,10 +223,10 @@
 					if (1 === h.nodeType) {
 						if (h.hasAttributes()) {
 							const t = [];
-							for (const i of h.getAttributeNames()) if (i.endsWith(o$9) || i.startsWith(n$6)) {
+							for (const i of h.getAttributeNames()) if (i.endsWith(o$9) || i.startsWith(n$7)) {
 								const s = f[d++];
 								if (t.push(i), void 0 !== s) {
-									const t = h.getAttribute(s.toLowerCase() + o$9).split(n$6), i = /([.?@])?(.*)/.exec(s);
+									const t = h.getAttribute(s.toLowerCase() + o$9).split(n$7), i = /([.?@])?(.*)/.exec(s);
 									v.push({
 										type: 1,
 										index: r,
@@ -242,36 +242,36 @@
 							for (const i of t) h.removeAttribute(i);
 						}
 						if (y$2.test(h.tagName)) {
-							const t = h.textContent.split(n$6), i = t.length - 1;
+							const t = h.textContent.split(n$7), i = t.length - 1;
 							if (i > 0) {
-								h.textContent = s$5 ? s$5.emptyScript : "";
-								for (let s = 0; s < i; s++) h.append(t[s], u$3()), C$1.nextNode(), v.push({
+								h.textContent = s$6 ? s$6.emptyScript : "";
+								for (let s = 0; s < i; s++) h.append(t[s], u$5()), C$1.nextNode(), v.push({
 									type: 2,
 									index: ++r
 								});
-								h.append(t[i], u$3());
+								h.append(t[i], u$5());
 							}
 						}
-					} else if (8 === h.nodeType) if (h.data === l$4) v.push({
+					} else if (8 === h.nodeType) if (h.data === l$5) v.push({
 						type: 2,
 						index: r
 					});
 					else {
 						let t = -1;
-						for (; -1 !== (t = h.data.indexOf(n$6, t + 1));) v.push({
+						for (; -1 !== (t = h.data.indexOf(n$7, t + 1));) v.push({
 							type: 7,
 							index: r
-						}), t += n$6.length - 1;
+						}), t += n$7.length - 1;
 					}
 					r++;
 				}
 			}
 			static createElement(t, i) {
-				const s = r$7.createElement("template");
+				const s = r$8.createElement("template");
 				return s.innerHTML = t, s;
 			}
 		};
-		M$1 = class {
+		M$2 = class {
 			constructor(t, i) {
 				this._$AV = [], this._$AN = void 0, this._$AD = t, this._$AM = i;
 			}
@@ -283,7 +283,7 @@
 			}
 			u(t) {
 				var i;
-				const { el: { content: s }, parts: e } = this._$AD, o = (null !== (i = null == t ? void 0 : t.creationScope) && void 0 !== i ? i : r$7).importNode(s, !0);
+				const { el: { content: s }, parts: e } = this._$AD, o = (null !== (i = null == t ? void 0 : t.creationScope) && void 0 !== i ? i : r$8).importNode(s, !0);
 				C$1.currentNode = o;
 				let n = C$1.nextNode(), l = 0, h = 0, u = e[0];
 				for (; void 0 !== u;) {
@@ -293,7 +293,7 @@
 					}
 					l !== (null == u ? void 0 : u.index) && (n = C$1.nextNode(), l++);
 				}
-				return C$1.currentNode = r$7, o;
+				return C$1.currentNode = r$8, o;
 			}
 			v(t) {
 				let i = 0;
@@ -321,7 +321,7 @@
 				return this._$AB;
 			}
 			_$AI(t, i = this) {
-				t = S$2(this, t, i), d$3(t) ? t === A$1 || null == t || "" === t ? (this._$AH !== A$1 && this._$AR(), this._$AH = A$1) : t !== this._$AH && t !== T$1 && this._(t) : void 0 !== t._$litType$ ? this.g(t) : void 0 !== t.nodeType ? this.$(t) : v$2(t) ? this.T(t) : this._(t);
+				t = S$2(this, t, i), d$4(t) ? t === A$1 || null == t || "" === t ? (this._$AH !== A$1 && this._$AR(), this._$AH = A$1) : t !== this._$AH && t !== T$1 && this._(t) : void 0 !== t._$litType$ ? this.g(t) : void 0 !== t.nodeType ? this.$(t) : v$3(t) ? this.T(t) : this._(t);
 			}
 			k(t) {
 				return this._$AA.parentNode.insertBefore(t, this._$AB);
@@ -330,14 +330,14 @@
 				this._$AH !== t && (this._$AR(), this._$AH = this.k(t));
 			}
 			_(t) {
-				this._$AH !== A$1 && d$3(this._$AH) ? this._$AA.nextSibling.data = t : this.$(r$7.createTextNode(t)), this._$AH = t;
+				this._$AH !== A$1 && d$4(this._$AH) ? this._$AA.nextSibling.data = t : this.$(r$8.createTextNode(t)), this._$AH = t;
 			}
 			g(t) {
 				var i;
 				const { values: s, _$litType$: e } = t, o = "number" == typeof e ? this._$AC(t) : (void 0 === e.el && (e.el = N$1.createElement(P$1(e.h, e.h[0]), this.options)), e);
 				if ((null === (i = this._$AH) || void 0 === i ? void 0 : i._$AD) === o) this._$AH.v(s);
 				else {
-					const t = new M$1(o, this), i = t.u(this.options);
+					const t = new M$2(o, this), i = t.u(this.options);
 					t.v(s), this.$(i), this._$AH = t;
 				}
 			}
@@ -346,10 +346,10 @@
 				return void 0 === i && E$1.set(t.strings, i = new N$1(t)), i;
 			}
 			T(t) {
-				c$5(this._$AH) || (this._$AH = [], this._$AR());
+				c$7(this._$AH) || (this._$AH = [], this._$AR());
 				const i = this._$AH;
 				let s, e = 0;
-				for (const o of t) e === i.length ? i.push(s = new R$1(this.k(u$3()), this.k(u$3()), this, this.options)) : s = i[e], s._$AI(o), e++;
+				for (const o of t) e === i.length ? i.push(s = new R$1(this.k(u$5()), this.k(u$5()), this, this.options)) : s = i[e], s._$AI(o), e++;
 				e < i.length && (this._$AR(s && s._$AB.nextSibling, e), i.length = e);
 			}
 			_$AR(t = this._$AA.nextSibling, i) {
@@ -377,11 +377,11 @@
 			_$AI(t, i = this, s, e) {
 				const o = this.strings;
 				let n = !1;
-				if (void 0 === o) t = S$2(this, t, i, 0), n = !d$3(t) || t !== this._$AH && t !== T$1, n && (this._$AH = t);
+				if (void 0 === o) t = S$2(this, t, i, 0), n = !d$4(t) || t !== this._$AH && t !== T$1, n && (this._$AH = t);
 				else {
 					const e = t;
 					let l, h;
-					for (t = o[0], l = 0; l < o.length - 1; l++) h = S$2(this, e[s + l], i, l), h === T$1 && (h = this._$AH[l]), n || (n = !d$3(h) || h !== this._$AH[l]), h === A$1 ? t = A$1 : t !== A$1 && (t += (null != h ? h : "") + o[l + 1]), this._$AH[l] = h;
+					for (t = o[0], l = 0; l < o.length - 1; l++) h = S$2(this, e[s + l], i, l), h === T$1 && (h = this._$AH[l]), n || (n = !d$4(h) || h !== this._$AH[l]), h === A$1 ? t = A$1 : t !== A$1 && (t += (null != h ? h : "") + o[l + 1]), this._$AH[l] = h;
 				}
 				n && !e && this.j(t);
 			}
@@ -397,7 +397,7 @@
 				this.element[this.name] = t === A$1 ? void 0 : t;
 			}
 		};
-		I$1 = s$5 ? s$5.emptyScript : "";
+		I$1 = s$6 ? s$6.emptyScript : "";
 		L$1 = class extends k$1 {
 			constructor() {
 				super(...arguments), this.type = 4;
@@ -432,14 +432,14 @@
 				S$2(this, t);
 			}
 		};
-		j$1 = {
+		j$2 = {
 			O: o$9,
-			P: n$6,
-			A: l$4,
+			P: n$7,
+			A: l$5,
 			C: 1,
 			M: V$1,
-			L: M$1,
-			R: v$2,
+			L: M$2,
+			R: v$3,
 			D: S$2,
 			I: R$1,
 			V: k$1,
@@ -447,33 +447,33 @@
 			N: z$1,
 			U: H$1,
 			F: Z$1
-		}, B$1 = i$6.litHtmlPolyfillSupport;
-		B$1?.(N$1, R$1), (null !== (t$6 = i$6.litHtmlVersions) && void 0 !== t$6 ? t$6 : i$6.litHtmlVersions = []).push("2.8.0");
-	})), l$3, e$6;
-	var init_directive_helpers = __esmMin((() => {
+		}, B$1 = i$7.litHtmlPolyfillSupport;
+		B$1?.(N$1, R$1), (null !== (t$7 = i$7.litHtmlVersions) && void 0 !== t$7 ? t$7 : i$7.litHtmlVersions = []).push("2.8.0");
+	})), l$4, e$7;
+	var init_directive_helpers$1 = __esmMin((() => {
 		init_lit_html$1();
-		({I: l$3} = j$1), e$6 = (o) => void 0 === o.strings;
+		({I: l$4} = j$2), e$7 = (o) => void 0 === o.strings;
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit-html/async-directive.js
-	function n$4(i) {
-		void 0 !== this._$AN ? (o$8(this), this._$AM = i, r$5(this)) : this._$AM = i;
+	function n$5(i) {
+		void 0 !== this._$AN ? (o$8(this), this._$AM = i, r$6(this)) : this._$AM = i;
 	}
-	function h$2(i, t = !1, e = 0) {
+	function h$3(i, t = !1, e = 0) {
 		const r = this._$AH, n = this._$AN;
-		if (void 0 !== n && 0 !== n.size) if (t) if (Array.isArray(r)) for (let i = e; i < r.length; i++) s$3(r[i], !1), o$8(r[i]);
-		else null != r && (s$3(r, !1), o$8(r));
-		else s$3(this, i);
+		if (void 0 !== n && 0 !== n.size) if (t) if (Array.isArray(r)) for (let i = e; i < r.length; i++) s$4(r[i], !1), o$8(r[i]);
+		else null != r && (s$4(r, !1), o$8(r));
+		else s$4(this, i);
 	}
-	var s$3, o$8, r$5, l$2, c$3;
+	var s$4, o$8, r$6, l$3, c$5;
 	var init_async_directive$1 = __esmMin((() => {
-		init_directive_helpers();
+		init_directive_helpers$1();
 		init_directive$2();
-		s$3 = (i, t) => {
+		s$4 = (i, t) => {
 			var e, o;
 			const r = i._$AN;
 			if (void 0 === r) return !1;
-			for (const i of r) null === (o = (e = i)._$AO) || void 0 === o || o.call(e, t, !1), s$3(i, t);
+			for (const i of r) null === (o = (e = i)._$AO) || void 0 === o || o.call(e, t, !1), s$4(i, t);
 			return !0;
 		}, o$8 = (i) => {
 			let t, e;
@@ -481,31 +481,31 @@
 				if (void 0 === (t = i._$AM)) break;
 				e = t._$AN, e.delete(i), i = t;
 			} while (0 === (null == e ? void 0 : e.size));
-		}, r$5 = (i) => {
+		}, r$6 = (i) => {
 			for (let t; t = i._$AM; i = t) {
 				let e = t._$AN;
 				if (void 0 === e) t._$AN = e = /* @__PURE__ */ new Set();
 				else if (e.has(i)) break;
-				e.add(i), l$2(t);
+				e.add(i), l$3(t);
 			}
 		};
-		l$2 = (i) => {
+		l$3 = (i) => {
 			var t, s, o, r;
-			i.type == t$7.CHILD && (null !== (t = (o = i)._$AP) && void 0 !== t || (o._$AP = h$2), null !== (s = (r = i)._$AQ) && void 0 !== s || (r._$AQ = n$4));
+			i.type == t$8.CHILD && (null !== (t = (o = i)._$AP) && void 0 !== t || (o._$AP = h$3), null !== (s = (r = i)._$AQ) && void 0 !== s || (r._$AQ = n$5));
 		};
-		c$3 = class extends i$7 {
+		c$5 = class extends i$8 {
 			constructor() {
 				super(...arguments), this._$AN = void 0;
 			}
 			_$AT(i, t, e) {
-				super._$AT(i, t, e), r$5(this), this.isConnected = i._$AU;
+				super._$AT(i, t, e), r$6(this), this.isConnected = i._$AU;
 			}
 			_$AO(i, t = !0) {
 				var e, r;
-				i !== this.isConnected && (this.isConnected = i, i ? null === (e = this.reconnected) || void 0 === e || e.call(this) : null === (r = this.disconnected) || void 0 === r || r.call(this)), t && (s$3(this, i), o$8(this));
+				i !== this.isConnected && (this.isConnected = i, i ? null === (e = this.reconnected) || void 0 === e || e.call(this) : null === (r = this.disconnected) || void 0 === r || r.call(this)), t && (s$4(this, i), o$8(this));
 			}
 			setValue(t) {
-				if (e$6(this._$Ct)) this._$Ct._$AI(t, this);
+				if (e$7(this._$Ct)) this._$Ct._$AI(t, this);
 				else {
 					const i = [...this._$Ct._$AH];
 					i[this._$Ci] = t, this._$Ct._$AI(i, this, 0);
@@ -526,7 +526,7 @@
 	var init_lang_changed_base = __esmMin((() => {
 		init_async_directive();
 		init_util();
-		LangChangedDirectiveBase = class extends c$3 {
+		LangChangedDirectiveBase = class extends c$5 {
 			constructor() {
 				super(...arguments);
 				this.langChangedSubscription = null;
@@ -587,17 +587,17 @@
 				return this.renderValue(() => get(key, values, config));
 			}
 		};
-		translate = e$8(TranslateDirective);
+		translate = e$9(TranslateDirective);
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit-html/directives/unsafe-html.js
-	var e$5, o$7;
+	var e$6, o$7;
 	var init_unsafe_html$2 = __esmMin((() => {
 		init_lit_html$1();
 		init_directive$2();
-		e$5 = class extends i$7 {
+		e$6 = class extends i$8 {
 			constructor(i) {
-				if (super(i), this.et = A$1, i.type !== t$7.CHILD) throw Error(this.constructor.directiveName + "() can only be used in child bindings");
+				if (super(i), this.et = A$1, i.type !== t$8.CHILD) throw Error(this.constructor.directiveName + "() can only be used in child bindings");
 			}
 			render(r) {
 				if (r === A$1 || null == r) return this.ft = void 0, this.et = r;
@@ -613,8 +613,8 @@
 				};
 			}
 		};
-		e$5.directiveName = "unsafeHTML", e$5.resultType = 1;
-		o$7 = e$8(e$5);
+		e$6.directiveName = "unsafeHTML", e$6.resultType = 1;
+		o$7 = e$9(e$6);
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit/directives/unsafe-html.js
@@ -631,7 +631,7 @@
 				return this.renderValue(() => o$7(get(key, values, config)));
 			}
 		};
-		e$8(TranslateUnsafeHTMLDirective);
+		e$9(TranslateUnsafeHTMLDirective);
 	})), LangChangedDirective;
 	var init_lang_changed = __esmMin((() => {
 		init_directive$1();
@@ -641,7 +641,7 @@
 				return this.renderValue(getValue);
 			}
 		};
-		e$8(LangChangedDirective);
+		e$9(LangChangedDirective);
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/index.js
@@ -1106,7 +1106,7 @@
 	}));
 	//#endregion
 	//#region src/store/data.store.ts
-	var modelData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, enrichedData$, filteredData$, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, resetFilters, toggleFlip, togglePropertiesGlobal, statsSummary$;
+	var modelData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, hiddenProperties$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, isPropertyDrawerOpen$, enrichedData$, filteredData$, uniqueProperties$, toggleProperty, hideAllProperties, resetHiddenProperties, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, resetFilters, toggleFlip, togglePropertiesGlobal, statsSummary$;
 	var init_data_store = __esmMin((() => {
 		init_nanostores();
 		init_types();
@@ -1119,11 +1119,13 @@
 		onlyEntities$ = /* @__PURE__ */ atom(false);
 		onlyEntitiesAndAttributes$ = /* @__PURE__ */ atom(false);
 		hideCalculated$ = /* @__PURE__ */ atom(true);
+		hiddenProperties$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		showProperties$ = /* @__PURE__ */ atom(false);
 		toggledPropertiesIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		hiddenSubObjectsIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		checkedIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		isFlipped$ = /* @__PURE__ */ atom(false);
+		isPropertyDrawerOpen$ = /* @__PURE__ */ atom(false);
 		enrichedData$ = /* @__PURE__ */ computed(modelData$, (model) => {
 			if (!model) return [];
 			const result = [];
@@ -1159,6 +1161,7 @@
 						...p,
 						id: `${id}-p-${idx}`,
 						parentId: id,
+						parentType: obj.id.type,
 						prop: enrichedHeader.prop,
 						change: p.left && p.right ? "A" : p.left ? "I" : "E",
 						view: "",
@@ -1174,20 +1177,20 @@
 				result.push(enrichedHeader);
 				result.push(...enrichedProperties);
 				let childAttrCount = 0;
-				if (obj.children) {
-					enrichedHeader.hasSubObjects = true;
-					for (const children of Object.values(obj.children)) {
-						if (!children) continue;
-						for (const child of children) {
-							process(child, id);
-							if ([
-								"Attribute/Column",
-								"Attribute",
-								"Column"
-							].includes(child.id.type)) childAttrCount++;
-						}
+				let hasActualSubObjects = false;
+				if (obj.children) for (const children of Object.values(obj.children)) {
+					if (!children || children.length === 0) continue;
+					hasActualSubObjects = true;
+					for (const child of children) {
+						process(child, id);
+						if ([
+							"Attribute/Column",
+							"Attribute",
+							"Column"
+						].includes(child.id.type)) childAttrCount++;
 					}
 				}
+				enrichedHeader.hasSubObjects = hasActualSubObjects;
 				enrichedHeader.hasProperties = enrichedProperties.length > 0;
 				const finalAttrCount = Math.max(childAttrCount, attrCountFromOrderList);
 				if (finalAttrCount > 0 && enrichedHeader.prop === "Ent") enrichedHeader.attributeCount = finalAttrCount;
@@ -1209,8 +1212,9 @@
 			filterName$,
 			onlyEntities$,
 			onlyEntitiesAndAttributes$,
-			hideCalculated$
-		], (data, change, name, onlyEntities, onlyEntitiesAndAttributes, hideCalculated) => {
+			hideCalculated$,
+			hiddenProperties$
+		], (data, change, name, onlyEntities, onlyEntitiesAndAttributes, hideCalculated, hiddenProps) => {
 			if (data.length === 0) return [];
 			const rowsById = /* @__PURE__ */ new Map();
 			const childrenMap = /* @__PURE__ */ new Map();
@@ -1224,6 +1228,11 @@
 			}
 			let current = data;
 			if (hideCalculated) current = current.filter((r) => !r.isCalculated);
+			if (hiddenProps.size > 0) current = current.filter((r) => {
+				if (r.isHeader) return true;
+				const key = `${r.type}|${r.spaces}|${r.parentType}`;
+				return !hiddenProps.has(key);
+			});
 			if (onlyEntities || onlyEntitiesAndAttributes) {
 				const allowedIds = /* @__PURE__ */ new Set();
 				const addAncestors = (id) => {
@@ -1279,6 +1288,50 @@
 			}
 			return current;
 		});
+		uniqueProperties$ = /* @__PURE__ */ computed(enrichedData$, (data) => {
+			const parentTypeOrder = [];
+			const propertyMap = /* @__PURE__ */ new Map();
+			const seenPropertyKeys = /* @__PURE__ */ new Set();
+			for (const r of data) {
+				if (r.isHeader || !r.parentType) continue;
+				const parentType = r.parentType;
+				const key = `${r.type}|${r.spaces}|${parentType}`;
+				if (!parentTypeOrder.includes(parentType)) parentTypeOrder.push(parentType);
+				if (!seenPropertyKeys.has(key)) {
+					seenPropertyKeys.add(key);
+					const list = propertyMap.get(parentType) || [];
+					list.push({
+						key,
+						type: r.type,
+						spaces: r.spaces,
+						parentType
+					});
+					propertyMap.set(parentType, list);
+				}
+			}
+			return parentTypeOrder.map((parentType) => ({
+				parentType,
+				children: propertyMap.get(parentType) || []
+			}));
+		});
+		toggleProperty = (key) => {
+			const current = new Set(hiddenProperties$.get());
+			if (current.has(key)) current.delete(key);
+			else current.add(key);
+			hiddenProperties$.set(current);
+		};
+		hideAllProperties = () => {
+			const allKeys = /* @__PURE__ */ new Set();
+			uniqueProperties$.get().forEach((group) => {
+				group.children.forEach((p) => {
+					allKeys.add(p.key);
+				});
+			});
+			hiddenProperties$.set(allKeys);
+		};
+		resetHiddenProperties = () => {
+			hiddenProperties$.set(/* @__PURE__ */ new Set());
+		};
 		togglePropertiesIndividual = (id) => {
 			const current = new Set(toggledPropertiesIds$.get());
 			if (current.has(id)) current.delete(id);
@@ -1293,8 +1346,30 @@
 		};
 		toggleCheck = (id) => {
 			const currentChecked = new Set(checkedIds$.get());
-			if (currentChecked.has(id)) currentChecked.delete(id);
-			else currentChecked.add(id);
+			const becomingChecked = !currentChecked.has(id);
+			const propsToggled = new Set(toggledPropertiesIds$.get());
+			const subsHidden = new Set(hiddenSubObjectsIds$.get());
+			if (becomingChecked) {
+				currentChecked.add(id);
+				if (showProperties$.get()) propsToggled.add(id);
+				else propsToggled.delete(id);
+				const onlyEnt = onlyEntities$.get();
+				const onlyEntAtr = onlyEntitiesAndAttributes$.get();
+				const row = enrichedData$.get().find((r) => r.id === id);
+				let baseSubHidden = false;
+				if (row) {
+					if (onlyEnt && row.prop === "Ent" && row.hasSubObjects) baseSubHidden = true;
+					if (onlyEntAtr && row.prop === "Atr" && row.hasSubObjects) baseSubHidden = true;
+				}
+				if (baseSubHidden) subsHidden.delete(id);
+				else subsHidden.add(id);
+			} else {
+				currentChecked.delete(id);
+				propsToggled.delete(id);
+				subsHidden.delete(id);
+			}
+			toggledPropertiesIds$.set(propsToggled);
+			hiddenSubObjectsIds$.set(subsHidden);
 			checkedIds$.set(currentChecked);
 		};
 		initializeVisibility = () => {
@@ -1302,6 +1377,7 @@
 			toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
 			hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
 			isFlipped$.set(false);
+			resetHiddenProperties();
 		};
 		resetFilters = () => {
 			filterChange$.set("");
@@ -1364,12 +1440,15 @@
 			showProperties$,
 			hideCalculated$,
 			onlyEntities$,
-			onlyEntitiesAndAttributes$
+			onlyEntitiesAndAttributes$,
+			uniqueProperties$,
+			hiddenProperties$,
+			isPropertyDrawerOpen$
 		};
 	}));
 	//#endregion
 	//#region src/i18n/en-US.json
-	var header$3, stats$3, table$3, changes$3, app$3, en_US_default;
+	var header$3, stats$3, table$3, changes$3, app$3, drawer$3, en_US_default;
 	var init_en_US = __esmMin((() => {
 		header$3 = {
 			"title": "Erwin Compare Formatter",
@@ -1382,7 +1461,8 @@
 				"change": "Change",
 				"category": "Category",
 				"name": "Search Name...",
-				"clear_filters": "Clear all filters"
+				"clear_filters": "Clear all filters",
+				"properties": "Hide properties by name"
 			}
 		};
 		stats$3 = {
@@ -1429,17 +1509,25 @@
 			"no_file": "No file loaded, select a file above.",
 			"loading": "Processing html File..."
 		};
+		drawer$3 = {
+			"title": "Properties Filter",
+			"hide_all": "Hide All",
+			"show_all": "Show All",
+			"no_props": "No properties found in data.",
+			"tooltip": "Open property visibility filter"
+		};
 		en_US_default = {
 			header: header$3,
 			stats: stats$3,
 			table: table$3,
 			changes: changes$3,
-			app: app$3
+			app: app$3,
+			drawer: drawer$3
 		};
 	}));
 	//#endregion
 	//#region src/i18n/es-ES.json
-	var header$2, stats$2, table$2, changes$2, app$2, es_ES_default;
+	var header$2, stats$2, table$2, changes$2, app$2, drawer$2, es_ES_default;
 	var init_es_ES = __esmMin((() => {
 		header$2 = {
 			"title": "Formateador de Comparación Erwin",
@@ -1452,7 +1540,8 @@
 				"change": "Tipo de cambio",
 				"category": "Categoría",
 				"name": "Filtrar por nombre",
-				"clear_filters": "Limpiar todos los filtros"
+				"clear_filters": "Limpiar todos los filtros",
+				"properties": "Ocultar propiedades por nombre"
 			}
 		};
 		stats$2 = {
@@ -1499,17 +1588,25 @@
 			"no_file": "Ningún archivo cargado, seleccione un archivo arriba.",
 			"loading": "Procesando archivo HTML..."
 		};
+		drawer$2 = {
+			"title": "Filtro de Propiedades",
+			"hide_all": "Ocultar Todo",
+			"show_all": "Mostrar Todo",
+			"no_props": "No se encontraron propiedades en los datos.",
+			"tooltip": "Abrir filtro de visibilidad de propiedades"
+		};
 		es_ES_default = {
 			header: header$2,
 			stats: stats$2,
 			table: table$2,
 			changes: changes$2,
-			app: app$2
+			app: app$2,
+			drawer: drawer$2
 		};
 	}));
 	//#endregion
 	//#region src/i18n/fr-FR.json
-	var header$1, stats$1, table$1, changes$1, app$1, fr_FR_default;
+	var header$1, stats$1, table$1, changes$1, app$1, drawer$1, fr_FR_default;
 	var init_fr_FR = __esmMin((() => {
 		header$1 = {
 			"title": "Erwin Compare Formatter",
@@ -1522,7 +1619,8 @@
 				"change": "Type de changement",
 				"category": "Catégorie",
 				"name": "Filtrer par nom",
-				"clear_filters": "Réinitialiser les filtres"
+				"clear_filters": "Réinitialiser les filtres",
+				"properties": "Masquer les propriétés par nom"
 			}
 		};
 		stats$1 = {
@@ -1569,17 +1667,25 @@
 			"no_file": "Aucun fichier chargé, sélectionnez un fichier ci-dessus.",
 			"loading": "Traitement du fichier HTML..."
 		};
+		drawer$1 = {
+			"title": "Filtre de Propriétés",
+			"hide_all": "Tout Masquer",
+			"show_all": "Tout Afficher",
+			"no_props": "Aucune propriété trouvée dans les données.",
+			"tooltip": "Ouvrir le filtre de visibilité des propriétés"
+		};
 		fr_FR_default = {
 			header: header$1,
 			stats: stats$1,
 			table: table$1,
 			changes: changes$1,
-			app: app$1
+			app: app$1,
+			drawer: drawer$1
 		};
 	}));
 	//#endregion
 	//#region src/i18n/pt-BR.json
-	var header, stats, table, changes, app, pt_BR_default;
+	var header, stats, table, changes, app, drawer, pt_BR_default;
 	var init_pt_BR = __esmMin((() => {
 		header = {
 			"title": "Formatador de Comparação do Erwin",
@@ -1592,7 +1698,8 @@
 				"change": "Tipo de Alteração",
 				"category": "Categoria",
 				"name": "Filtrar por nome",
-				"clear_filters": "Limpar todos os filtros"
+				"clear_filters": "Limpar todos os filtros",
+				"properties": "Ocultar propriedades por nome"
 			}
 		};
 		stats = {
@@ -1639,12 +1746,20 @@
 			"no_file": "Nenhum arquivo carregado, selecione um arquivo acima.",
 			"loading": "Processando arquivo html..."
 		};
+		drawer = {
+			"title": "Filtro de Propriedades",
+			"hide_all": "Ocultar Tudo",
+			"show_all": "Mostrar Tudo",
+			"no_props": "Nenhuma propriedade encontrada nos dados.",
+			"tooltip": "Abrir filtro de visibilidade de propriedades"
+		};
 		pt_BR_default = {
 			header,
 			stats,
 			table,
 			changes,
-			app
+			app,
+			drawer
 		};
 	}));
 	//#endregion
@@ -1895,18 +2010,18 @@
 				return withStores_1.withStores;
 			}
 		});
-	})), t$4, e$4, s$2, o$6, n$3, r$4, S$1, c$2;
+	})), t$5, e$5, s$3, o$6, n$4, r$5, S$1, c$4;
 	var init_css_tag = __esmMin((() => {
-		t$4 = globalThis, e$4 = t$4.ShadowRoot && (void 0 === t$4.ShadyCSS || t$4.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s$2 = Symbol(), o$6 = /* @__PURE__ */ new WeakMap();
-		n$3 = class {
+		t$5 = globalThis, e$5 = t$5.ShadowRoot && (void 0 === t$5.ShadyCSS || t$5.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s$3 = Symbol(), o$6 = /* @__PURE__ */ new WeakMap();
+		n$4 = class {
 			constructor(t, e, o) {
-				if (this._$cssResult$ = !0, o !== s$2) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+				if (this._$cssResult$ = !0, o !== s$3) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
 				this.cssText = t, this.t = e;
 			}
 			get styleSheet() {
 				let t = this.o;
 				const s = this.t;
-				if (e$4 && void 0 === t) {
+				if (e$5 && void 0 === t) {
 					const e = void 0 !== s && 1 === s.length;
 					e && (t = o$6.get(s)), void 0 === t && ((this.o = t = new CSSStyleSheet()).replaceSync(this.cssText), e && o$6.set(s, t));
 				}
@@ -1916,28 +2031,28 @@
 				return this.cssText;
 			}
 		};
-		r$4 = (t) => new n$3("string" == typeof t ? t : t + "", void 0, s$2), S$1 = (s, o) => {
-			if (e$4) s.adoptedStyleSheets = o.map((t) => t instanceof CSSStyleSheet ? t : t.styleSheet);
+		r$5 = (t) => new n$4("string" == typeof t ? t : t + "", void 0, s$3), S$1 = (s, o) => {
+			if (e$5) s.adoptedStyleSheets = o.map((t) => t instanceof CSSStyleSheet ? t : t.styleSheet);
 			else for (const e of o) {
-				const o = document.createElement("style"), n = t$4.litNonce;
+				const o = document.createElement("style"), n = t$5.litNonce;
 				void 0 !== n && o.setAttribute("nonce", n), o.textContent = e.cssText, s.appendChild(o);
 			}
-		}, c$2 = e$4 ? (t) => t : (t) => t instanceof CSSStyleSheet ? ((t) => {
+		}, c$4 = e$5 ? (t) => t : (t) => t instanceof CSSStyleSheet ? ((t) => {
 			let e = "";
 			for (const s of t.cssRules) e += s.cssText;
-			return r$4(e);
+			return r$5(e);
 		})(t) : t;
 	}));
 	//#endregion
 	//#region node_modules/@lit/reactive-element/reactive-element.js
-	var i$3, e$3, h$1, r$3, o$5, n$2, a$1, c$1, l$1, p$1, d$1, u$1, f$1, b$1, y$1;
+	var i$4, e$4, h$2, r$4, o$5, n$3, a$1, c$3, l$2, p$2, d$2, u$3, f$2, b$1, y$1;
 	var init_reactive_element = __esmMin((() => {
 		init_css_tag();
-		({is: i$3, defineProperty: e$3, getOwnPropertyDescriptor: h$1, getOwnPropertyNames: r$3, getOwnPropertySymbols: o$5, getPrototypeOf: n$2} = Object), a$1 = globalThis, c$1 = a$1.trustedTypes, l$1 = c$1 ? c$1.emptyScript : "", p$1 = a$1.reactiveElementPolyfillSupport, d$1 = (t, s) => t, u$1 = {
+		({is: i$4, defineProperty: e$4, getOwnPropertyDescriptor: h$2, getOwnPropertyNames: r$4, getOwnPropertySymbols: o$5, getPrototypeOf: n$3} = Object), a$1 = globalThis, c$3 = a$1.trustedTypes, l$2 = c$3 ? c$3.emptyScript : "", p$2 = a$1.reactiveElementPolyfillSupport, d$2 = (t, s) => t, u$3 = {
 			toAttribute(t, s) {
 				switch (s) {
 					case Boolean:
-						t = t ? l$1 : null;
+						t = t ? l$2 : null;
 						break;
 					case Object:
 					case Array: t = null == t ? t : JSON.stringify(t);
@@ -1962,13 +2077,13 @@
 				}
 				return i;
 			}
-		}, f$1 = (t, s) => !i$3(t, s), b$1 = {
+		}, f$2 = (t, s) => !i$4(t, s), b$1 = {
 			attribute: !0,
 			type: String,
-			converter: u$1,
+			converter: u$3,
 			reflect: !1,
 			useDefault: !1,
-			hasChanged: f$1
+			hasChanged: f$2
 		};
 		Symbol.metadata ??= Symbol("metadata"), a$1.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
 		y$1 = class extends HTMLElement {
@@ -1981,11 +2096,11 @@
 			static createProperty(t, s = b$1) {
 				if (s.state && (s.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(t) && ((s = Object.create(s)).wrapped = !0), this.elementProperties.set(t, s), !s.noAccessor) {
 					const i = Symbol(), h = this.getPropertyDescriptor(t, i, s);
-					void 0 !== h && e$3(this.prototype, t, h);
+					void 0 !== h && e$4(this.prototype, t, h);
 				}
 			}
 			static getPropertyDescriptor(t, s, i) {
-				const { get: e, set: r } = h$1(this.prototype, t) ?? {
+				const { get: e, set: r } = h$2(this.prototype, t) ?? {
 					get() {
 						return this[s];
 					},
@@ -2007,14 +2122,14 @@
 				return this.elementProperties.get(t) ?? b$1;
 			}
 			static _$Ei() {
-				if (this.hasOwnProperty(d$1("elementProperties"))) return;
-				const t = n$2(this);
+				if (this.hasOwnProperty(d$2("elementProperties"))) return;
+				const t = n$3(this);
 				t.finalize(), void 0 !== t.l && (this.l = [...t.l]), this.elementProperties = new Map(t.elementProperties);
 			}
 			static finalize() {
-				if (this.hasOwnProperty(d$1("finalized"))) return;
-				if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(d$1("properties"))) {
-					const t = this.properties, s = [...r$3(t), ...o$5(t)];
+				if (this.hasOwnProperty(d$2("finalized"))) return;
+				if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(d$2("properties"))) {
+					const t = this.properties, s = [...r$4(t), ...o$5(t)];
 					for (const i of s) this.createProperty(i, t[i]);
 				}
 				const t = this[Symbol.metadata];
@@ -2033,8 +2148,8 @@
 				const i = [];
 				if (Array.isArray(s)) {
 					const e = new Set(s.flat(Infinity).reverse());
-					for (const s of e) i.unshift(c$2(s));
-				} else void 0 !== s && i.push(c$2(s));
+					for (const s of e) i.unshift(c$4(s));
+				} else void 0 !== s && i.push(c$4(s));
 				return i;
 			}
 			static _$Eu(t, s) {
@@ -2075,14 +2190,14 @@
 			_$ET(t, s) {
 				const i = this.constructor.elementProperties.get(t), e = this.constructor._$Eu(t, i);
 				if (void 0 !== e && !0 === i.reflect) {
-					const h = (void 0 !== i.converter?.toAttribute ? i.converter : u$1).toAttribute(s, i.type);
+					const h = (void 0 !== i.converter?.toAttribute ? i.converter : u$3).toAttribute(s, i.type);
 					this._$Em = t, null == h ? this.removeAttribute(e) : this.setAttribute(e, h), this._$Em = null;
 				}
 			}
 			_$AK(t, s) {
 				const i = this.constructor, e = i._$Eh.get(t);
 				if (void 0 !== e && this._$Em !== e) {
-					const t = i.getPropertyOptions(e), h = "function" == typeof t.converter ? { fromAttribute: t.converter } : void 0 !== t.converter?.fromAttribute ? t.converter : u$1;
+					const t = i.getPropertyOptions(e), h = "function" == typeof t.converter ? { fromAttribute: t.converter } : void 0 !== t.converter?.fromAttribute ? t.converter : u$3;
 					this._$Em = e;
 					const r = h.fromAttribute(s, t.type);
 					this[e] = r ?? this._$Ej?.get(e) ?? r, this._$Em = null;
@@ -2091,7 +2206,7 @@
 			requestUpdate(t, s, i, e = !1, h) {
 				if (void 0 !== t) {
 					const r = this.constructor;
-					if (!1 === e && (h = this[t]), i ??= r.getPropertyOptions(t), !((i.hasChanged ?? f$1)(h, s) || i.useDefault && i.reflect && h === this._$Ej?.get(t) && !this.hasAttribute(r._$Eu(t, i)))) return;
+					if (!1 === e && (h = this[t]), i ??= r.getPropertyOptions(t), !((i.hasChanged ?? f$2)(h, s) || i.useDefault && i.reflect && h === this._$Ej?.get(t) && !this.hasAttribute(r._$Eu(t, i)))) return;
 					this.C(t, s, i);
 				}
 				!1 === this.isUpdatePending && (this._$ES = this._$EP());
@@ -2156,36 +2271,36 @@
 			updated(t) {}
 			firstUpdated(t) {}
 		};
-		y$1.elementStyles = [], y$1.shadowRootOptions = { mode: "open" }, y$1[d$1("elementProperties")] = /* @__PURE__ */ new Map(), y$1[d$1("finalized")] = /* @__PURE__ */ new Map(), p$1?.({ ReactiveElement: y$1 }), (a$1.reactiveElementVersions ??= []).push("2.1.2");
+		y$1.elementStyles = [], y$1.shadowRootOptions = { mode: "open" }, y$1[d$2("elementProperties")] = /* @__PURE__ */ new Map(), y$1[d$2("finalized")] = /* @__PURE__ */ new Map(), p$2?.({ ReactiveElement: y$1 }), (a$1.reactiveElementVersions ??= []).push("2.1.2");
 	}));
 	//#endregion
 	//#region node_modules/lit-html/lit-html.js
 	function V(t, i) {
-		if (!u(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
-		return void 0 !== e$2 ? e$2.createHTML(i) : i;
+		if (!u$2(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
+		return void 0 !== e$3 ? e$3.createHTML(i) : i;
 	}
-	function M(t, i, s = t, e) {
+	function M$1(t, i, s = t, e) {
 		if (i === E) return i;
 		let h = void 0 !== e ? s._$Co?.[e] : s._$Cl;
 		const o = a(i) ? void 0 : i._$litDirective$;
-		return h?.constructor !== o && (h?._$AO?.(!1), void 0 === o ? h = void 0 : (h = new o(t), h._$AT(t, s, e)), void 0 !== e ? (s._$Co ??= [])[e] = h : s._$Cl = h), void 0 !== h && (i = M(t, h._$AS(t, i.values), h, e)), i;
+		return h?.constructor !== o && (h?._$AO?.(!1), void 0 === o ? h = void 0 : (h = new o(t), h._$AT(t, s, e)), void 0 !== e ? (s._$Co ??= [])[e] = h : s._$Cl = h), void 0 !== h && (i = M$1(t, h._$AS(t, i.values), h, e)), i;
 	}
-	var t$3, i$2, s$1, e$2, h, o$4, n$1, r$2, l, c, a, u, d, f, v, _, m, p, g, $, y, x, b, E, A, C, P, N, S, R, k, H, I, L, z, Z, B, D;
+	var t$4, i$3, s$2, e$3, h$1, o$4, n$2, r$3, l$1, c$2, a, u$2, d$1, f$1, v$1, _, m$1, p$1, g, $, y, x, b, E, A, C, P, N, S, R, k, H, I, L, z, Z, j$1, B, D;
 	var init_lit_html = __esmMin((() => {
-		t$3 = globalThis, i$2 = (t) => t, s$1 = t$3.trustedTypes, e$2 = s$1 ? s$1.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, h = "$lit$", o$4 = `lit$${Math.random().toFixed(9).slice(2)}$`, n$1 = "?" + o$4, r$2 = `<${n$1}>`, l = document, c = () => l.createComment(""), a = (t) => null === t || "object" != typeof t && "function" != typeof t, u = Array.isArray, d = (t) => u(t) || "function" == typeof t?.[Symbol.iterator], f = "[ 	\n\f\r]", v = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _ = /-->/g, m = />/g, p = RegExp(`>|${f}(?:([^\\s"'>=/]+)(${f}*=${f}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), g = /'/g, $ = /"/g, y = /^(?:script|style|textarea|title)$/i, x = (t) => (i, ...s) => ({
+		t$4 = globalThis, i$3 = (t) => t, s$2 = t$4.trustedTypes, e$3 = s$2 ? s$2.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, h$1 = "$lit$", o$4 = `lit$${Math.random().toFixed(9).slice(2)}$`, n$2 = "?" + o$4, r$3 = `<${n$2}>`, l$1 = document, c$2 = () => l$1.createComment(""), a = (t) => null === t || "object" != typeof t && "function" != typeof t, u$2 = Array.isArray, d$1 = (t) => u$2(t) || "function" == typeof t?.[Symbol.iterator], f$1 = "[ 	\n\f\r]", v$1 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _ = /-->/g, m$1 = />/g, p$1 = RegExp(`>|${f$1}(?:([^\\s"'>=/]+)(${f$1}*=${f$1}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), g = /'/g, $ = /"/g, y = /^(?:script|style|textarea|title)$/i, x = (t) => (i, ...s) => ({
 			_$litType$: t,
 			strings: i,
 			values: s
-		}), b = x(1), x(2), x(3), E = Symbol.for("lit-noChange"), A = Symbol.for("lit-nothing"), C = /* @__PURE__ */ new WeakMap(), P = l.createTreeWalker(l, 129);
+		}), b = x(1), x(2), x(3), E = Symbol.for("lit-noChange"), A = Symbol.for("lit-nothing"), C = /* @__PURE__ */ new WeakMap(), P = l$1.createTreeWalker(l$1, 129);
 		N = (t, i) => {
 			const s = t.length - 1, e = [];
-			let n, l = 2 === i ? "<svg>" : 3 === i ? "<math>" : "", c = v;
+			let n, l = 2 === i ? "<svg>" : 3 === i ? "<math>" : "", c = v$1;
 			for (let i = 0; i < s; i++) {
 				const s = t[i];
 				let a, u, d = -1, f = 0;
-				for (; f < s.length && (c.lastIndex = f, u = c.exec(s), null !== u);) f = c.lastIndex, c === v ? "!--" === u[1] ? c = _ : void 0 !== u[1] ? c = m : void 0 !== u[2] ? (y.test(u[2]) && (n = RegExp("</" + u[2], "g")), c = p) : void 0 !== u[3] && (c = p) : c === p ? ">" === u[0] ? (c = n ?? v, d = -1) : void 0 === u[1] ? d = -2 : (d = c.lastIndex - u[2].length, a = u[1], c = void 0 === u[3] ? p : "\"" === u[3] ? $ : g) : c === $ || c === g ? c = p : c === _ || c === m ? c = v : (c = p, n = void 0);
-				const x = c === p && t[i + 1].startsWith("/>") ? " " : "";
-				l += c === v ? s + r$2 : d >= 0 ? (e.push(a), s.slice(0, d) + h + s.slice(d) + o$4 + x) : s + o$4 + (-2 === d ? i : x);
+				for (; f < s.length && (c.lastIndex = f, u = c.exec(s), null !== u);) f = c.lastIndex, c === v$1 ? "!--" === u[1] ? c = _ : void 0 !== u[1] ? c = m$1 : void 0 !== u[2] ? (y.test(u[2]) && (n = RegExp("</" + u[2], "g")), c = p$1) : void 0 !== u[3] && (c = p$1) : c === p$1 ? ">" === u[0] ? (c = n ?? v$1, d = -1) : void 0 === u[1] ? d = -2 : (d = c.lastIndex - u[2].length, a = u[1], c = void 0 === u[3] ? p$1 : "\"" === u[3] ? $ : g) : c === $ || c === g ? c = p$1 : c === _ || c === m$1 ? c = v$1 : (c = p$1, n = void 0);
+				const x = c === p$1 && t[i + 1].startsWith("/>") ? " " : "";
+				l += c === v$1 ? s + r$3 : d >= 0 ? (e.push(a), s.slice(0, d) + h$1 + s.slice(d) + o$4 + x) : s + o$4 + (-2 === d ? i : x);
 			}
 			return [V(t, l + (t[s] || "<?>") + (2 === i ? "</svg>" : 3 === i ? "</math>" : "")), e];
 		};
@@ -2201,7 +2316,7 @@
 				}
 				for (; null !== (r = P.nextNode()) && d.length < u;) {
 					if (1 === r.nodeType) {
-						if (r.hasAttributes()) for (const t of r.getAttributeNames()) if (t.endsWith(h)) {
+						if (r.hasAttributes()) for (const t of r.getAttributeNames()) if (t.endsWith(h$1)) {
 							const i = v[a++], s = r.getAttribute(t).split(o$4), e = /([.?@])?(.*)/.exec(i);
 							d.push({
 								type: 1,
@@ -2217,15 +2332,15 @@
 						if (y.test(r.tagName)) {
 							const t = r.textContent.split(o$4), i = t.length - 1;
 							if (i > 0) {
-								r.textContent = s$1 ? s$1.emptyScript : "";
-								for (let s = 0; s < i; s++) r.append(t[s], c()), P.nextNode(), d.push({
+								r.textContent = s$2 ? s$2.emptyScript : "";
+								for (let s = 0; s < i; s++) r.append(t[s], c$2()), P.nextNode(), d.push({
 									type: 2,
 									index: ++l
 								});
-								r.append(t[i], c());
+								r.append(t[i], c$2());
 							}
 						}
-					} else if (8 === r.nodeType) if (r.data === n$1) d.push({
+					} else if (8 === r.nodeType) if (r.data === n$2) d.push({
 						type: 2,
 						index: l
 					});
@@ -2240,7 +2355,7 @@
 				}
 			}
 			static createElement(t, i) {
-				const s = l.createElement("template");
+				const s = l$1.createElement("template");
 				return s.innerHTML = t, s;
 			}
 		};
@@ -2255,7 +2370,7 @@
 				return this._$AM._$AU;
 			}
 			u(t) {
-				const { el: { content: i }, parts: s } = this._$AD, e = (t?.creationScope ?? l).importNode(i, !0);
+				const { el: { content: i }, parts: s } = this._$AD, e = (t?.creationScope ?? l$1).importNode(i, !0);
 				P.currentNode = e;
 				let h = P.nextNode(), o = 0, n = 0, r = s[0];
 				for (; void 0 !== r;) {
@@ -2265,7 +2380,7 @@
 					}
 					o !== r?.index && (h = P.nextNode(), o++);
 				}
-				return P.currentNode = l, e;
+				return P.currentNode = l$1, e;
 			}
 			p(t) {
 				let i = 0;
@@ -2291,7 +2406,7 @@
 				return this._$AB;
 			}
 			_$AI(t, i = this) {
-				t = M(this, t, i), a(t) ? t === A || null == t || "" === t ? (this._$AH !== A && this._$AR(), this._$AH = A) : t !== this._$AH && t !== E && this._(t) : void 0 !== t._$litType$ ? this.$(t) : void 0 !== t.nodeType ? this.T(t) : d(t) ? this.k(t) : this._(t);
+				t = M$1(this, t, i), a(t) ? t === A || null == t || "" === t ? (this._$AH !== A && this._$AR(), this._$AH = A) : t !== this._$AH && t !== E && this._(t) : void 0 !== t._$litType$ ? this.$(t) : void 0 !== t.nodeType ? this.T(t) : d$1(t) ? this.k(t) : this._(t);
 			}
 			O(t) {
 				return this._$AA.parentNode.insertBefore(t, this._$AB);
@@ -2300,7 +2415,7 @@
 				this._$AH !== t && (this._$AR(), this._$AH = this.O(t));
 			}
 			_(t) {
-				this._$AH !== A && a(this._$AH) ? this._$AA.nextSibling.data = t : this.T(l.createTextNode(t)), this._$AH = t;
+				this._$AH !== A && a(this._$AH) ? this._$AA.nextSibling.data = t : this.T(l$1.createTextNode(t)), this._$AH = t;
 			}
 			$(t) {
 				const { values: i, _$litType$: s } = t, e = "number" == typeof s ? this._$AC(t) : (void 0 === s.el && (s.el = S.createElement(V(s.h, s.h[0]), this.options)), s);
@@ -2315,16 +2430,16 @@
 				return void 0 === i && C.set(t.strings, i = new S(t)), i;
 			}
 			k(t) {
-				u(this._$AH) || (this._$AH = [], this._$AR());
+				u$2(this._$AH) || (this._$AH = [], this._$AR());
 				const i = this._$AH;
 				let s, e = 0;
-				for (const h of t) e === i.length ? i.push(s = new k(this.O(c()), this.O(c()), this, this.options)) : s = i[e], s._$AI(h), e++;
+				for (const h of t) e === i.length ? i.push(s = new k(this.O(c$2()), this.O(c$2()), this, this.options)) : s = i[e], s._$AI(h), e++;
 				e < i.length && (this._$AR(s && s._$AB.nextSibling, e), i.length = e);
 			}
 			_$AR(t = this._$AA.nextSibling, s) {
 				for (this._$AP?.(!1, !0, s); t !== this._$AB;) {
-					const s = i$2(t).nextSibling;
-					i$2(t).remove(), t = s;
+					const s = i$3(t).nextSibling;
+					i$3(t).remove(), t = s;
 				}
 			}
 			setConnected(t) {
@@ -2344,11 +2459,11 @@
 			_$AI(t, i = this, s, e) {
 				const h = this.strings;
 				let o = !1;
-				if (void 0 === h) t = M(this, t, i, 0), o = !a(t) || t !== this._$AH && t !== E, o && (this._$AH = t);
+				if (void 0 === h) t = M$1(this, t, i, 0), o = !a(t) || t !== this._$AH && t !== E, o && (this._$AH = t);
 				else {
 					const e = t;
 					let n, r;
-					for (t = h[0], n = 0; n < h.length - 1; n++) r = M(this, e[s + n], i, n), r === E && (r = this._$AH[n]), o ||= !a(r) || r !== this._$AH[n], r === A ? t = A : t !== A && (t += (r ?? "") + h[n + 1]), this._$AH[n] = r;
+					for (t = h[0], n = 0; n < h.length - 1; n++) r = M$1(this, e[s + n], i, n), r === E && (r = this._$AH[n]), o ||= !a(r) || r !== this._$AH[n], r === A ? t = A : t !== A && (t += (r ?? "") + h[n + 1]), this._$AH[n] = r;
 				}
 				o && !e && this.j(t);
 			}
@@ -2377,7 +2492,7 @@
 				super(t, i, s, e, h), this.type = 5;
 			}
 			_$AI(t, i = this) {
-				if ((t = M(this, t, i, 0) ?? A) === E) return;
+				if ((t = M$1(this, t, i, 0) ?? A) === E) return;
 				const s = this._$AH, e = t === A && s !== A || t.capture !== s.capture || t.once !== s.once || t.passive !== s.passive, h = t !== A && (s === A || e);
 				e && this.element.removeEventListener(this.name, this, s), h && this.element.addEventListener(this.name, this, t), this._$AH = t;
 			}
@@ -2393,31 +2508,46 @@
 				return this._$AM._$AU;
 			}
 			_$AI(t) {
-				M(this, t);
+				M$1(this, t);
 			}
 		};
-		B = t$3.litHtmlPolyfillSupport;
-		B?.(S, k), (t$3.litHtmlVersions ??= []).push("3.3.2");
+		j$1 = {
+			M: h$1,
+			P: o$4,
+			A: n$2,
+			C: 1,
+			L: N,
+			R,
+			D: d$1,
+			V: M$1,
+			I: k,
+			H,
+			N: L,
+			U: z,
+			B: I,
+			F: Z
+		}, B = t$4.litHtmlPolyfillSupport;
+		B?.(S, k), (t$4.litHtmlVersions ??= []).push("3.3.2");
 		D = (t, i, s) => {
 			const e = s?.renderBefore ?? i;
 			let h = e._$litPart$;
 			if (void 0 === h) {
 				const t = s?.renderBefore ?? null;
-				e._$litPart$ = h = new k(i.insertBefore(c(), t), t, void 0, s ?? {});
+				e._$litPart$ = h = new k(i.insertBefore(c$2(), t), t, void 0, s ?? {});
 			}
 			return h._$AI(t), h;
 		};
 	}));
 	//#endregion
 	//#region node_modules/lit-element/lit-element.js
-	var s, i$1, o$3;
+	var s$1, i$2, o$3;
 	var init_lit_element = __esmMin((() => {
 		init_reactive_element();
 		init_reactive_element();
 		init_lit_html();
 		init_lit_html();
-		s = globalThis;
-		i$1 = class extends y$1 {
+		s$1 = globalThis;
+		i$2 = class extends y$1 {
 			constructor() {
 				super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 			}
@@ -2439,10 +2569,10 @@
 				return E;
 			}
 		};
-		i$1._$litElement$ = !0, i$1["finalized"] = !0, s.litElementHydrateSupport?.({ LitElement: i$1 });
-		o$3 = s.litElementPolyfillSupport;
-		o$3?.({ LitElement: i$1 });
-		(s.litElementVersions ??= []).push("4.2.2");
+		i$2._$litElement$ = !0, i$2["finalized"] = !0, s$1.litElementHydrateSupport?.({ LitElement: i$2 });
+		o$3 = s$1.litElementPolyfillSupport;
+		o$3?.({ LitElement: i$2 });
+		(s$1.litElementVersions ??= []).push("4.2.2");
 	}));
 	//#endregion
 	//#region node_modules/lit-html/is-server.js
@@ -2457,9 +2587,9 @@
 	}));
 	//#endregion
 	//#region node_modules/@lit/reactive-element/decorators/custom-element.js
-	var t$2;
+	var t$3;
 	var init_custom_element = __esmMin((() => {
-		t$2 = (t) => (e, o) => {
+		t$3 = (t) => (e, o) => {
 			void 0 !== o ? o.addInitializer(() => {
 				customElements.define(t, e);
 			}) : customElements.define(t, e);
@@ -2467,22 +2597,22 @@
 	}));
 	//#endregion
 	//#region node_modules/@lit/reactive-element/decorators/property.js
-	function n(t) {
-		return (e, o) => "object" == typeof o ? r$1(t, e, o) : ((t, e, o) => {
+	function n$1(t) {
+		return (e, o) => "object" == typeof o ? r$2(t, e, o) : ((t, e, o) => {
 			const r = e.hasOwnProperty(o);
 			return e.constructor.createProperty(o, t), r ? Object.getOwnPropertyDescriptor(e, o) : void 0;
 		})(t, e, o);
 	}
-	var o$2, r$1;
+	var o$2, r$2;
 	var init_property = __esmMin((() => {
 		init_reactive_element();
 		o$2 = {
 			attribute: !0,
 			type: String,
-			converter: u$1,
+			converter: u$3,
 			reflect: !1,
-			hasChanged: f$1
-		}, r$1 = (t = o$2, e, r) => {
+			hasChanged: f$2
+		}, r$2 = (t = o$2, e, r) => {
 			const { kind: n, metadata: i } = r;
 			let s = globalThis.litPropertyMetadata.get(i);
 			if (void 0 === s && globalThis.litPropertyMetadata.set(i, s = /* @__PURE__ */ new Map()), "setter" === n && ((t = Object.create(t)).wrapped = !0), s.set(r.name, t), "accessor" === n) {
@@ -2513,8 +2643,8 @@
 	* @license
 	* Copyright 2017 Google LLC
 	* SPDX-License-Identifier: BSD-3-Clause
-	*/ function r(r) {
-		return n({
+	*/ function r$1(r) {
+		return n$1({
 			...r,
 			state: !0,
 			attribute: !1
@@ -2556,20 +2686,20 @@
 	}));
 	//#endregion
 	//#region node_modules/lit-html/directive.js
-	var t$1, e$1, i;
+	var t$2, e$2, i$1;
 	var init_directive = __esmMin((() => {
-		t$1 = {
+		t$2 = {
 			ATTRIBUTE: 1,
 			CHILD: 2,
 			PROPERTY: 3,
 			BOOLEAN_ATTRIBUTE: 4,
 			EVENT: 5,
 			ELEMENT: 6
-		}, e$1 = (t) => (...e) => ({
+		}, e$2 = (t) => (...e) => ({
 			_$litDirective$: t,
 			values: e
 		});
-		i = class {
+		i$1 = class {
 			constructor(t) {}
 			get _$AU() {
 				return this._$AM._$AU;
@@ -2584,13 +2714,13 @@
 				return this.render(...e);
 			}
 		};
-	})), e;
+	})), e$1;
 	var init_unsafe_html = __esmMin((() => {
 		init_lit_html();
 		init_directive();
-		e = class extends i {
+		e$1 = class extends i$1 {
 			constructor(i) {
-				if (super(i), this.it = A, i.type !== t$1.CHILD) throw Error(this.constructor.directiveName + "() can only be used in child bindings");
+				if (super(i), this.it = A, i.type !== t$2.CHILD) throw Error(this.constructor.directiveName + "() can only be used in child bindings");
 			}
 			render(r) {
 				if (r === A || null == r) return this._t = void 0, this.it = r;
@@ -2606,18 +2736,18 @@
 				};
 			}
 		};
-		e.directiveName = "unsafeHTML", e.resultType = 1;
-		e$1(e);
+		e$1.directiveName = "unsafeHTML", e$1.resultType = 1;
+		e$2(e$1);
 	}));
 	//#endregion
 	//#region node_modules/lit-html/directives/unsafe-svg.js
-	var t, o;
+	var t$1, o;
 	var init_unsafe_svg$1 = __esmMin((() => {
 		init_directive();
 		init_unsafe_html();
-		t = class extends e {};
-		t.directiveName = "unsafeSVG", t.resultType = 2;
-		o = e$1(t);
+		t$1 = class extends e$1 {};
+		t$1.directiveName = "unsafeSVG", t$1.resultType = 2;
+		o = e$2(t$1);
 	}));
 	//#endregion
 	//#region node_modules/lit/directives/unsafe-svg.js
@@ -2808,9 +2938,9 @@
 	var init_decorate = __esmMin((() => {}));
 	//#endregion
 	//#region src/components/app-header.ts
-	var import_lib$3, AppHeader;
+	var import_lib$4, AppHeader;
 	var init_app_header = __esmMin((() => {
-		import_lib$3 = require_lib();
+		import_lib$4 = require_lib();
 		init_lit();
 		init_decorators();
 		init_lit_translate();
@@ -2820,17 +2950,17 @@
 		init_theme_store();
 		init_app_header$1();
 		init_decorate();
-		AppHeader = class AppHeader extends i$1 {
+		AppHeader = class AppHeader extends i$2 {
 			constructor(..._args) {
 				super(..._args);
-				this.fileName = new import_lib$3.StoreController(this, fileName$);
-				this.theme = new import_lib$3.StoreController(this, theme$);
-				this.language = new import_lib$3.StoreController(this, language$);
-				this.isUserscript = new import_lib$3.StoreController(this, isUserscript$);
+				this.fileName = new import_lib$4.StoreController(this, fileName$);
+				this.theme = new import_lib$4.StoreController(this, theme$);
+				this.language = new import_lib$4.StoreController(this, language$);
+				this.isUserscript = new import_lib$4.StoreController(this, isUserscript$);
 				this.isDragging = false;
 			}
 			static {
-				this.styles = r$4(app_header_default);
+				this.styles = r$5(app_header_default);
 			}
 			render() {
 				const isMonkey = this.isUserscript.value;
@@ -2930,14 +3060,101 @@
 				changeLanguage(val);
 			}
 		};
-		__decorate([r()], AppHeader.prototype, "isDragging", void 0);
-		AppHeader = __decorate([t$2("app-header")], AppHeader);
+		__decorate([r$1()], AppHeader.prototype, "isDragging", void 0);
+		AppHeader = __decorate([t$3("app-header")], AppHeader);
 	}));
 	//#endregion
 	//#region src/components/app-stats.css?inline
 	var app_stats_default;
 	var init_app_stats$1 = __esmMin((() => {
-		app_stats_default = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.layout-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n}\r\n\r\n.left-stats {\r\n  display: flex;\r\n  align-items: stretch;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.stats-container {\r\n  display: flex;\r\n  align-items: stretch;\r\n  background: var(--bg-panel);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 6px;\r\n  overflow: hidden;\r\n  min-width: 450px;\r\n}\r\n\r\n.flip-btn,\r\n.copy-side-btn {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.25rem;\r\n  border: none;\r\n  border-radius: 0;\r\n  padding: 0 0.75rem;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  background: var(--bg-main);\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.flip-btn {\r\n  border-right: 1px solid var(--border-subtle);\r\n}\r\n\r\n.copy-side-btn {\r\n  border-left: 1px solid var(--border-subtle);\r\n}\r\n\r\n.flip-btn:hover,\r\n.copy-side-btn:hover {\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.flip-btn svg,\r\n.copy-side-btn svg {\r\n  width: 1.25rem;\r\n  height: 1.25rem;\r\n}\r\n\r\n.stats-table {\r\n  width: 100%;\r\n  border-collapse: collapse;\r\n  font-size: 0.75rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\nth {\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 0.6rem;\r\n  text-align: left;\r\n  font-weight: 700;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  border-bottom: 2px solid var(--border-subtle);\r\n}\r\n\r\ntd {\r\n  padding: 0.3rem 0.6rem;\r\n  border-bottom: 1px solid var(--border-subtle);\r\n}\r\n\r\n.clickable-cell {\r\n  cursor: pointer;\r\n  transition:\r\n    opacity 0.2s,\r\n    transform 0.1s;\r\n}\r\n\r\n.clickable-cell:hover {\r\n  opacity: 0.8;\r\n  filter: brightness(1.1);\r\n}\r\n\r\n.clickable-cell:active {\r\n  transform: scale(0.95);\r\n}\r\n\r\n.val-col {\r\n  text-align: center;\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.val-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 6px;\r\n}\r\n\r\n.large-count-bubble {\r\n  padding: 2px 3px;\r\n  border-radius: 10px;\r\n  min-width: 16px;\r\n  text-align: center;\r\n  line-height: 1;\r\n  font-size: 0.75rem;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n}\r\n\r\n/* --- Phase 1: Office 2010 Stats Summary Colors --- */\r\n\r\n/* Tables Row (Base Colors) */\r\ntr[data-type=\"Tables\"] {\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .type-col {\r\n  color: var(--text-on-dark);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Tables\"] .status-I {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-A {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-E {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-C {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .total-col {\r\n  background-color: var(--off-blue-40);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Columns Row (60% Lighter Colors) */\r\ntr[data-type=\"Columns\"] {\r\n  background-color: var(--off-blue-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .type-col {\r\n  color: var(--text-on-light);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Columns\"] .status-I {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-A {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-E {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-C {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .total-col {\r\n  background-color: var(--off-blue-80);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Filter Panel Styling */\r\n.filter-panel {\r\n  display: flex;\r\n  flex-direction: row;\r\n  gap: 1.5rem;\r\n  background: var(--bg-panel);\r\n  padding: 0.6rem 1.2rem;\r\n  border-radius: 6px;\r\n  border: 1px solid var(--border-subtle);\r\n  align-items: center;\r\n}\r\n\r\n.filter-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.3rem;\r\n}\r\n\r\n.filter-item label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.filter-item .form-control {\r\n  height: 1.8rem;\r\n  padding: 0.2rem 0.5rem;\r\n  font-size: 0.75rem;\r\n  min-width: 120px;\r\n}\r\n\r\n.search-input-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 4px;\r\n  padding: 0 0.5rem;\r\n  height: 1.8rem;\r\n}\r\n\r\n.search-input-wrapper input {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  font-size: 0.75rem;\r\n  width: 150px;\r\n  outline: none;\r\n}\r\n\r\n.search-input-wrapper svg {\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n}\r\n\r\n.filter-switches {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 1.5rem;\r\n  padding-left: 1.5rem;\r\n  border-left: 1px solid var(--border-subtle);\r\n  align-self: stretch;\r\n}\r\n\r\n.clear-filters-area {\r\n  display: flex;\r\n  align-items: center;\r\n  padding-left: 1.5rem;\r\n  border-left: 1px solid var(--border-subtle);\r\n  align-self: stretch;\r\n}\r\n\r\n.clear-btn {\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-secondary);\r\n  width: 2.2rem;\r\n  height: 2.2rem;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  border-radius: 4px;\r\n  transition: all 0.2s;\r\n}\r\n\r\n.clear-btn path:nth-child(3) {\r\n  color: var(--btn-danger-border);\r\n}\r\n\r\n.clear-btn:hover {\r\n  background: var(--off-red-base);\r\n  border-color: var(--off-red-base);\r\n  color: white;\r\n}\r\n\r\n.main-switch {\r\n  font-size: 0.75rem;\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.stacked-switches {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.4rem;\r\n  justify-content: center;\r\n}\r\n\r\n.switch-label {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  font-size: 0.65rem;\r\n  font-weight: bold;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  margin-bottom: 0;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.02em;\r\n}\r\n\r\n/* The switch - the box around the slider */\r\n.switch {\r\n  position: relative;\r\n  display: inline-block;\r\n  width: 32px;\r\n  height: 16px;\r\n}\r\n\r\n/* Hide default HTML checkbox */\r\n.switch input {\r\n  opacity: 0;\r\n  width: 0;\r\n  height: 0;\r\n}\r\n\r\n/* The slider */\r\n.slider {\r\n  position: absolute;\r\n  cursor: pointer;\r\n  top: 0;\r\n  left: 0;\r\n  right: 0;\r\n  bottom: 0;\r\n  background-color: #7f8c8d;\r\n  -webkit-transition: 0.4s;\r\n  transition: 0.4s;\r\n}\r\n\r\n.slider:before {\r\n  position: absolute;\r\n  content: \"\";\r\n  height: 12px;\r\n  width: 12px;\r\n  left: 2px;\r\n  bottom: 2px;\r\n  background-color: white;\r\n  -webkit-transition: 0.4s;\r\n  transition: 0.4s;\r\n}\r\n\r\ninput:checked + .slider {\r\n  background-color: #2ecc71;\r\n}\r\n\r\ninput:focus + .slider {\r\n  box-shadow: 0 0 1px #2ecc71;\r\n}\r\n\r\ninput:checked + .slider:before {\r\n  -webkit-transform: translateX(16px);\r\n  -ms-transform: translateX(16px);\r\n  transform: translateX(16px);\r\n}\r\n\r\n/* Rounded sliders */\r\n.slider.round {\r\n  border-radius: 16px;\r\n}\r\n\r\n.slider.round:before {\r\n  border-radius: 50%;\r\n}\r\n\r\n/* Action Panel on the right */\r\n.action-panel {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.5rem;\r\n  justify-content: center;\r\n}\r\n\r\n.action-btn {\r\n  background: var(--bg-main);\r\n  color: var(--text-primary);\r\n  border: 1px solid var(--border-subtle);\r\n  padding: 0.4rem 1rem;\r\n  border-radius: 4px;\r\n  font-size: 0.7rem;\r\n  font-weight: bold;\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.6rem;\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  min-width: 160px;\r\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n.action-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.action-btn:active {\r\n  transform: translateY(1px);\r\n}\r\n\r\n.layout-stats svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
+		app_stats_default = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.layout-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n}\r\n\r\n.left-stats {\r\n  display: flex;\r\n  align-items: stretch;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.stats-container {\r\n  display: flex;\r\n  align-items: stretch;\r\n  background: var(--bg-panel);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 6px;\r\n  overflow: hidden;\r\n  min-width: 450px;\r\n}\r\n\r\n.flip-btn,\r\n.copy-side-btn {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.25rem;\r\n  border: none;\r\n  border-radius: 0;\r\n  padding: 0 0.75rem;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  background: var(--bg-main);\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.flip-btn {\r\n  border-right: 1px solid var(--border-subtle);\r\n}\r\n\r\n.copy-side-btn {\r\n  border-left: 1px solid var(--border-subtle);\r\n}\r\n\r\n.flip-btn:hover,\r\n.copy-side-btn:hover {\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.flip-btn svg,\r\n.copy-side-btn svg {\r\n  width: 1.25rem;\r\n  height: 1.25rem;\r\n}\r\n\r\n.stats-table {\r\n  width: 100%;\r\n  border-collapse: collapse;\r\n  font-size: 0.75rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\nth {\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 0.6rem;\r\n  text-align: left;\r\n  font-weight: 700;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  border-bottom: 2px solid var(--border-subtle);\r\n}\r\n\r\ntd {\r\n  padding: 0.3rem 0.6rem;\r\n  border-bottom: 1px solid var(--border-subtle);\r\n}\r\n\r\n.clickable-cell {\r\n  cursor: pointer;\r\n  transition:\r\n    opacity 0.2s,\r\n    transform 0.1s;\r\n}\r\n\r\n.clickable-cell:hover {\r\n  opacity: 0.8;\r\n  filter: brightness(1.1);\r\n}\r\n\r\n.clickable-cell:active {\r\n  transform: scale(0.95);\r\n}\r\n\r\n.val-col {\r\n  text-align: center;\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.val-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 6px;\r\n}\r\n\r\n.large-count-bubble {\r\n  padding: 2px 3px;\r\n  border-radius: 10px;\r\n  min-width: 16px;\r\n  text-align: center;\r\n  line-height: 1;\r\n  font-size: 0.75rem;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n}\r\n\r\n/* --- Phase 1: Office 2010 Stats Summary Colors --- */\r\n\r\n/* Tables Row (Base Colors) */\r\ntr[data-type=\"Tables\"] {\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .type-col {\r\n  color: var(--text-on-dark);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Tables\"] .status-I {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-A {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-E {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-C {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .total-col {\r\n  background-color: var(--off-blue-40);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Columns Row (60% Lighter Colors) */\r\ntr[data-type=\"Columns\"] {\r\n  background-color: var(--off-blue-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .type-col {\r\n  color: var(--text-on-light);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Columns\"] .status-I {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-A {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-E {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-C {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .total-col {\r\n  background-color: var(--off-blue-80);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Filter Panel Styling */\r\n.filter-panel {\r\n  display: flex;\r\n  flex-direction: row;\r\n  gap: 1.5rem;\r\n  background: var(--bg-panel);\r\n  padding: 0.6rem 1.2rem;\r\n  border-radius: 6px;\r\n  border: 1px solid var(--border-subtle);\r\n  align-items: center;\r\n}\r\n\r\n.filter-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.3rem;\r\n}\r\n\r\n.filter-item label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.filter-item .form-control {\r\n  height: 1.8rem;\r\n  padding: 0.2rem 0.5rem;\r\n  font-size: 0.75rem;\r\n  min-width: 120px;\r\n}\r\n\r\n.search-input-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 4px;\r\n  padding: 0 0.5rem;\r\n  height: 1.8rem;\r\n}\r\n\r\n.search-input-wrapper input {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  font-size: 0.75rem;\r\n  width: 150px;\r\n  outline: none;\r\n}\r\n\r\n.search-input-wrapper svg {\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n}\r\n\r\n.filter-switches {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 1.5rem;\r\n  padding-left: 1.5rem;\r\n  border-left: 1px solid var(--border-subtle);\r\n  align-self: stretch;\r\n}\r\n\r\n.filters-area,\r\n.clear-filters-area {\r\n  display: flex;\r\n  align-items: center;\r\n  padding-left: 1.5rem;\r\n  border-left: 1px solid var(--border-subtle);\r\n  align-self: stretch;\r\n  gap: 0.5rem;\r\n}\r\n\r\n.clear-btn,\r\n.filter-btn {\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-secondary);\r\n  width: 2.2rem;\r\n  height: 2.2rem;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  border-radius: 4px;\r\n  transition: all 0.2s;\r\n}\r\n\r\n.filter-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: white;\r\n}\r\n\r\n.clear-btn path:nth-child(3) {\r\n  color: var(--btn-danger-border);\r\n}\r\n\r\n.clear-btn:hover {\r\n  background: var(--off-red-base);\r\n  border-color: var(--off-red-base);\r\n  color: white;\r\n}\r\n\r\n.main-switch {\r\n  font-size: 0.75rem;\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.stacked-switches {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.4rem;\r\n  justify-content: center;\r\n}\r\n\r\n.switch-label {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  font-size: 0.65rem;\r\n  font-weight: bold;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  margin-bottom: 0;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.02em;\r\n}\r\n\r\n/* The switch - the box around the slider */\r\n.switch {\r\n  position: relative;\r\n  display: inline-block;\r\n  width: 32px;\r\n  height: 16px;\r\n}\r\n\r\n/* Hide default HTML checkbox */\r\n.switch input {\r\n  opacity: 0;\r\n  width: 0;\r\n  height: 0;\r\n}\r\n\r\n/* The slider */\r\n.slider {\r\n  position: absolute;\r\n  cursor: pointer;\r\n  top: 0;\r\n  left: 0;\r\n  right: 0;\r\n  bottom: 0;\r\n  background-color: #7f8c8d;\r\n  -webkit-transition: 0.4s;\r\n  transition: 0.4s;\r\n}\r\n\r\n.slider:before {\r\n  position: absolute;\r\n  content: \"\";\r\n  height: 12px;\r\n  width: 12px;\r\n  left: 2px;\r\n  bottom: 2px;\r\n  background-color: white;\r\n  -webkit-transition: 0.4s;\r\n  transition: 0.4s;\r\n}\r\n\r\ninput:checked + .slider {\r\n  background-color: #2ecc71;\r\n}\r\n\r\ninput:focus + .slider {\r\n  box-shadow: 0 0 1px #2ecc71;\r\n}\r\n\r\ninput:checked + .slider:before {\r\n  -webkit-transform: translateX(16px);\r\n  -ms-transform: translateX(16px);\r\n  transform: translateX(16px);\r\n}\r\n\r\n/* Rounded sliders */\r\n.slider.round {\r\n  border-radius: 16px;\r\n}\r\n\r\n.slider.round:before {\r\n  border-radius: 50%;\r\n}\r\n\r\n/* Action Panel on the right */\r\n.action-panel {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.5rem;\r\n  justify-content: center;\r\n}\r\n\r\n.action-btn {\r\n  background: var(--bg-main);\r\n  color: var(--text-primary);\r\n  border: 1px solid var(--border-subtle);\r\n  padding: 0.4rem 1rem;\r\n  border-radius: 4px;\r\n  font-size: 0.7rem;\r\n  font-weight: bold;\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.6rem;\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  min-width: 160px;\r\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n.action-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.action-btn:active {\r\n  transform: translateY(1px);\r\n}\r\n\r\n.layout-stats svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
+	}));
+	//#endregion
+	//#region src/components/property-drawer.css?inline
+	var property_drawer_default;
+	var init_property_drawer$1 = __esmMin((() => {
+		property_drawer_default = ":host {\r\n  --drawer-width: 350px;\r\n  --transition-speed: 0.3s;\r\n  --drawer-bg: var(--bg-panel);\r\n  --drawer-header-bg: var(--bg-main);\r\n  --drawer-header-text: var(--text-primary);\r\n  --drawer-group-bg: var(--bg-alt);\r\n  --drawer-group-text: var(--text-secondary);\r\n  --drawer-item-bg: var(--bg-panel);\r\n  --drawer-item-border: var(--border-subtle);\r\n  --drawer-item-hover-bg: var(--hover-bg);\r\n  --drawer-text-main: var(--text-primary);\r\n  --drawer-text-muted: var(--text-secondary);\r\n  --drawer-accent-blue: var(--accent-blue);\r\n  --drawer-accent-green: var(--accent-green);\r\n}\r\n\r\n.drawer-overlay {\r\n  position: fixed;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100vw;\r\n  height: 100vh;\r\n  background: rgba(0, 0, 0, 0.4);\r\n  opacity: 0;\r\n  visibility: hidden;\r\n  transition: opacity var(--transition-speed);\r\n  z-index: 2000;\r\n}\r\n\r\n.drawer-overlay.active {\r\n  opacity: 1;\r\n  visibility: visible;\r\n}\r\n\r\n.property-drawer {\r\n  position: fixed;\r\n  top: 0;\r\n  left: calc(-1 * var(--drawer-width));\r\n  width: var(--drawer-width);\r\n  height: 100vh;\r\n  background: var(--drawer-bg);\r\n  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);\r\n  transition: left var(--transition-speed) ease-in-out;\r\n  z-index: 2001;\r\n  display: flex;\r\n  flex-direction: column;\r\n}\r\n\r\n.property-drawer.open {\r\n  left: 0;\r\n}\r\n\r\n.drawer-header {\r\n  padding: 1rem;\r\n  background: var(--drawer-header-bg);\r\n  color: var(--drawer-header-text);\r\n  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n.header-main {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n  margin-bottom: 0.8rem;\r\n}\r\n\r\n.header-main h3 {\r\n  margin: 0;\r\n  font-size: 1rem;\r\n  font-weight: 700;\r\n  letter-spacing: 0.5px;\r\n  text-transform: uppercase;\r\n}\r\n\r\n/* Close button - maintaining consistency with header icons */\r\n.close-btn {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  transition: opacity 0.2s;\r\n  padding: 4px;\r\n  display: flex;\r\n  cursor: pointer;\r\n}\r\n\r\n.close-btn:hover {\r\n  opacity: 1;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-actions {\r\n  display: flex;\r\n  gap: 0.5rem;\r\n}\r\n\r\n/* Let Bootflat handle button styling by removing overrides,\r\n   just ensuring they fill the container */\r\n.header-actions .btn {\r\n  flex: 1;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n}\r\n\r\n.drawer-content {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  background: var(--drawer-bg);\r\n}\r\n\r\n.property-group {\r\n  margin-bottom: 0px;\r\n}\r\n\r\n.group-header {\r\n  background: var(--drawer-group-bg);\r\n  padding: 0.5rem 1rem;\r\n  border-bottom: 1px solid var(--drawer-item-border);\r\n}\r\n\r\n.group-label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--drawer-group-text);\r\n  text-transform: uppercase;\r\n  letter-spacing: 1px;\r\n}\r\n\r\n.property-list {\r\n  list-style: none;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n.property-item {\r\n  padding: 0.6rem 1rem;\r\n  background: var(--drawer-item-bg);\r\n  border-bottom: 1px solid var(--drawer-item-border);\r\n  cursor: pointer;\r\n  transition: all 0.2s;\r\n}\r\n\r\n.property-item:hover {\r\n  background: var(--drawer-item-hover-bg);\r\n}\r\n\r\n.item-label {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.8rem;\r\n  cursor: pointer;\r\n  width: 100%;\r\n  margin: 0;\r\n}\r\n\r\n.item-label input[type=\"checkbox\"] {\r\n  width: 14px;\r\n  height: 14px;\r\n  margin: 0;\r\n  cursor: pointer;\r\n  accent-color: var(--drawer-accent-green);\r\n}\r\n\r\n.item-info {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  flex: 1;\r\n}\r\n\r\n.prop-type {\r\n  font-size: 0.8rem;\r\n  font-weight: 600;\r\n  color: var(--drawer-text-main);\r\n}\r\n\r\n.prop-meta {\r\n  display: flex;\r\n  align-items: center;\r\n}\r\n\r\n.indent-indicator {\r\n  font-family: \"JetBrains Mono\", monospace;\r\n  letter-spacing: 2px;\r\n  font-weight: 900;\r\n  color: var(--drawer-accent-blue);\r\n  font-size: 1rem;\r\n  line-height: 1;\r\n}\r\n\r\n.empty-state {\r\n  padding: 3rem 1.5rem;\r\n  text-align: center;\r\n  color: var(--drawer-text-muted);\r\n  font-style: italic;\r\n  font-size: 0.85rem;\r\n}\r\n\r\n/* Custom Scrollbar */\r\n.drawer-content::-webkit-scrollbar {\r\n  width: 4px;\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-track {\r\n  background: var(--drawer-bg);\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-thumb {\r\n  background: var(--border-subtle);\r\n  border-radius: 4px;\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-thumb:hover {\r\n  background: var(--text-secondary);\r\n}\r\n";
+	}));
+	//#endregion
+	//#region src/components/property-drawer.ts
+	var import_lib$3, PropertyDrawer;
+	var init_property_drawer = __esmMin((() => {
+		import_lib$3 = require_lib();
+		init_lit();
+		init_decorators();
+		init_lit_translate();
+		init_icons();
+		init_data_store();
+		init_property_drawer$1();
+		init_decorate();
+		PropertyDrawer = class PropertyDrawer extends i$2 {
+			constructor(..._args) {
+				super(..._args);
+				this._isOpenStore = new import_lib$3.StoreController(this, isPropertyDrawerOpen$);
+				this._propertiesStore = new import_lib$3.StoreController(this, uniqueProperties$);
+				this._hiddenStore = new import_lib$3.StoreController(this, hiddenProperties$);
+			}
+			static {
+				this.styles = r$5(property_drawer_default);
+			}
+			render() {
+				const open = this._isOpenStore.value;
+				const hiddenSet = this._hiddenStore.value;
+				const groups = this._propertiesStore.value;
+				return b`
+      <div class="drawer-overlay ${open ? "active" : ""}" @click=${this._close}></div>
+      <aside class="property-drawer ${open ? "open" : ""}">
+        <header class="drawer-header">
+          <div class="header-main">
+            <h3>${translate("drawer.title")}</h3>
+            <button class="btn btn-default btn-xs close-btn" @click=${this._close}>
+              ${icons.x}
+            </button>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-primary btn-xs" @click=${hideAllProperties}>
+              ${translate("drawer.hide_all")}
+            </button>
+            <button class="btn btn-default btn-xs" @click=${resetHiddenProperties}>
+              ${translate("drawer.show_all")}
+            </button>
+          </div>
+        </header>
+
+        <div class="drawer-content">
+          ${groups.length === 0 ? b`<div class="empty-state">${translate("drawer.no_props")}</div>` : groups.map((group) => b`
+            <div class="property-group">
+              <div class="group-header">
+                <span class="group-label">${group.parentType}</span>
+              </div>
+              <ul class="property-list">
+                ${group.children.map((p) => {
+					return b`
+                    <li class="property-item" @click=${() => toggleProperty(p.key)}>
+                      <label class="item-label">
+                        <input type="checkbox" .checked=${!hiddenSet.has(p.key)} readonly>
+                        <div class="item-info">
+                          <span class="prop-type">${p.type}</span>
+                          <span class="prop-meta">
+                             <span class="indent-indicator">${"·".repeat(p.spaces / 3)}</span>
+                          </span>
+                        </div>
+                      </label>
+                    </li>
+                  `;
+				})}
+              </ul>
+            </div>
+          `)}
+        </div>
+      </aside>
+    `;
+			}
+			_close() {
+				isPropertyDrawerOpen$.set(false);
+			}
+		};
+		PropertyDrawer = __decorate([t$3("property-drawer")], PropertyDrawer);
 	}));
 	//#endregion
 	//#region src/components/app-stats.ts
@@ -2950,8 +3167,9 @@
 		init_icons();
 		init_data_store();
 		init_app_stats$1();
+		init_property_drawer();
 		init_decorate();
-		AppStats = class AppStats extends i$1 {
+		AppStats = class AppStats extends i$2 {
 			constructor(..._args) {
 				super(..._args);
 				this.stats = new import_lib$2.StoreController(this, statsSummary$);
@@ -2964,11 +3182,12 @@
 				this.isCopying = false;
 			}
 			static {
-				this.styles = r$4(app_stats_default);
+				this.styles = r$5(app_stats_default);
 			}
 			render() {
 				if (this.stats.value.length === 0) return b``;
 				return b`
+      <property-drawer></property-drawer>
       <div class="layout-stats">
         <div class="left-stats">
           <div class="stats-container">
@@ -3080,6 +3299,11 @@
               </div>
             </div>
 
+            <div class="filters-area">
+               <button class="btn btn-primary btn-xs filter-btn" @click=${() => isPropertyDrawerOpen$.set(true)} title="${translate("header.filters.properties")}">
+                  ${icons.filter}
+               </button>
+            </div>
             <div class="clear-filters-area">
                <button class="btn btn-default btn-xs clear-btn" @click=${resetFilters} title="${translate("header.filters.clear_filters")}">
                   ${icons["filter-off"]}
@@ -3148,8 +3372,98 @@
 				else alert(get("stats.messages.no_tables"));
 			}
 		};
-		__decorate([r()], AppStats.prototype, "isCopying", void 0);
-		AppStats = __decorate([t$2("app-stats")], AppStats);
+		__decorate([r$1()], AppStats.prototype, "isCopying", void 0);
+		AppStats = __decorate([t$3("app-stats")], AppStats);
+	})), t, i, s, v, u$1, m, p, M, h;
+	var init_directive_helpers = __esmMin((() => {
+		init_lit_html();
+		({I: t} = j$1), i = (o) => o, s = () => document.createComment(""), v = (o, n, e) => {
+			const l = o._$AA.parentNode, d = void 0 === n ? o._$AB : n._$AA;
+			if (void 0 === e) e = new t(l.insertBefore(s(), d), l.insertBefore(s(), d), o, o.options);
+			else {
+				const t = e._$AB.nextSibling, n = e._$AM, c = n !== o;
+				if (c) {
+					let t;
+					e._$AQ?.(o), e._$AM = o, void 0 !== e._$AP && (t = o._$AU) !== n._$AU && e._$AP(t);
+				}
+				if (t !== d || c) {
+					let o = e._$AA;
+					for (; o !== t;) {
+						const t = i(o).nextSibling;
+						i(l).insertBefore(o, d), o = t;
+					}
+				}
+			}
+			return e;
+		}, u$1 = (o, t, i = o) => (o._$AI(t, i), o), m = {}, p = (o, t = m) => o._$AH = t, M = (o) => o._$AH, h = (o) => {
+			o._$AR(), o._$AA.remove();
+		};
+	}));
+	//#endregion
+	//#region node_modules/lit-html/directives/repeat.js
+	var u, c;
+	var init_repeat$1 = __esmMin((() => {
+		init_lit_html();
+		init_directive();
+		init_directive_helpers();
+		u = (e, s, t) => {
+			const r = /* @__PURE__ */ new Map();
+			for (let l = s; l <= t; l++) r.set(e[l], l);
+			return r;
+		}, c = e$2(class extends i$1 {
+			constructor(e) {
+				if (super(e), e.type !== t$2.CHILD) throw Error("repeat() can only be used in text expressions");
+			}
+			dt(e, s, t) {
+				let r;
+				void 0 === t ? t = s : void 0 !== s && (r = s);
+				const l = [], o = [];
+				let i = 0;
+				for (const s of e) l[i] = r ? r(s, i) : i, o[i] = t(s, i), i++;
+				return {
+					values: o,
+					keys: l
+				};
+			}
+			render(e, s, t) {
+				return this.dt(e, s, t).values;
+			}
+			update(s, [t, r, c]) {
+				const d = M(s), { values: p$5, keys: a } = this.dt(t, r, c);
+				if (!Array.isArray(d)) return this.ut = a, p$5;
+				const h$6 = this.ut ??= [], v$4 = [];
+				let m, y, x = 0, j = d.length - 1, k = 0, w = p$5.length - 1;
+				for (; x <= j && k <= w;) if (null === d[x]) x++;
+				else if (null === d[j]) j--;
+				else if (h$6[x] === a[k]) v$4[k] = u$1(d[x], p$5[k]), x++, k++;
+				else if (h$6[j] === a[w]) v$4[w] = u$1(d[j], p$5[w]), j--, w--;
+				else if (h$6[x] === a[w]) v$4[w] = u$1(d[x], p$5[w]), v(s, v$4[w + 1], d[x]), x++, w--;
+				else if (h$6[j] === a[k]) v$4[k] = u$1(d[j], p$5[k]), v(s, d[x], d[j]), j--, k++;
+				else if (void 0 === m && (m = u(a, k, w), y = u(h$6, x, j)), m.has(h$6[x])) if (m.has(h$6[j])) {
+					const e = y.get(a[k]), t = void 0 !== e ? d[e] : null;
+					if (null === t) {
+						const e = v(s, d[x]);
+						u$1(e, p$5[k]), v$4[k] = e;
+					} else v$4[k] = u$1(t, p$5[k]), v(s, d[x], t), d[e] = null;
+					k++;
+				} else h(d[j]), j--;
+				else h(d[x]), x++;
+				for (; k <= w;) {
+					const e = v(s, v$4[w + 1]);
+					u$1(e, p$5[k]), v$4[k++] = e;
+				}
+				for (; x <= j;) {
+					const e = d[x++];
+					null !== e && h(e);
+				}
+				return this.ut = a, p(s, v$4), E;
+			}
+		});
+	}));
+	//#endregion
+	//#region node_modules/lit/directives/repeat.js
+	var init_repeat = __esmMin((() => {
+		init_repeat$1();
 	}));
 	//#endregion
 	//#region src/components/app-table.css?inline
@@ -3164,12 +3478,13 @@
 		import_lib$1 = require_lib();
 		init_lit();
 		init_decorators();
+		init_repeat();
 		init_lit_translate();
 		init_icons();
 		init_data_store();
 		init_app_table$1();
 		init_decorate();
-		AppTable = class AppTable extends i$1 {
+		AppTable = class AppTable extends i$2 {
 			constructor(..._args) {
 				super(..._args);
 				this.data = new import_lib$1.StoreController(this, filteredData$);
@@ -3184,7 +3499,7 @@
 				this.copiedSide = null;
 			}
 			static {
-				this.styles = r$4(app_table_default);
+				this.styles = r$5(app_table_default);
 			}
 			render() {
 				const globalShowProps = this.showProps.value;
@@ -3260,7 +3575,7 @@
                   </div>
                 </td>
               </tr>
-            ` : visibleRows.map((row) => {
+            ` : c(visibleRows, (row) => row.id, (row) => {
 					const isIdentificationRow = row.isHeader && !row.isGrouping;
 					const isNameProp = row.type.toLowerCase().includes("name");
 					const showCopy = isIdentificationRow || isNameProp;
@@ -3284,10 +3599,10 @@
                   data-udp="${row.isUDP || false}"
                   class="${isChecked ? "checked-row" : ""} ${isIdentificationRow ? "clickable-row" : ""}"
                   @click=${() => {
-						if (isIdentificationRow && row.id) togglePropertiesIndividual(row.id);
+						if (isIdentificationRow && row.id && row.hasProperties) togglePropertiesIndividual(row.id);
 					}}
                   @contextmenu=${(e) => {
-						if (isIdentificationRow && row.id) {
+						if (isIdentificationRow && row.id && row.hasSubObjects) {
 							e.preventDefault();
 							toggleSubObjects(row.id);
 						}
@@ -3309,12 +3624,12 @@
                       ${this._renderAttributeCounter(row)}
 
                       <div class="row-indicators">
-                        ${row.hasProperties ? b`
+                        ${row.isHeader && row.hasProperties ? b`
                           <span class="icon-indicator prop-indicator ${!arePropertiesHidden(row) ? "expanded" : ""}">
                             ${icons["chevron-down"]}
                           </span>
                         ` : ""}
-                        ${row.hasSubObjects ? b`
+                        ${row.isHeader && row.hasSubObjects ? b`
                           <span class="icon-indicator sub-indicator">
                             ${areSubObjectsHidden(row) ? icons["schema-off"] : icons.schema}
                           </span>
@@ -3410,9 +3725,9 @@
 				});
 			}
 		};
-		__decorate([r()], AppTable.prototype, "copiedId", void 0);
-		__decorate([r()], AppTable.prototype, "copiedSide", void 0);
-		AppTable = __decorate([t$2("app-table")], AppTable);
+		__decorate([r$1()], AppTable.prototype, "copiedId", void 0);
+		__decorate([r$1()], AppTable.prototype, "copiedSide", void 0);
+		AppTable = __decorate([t$3("app-table")], AppTable);
 	}));
 	//#endregion
 	//#region src/main.ts
@@ -3432,14 +3747,14 @@
 		init_app_stats();
 		init_app_table();
 		init_decorate();
-		AppRoot = class AppRoot extends i$1 {
+		AppRoot = class AppRoot extends i$2 {
 			constructor(..._args) {
 				super(..._args);
 				this.isLoading = new import_lib.StoreController(this, isLoading$);
 				this.fileName = new import_lib.StoreController(this, fileName$);
 			}
 			static {
-				this.styles = r$4(main_default);
+				this.styles = r$5(main_default);
 			}
 			/**
 			* Initializes the component.
@@ -3559,7 +3874,7 @@
 				isLoading$.set(false);
 			}
 		};
-		AppRoot = __decorate([t$2("app-root")], AppRoot);
+		AppRoot = __decorate([t$3("app-root")], AppRoot);
 	}));
 	//#endregion
 	//#region src/index.ts
