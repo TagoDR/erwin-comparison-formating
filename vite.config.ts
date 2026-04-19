@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import userscript, { type Metadata } from 'userscript-metadata-generator';
-import { defineConfig, type Plugin, type UserConfig } from 'vite';
+import { defineConfig, type Plugin, type UserConfig, type ViteDevServer } from 'vite';
 import viteBanner from 'vite-plugin-banner';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import { viteSingleFile } from 'vite-plugin-singlefile';
@@ -29,10 +29,10 @@ function sampleGeneratorPlugin(): Plugin {
   const sampleTsPath = path.resolve(__dirname, 'src/store/sample.ts');
   const sampleHtmlPath = path.resolve(__dirname, 'src/store/sample.html');
 
-  const updateHtml = async () => {
+  const updateHtml = async (server: ViteDevServer) => {
     try {
-      // Use dynamic import with timestamp to bypass Node's module cache
-      const { sampleData } = await import(`${sampleTsPath}?t=${Date.now()}`);
+      // Use Vite's SSR module loader to handle TypeScript and imports correctly
+      const { sampleData } = await server.ssrLoadModule(sampleTsPath);
       const html = buildSampleHtml(sampleData);
       fs.writeFileSync(sampleHtmlPath, html);
       console.log('[SampleGenerator] Hot-reloaded src/store/sample.html');
@@ -44,15 +44,15 @@ function sampleGeneratorPlugin(): Plugin {
   return {
     name: 'sample-generator-plugin',
     configureServer(server) {
-      // Initial update on server start
-      updateHtml();
-
-      // Watch for changes specifically in the sample data source
-      server.watcher.on('change', async file => {
-        if (file === sampleTsPath) {
-          await updateHtml();
-          server.ws.send({ type: 'full-reload', path: '*' });
-        }
+      // Initial update on server start (delayed slightly to ensure server is ready)
+      updateHtml(server).then(_r => {
+        // Watch for changes specifically in the sample data source
+        server.watcher.on('change', async file => {
+          if (file === sampleTsPath || file.endsWith('src/types.ts')) {
+            await updateHtml(server);
+            server.ws.send({ type: 'full-reload', path: '*' });
+          }
+        });
       });
     },
   };
