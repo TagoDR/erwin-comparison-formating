@@ -10,7 +10,8 @@
       "change": "Type de changement",
       "category": "Catégorie",
       "name": "Filtrer par nom",
-      "clear_filters": "Réinitialiser les filtres"
+      "clear_filters": "Réinitialiser les filtres",
+      "properties": "Masquer les propriétés par nom"
     }
   },
   "stats": {
@@ -56,5 +57,12 @@
   "app": {
     "no_file": "Aucun fichier chargé, sélectionnez un fichier ci-dessus.",
     "loading": "Traitement du fichier HTML..."
+  },
+  "drawer": {
+    "title": "Filtre de Propriétés",
+    "hide_all": "Tout Masquer",
+    "show_all": "Tout Afficher",
+    "no_props": "Aucune propriété trouvée dans les données.",
+    "tooltip": "Ouvrir le filtre de visibilité des propriétés"
   }
 }

@@ -106,6 +106,7 @@ export interface HeaderRow extends DiffRow<HeaderKeyword> {}
 export interface EnrichedDiffRow extends DiffRow<string> {
   id: string;
   parentId?: string;
+  parentType?: string;
   prop: Prop;
   change: Change;
   view: View;
@@ -158,6 +159,18 @@ export interface StatsSummary {
   exclusion: number;
   calculated: number;
   largeTablesCount?: number;
+}
+
+export interface PropertyDefinition {
+  key: string;
+  type: string;
+  spaces: number;
+  parentType: string;
+}
+
+export interface PropertyTree {
+  parentType: string;
+  children: PropertyDefinition[];
 }
 
 /**

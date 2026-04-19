@@ -28,7 +28,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 - **`src/store/data.store.ts`**: State management core. Contains logic for:
   - **Enrichment**: Recursive tree traversal to generate flattened `EnrichedDiffRow` objects. Handles status hoisting (e.g., `isCalculated`) and smart attribute counting (via child objects or order lists).
   - **Filtering**: Multi-layered search, status, and drill-down filters (Only Entities, Only Ent+Atr).
-  - **Interactions**: Global and individual visibility toggles for properties and sub-objects.
+  - **Interactions**: Global and individual visibility toggles for properties and sub-objects. Includes a **Property Filter Drawer** for permanent exclusion of metadata by name.
 - **`src/store/sample.ts`**: Source of truth for mock data used during development.
 - **`src/store/sample.html`**: Generated HTML report used for testing the parser (synced via Vite dev server).
 
@@ -36,9 +36,10 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 - **`src/components/app-header.ts`**: Top navigation bar containing file upload, global search, and theme/language toggles.
 - **`src/components/app-stats.ts`**: Summary panel showing counts for Tables and Columns (added, changed, deleted). Supports filter triggering on cell click.
 - **`src/components/app-table.ts`**: Main data grid. Implements complex visibility logic and hierarchical visual guides (dots and indicators).
+- **`src/components/property-drawer.ts`**: Left-side panel for managing property visibility globally by name, organized by object type in discovery order.
 
 ### 3.4. Assets & I18n
-- **`src/assets/icons.ts`**: Tabler Icons as SVG strings for optimized bundling.
+- **`src/icons/`**: Tabler Icons as SVG strings for optimized bundling.
 - **`src/i18n/`**: Localization files (JSON) for English, Portuguese, Spanish, and French.
 
 ### 3.5. Utility Scripts
@@ -60,6 +61,7 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
    - **Filter Panel:**
      - Grouped switches: "Show Properties", "**Hide Calculated**" (ON by default), "Only Entities", and "Only Ent+Atr".
      - Search and status filters.
+     - **Property Drawer Toggle**: Button to manage hidden metadata by name.
    - **Data Table Panel:** Fixed-layout grid with hierarchy visualization and **dynamic indicators**.
 
 ### 4.2. Data Processing (Parser Logic)

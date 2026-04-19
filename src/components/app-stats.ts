@@ -8,6 +8,7 @@ import {
   filterChange$,
   filterName$,
   hideCalculated$,
+  isPropertyDrawerOpen$,
   onlyEntities$,
   onlyEntitiesAndAttributes$,
   resetFilters,
@@ -17,6 +18,9 @@ import {
   togglePropertiesGlobal,
 } from '../store/data.store.js';
 import statsStyles from './app-stats.css?inline';
+
+// Register Drawer
+import './property-drawer.js';
 
 /**
  * Application statistics and filter panel component.
@@ -40,6 +44,7 @@ export class AppStats extends LitElement {
     if (this.stats.value.length === 0) return html``;
 
     return html`
+      <property-drawer></property-drawer>
       <div class="layout-stats">
         <div class="left-stats">
           <div class="stats-container">
@@ -156,6 +161,11 @@ export class AppStats extends LitElement {
               </div>
             </div>
 
+            <div class="filters-area">
+               <button class="btn btn-primary btn-xs filter-btn" @click=${() => isPropertyDrawerOpen$.set(true)} title="${translate('header.filters.properties')}">
+                  ${icons.filter}
+               </button>
+            </div>
             <div class="clear-filters-area">
                <button class="btn btn-default btn-xs clear-btn" @click=${resetFilters} title="${translate('header.filters.clear_filters')}">
                   ${icons['filter-off']}

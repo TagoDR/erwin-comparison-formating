@@ -1,0 +1,216 @@
+:host {
+  --drawer-width: 350px;
+  --transition-speed: 0.3s;
+  --drawer-bg: var(--bg-panel);
+  --drawer-header-bg: var(--bg-main);
+  --drawer-header-text: var(--text-primary);
+  --drawer-group-bg: var(--bg-alt);
+  --drawer-group-text: var(--text-secondary);
+  --drawer-item-bg: var(--bg-panel);
+  --drawer-item-border: var(--border-subtle);
+  --drawer-item-hover-bg: var(--hover-bg);
+  --drawer-text-main: var(--text-primary);
+  --drawer-text-muted: var(--text-secondary);
+  --drawer-accent-blue: var(--accent-blue);
+  --drawer-accent-green: var(--accent-green);
+}
+
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-speed);
+  z-index: 2000;
+}
+
+.drawer-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.property-drawer {
+  position: fixed;
+  top: 0;
+  left: calc(-1 * var(--drawer-width));
+  width: var(--drawer-width);
+  height: 100vh;
+  background: var(--drawer-bg);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  transition: left var(--transition-speed) ease-in-out;
+  z-index: 2001;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-drawer.open {
+  left: 0;
+}
+
+.drawer-header {
+  padding: 1rem;
+  background: var(--drawer-header-bg);
+  color: var(--drawer-header-text);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.header-main h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Close button - maintaining consistency with header icons */
+.close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  padding: 4px;
+  display: flex;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Let Bootflat handle button styling by removing overrides,
+   just ensuring they fill the container */
+.header-actions .btn {
+  flex: 1;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--drawer-bg);
+}
+
+.property-group {
+  margin-bottom: 0px;
+}
+
+.group-header {
+  background: var(--drawer-group-bg);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--drawer-item-border);
+}
+
+.group-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--drawer-group-text);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.property-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.property-item {
+  padding: 0.6rem 1rem;
+  background: var(--drawer-item-bg);
+  border-bottom: 1px solid var(--drawer-item-border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.property-item:hover {
+  background: var(--drawer-item-hover-bg);
+}
+
+.item-label {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  width: 100%;
+  margin: 0;
+}
+
+.item-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--drawer-accent-green);
+}
+
+.item-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.prop-type {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--drawer-text-main);
+}
+
+.prop-meta {
+  display: flex;
+  align-items: center;
+}
+
+.indent-indicator {
+  font-family: "JetBrains Mono", monospace;
+  letter-spacing: 2px;
+  font-weight: 900;
+  color: var(--drawer-accent-blue);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.empty-state {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--drawer-text-muted);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* Custom Scrollbar */
+.drawer-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.drawer-content::-webkit-scrollbar-track {
+  background: var(--drawer-bg);
+}
+
+.drawer-content::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+
+.drawer-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}

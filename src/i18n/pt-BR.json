@@ -10,7 +10,8 @@
       "change": "Tipo de Alteração",
       "category": "Categoria",
       "name": "Filtrar por nome",
-      "clear_filters": "Limpar todos os filtros"
+      "clear_filters": "Limpar todos os filtros",
+      "properties": "Ocultar propriedades por nome"
     }
   },
 
@@ -57,5 +58,12 @@
   "app": {
     "no_file": "Nenhum arquivo carregado, selecione um arquivo acima.",
     "loading": "Processando arquivo html..."
+  },
+  "drawer": {
+    "title": "Filtro de Propriedades",
+    "hide_all": "Ocultar Tudo",
+    "show_all": "Mostrar Tudo",
+    "no_props": "Nenhuma propriedade encontrada nos dados.",
+    "tooltip": "Abrir filtro de visibilidade de propriedades"
   }
 }

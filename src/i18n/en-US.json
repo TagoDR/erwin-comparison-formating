@@ -10,7 +10,8 @@
       "change": "Change",
       "category": "Category",
       "name": "Search Name...",
-      "clear_filters": "Clear all filters"
+      "clear_filters": "Clear all filters",
+      "properties": "Hide properties by name"
     }
   },
   "stats": {
@@ -56,5 +57,12 @@
   "app": {
     "no_file": "No file loaded, select a file above.",
     "loading": "Processing html File..."
+  },
+  "drawer": {
+    "title": "Properties Filter",
+    "hide_all": "Hide All",
+    "show_all": "Show All",
+    "no_props": "No properties found in data.",
+    "tooltip": "Open property visibility filter"
   }
 }

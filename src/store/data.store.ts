@@ -4,6 +4,7 @@ import {
   HEADERS_CONFIG,
   type ModelObject,
   type Prop,
+  type PropertyDefinition,
   type StatsSummary,
 } from '../types.js';
 
@@ -38,6 +39,8 @@ export const onlyEntities$ = atom<boolean>(false);
 export const onlyEntitiesAndAttributes$ = atom<boolean>(false);
 /** Strong filter: remove all identical objects. */
 export const hideCalculated$ = atom<boolean>(true);
+/** Set of property keys to be permanently hidden. Key format: `${type}|${spaces}|${parentType}` */
+export const hiddenProperties$ = atom<Set<string>>(new Set());
 
 // Interaction State
 /** Global toggle for property visibility. */
@@ -50,6 +53,8 @@ export const hiddenSubObjectsIds$ = atom<Set<string>>(new Set());
 export const checkedIds$ = atom<Set<string>>(new Set());
 /** Flag for global side-swapping (Work <-> Reference). */
 export const isFlipped$ = atom<boolean>(false);
+/** Controls the visibility of the left-side property drawer. */
+export const isPropertyDrawerOpen$ = atom<boolean>(false);
 
 /**
  * Flattened and enriched data derived from the hierarchical modelData$.
@@ -116,6 +121,7 @@ export const enrichedData$ = computed(modelData$, model => {
         ...p,
         id: `${id}-p-${idx}`,
         parentId: id,
+        parentType: obj.id.type,
         prop: enrichedHeader.prop,
         change: p.left && p.right ? 'A' : p.left ? 'I' : 'E',
         view: '',
@@ -187,8 +193,9 @@ export const filteredData$ = computed(
     onlyEntities$,
     onlyEntitiesAndAttributes$,
     hideCalculated$,
+    hiddenProperties$,
   ],
-  (data, change, name, onlyEntities, onlyEntitiesAndAttributes, hideCalculated) => {
+  (data, change, name, onlyEntities, onlyEntitiesAndAttributes, hideCalculated, hiddenProps) => {
     if (data.length === 0) return [];
 
     const rowsById = new Map<string, EnrichedDiffRow>();
@@ -210,7 +217,16 @@ export const filteredData$ = computed(
       current = current.filter(r => !r.isCalculated);
     }
 
-    // 2. Entity / Drill-down Filters
+    // 2. Hide Specific Properties Filter
+    if (hiddenProps.size > 0) {
+      current = current.filter(r => {
+        if (r.isHeader) return true;
+        const key = `${r.type}|${r.spaces}|${r.parentType}`;
+        return !hiddenProps.has(key);
+      });
+    }
+
+    // 3. Entity / Drill-down Filters
     if (onlyEntities || onlyEntitiesAndAttributes) {
       const allowedIds = new Set<string>();
 
@@ -240,7 +256,7 @@ export const filteredData$ = computed(
       current = current.filter(r => allowedIds.has(r.id));
     }
 
-    // 3. Change Filter
+    // 4. Change Filter
     if (change) {
       const matchingIds = new Set<string>();
       const addDescendants = (id: string) => {
@@ -256,7 +272,7 @@ export const filteredData$ = computed(
       current = current.filter(r => matchingIds.has(r.id));
     }
 
-    // 4. Search Filter (Name/Type)
+    // 5. Search Filter (Name/Type)
     if (name) {
       const search = name.toLowerCase();
       const hits = new Set<string>();
@@ -296,6 +312,63 @@ export const filteredData$ = computed(
   },
 );
 
+/**
+ * Extracts unique property definitions organized as a tree (grouped by Parent Type).
+ * Maintains the discovery order for Parent Types and their child properties.
+ */
+export const uniqueProperties$ = computed(enrichedData$, data => {
+  const parentTypeOrder: string[] = [];
+  const propertyMap = new Map<string, PropertyDefinition[]>();
+  const seenPropertyKeys = new Set<string>();
+
+  for (const r of data) {
+    if (r.isHeader || !r.parentType) continue;
+
+    const parentType = r.parentType;
+    const key = `${r.type}|${r.spaces}|${parentType}`;
+
+    if (!parentTypeOrder.includes(parentType)) {
+      parentTypeOrder.push(parentType);
+    }
+
+    if (!seenPropertyKeys.has(key)) {
+      seenPropertyKeys.add(key);
+      const list = propertyMap.get(parentType) || [];
+      list.push({ key, type: r.type, spaces: r.spaces, parentType });
+      propertyMap.set(parentType, list);
+    }
+  }
+
+  return parentTypeOrder.map(parentType => ({
+    parentType,
+    children: propertyMap.get(parentType) || [],
+  }));
+});
+
+/** Toggles a property visibility in the hidden set. */
+export const toggleProperty = (key: string) => {
+  const current = new Set(hiddenProperties$.get());
+  if (current.has(key)) current.delete(key);
+  else current.add(key);
+  hiddenProperties$.set(current);
+};
+
+/** Hides all unique properties. */
+export const hideAllProperties = () => {
+  const allKeys = new Set<string>();
+  uniqueProperties$.get().forEach(group => {
+    group.children.forEach(p => {
+      allKeys.add(p.key);
+    });
+  });
+  hiddenProperties$.set(allKeys);
+};
+
+/** Resets all hidden properties (shows everything). */
+export const resetHiddenProperties = () => {
+  hiddenProperties$.set(new Set());
+};
+
 /** Toggles individual property visibility for a header. */
 export const togglePropertiesIndividual = (id: string) => {
   const current = new Set(toggledPropertiesIds$.get());
@@ -326,6 +399,7 @@ export const initializeVisibility = () => {
   toggledPropertiesIds$.set(new Set());
   hiddenSubObjectsIds$.set(new Set());
   isFlipped$.set(false);
+  resetHiddenProperties();
 };
 
 /** Resets all user filters. */
@@ -406,5 +480,8 @@ if (typeof window !== 'undefined') {
     hideCalculated$,
     onlyEntities$,
     onlyEntitiesAndAttributes$,
+    uniqueProperties$,
+    hiddenProperties$,
+    isPropertyDrawerOpen$,
   };
 }
