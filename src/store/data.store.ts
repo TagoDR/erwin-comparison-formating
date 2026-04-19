@@ -145,10 +145,11 @@ export const enrichedData$ = computed(modelData$, model => {
 
     // 3. Process Children
     let childAttrCount = 0;
+    let hasActualSubObjects = false;
     if (obj.children) {
-      enrichedHeader.hasSubObjects = true;
       for (const children of Object.values(obj.children)) {
-        if (!children) continue;
+        if (!children || children.length === 0) continue;
+        hasActualSubObjects = true;
         for (const child of children) {
           process(child, id);
           if (['Attribute/Column', 'Attribute', 'Column'].includes(child.id.type)) {
@@ -158,6 +159,7 @@ export const enrichedData$ = computed(modelData$, model => {
       }
     }
 
+    enrichedHeader.hasSubObjects = hasActualSubObjects;
     enrichedHeader.hasProperties = enrichedProperties.length > 0;
 
     // Final Attribute Count logic: prefers actual child objects, falls back to order list

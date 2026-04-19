@@ -1,6 +1,7 @@
 import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
 import { translate } from 'lit-translate';
 import icons from '../icons';
 import {
@@ -145,24 +146,27 @@ export class AppTable extends LitElement {
                 </td>
               </tr>
             `
-                : visibleRows.map(row => {
-                    const isIdentificationRow = row.isHeader && !row.isGrouping;
-                    const isNameProp = row.type.toLowerCase().includes('name');
-                    const showCopy = isIdentificationRow || isNameProp;
+                : repeat(
+                    visibleRows,
+                    row => row.id,
+                    row => {
+                      const isIdentificationRow = row.isHeader && !row.isGrouping;
+                      const isNameProp = row.type.toLowerCase().includes('name');
+                      const showCopy = isIdentificationRow || isNameProp;
 
-                    const level = row.level;
-                    const isChecked = row.id ? checkedSet.has(row.id) : false;
+                      const level = row.level;
+                      const isChecked = row.id ? checkedSet.has(row.id) : false;
 
-                    const leftVal = flipped ? row.right : row.left;
-                    const rightVal = flipped ? row.left : row.right;
+                      const leftVal = flipped ? row.right : row.left;
+                      const rightVal = flipped ? row.left : row.right;
 
-                    let change = row.change;
-                    if (flipped) {
-                      if (change === 'I') change = 'E';
-                      else if (change === 'E') change = 'I';
-                    }
+                      let change = row.change;
+                      if (flipped) {
+                        if (change === 'I') change = 'E';
+                        else if (change === 'E') change = 'I';
+                      }
 
-                    return html`
+                      return html`
                 <tr 
                   data-change="${change}" 
                   data-level="${level}"
@@ -173,12 +177,12 @@ export class AppTable extends LitElement {
                   data-udp="${row.isUDP || false}"
                   class="${isChecked ? 'checked-row' : ''} ${isIdentificationRow ? 'clickable-row' : ''}"
                   @click=${() => {
-                    if (isIdentificationRow && row.id) {
+                    if (isIdentificationRow && row.id && row.hasProperties) {
                       togglePropertiesIndividual(row.id);
                     }
                   }}
                   @contextmenu=${(e: MouseEvent) => {
-                    if (isIdentificationRow && row.id) {
+                    if (isIdentificationRow && row.id && row.hasSubObjects) {
                       e.preventDefault();
                       toggleSubObjects(row.id);
                     }
@@ -201,7 +205,7 @@ export class AppTable extends LitElement {
 
                       <div class="row-indicators">
                         ${
-                          row.hasProperties
+                          row.isHeader && row.hasProperties
                             ? html`
                           <span class="icon-indicator prop-indicator ${!arePropertiesHidden(row) ? 'expanded' : ''}">
                             ${icons['chevron-down']}
@@ -210,7 +214,7 @@ export class AppTable extends LitElement {
                             : ''
                         }
                         ${
-                          row.hasSubObjects
+                          row.isHeader && row.hasSubObjects
                             ? html`
                           <span class="icon-indicator sub-indicator">
                             ${areSubObjectsHidden(row) ? icons['schema-off'] : icons.schema}
@@ -271,7 +275,8 @@ export class AppTable extends LitElement {
                 <td class="row-cal">${row.isCalculated ? 'C' : ''}</td>
               </tr>
             `;
-                  })
+                    },
+                  )
             }
         </tbody>
       </table>
