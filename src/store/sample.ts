@@ -119,6 +119,70 @@ export const sampleData: ModelObject = {
         },
       },
     ],
+    Collections: [
+      {
+        id: {
+          level: 3,
+          spaces: 3 * INDENT_SIZE,
+          type: 'Collection',
+          left: 'DOC',
+          right: 'DOC',
+        },
+        properties: [
+          {
+            level: 4,
+            spaces: 4 * INDENT_SIZE,
+            type: 'Name',
+            left: 'Document',
+            right: 'Document Files',
+          },
+        ],
+        children: {
+          Fields: [
+            {
+              id: {
+                level: 5,
+                spaces: 5 * INDENT_SIZE,
+                type: 'Field',
+                left: 'NM_DOC',
+                right: 'NM_DOC_FL',
+              },
+              properties: [
+                {
+                  level: 6,
+                  spaces: 6 * INDENT_SIZE,
+                  type: 'Physical Name',
+                  left: 'NM_DOC',
+                  right: 'NM_DOC_FL',
+                },
+              ],
+              children: {
+                Fields: [
+                  {
+                    id: {
+                      level: 7,
+                      spaces: 7 * INDENT_SIZE,
+                      type: 'Field',
+                      left: 'NM_DOC',
+                      right: 'NM_DOC_FL',
+                    },
+                    properties: [
+                      {
+                        level: 8,
+                        spaces: 8 * INDENT_SIZE,
+                        type: 'Physical Name',
+                        left: 'NM_DOC',
+                        right: 'NM_DOC_FL',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    ],
     'Entities/Tables': [
       {
         id: {
@@ -659,7 +723,7 @@ export const sampleData: ModelObject = {
                 spaces: 5 * INDENT_SIZE,
                 type: 'Attribute/Column',
                 left: '',
-                right: 'CD_PRD',
+                right: 'CD_PRD_XXX_XXX_XXX_XX_XX_XX',
               },
               properties: [
                 {
@@ -735,7 +799,7 @@ export const sampleData: ModelObject = {
                 {
                   level: 6,
                   spaces: 6 * INDENT_SIZE,
-                  type: 'Parent Domain',
+                  type: 'Parent Domain Very long name for property',
                   left: '',
                   right: 'Number',
                 },
