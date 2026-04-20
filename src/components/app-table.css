@@ -303,6 +303,15 @@ tr[data-header="true"][data-level="5"]:not([data-prop="Ent"]):not([data-prop="At
   ),
 tr[data-header="true"][data-level="6"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
     [data-grouping="true"]
+  ),
+tr[data-header="true"][data-level="7"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
+    [data-grouping="true"]
+  ),
+tr[data-header="true"][data-level="8"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
+    [data-grouping="true"]
+  ),
+tr[data-header="true"][data-level="9"]:not([data-prop="Ent"]):not([data-prop="Atr"]):not(
+    [data-grouping="true"]
   ) {
   background-color: var(--color-obj-l4);
   color: var(--text-on-light);
