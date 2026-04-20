@@ -105,7 +105,7 @@ export const enrichedData$ = computed(modelData$, model => {
       const isUDP = p.type.includes('.Physical.') || p.type.includes('.Logical.');
 
       // Support for attribute/column counting via Erwin's order list properties
-      if (['Column Order List', 'Attribute Order List'].includes(p.type)) {
+      if (['Column Order List', 'Attribute Order List', 'Field Order'].includes(p.type)) {
         const count = Math.max(
           p.left ? p.left.split(',').length : 0,
           p.right ? p.right.split(',').length : 0,
