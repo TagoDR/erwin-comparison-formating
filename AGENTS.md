@@ -20,10 +20,12 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 ## 3. Project Structure & Index
 
 ### 3.1. Core Configuration
+
 - **`src/types.ts`**: Centralized TypeScript interfaces and constants. Defines the data models for rows, headers, and statistical summaries. Contains `HEADERS_CONFIG` (object classification rules) and `GROUPING_KEYWORDS`.
 - **`package.json`**: Build scripts, dependencies, and formatting configurations (Prettier/Biome).
 
 ### 3.2. Data Processing (Parser & Store)
+
 - **`src/parser/html-parser.ts`**: High-performance DOM parser. Converts raw Erwin HTML tables into a structured **`ModelObject`** tree, accurately reflecting the source hierarchy.
 - **`src/store/data.store.ts`**: State management core. Contains logic for:
   - **Enrichment**: Recursive tree traversal to generate flattened `EnrichedDiffRow` objects. Handles status hoisting (e.g., `isCalculated`) and smart attribute counting (via child objects or order lists).
@@ -33,16 +35,19 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 - **`src/store/sample.html`**: Generated HTML report used for testing the parser (synced via Vite dev server).
 
 ### 3.3. UI Components (Lit)
+
 - **`src/components/app-header.ts`**: Top navigation bar containing file upload, global search, and theme/language toggles.
 - **`src/components/app-stats.ts`**: Summary panel showing counts for Tables and Columns (added, changed, deleted). Supports filter triggering on cell click.
 - **`src/components/app-table.ts`**: Main data grid. Implements complex visibility logic and hierarchical visual guides (dots and indicators).
 - **`src/components/property-drawer.ts`**: Left-side panel for managing property visibility globally by name, organized by object type in discovery order.
 
 ### 3.4. Assets & I18n
+
 - **`src/icons/`**: Tabler Icons as SVG strings for optimized bundling.
 - **`src/i18n/`**: Localization files (JSON) for English, Portuguese, Spanish, and French.
 
 ### 3.5. Utility Scripts
+
 - **`scripts/generate-sample-html.ts`**: Core logic for transforming structured JSON into legacy Erwin HTML tables. Integrated into Vite for hot-reloading.
 
 ## 4. UI/UX Requirements

@@ -26,15 +26,12 @@ export class AppHeader extends LitElement {
 
     return html`
       <div class="header-layout">
-        ${__IS_PUBLIC__ ? html`<div class="brand">${translate('header.title')}</div>` : ''}
-        ${isMonkey ? html`<div class="file-info">${this.fileName.value}</div>` : ''}
-
         ${
-          !isMonkey
-            ? html`
-          ${
-            this.fileName.value
-              ? html`
+          isMonkey
+            ? html`<div class="file-info">${this.fileName.value}</div>`
+            : html`${
+                this.fileName.value
+                  ? html`
             <div class="file-info">
               <span class="file-name">${this.fileName.value}</span>
               <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
@@ -42,7 +39,7 @@ export class AppHeader extends LitElement {
               </button>
             </div>
           `
-              : html`
+                  : html`
             <div 
               class="file-drop-zone ${this.isDragging ? 'dragging' : ''}"
               @drop=${this._onDrop}
@@ -54,24 +51,18 @@ export class AppHeader extends LitElement {
               <input type="file" @change=${(e: Event) => this._handleFile((e.target as HTMLInputElement).files?.[0] as File)} />
             </div>
           `
-          }
+              }
         `
-            : ''
         }
 
         <div class="header-controls">
-          ${
-            __IS_PUBLIC__
-              ? html`
+          
           <select class="lang-select" .value=${this.language.value} @change=${this._onLanguageChange}>
             <option value="pt-BR">PT</option>
             <option value="en-US">EN</option>
             <option value="fr-FR">FR</option>
             <option value="es-ES">ES</option>
-          </select>
-          `
-              : ''
-          }
+          </select>          
 
           <button class="theme-toggle" @click=${toggleTheme} title="Change Theme">
             ${this.theme.value === 'dark' ? icons.sun : icons.moon}

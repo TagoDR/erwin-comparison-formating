@@ -29,16 +29,14 @@ export const initI18n = async () => {
   const browserLang = navigator.language;
   let defaultLang = 'pt-BR'; // Portuguese is the default if detection fails or is not matched
 
-  if (__IS_PUBLIC__) {
-    if (browserLang.startsWith('en')) {
-      defaultLang = 'en-US';
-    } else if (browserLang.startsWith('fr')) {
-      defaultLang = 'fr-FR';
-    } else if (browserLang.startsWith('es')) {
-      defaultLang = 'es-ES';
-    } else if (browserLang.startsWith('pt')) {
-      defaultLang = 'pt-BR';
-    }
+  if (browserLang.startsWith('en')) {
+    defaultLang = 'en-US';
+  } else if (browserLang.startsWith('fr')) {
+    defaultLang = 'fr-FR';
+  } else if (browserLang.startsWith('es')) {
+    defaultLang = 'es-ES';
+  } else if (browserLang.startsWith('pt')) {
+    defaultLang = 'pt-BR';
   }
 
   await changeLanguage(defaultLang);
