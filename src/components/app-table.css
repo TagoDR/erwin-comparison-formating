@@ -31,12 +31,12 @@
 }
 
 tr[data-udp="true"] {
-  background-color: rgba(0, 128, 128, 0.2);
+  background-color: var(--off-aqua-40);
   color: var(--text-primary);
 }
 
 [data-theme="dark"] tr[data-udp="true"] {
-  background-color: rgba(0, 128, 128, 0.4);
+  background-color: var(--off-aqua-d25);
 }
 
 /* Remove 3D effects from header */
