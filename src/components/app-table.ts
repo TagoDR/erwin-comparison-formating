@@ -84,8 +84,13 @@ export class AppTable extends LitElement {
             if (onlyEntities && parent.prop === 'Ent' && row.prop !== 'Ent') {
               isHidden = !isHidden;
             }
-            if (onlyEntitiesAndAttributes && parent.prop === 'Atr') {
-              isHidden = !isHidden;
+            if (onlyEntitiesAndAttributes) {
+              if (parent.prop === 'Ent' && row.prop !== 'Atr') {
+                isHidden = !isHidden;
+              }
+              if (parent.prop === 'Atr' && row.type !== 'Field') {
+                isHidden = !isHidden;
+              }
             }
 
             if (isHidden) return true;
@@ -106,7 +111,11 @@ export class AppTable extends LitElement {
       if (onlyEntities && row.prop === 'Ent' && row.hasSubObjects) {
         isHidden = !isHidden;
       }
-      if (onlyEntitiesAndAttributes && row.prop === 'Atr' && row.hasSubObjects) {
+      if (
+        onlyEntitiesAndAttributes &&
+        (row.prop === 'Ent' || row.prop === 'Atr') &&
+        row.hasSubObjects
+      ) {
         isHidden = !isHidden;
       }
       return isHidden;

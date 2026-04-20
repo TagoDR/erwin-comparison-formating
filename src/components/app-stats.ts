@@ -12,6 +12,8 @@ import {
   onlyEntities$,
   onlyEntitiesAndAttributes$,
   resetFilters,
+  setOnlyEntities,
+  setOnlyEntitiesAndAttributes,
   showProperties$,
   statsSummary$,
   toggleFlip,
@@ -214,23 +216,19 @@ export class AppStats extends LitElement {
       if (change === '') {
         // Toggle if total clicked
         const current = onlyEntities$.get();
-        onlyEntities$.set(!current);
-        if (!current) onlyEntitiesAndAttributes$.set(false);
+        setOnlyEntities(!current);
       } else {
         // Force on if status clicked
-        onlyEntities$.set(true);
-        onlyEntitiesAndAttributes$.set(false);
+        setOnlyEntities(true);
       }
     } else if (type === 'Columns') {
       if (change === '') {
         // Toggle if total clicked
         const current = onlyEntitiesAndAttributes$.get();
-        onlyEntitiesAndAttributes$.set(!current);
-        if (!current) onlyEntities$.set(false);
+        setOnlyEntitiesAndAttributes(!current);
       } else {
         // Force on if status clicked
-        onlyEntitiesAndAttributes$.set(true);
-        onlyEntities$.set(false);
+        setOnlyEntitiesAndAttributes(true);
       }
     }
   }

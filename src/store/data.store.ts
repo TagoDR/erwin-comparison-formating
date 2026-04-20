@@ -251,7 +251,7 @@ export const filteredData$ = computed(
           addDescendants(r.id);
         }
       }
-      current = current.filter(r => allowedIds.has(r.id));
+      current = current.filter(r => allowedIds.has(r.id) && r.type !== 'Model');
     }
 
     // 4. Change Filter
@@ -445,12 +445,36 @@ export const resetFilters = () => {
   onlyEntities$.set(false);
   onlyEntitiesAndAttributes$.set(false);
   hideCalculated$.set(true);
+  initializeVisibility();
+};
+
+/** Sets Only Entities mode and clears manual sub-object overrides. */
+export const setOnlyEntities = (val: boolean) => {
+  onlyEntities$.set(val);
+  if (val) {
+    onlyEntitiesAndAttributes$.set(false);
+    hiddenSubObjectsIds$.set(new Set());
+    toggledPropertiesIds$.set(new Set());
+  }
+};
+
+/** Sets Only Ent+Atr mode and clears manual sub-object overrides. */
+export const setOnlyEntitiesAndAttributes = (val: boolean) => {
+  onlyEntitiesAndAttributes$.set(val);
+  if (val) {
+    onlyEntities$.set(false);
+    hiddenSubObjectsIds$.set(new Set());
+    toggledPropertiesIds$.set(new Set());
+  }
 };
 
 /** Global side-swap (Work <-> Reference). */
 export const toggleFlip = () => isFlipped$.set(!isFlipped$.get());
 /** Global property visibility toggle. */
-export const togglePropertiesGlobal = () => showProperties$.set(!showProperties$.get());
+export const togglePropertiesGlobal = () => {
+  showProperties$.set(!showProperties$.get());
+  toggledPropertiesIds$.set(new Set());
+};
 
 /** Statistics summary used by the app-stats component. */
 export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlipped) => {
