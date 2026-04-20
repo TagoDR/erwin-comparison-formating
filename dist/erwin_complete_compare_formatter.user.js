@@ -592,7 +592,7 @@
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit-html/directives/unsafe-html.js
 	var e$6, o$7;
-	var init_unsafe_html$2 = __esmMin((() => {
+	var init_unsafe_html$3 = __esmMin((() => {
 		init_lit_html$1();
 		init_directive$2();
 		e$6 = class extends i$8 {
@@ -618,12 +618,12 @@
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit/directives/unsafe-html.js
-	var init_unsafe_html$1 = __esmMin((() => {
-		init_unsafe_html$2();
+	var init_unsafe_html$2 = __esmMin((() => {
+		init_unsafe_html$3();
 	})), TranslateUnsafeHTMLDirective;
 	var init_translate_unsafe_html = __esmMin((() => {
 		init_directive$1();
-		init_unsafe_html$1();
+		init_unsafe_html$2();
 		init_translate();
 		init_util();
 		TranslateUnsafeHTMLDirective = class extends TranslateDirective {
@@ -728,19 +728,23 @@
 				object: "Field",
 				indentation: [
 					15,
-					18,
 					21,
-					24,
 					27,
-					30
+					33,
+					39,
+					45,
+					51,
+					57
 				],
 				levels: [
 					5,
-					6,
 					7,
-					8,
 					9,
-					10
+					11,
+					13,
+					15,
+					17,
+					19
 				]
 			},
 			{
@@ -1106,7 +1110,7 @@
 	}));
 	//#endregion
 	//#region src/store/data.store.ts
-	var modelData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, hiddenProperties$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, isPropertyDrawerOpen$, enrichedData$, filteredData$, uniqueProperties$, toggleProperty, hideAllProperties, resetHiddenProperties, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, resetFilters, toggleFlip, togglePropertiesGlobal, statsSummary$;
+	var modelData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, hiddenProperties$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, isPropertyDrawerOpen$, enrichedData$, filteredData$, uniqueProperties$, toggleProperty, hideAllProperties, resetHiddenProperties, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, resetFilters, setOnlyEntities, setOnlyEntitiesAndAttributes, toggleFlip, togglePropertiesGlobal, statsSummary$, isLongNamingConvention$;
 	var init_data_store = __esmMin((() => {
 		init_nanostores();
 		init_types();
@@ -1152,13 +1156,34 @@
 				else if (obj.id.right) enrichedHeader.change = "E";
 				let attrCountFromOrderList = 0;
 				const enrichedProperties = (obj.properties || []).map((p, idx) => {
-					const isUDP = (p.type.startsWith("Entity.Physical.") || p.type.startsWith("Entity.Logical.")) && p.spaces === 15 || (p.type.startsWith("Attribute.Physical.") || p.type.startsWith("Attribute.Logical.")) && p.spaces === 18;
-					if (["Column Order List", "Attribute Order List"].includes(p.type)) {
+					const isUDP = p.type.includes(".Physical.") || p.type.includes(".Logical.");
+					let left = p.left;
+					let right = p.right;
+					if (["Comment", "Definition"].includes(p.type)) {
+						const formatText = (text) => {
+							if (!text) return text;
+							let formatted = text;
+							formatted = formatted.replace(/\. ([A-Z])/g, ".<br>$1");
+							formatted = formatted.replace(/; /g, ";<br>");
+							formatted = formatted.replace(/ ([0-9]+\. )/g, "<br>$1");
+							formatted = formatted.replace(/ ([-•] )/g, "<br>$1");
+							return formatted;
+						};
+						left = formatText(left);
+						right = formatText(right);
+					}
+					if ([
+						"Column Order List",
+						"Attribute Order List",
+						"Field Order"
+					].includes(p.type)) {
 						const count = Math.max(p.left ? p.left.split(",").length : 0, p.right ? p.right.split(",").length : 0);
 						attrCountFromOrderList = Math.max(attrCountFromOrderList, count);
 					}
 					const prop = {
 						...p,
+						left,
+						right,
 						id: `${id}-p-${idx}`,
 						parentId: id,
 						parentType: obj.id.type,
@@ -1250,7 +1275,7 @@
 					addAncestors(r.id);
 					addDescendants(r.id);
 				}
-				current = current.filter((r) => allowedIds.has(r.id));
+				current = current.filter((r) => allowedIds.has(r.id) && r.type !== "Model");
 			}
 			if (change) {
 				const matchingIds = /* @__PURE__ */ new Set();
@@ -1385,9 +1410,29 @@
 			onlyEntities$.set(false);
 			onlyEntitiesAndAttributes$.set(false);
 			hideCalculated$.set(true);
+			initializeVisibility();
+		};
+		setOnlyEntities = (val) => {
+			onlyEntities$.set(val);
+			if (val) {
+				onlyEntitiesAndAttributes$.set(false);
+				hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
+				toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
+			}
+		};
+		setOnlyEntitiesAndAttributes = (val) => {
+			onlyEntitiesAndAttributes$.set(val);
+			if (val) {
+				onlyEntities$.set(false);
+				hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
+				toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
+			}
 		};
 		toggleFlip = () => isFlipped$.set(!isFlipped$.get());
-		togglePropertiesGlobal = () => showProperties$.set(!showProperties$.get());
+		togglePropertiesGlobal = () => {
+			showProperties$.set(!showProperties$.get());
+			toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
+		};
 		statsSummary$ = /* @__PURE__ */ computed([enrichedData$, isFlipped$], (data, isFlipped) => {
 			const summary = {
 				Tables: {
@@ -1431,6 +1476,19 @@
 			}
 			return Object.values(summary);
 		});
+		isLongNamingConvention$ = /* @__PURE__ */ computed(enrichedData$, (data) => {
+			const modelRow = data[0];
+			if (!modelRow) return false;
+			const sgbds = [
+				"oracle",
+				"mysql",
+				"mongo",
+				"postgres",
+				"hive"
+			];
+			const modelName = `${modelRow.left} ${modelRow.right}`.toLowerCase();
+			return sgbds.some((sgbd) => modelName.includes(sgbd));
+		});
 		if (typeof window !== "undefined") window.erwinData = {
 			modelData$,
 			enrichedData$,
@@ -1443,7 +1501,8 @@
 			onlyEntitiesAndAttributes$,
 			uniqueProperties$,
 			hiddenProperties$,
-			isPropertyDrawerOpen$
+			isPropertyDrawerOpen$,
+			isLongNamingConvention$
 		};
 	}));
 	//#endregion
@@ -2714,8 +2773,11 @@
 				return this.render(...e);
 			}
 		};
-	})), e$1;
-	var init_unsafe_html = __esmMin((() => {
+	}));
+	//#endregion
+	//#region node_modules/lit-html/directives/unsafe-html.js
+	var e$1, o$1;
+	var init_unsafe_html$1 = __esmMin((() => {
 		init_lit_html();
 		init_directive();
 		e$1 = class extends i$1 {
@@ -2737,14 +2799,14 @@
 			}
 		};
 		e$1.directiveName = "unsafeHTML", e$1.resultType = 1;
-		e$2(e$1);
+		o$1 = e$2(e$1);
 	}));
 	//#endregion
 	//#region node_modules/lit-html/directives/unsafe-svg.js
 	var t$1, o;
 	var init_unsafe_svg$1 = __esmMin((() => {
 		init_directive();
-		init_unsafe_html();
+		init_unsafe_html$1();
 		t$1 = class extends e$1 {};
 		t$1.directiveName = "unsafeSVG", t$1.resultType = 2;
 		o = e$2(t$1);
@@ -2925,7 +2987,7 @@
 	//#region src/components/app-header.css?inline
 	var app_header_default;
 	var init_app_header$1 = __esmMin((() => {
-		app_header_default = ":host {\r\n  display: block;\r\n  position: sticky;\r\n  top: 0;\r\n  z-index: 1000;\r\n  background: var(--bg-panel);\r\n  border-bottom: 2px solid var(--border-subtle);\r\n  padding: 0.5rem 1.5rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-layout {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  height: 2.5rem;\r\n}\r\n\r\n.brand {\r\n  flex-basis: 10%;\r\n  font-size: 1.125rem;\r\n  font-weight: 800;\r\n  letter-spacing: -0.025em;\r\n  white-space: nowrap;\r\n  margin-right: 15px;\r\n}\r\n\r\n.file-drop-zone {\r\n  flex: 1;\r\n  border: 2px dashed var(--border-subtle);\r\n  border-radius: 6px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.75rem;\r\n  padding: 0.1rem 1rem;\r\n  font-size: 0.8125rem;\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s ease;\r\n  position: relative;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-drop-zone.dragging {\r\n  border-color: var(--accent-blue);\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.file-drop-zone input[type=\"file\"] {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-info {\r\n  flex: 1;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 1.5rem;\r\n  border-radius: 4px;\r\n  border: 1px solid var(--border-subtle);\r\n}\r\n\r\n.file-name {\r\n  color: var(--accent-blue);\r\n  font-weight: 600;\r\n  font-family: monospace;\r\n  font-size: 0.875rem;\r\n  max-width: 400px;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.close-btn {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  padding: 0.2rem 0.8rem;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n  font-size: 0.7rem;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.close-btn span {\r\n  line-height: 1;\r\n}\r\n\r\n.header-controls {\r\n  flex-basis: 10%;\r\n  display: flex;\r\n  flex-direction: row;\r\n  align-items: center;\r\n  justify-content: flex-end;\r\n  gap: 12px;\r\n  margin-left: 15px;\r\n}\r\n\r\n.version-tag {\r\n  font-size: 10px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  font-weight: bold;\r\n  pointer-events: none;\r\n  order: 3;\r\n}\r\n\r\n.lang-select {\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-size: 11px;\r\n  font-weight: bold;\r\n  padding: 2px 4px;\r\n  border-radius: 4px;\r\n  cursor: pointer;\r\n  outline: none;\r\n}\r\n\r\n.theme-toggle {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  padding: 2px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  border-radius: 4px;\r\n  transition: background 0.2s;\r\n  order: 2;\r\n}\r\n\r\n.theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n[data-theme=\"dark\"] .theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n.header-layout svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
+		app_header_default = ":host {\r\n  display: block;\r\n  position: sticky;\r\n  top: 0;\r\n  z-index: 1000;\r\n  background: var(--bg-panel);\r\n  border-bottom: 2px solid var(--border-subtle);\r\n  padding: 0.5rem 1.5rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-layout {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  height: 2.5rem;\r\n}\r\n\r\n.brand {\r\n  flex-basis: 10%;\r\n  font-size: 1.125rem;\r\n  font-weight: 800;\r\n  letter-spacing: -0.025em;\r\n  white-space: nowrap;\r\n  margin-right: 15px;\r\n}\r\n\r\n.file-drop-zone {\r\n  flex: 1;\r\n  border: 2px dashed var(--border-subtle);\r\n  border-radius: 6px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.75rem;\r\n  padding: 0.1rem 1rem;\r\n  font-size: 0.8125rem;\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s ease;\r\n  position: relative;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-drop-zone.dragging {\r\n  border-color: var(--accent-blue);\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.file-drop-zone input[type=\"file\"] {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-info {\r\n  flex: 1;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 1.5rem;\r\n  border-radius: 4px;\r\n  border: 1px solid var(--border-subtle);\r\n}\r\n\r\n.file-name {\r\n  color: var(--accent-blue);\r\n  font-weight: 600;\r\n  font-family: monospace;\r\n  font-size: 0.875rem;\r\n  max-width: 400px;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.close-btn {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  padding: 0.2rem 0.8rem;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n  font-size: 0.7rem;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.close-btn span {\r\n  line-height: 1;\r\n}\r\n\r\n.header-controls {\r\n  flex-basis: auto;\r\n  display: flex;\r\n  flex-direction: row;\r\n  align-items: center;\r\n  justify-content: flex-end;\r\n  gap: 12px;\r\n  margin-left: 15px;\r\n}\r\n\r\n.version-tag {\r\n  font-size: 10px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  font-weight: bold;\r\n  pointer-events: none;\r\n  order: 3;\r\n}\r\n\r\n.lang-select {\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-size: 11px;\r\n  font-weight: bold;\r\n  padding: 2px 4px;\r\n  border-radius: 4px;\r\n  cursor: pointer;\r\n  outline: none;\r\n}\r\n\r\n.theme-toggle {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  padding: 2px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  border-radius: 4px;\r\n  transition: background 0.2s;\r\n  order: 2;\r\n}\r\n\r\n.theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n[data-theme=\"dark\"] .theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n.header-layout svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
 	}));
 	//#endregion
 	//#region \0@oxc-project+runtime@0.124.0/helpers/decorate.js
@@ -2963,14 +3025,9 @@
 				this.styles = r$5(app_header_default);
 			}
 			render() {
-				const isMonkey = this.isUserscript.value;
 				return b`
       <div class="header-layout">
-        ${b`<div class="brand">${translate("header.title")}</div>`}
-        ${isMonkey ? b`<div class="file-info">${this.fileName.value}</div>` : ""}
-
-        ${!isMonkey ? b`
-          ${this.fileName.value ? b`
+        ${this.isUserscript.value ? b`<div class="file-info">${this.fileName.value}</div>` : b`${this.fileName.value ? b`
             <div class="file-info">
               <span class="file-name">${this.fileName.value}</span>
               <button class="btn btn-danger btn-xs close-btn" @click=${this._closeFile}>
@@ -2989,17 +3046,16 @@
               <input type="file" @change=${(e) => this._handleFile(e.target.files?.[0])} />
             </div>
           `}
-        ` : ""}
+        `}
 
         <div class="header-controls">
-          ${b`
+          
           <select class="lang-select" .value=${this.language.value} @change=${this._onLanguageChange}>
             <option value="pt-BR">PT</option>
             <option value="en-US">EN</option>
             <option value="fr-FR">FR</option>
             <option value="es-ES">ES</option>
-          </select>
-          `}
+          </select>          
 
           <button class="theme-toggle" @click=${toggleTheme} title="Change Theme">
             ${this.theme.value === "dark" ? icons.sun : icons.moon}
@@ -3340,22 +3396,10 @@
 				filterChange$.set(change);
 				const select = this.renderRoot.querySelector("#change-filter");
 				if (select) select.value = change;
-				if (type === "Tables") if (change === "") {
-					const current = onlyEntities$.get();
-					onlyEntities$.set(!current);
-					if (!current) onlyEntitiesAndAttributes$.set(false);
-				} else {
-					onlyEntities$.set(true);
-					onlyEntitiesAndAttributes$.set(false);
-				}
-				else if (type === "Columns") if (change === "") {
-					const current = onlyEntitiesAndAttributes$.get();
-					onlyEntitiesAndAttributes$.set(!current);
-					if (!current) onlyEntities$.set(false);
-				} else {
-					onlyEntitiesAndAttributes$.set(true);
-					onlyEntities$.set(false);
-				}
+				if (type === "Tables") if (change === "") setOnlyEntities(!onlyEntities$.get());
+				else setOnlyEntities(true);
+				else if (type === "Columns") if (change === "") setOnlyEntitiesAndAttributes(!onlyEntitiesAndAttributes$.get());
+				else setOnlyEntitiesAndAttributes(true);
 			}
 			/**
 			* Copies the names of all identified tables to the clipboard.
@@ -3466,10 +3510,15 @@
 		init_repeat$1();
 	}));
 	//#endregion
+	//#region node_modules/lit/directives/unsafe-html.js
+	var init_unsafe_html = __esmMin((() => {
+		init_unsafe_html$1();
+	}));
+	//#endregion
 	//#region src/components/app-table.css?inline
 	var app_table_default;
 	var init_app_table$1 = __esmMin((() => {
-		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n}\r\n\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n  border-collapse: separate; /* Changed to separate for better row hover stability */\r\n  border-spacing: 0;\r\n}\r\n\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\ntr[data-udp=\"true\"] {\r\n  background-color: rgba(0, 128, 128, 0.2);\r\n  color: var(--text-primary);\r\n}\r\n\r\n[data-theme=\"dark\"] tr[data-udp=\"true\"] {\r\n  background-color: rgba(0, 128, 128, 0.4);\r\n}\r\n\r\n/* Remove 3D effects from header */\r\n.table-condensed > thead > tr > th {\r\n  border: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  text-shadow: none;\r\n  box-shadow: none;\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 4px 8px;\r\n  border-bottom: 1px solid var(--border-color);\r\n  border-right: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-condensed > thead > tr > th:last-child,\r\n.table-condensed > tbody > tr > td:last-child {\r\n  border-right: none;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n/*\r\n   Whole row highlight using box-shadow on the row\r\n   and a persistent overlay on the cells.\r\n   Removed transition to prevent the \"flashing\" or \"dissipating\" feel.\r\n*/\r\n.clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.12);\r\n  background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));\r\n}\r\n\r\n[data-theme=\"light\"] .clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);\r\n  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Status Colors */\r\n\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Orange Scale for Everything Else (Headers) */\r\ntr[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not([data-grouping=\"true\"]) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n";
+		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n}\r\n\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n  border-collapse: separate; /* Changed to separate for better row hover stability */\r\n  border-spacing: 0;\r\n}\r\n\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\ntr[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-40);\r\n  color: var(--text-primary);\r\n}\r\n\r\n[data-theme=\"dark\"] tr[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-d25);\r\n}\r\n\r\n/* Remove 3D effects from header */\r\n.table-condensed > thead > tr > th {\r\n  border: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  text-shadow: none;\r\n  box-shadow: none;\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 4px 8px;\r\n  border-bottom: 1px solid var(--border-color);\r\n  border-right: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-condensed > thead > tr > th:last-child,\r\n.table-condensed > tbody > tr > td:last-child {\r\n  border-right: none;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n/*\r\n   Whole row highlight using box-shadow on the row\r\n   and a persistent overlay on the cells.\r\n   Removed transition to prevent the \"flashing\" or \"dissipating\" feel.\r\n*/\r\n.clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.12);\r\n  background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));\r\n}\r\n\r\n[data-theme=\"light\"] .clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);\r\n  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Status Colors */\r\n\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Orange Scale for Everything Else (Headers) */\r\ntr[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not([data-grouping=\"true\"]) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"7\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"8\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"9\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-table.ts
@@ -3479,6 +3528,7 @@
 		init_lit();
 		init_decorators();
 		init_repeat();
+		init_unsafe_html();
 		init_lit_translate();
 		init_icons();
 		init_data_store();
@@ -3495,6 +3545,7 @@
 				this.isFlipped = new import_lib$1.StoreController(this, isFlipped$);
 				this.onlyEnt = new import_lib$1.StoreController(this, onlyEntities$);
 				this.onlyEntAtr = new import_lib$1.StoreController(this, onlyEntitiesAndAttributes$);
+				this.isLongNamingConvention = new import_lib$1.StoreController(this, isLongNamingConvention$);
 				this.copiedId = null;
 				this.copiedSide = null;
 			}
@@ -3530,7 +3581,10 @@
 								let isHidden = hiddenSubsSet.has(row.parentId);
 								if (isHidden && parent.type === "Model" && (row.prop === "Ent" || row.prop === "Atr")) isHidden = false;
 								if (onlyEntities && parent.prop === "Ent" && row.prop !== "Ent") isHidden = !isHidden;
-								if (onlyEntitiesAndAttributes && parent.prop === "Atr") isHidden = !isHidden;
+								if (onlyEntitiesAndAttributes) {
+									if (parent.prop === "Ent" && row.prop !== "Atr") isHidden = !isHidden;
+									if (parent.prop === "Atr" && row.type !== "Field") isHidden = !isHidden;
+								}
 								if (isHidden) return true;
 							}
 							if (isRowHidden(row.parentId)) return true;
@@ -3543,7 +3597,7 @@
 				const areSubObjectsHidden = (row) => {
 					let isHidden = hiddenSubsSet.has(row.id ?? "");
 					if (onlyEntities && row.prop === "Ent" && row.hasSubObjects) isHidden = !isHidden;
-					if (onlyEntitiesAndAttributes && row.prop === "Atr" && row.hasSubObjects) isHidden = !isHidden;
+					if (onlyEntitiesAndAttributes && (row.prop === "Ent" || row.prop === "Atr") && row.hasSubObjects) isHidden = !isHidden;
 					return isHidden;
 				};
 				/** Returns true if the properties of the given header row are currently hidden. */
@@ -3577,7 +3631,7 @@
               </tr>
             ` : c(visibleRows, (row) => row.id, (row) => {
 					const isIdentificationRow = row.isHeader && !row.isGrouping;
-					const isNameProp = row.type.toLowerCase().includes("name");
+					const isNameProp = row.type === "Physical Name" || row.type === "Name";
 					const showCopy = isIdentificationRow || isNameProp;
 					const level = row.level;
 					const isChecked = row.id ? checkedSet.has(row.id) : false;
@@ -3620,7 +3674,7 @@
                       <div class="indent-dots">
                         ${Array.from({ length: level }).map(() => b`<span class="dot">·</span>`)}
                       </div>
-                      <span class="type-text">${row.type}</span>
+                      <span class="type-text" title="${row.type}">${row.type}</span>
                       ${this._renderAttributeCounter(row)}
 
                       <div class="row-indicators">
@@ -3639,7 +3693,7 @@
                   </td>
                   <td class="row-left">
                   <div class="content-wrapper">
-                    <span class="value-text">${leftVal}</span>
+                    <span class="value-text">${o$1(leftVal)}</span>
                     <div class="row-actions">
                       ${this._renderLenCounter(row, leftVal)}
                       ${showCopy && leftVal ? b`
@@ -3657,7 +3711,7 @@
                 </td>
                 <td class="row-right">
                   <div class="content-wrapper">
-                    <span class="value-text">${rightVal}</span>
+                    <span class="value-text">${o$1(rightVal)}</span>
                     <div class="row-actions">
                       ${this._renderLenCounter(row, rightVal)}
                       ${showCopy && rightVal ? b`
@@ -3708,13 +3762,14 @@
 				};
 				const len = getLen(value);
 				if (len === 0) return "";
-				return b`<span class="len-badge ${len > 18 ? "len-warn" : "len-ok"}">${len}</span>`;
+				return b`<span class="len-badge ${len > (this.isLongNamingConvention.value ? 50 : 18) ? "len-warn" : "len-ok"}">${len}</span>`;
 			}
 			/**
 			* Copies text to the clipboard and handles visual feedback state.
 			*/
 			_handleCopy(id, text, side) {
-				const cleanText = text.includes(":") ? text.split(":")[1].trim() : text.trim();
+				let cleanText = text.includes(".") ? text.split(".")[1].trim() : text.trim();
+				cleanText = cleanText.replace("(FK)", "").replace("[Calculated]", "").trim();
 				navigator.clipboard.writeText(cleanText).then(() => {
 					this.copiedId = id;
 					this.copiedSide = side;
