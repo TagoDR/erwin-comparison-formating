@@ -4,7 +4,6 @@ import { customElement, state } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
 import icons from '../icons';
 import { fileName$, filterName$, isUserscript$, modelData$ } from '../store/data.store.js';
-import { changeLanguage, language$ } from '../store/i18n.store.js';
 import { theme$, toggleTheme } from '../store/theme.store.js';
 import headerStyles from './app-header.css?inline';
 
@@ -17,7 +16,6 @@ export class AppHeader extends LitElement {
   static styles = unsafeCSS(headerStyles);
   private fileName = new StoreController(this, fileName$);
   private theme = new StoreController(this, theme$);
-  private language = new StoreController(this, language$);
   private isUserscript = new StoreController(this, isUserscript$);
   @state() private isDragging = false;
 
@@ -56,14 +54,6 @@ export class AppHeader extends LitElement {
         }
 
         <div class="header-controls">
-          
-          <select class="lang-select" .value=${this.language.value} @change=${this._onLanguageChange}>
-            <option value="pt-BR">PT</option>
-            <option value="en-US">EN</option>
-            <option value="fr-FR">FR</option>
-            <option value="es-ES">ES</option>
-          </select>          
-
           <button class="theme-toggle" @click=${toggleTheme} title="Change Theme">
             ${this.theme.value === 'dark' ? icons.sun : icons.moon}
           </button>
@@ -122,13 +112,5 @@ export class AppHeader extends LitElement {
     fileName$.set(null);
     modelData$.set(null);
     filterName$.set('');
-  }
-
-  /**
-   * Triggers a global language change.
-   */
-  private _onLanguageChange(e: Event) {
-    const val = (e.target as HTMLSelectElement).value;
-    changeLanguage(val);
   }
 }

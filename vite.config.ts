@@ -59,9 +59,16 @@ function sampleGeneratorPlugin(): Plugin {
 }
 
 export default defineConfig(({ mode }): UserConfig => {
+  const appLang = process.env.VITE_APP_LANG || 'pt-BR';
+  const translations = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, `src/i18n/${appLang}.json`), 'utf-8'),
+  );
+
   const baseConfig: UserConfig = {
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode === 'development' ? 'development' : 'production'),
+      __APP_LANG__: JSON.stringify(appLang),
+      __APP_TRANSLATIONS__: JSON.stringify(translations),
     },
   };
 
