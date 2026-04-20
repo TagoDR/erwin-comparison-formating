@@ -31,6 +31,19 @@ export class AppRoot extends LitElement {
   private fileName = new StoreController(this, fileName$);
 
   /**
+   * Programmatically loads and processes an Erwin HTML report.
+   * @param htmlContent The raw HTML string from an Erwin report.
+   * @param name Optional name for the file (defaults to "External Report").
+   */
+  public loadHtml(htmlContent: string, name = 'External Report') {
+    fileName$.set(name);
+    isLoading$.set(true);
+    setTimeout(() => {
+      this._processFileContent(htmlContent);
+    }, 10);
+  }
+
+  /**
    * Initializes the component.
    * Sets up dynamic page titles, global drag-and-drop, and optionally loads sample data.
    */

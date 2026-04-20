@@ -8,6 +8,7 @@
     "build": "vite build --mode standalone && vite build --mode monkey",
     "build:standalone": "vite build --mode standalone",
     "build:monkey": "vite build --mode monkey",
+    "build:lib": "vite build --mode library",
     "preview": "vite preview",
     "prettier": "prettier --write \"**/*.{md,html,svg}\" \"!dist/**\" \"!node_modules/**\" \"!*.user.js\"",
     "biome": " biome check --write .",
