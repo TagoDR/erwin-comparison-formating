@@ -529,6 +529,20 @@ export const statsSummary$ = computed([enrichedData$, isFlipped$], (data, isFlip
   return Object.values(summary);
 });
 
+/**
+ * Detects if the current model uses a long naming convention (SGBDs like Oracle, Mysql, etc.).
+ * Threshold for physical name warnings increases from 18 to 50 in these cases.
+ */
+export const isLongNamingConvention$ = computed(enrichedData$, data => {
+  const modelRow = data[0];
+  if (!modelRow) return false;
+
+  const sgbds = ['oracle', 'mysql', 'mongo', 'postgres', 'hive'];
+  const modelName = `${modelRow.left} ${modelRow.right}`.toLowerCase();
+
+  return sgbds.some(sgbd => modelName.includes(sgbd));
+});
+
 if (typeof window !== 'undefined') {
   (window as unknown as { erwinData: Record<string, unknown> }).erwinData = {
     modelData$,
@@ -543,5 +557,6 @@ if (typeof window !== 'undefined') {
     uniqueProperties$,
     hiddenProperties$,
     isPropertyDrawerOpen$,
+    isLongNamingConvention$,
   };
 }

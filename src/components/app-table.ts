@@ -9,6 +9,7 @@ import {
   filteredData$,
   hiddenSubObjectsIds$,
   isFlipped$,
+  isLongNamingConvention$,
   onlyEntities$,
   onlyEntitiesAndAttributes$,
   showProperties$,
@@ -36,6 +37,7 @@ export class AppTable extends LitElement {
   private isFlipped = new StoreController(this, isFlipped$);
   private onlyEnt = new StoreController(this, onlyEntities$);
   private onlyEntAtr = new StoreController(this, onlyEntitiesAndAttributes$);
+  private isLongNamingConvention = new StoreController(this, isLongNamingConvention$);
 
   @state() private copiedId: string | null = null;
   @state() private copiedSide: 'left' | 'right' | null = null;
@@ -331,7 +333,8 @@ export class AppTable extends LitElement {
     const len = getLen(value);
     if (len === 0) return '';
 
-    const isWarn = len > 18;
+    const threshold = this.isLongNamingConvention.value ? 50 : 18;
+    const isWarn = len > threshold;
     return html`<span class="len-badge ${isWarn ? 'len-warn' : 'len-ok'}">${len}</span>`;
   }
 
