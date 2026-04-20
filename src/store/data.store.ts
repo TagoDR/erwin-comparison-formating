@@ -102,11 +102,7 @@ export const enrichedData$ = computed(modelData$, model => {
     let attrCountFromOrderList = 0;
     const enrichedProperties: EnrichedDiffRow[] = (obj.properties || []).map((p, idx) => {
       // UDP Highlighting logic
-      const isUDP =
-        ((p.type.startsWith('Entity.Physical.') || p.type.startsWith('Entity.Logical.')) &&
-          p.spaces === 15) ||
-        ((p.type.startsWith('Attribute.Physical.') || p.type.startsWith('Attribute.Logical.')) &&
-          p.spaces === 18);
+      const isUDP = p.type.includes('.Physical.') || p.type.includes('.Logical.');
 
       // Support for attribute/column counting via Erwin's order list properties
       if (['Column Order List', 'Attribute Order List'].includes(p.type)) {
