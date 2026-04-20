@@ -106,6 +106,32 @@ export default defineConfig(({ mode }): UserConfig => {
     };
   }
 
+  // LIBRARY BUILD (External Component)
+  if (mode === 'library') {
+    return {
+      ...baseConfig,
+      plugins: [svgLoader({ svgo: false, defaultImport: 'raw' }), cssInjectedByJsPlugin()],
+      build: {
+        target: 'esnext',
+        minify: true,
+        cssMinify: false,
+        emptyOutDir: false,
+        outDir: 'dist',
+        lib: {
+          entry: 'src/library.ts',
+          name: 'ErwinCompareFormatter',
+          formats: ['umd', 'es'],
+          fileName: format => `erwin-comparison-formatter.${format}.js`,
+        },
+        rollupOptions: {
+          output: {
+            extend: true,
+          },
+        },
+      },
+    };
+  }
+
   // USERSCRIPT BUILD (Tampermonkey)
   return {
     ...baseConfig,
