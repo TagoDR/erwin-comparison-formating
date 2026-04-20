@@ -24,3 +24,6 @@ declare module '*.svg?raw' {
   const content: string;
   export default content;
 }
+
+declare const __APP_LANG__: string;
+declare const __APP_TRANSLATIONS__: Record<string, any>;
