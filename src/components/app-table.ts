@@ -151,7 +151,7 @@ export class AppTable extends LitElement {
                     row => row.id,
                     row => {
                       const isIdentificationRow = row.isHeader && !row.isGrouping;
-                      const isNameProp = row.type.toLowerCase().includes('name');
+                      const isNameProp = row.type === 'Physical Name' || row.type === 'Name';
                       const showCopy = isIdentificationRow || isNameProp;
 
                       const level = row.level;
@@ -331,7 +331,8 @@ export class AppTable extends LitElement {
    */
   private _handleCopy(id: string, text: string, side: 'left' | 'right') {
     // Strip type prefix if present (e.g. "Physical Name: MY_TABLE" -> "MY_TABLE")
-    const cleanText = text.includes(':') ? text.split(':')[1].trim() : text.trim();
+    let cleanText = text.includes('.') ? text.split('.')[1].trim() : text.trim();
+    cleanText = cleanText.replace('(FK)', '').replace('[Calculated]', '').trim();
     navigator.clipboard.writeText(cleanText).then(() => {
       this.copiedId = id;
       this.copiedSide = side;
