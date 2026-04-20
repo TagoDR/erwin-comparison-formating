@@ -2,6 +2,7 @@ import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { translate } from 'lit-translate';
 import icons from '../icons';
 import {
@@ -238,7 +239,7 @@ export class AppTable extends LitElement {
                   </td>
                   <td class="row-left">
                   <div class="content-wrapper">
-                    <span class="value-text">${leftVal}</span>
+                    <span class="value-text">${unsafeHTML(leftVal)}</span>
                     <div class="row-actions">
                       ${this._renderLenCounter(row, leftVal)}
                       ${
@@ -260,7 +261,7 @@ export class AppTable extends LitElement {
                 </td>
                 <td class="row-right">
                   <div class="content-wrapper">
-                    <span class="value-text">${rightVal}</span>
+                    <span class="value-text">${unsafeHTML(rightVal)}</span>
                     <div class="row-actions">
                       ${this._renderLenCounter(row, rightVal)}
                       ${

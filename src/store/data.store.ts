@@ -104,6 +104,26 @@ export const enrichedData$ = computed(modelData$, model => {
       // UDP Highlighting logic
       const isUDP = p.type.includes('.Physical.') || p.type.includes('.Logical.');
 
+      // Heuristics for long text properties (Description, Comments)
+      let left = p.left;
+      let right = p.right;
+      if (['Comment', 'Definition'].includes(p.type)) {
+        const formatText = (text: string) => {
+          if (!text) return text;
+          let formatted = text;
+          // 1. Newline after sentences (Period followed by space and Capital letter)
+          formatted = formatted.replace(/\. ([A-Z])/g, '.<br>$1');
+          // 2. Newline after semicolons
+          formatted = formatted.replace(/; /g, ';<br>');
+          // 3. Newline before list items (e.g., " 1. ", " - ")
+          formatted = formatted.replace(/ ([0-9]+\. )/g, '<br>$1');
+          formatted = formatted.replace(/ ([-•] )/g, '<br>$1');
+          return formatted;
+        };
+        left = formatText(left);
+        right = formatText(right);
+      }
+
       // Support for attribute/column counting via Erwin's order list properties
       if (['Column Order List', 'Attribute Order List', 'Field Order'].includes(p.type)) {
         const count = Math.max(
@@ -115,6 +135,8 @@ export const enrichedData$ = computed(modelData$, model => {
 
       const prop: EnrichedDiffRow = {
         ...p,
+        left,
+        right,
         id: `${id}-p-${idx}`,
         parentId: id,
         parentType: obj.id.type,
