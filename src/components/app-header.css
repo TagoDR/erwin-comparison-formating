@@ -96,7 +96,7 @@
 }
 
 .header-controls {
-  flex-basis: 10%;
+  flex-basis: auto;
   display: flex;
   flex-direction: row;
   align-items: center;
