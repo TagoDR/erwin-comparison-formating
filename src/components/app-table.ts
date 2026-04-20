@@ -211,7 +211,7 @@ export class AppTable extends LitElement {
                       <div class="indent-dots">
                         ${Array.from({ length: level }).map(() => html`<span class="dot">·</span>`)}
                       </div>
-                      <span class="type-text">${row.type}</span>
+                      <span class="type-text" title="${row.type}">${row.type}</span>
                       ${this._renderAttributeCounter(row)}
 
                       <div class="row-indicators">
