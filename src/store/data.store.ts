@@ -1,5 +1,5 @@
 import { atom, computed } from 'nanostores';
-import type { ModelObject, PropertyDefinition, StatsSummary } from '../types.js';
+import type { EnrichedDiffRow, ModelObject, PropertyDefinition, StatsSummary } from '../types.js';
 import { flattenAndEnrichModel } from './data-enricher.js';
 import { filterAndApplyVisibility } from './data-filter.js';
 
@@ -11,8 +11,9 @@ declare global {
 
 /**
  * Root store for the parsed structured model.
+ * @internal Used only during initial ingestion to avoid holding two large trees in memory.
  */
-export const modelData$ = atom<ModelObject | null>(null);
+const modelData$ = atom<ModelObject | null>(null);
 
 /** Loading state indicator. */
 export const isLoading$ = atom(false);
@@ -38,12 +39,33 @@ export const isFlipped$ = atom<boolean>(false);
 export const isPropertyDrawerOpen$ = atom<boolean>(false);
 
 /**
- * Flattened and enriched data derived from the hierarchical modelData$.
- * This pass handles initial data structuring and status hoisting.
+ * Flattened and enriched data.
+ * This is the primary data source for the application.
  */
-export const enrichedData$ = computed(modelData$, model => {
-  if (!model) return [];
-  return flattenAndEnrichModel(model);
+export const enrichedData$ = atom<EnrichedDiffRow[]>([]);
+
+/**
+ * Pre-calculated Map of rows by ID for O(1) lookups during filtering.
+ */
+export const rowsById$ = computed(enrichedData$, data => {
+  const map = new Map<string, EnrichedDiffRow>();
+  for (const r of data) map.set(r.id, r);
+  return map;
+});
+
+/**
+ * Pre-calculated Map of parent-child relationships for O(1) traversal during filtering.
+ */
+export const childrenMap$ = computed(enrichedData$, data => {
+  const map = new Map<string, string[]>();
+  for (const r of data) {
+    if (r.parentId) {
+      const list = map.get(r.parentId) || [];
+      list.push(r.id);
+      map.set(r.parentId, list);
+    }
+  }
+  return map;
 });
 
 /**
@@ -53,6 +75,8 @@ export const enrichedData$ = computed(modelData$, model => {
 export const filteredData$ = computed(
   [
     enrichedData$,
+    rowsById$,
+    childrenMap$,
     filterChange$,
     filterName$,
     onlyEntities$,
@@ -65,6 +89,8 @@ export const filteredData$ = computed(
   ],
   (
     data,
+    rowsById,
+    childrenMap,
     change,
     name,
     onlyEnt,
@@ -90,6 +116,8 @@ export const filteredData$ = computed(
         toggledProps,
         hiddenSubs,
       },
+      rowsById,
+      childrenMap,
     );
   },
 );
@@ -125,6 +153,25 @@ export const uniqueProperties$ = computed(enrichedData$, data => {
     children: propertyMap.get(parentType) || [],
   }));
 });
+
+/**
+ * Processes and loads raw model data into the enriched store.
+ * Immediately clears the hierarchical model to free up memory.
+ */
+export function setModelData(model: ModelObject | null) {
+  if (!model) {
+    enrichedData$.set([]);
+    modelData$.set(null);
+    return;
+  }
+
+  // Flatten and enrich (CPU intensive)
+  const enriched = flattenAndEnrichModel(model);
+  enrichedData$.set(enriched);
+
+  // Clear initial tree to free memory (The 50MB Rule)
+  modelData$.set(null);
+}
 
 /**
  * Toggles all properties in a specific parent group.
