@@ -9,6 +9,7 @@ import {
   isPropertyDrawerOpen$,
   resetHiddenProperties,
   toggleProperty,
+  togglePropertyGroup,
   uniqueProperties$,
 } from '../store/data.store.js';
 import drawerStyles from './property-drawer.css?inline';
@@ -53,10 +54,14 @@ export class PropertyDrawer extends LitElement {
           ${
             groups.length === 0
               ? html`<div class="empty-state">${translate('drawer.no_props')}</div>`
-              : groups.map(
-                  group => html`
+              : groups.map(group => {
+                  const allVisible = group.children.every(p => !hiddenSet.has(p.key));
+                  const anyVisible = group.children.some(p => !hiddenSet.has(p.key));
+
+                  return html`
             <div class="property-group">
-              <div class="group-header">
+              <div class="group-header clickable" @click=${() => togglePropertyGroup(group.parentType)}>
+                <input type="checkbox" .checked=${allVisible} .indeterminate=${anyVisible && !allVisible} readonly />
                 <span class="group-label">${group.parentType}</span>
               </div>
               <ul class="property-list">
@@ -64,7 +69,7 @@ export class PropertyDrawer extends LitElement {
                   const isVisible = !hiddenSet.has(p.key);
                   return html`
                     <li class="property-item" @click=${() => toggleProperty(p.key)}>
-                      <label class="item-label">
+                      <div class="item-row-content">
                         <input type="checkbox" .checked=${isVisible} readonly>
                         <div class="item-info">
                           <span class="prop-type">${p.type}</span>
@@ -72,14 +77,14 @@ export class PropertyDrawer extends LitElement {
                              <span class="indent-indicator">${'·'.repeat(p.spaces / 3)}</span>
                           </span>
                         </div>
-                      </label>
+                      </div>
                     </li>
                   `;
                 })}
               </ul>
             </div>
-          `,
-                )
+          `;
+                })
           }
         </div>
       </aside>

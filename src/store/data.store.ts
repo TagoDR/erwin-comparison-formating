@@ -127,6 +127,29 @@ export const uniqueProperties$ = computed(enrichedData$, data => {
 });
 
 /**
+ * Toggles all properties in a specific parent group.
+ * If at least one is visible, it hides all. If all are hidden, it shows all.
+ */
+export const togglePropertyGroup = (parentType: string) => {
+  const groups = uniqueProperties$.get();
+  const group = groups.find(g => g.parentType === parentType);
+  if (!group) return;
+
+  const currentHidden = new Set(hiddenProperties$.get());
+  const allKeys = group.children.map(p => p.key);
+  const anyVisible = allKeys.some(k => !currentHidden.has(k));
+
+  if (anyVisible) {
+    // Hide all in this group
+    for (const k of allKeys) currentHidden.add(k);
+  } else {
+    // Show all in this group
+    for (const k of allKeys) currentHidden.delete(k);
+  }
+  hiddenProperties$.set(currentHidden);
+};
+
+/**
  * Toggles a property visibility in the hidden set by its unique key.
  * @param key Format: `${type}|${spaces}|${parentType}`
  */

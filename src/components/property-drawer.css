@@ -117,6 +117,25 @@
   background: var(--drawer-group-bg);
   padding: 0.5rem 1rem;
   border-bottom: 1px solid var(--drawer-item-border);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.group-header.clickable {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.group-header.clickable:hover {
+  background: var(--drawer-item-hover-bg);
+}
+
+.group-header input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
 }
 
 .group-label {
@@ -145,21 +164,22 @@
   background: var(--drawer-item-hover-bg);
 }
 
-.item-label {
+.item-row-content {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  cursor: pointer;
   width: 100%;
-  margin: 0;
 }
 
-.item-label input[type="checkbox"] {
+.item-row-content input[type="checkbox"],
+.group-header input[type="checkbox"] {
   width: 14px;
   height: 14px;
   margin: 0;
   cursor: pointer;
   accent-color: var(--drawer-accent-green);
+  /* Prevent checkbox from catching click events independently */
+  pointer-events: none;
 }
 
 .item-info {
