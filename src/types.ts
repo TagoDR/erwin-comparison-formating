@@ -101,30 +101,37 @@ export interface DiffRow<T extends string = string> {
 export interface HeaderRow extends DiffRow<HeaderKeyword> {}
 
 /**
- * A DiffRow enriched with metadata during processing.
+ * Represents a row enriched with metadata during processing.
+ * Using a Discriminated Union ensures strict type safety between headers and properties.
  */
-export interface EnrichedDiffRow extends DiffRow<string> {
+export type EnrichedDiffRow = EnrichedHeaderRow | EnrichedPropertyRow;
+
+/** Base fields shared by all enriched rows. */
+interface EnrichedRowBase extends DiffRow<string> {
   id: string;
-  parentId?: string;
-  parentType?: string;
+  parentId: string;
   prop: Prop;
   change: Change;
   view: View;
-  isHeader?: boolean;
-  isGrouping?: boolean;
-  isCalculated?: boolean;
-  isUnderHiddenHeader?: boolean;
-  isUDP?: boolean;
-  attributeCount?: number;
+  isHeader: boolean;
+  isCalculated: boolean;
+  isUDP: boolean;
+  isGrouping: boolean;
   hasProperties?: boolean;
   hasSubObjects?: boolean;
 }
 
-/**
- * Specialized EnrichedDiffRow for headers.
- */
-export interface EnrichedHeaderRow extends EnrichedDiffRow {
+/** Specialized enriched row for object headers (e.g., Table, Entity). */
+export interface EnrichedHeaderRow extends EnrichedRowBase {
+  isHeader: true;
   type: HeaderKeyword;
+  attributeCount?: number;
+}
+
+/** Specialized enriched row for object properties (e.g., Physical Name, UDP). */
+export interface EnrichedPropertyRow extends EnrichedRowBase {
+  isHeader: false;
+  parentType: string;
 }
 
 /**

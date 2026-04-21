@@ -4,7 +4,7 @@ import { customElement, state } from 'lit/decorators.js';
 import { get, translate } from 'lit-translate';
 import icons from '../icons';
 import {
-  enrichedData$,
+  copyTablesToClipboard,
   filterChange$,
   filterName$,
   hideCalculated$,
@@ -238,20 +238,12 @@ export class AppStats extends LitElement {
    * Provides visual feedback upon successful copy.
    */
   private _copyTablesToClipboard() {
-    const tables = enrichedData$
-      .get()
-      .filter(row => row.isHeader && row.prop === 'Ent' && (row.left || row.right))
-      .map(row => row.left || row.right)
-      .filter((v, i, a) => v && a.indexOf(v) === i)
-      .join('\n');
-
-    if (tables) {
-      navigator.clipboard.writeText(tables).then(() => {
-        this.isCopying = true;
-        setTimeout(() => {
-          this.isCopying = false;
-        }, 2000);
-      });
+    const success = copyTablesToClipboard();
+    if (success) {
+      this.isCopying = true;
+      setTimeout(() => {
+        this.isCopying = false;
+      }, 2000);
     } else {
       alert(get('stats.messages.no_tables'));
     }

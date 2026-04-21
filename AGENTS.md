@@ -27,10 +27,9 @@ The final output is a single-file HTML application or a Tampermonkey Userscript,
 ### 3.2. Data Processing (Parser & Store)
 
 - **`src/parser/html-parser.ts`**: High-performance DOM parser. Converts raw Erwin HTML tables into a structured **`ModelObject`** tree, accurately reflecting the source hierarchy.
-- **`src/store/data.store.ts`**: State management core. Contains logic for:
-  - **Enrichment**: Recursive tree traversal to generate flattened `EnrichedDiffRow` objects. Handles status hoisting (e.g., `isCalculated`) and smart attribute counting (via child objects or order lists).
-  - **Filtering**: Multi-layered search, status, and drill-down filters (Only Entities, Only Ent+Atr).
-  - **Interactions**: Global and individual visibility toggles for properties and sub-objects. Includes a **Property Filter Drawer** for permanent exclusion of metadata by name.
+- **`src/store/data.store.ts`**: State management core. Uses `nanostores` to manage application state and computed derived data.
+- **`src/store/data-enricher.ts`**: Logic for flattening the recursive `ModelObject` tree into `EnrichedDiffRow` objects. Handles status hoisting and property formatting.
+- **`src/store/data-filter.ts`**: High-performance filtering and visibility engine. Computes final renderable rows by applying search, status, and hierarchical visibility rules in optimized passes.
 - **`src/store/sample.ts`**: Source of truth for mock data used during development.
 - **`src/store/sample.html`**: Generated HTML report used for testing the parser (synced via Vite dev server).
 

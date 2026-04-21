@@ -1109,11 +1109,302 @@
 		init_lifecycle();
 	}));
 	//#endregion
+	//#region src/store/data-enricher.ts
+	/**
+	* Transforms a hierarchical ModelObject tree into a flat array of EnrichedDiffRow objects.
+	* Handles property formatting, UDP detection, and initial status calculation.
+	*
+	* @example
+	* const model = parseErwinHtml(htmlString);
+	* const flatData = flattenAndEnrichModel(model);
+	*
+	* @param model The root ModelObject to process.
+	* @returns A flattened array of enriched rows.
+	*/
+	function flattenAndEnrichModel(model) {
+		const result = [];
+		function process(obj, parentId = "") {
+			const id = parentId ? `${parentId}|${obj.id.type}-${obj.id.left || obj.id.right}` : `root-${obj.id.type}`;
+			const header = createEnrichedHeader(obj, id, parentId);
+			const properties = (obj.properties || []).map((p, idx) => createEnrichedProperty(p, id, obj.id.type, header.prop, idx));
+			const attrCountFromOrderList = updateHeaderFromProperties(header, properties);
+			result.push(header);
+			result.push(...properties);
+			let childAttrCount = 0;
+			let hasActualSubObjects = false;
+			if (obj.children) for (const children of Object.values(obj.children)) {
+				if (!children || children.length === 0) continue;
+				hasActualSubObjects = true;
+				for (const child of children) {
+					process(child, id);
+					if (isAttributeType(child.id.type)) childAttrCount++;
+				}
+			}
+			header.hasSubObjects = hasActualSubObjects;
+			header.hasProperties = properties.length > 0;
+			const finalAttrCount = Math.max(childAttrCount, attrCountFromOrderList);
+			if (finalAttrCount > 0 && header.prop === "Ent") header.attributeCount = finalAttrCount;
+		}
+		process(model);
+		hoistCalculatedStatus(result);
+		return result;
+	}
+	/**
+	* Creates an EnrichedDiffRow for an object header.
+	*/
+	function createEnrichedHeader(obj, id, parentId) {
+		const headerMatch = HEADERS_CONFIG.find((h) => h.object === obj.id.type && h.indentation.includes(obj.id.spaces));
+		return {
+			...obj.id,
+			id,
+			parentId,
+			type: obj.id.type,
+			prop: headerMatch?.prop || "",
+			change: determineChange(obj.id.left, obj.id.right),
+			view: determineView(obj.id.type),
+			isHeader: true,
+			isGrouping: false,
+			isUDP: false,
+			isCalculated: obj.id.left === obj.id.right,
+			hasSubObjects: false,
+			hasProperties: false
+		};
+	}
+	/**
+	* Creates an EnrichedDiffRow for a property.
+	*/
+	function createEnrichedProperty(p, parentId, parentType, parentProp, index) {
+		const isUDP = p.type.includes(".Physical.") || p.type.includes(".Logical.");
+		const { left, right } = formatPropertyText(p.type, p.left, p.right);
+		return {
+			...p,
+			left,
+			right,
+			id: `${parentId}-p-${index}`,
+			parentId,
+			parentType,
+			prop: parentProp,
+			change: determineChange(p.left, p.right),
+			view: "",
+			isHeader: false,
+			isGrouping: false,
+			isUDP,
+			isCalculated: p.left === p.right || p.left.endsWith("[Calculated]") && p.right.endsWith("[Calculated]"),
+			hasSubObjects: false,
+			hasProperties: false
+		};
+	}
+	/**
+	* Updates header metadata based on its properties (e.g., view overrides, attribute counts).
+	* @returns The attribute count derived from order list properties.
+	*/
+	function updateHeaderFromProperties(header, properties) {
+		let attrCountFromOrderList = 0;
+		for (const p of properties) {
+			if (p.type === "Logical Only" && p.left === "true") header.view = "L";
+			if (p.type === "Physical Only" && p.left === "true") header.view = "P";
+			if ([
+				"Column Order List",
+				"Attribute Order List",
+				"Field Order"
+			].includes(p.type)) {
+				const count = Math.max(p.left ? p.left.split(",").length : 0, p.right ? p.right.split(",").length : 0);
+				attrCountFromOrderList = Math.max(attrCountFromOrderList, count);
+			}
+		}
+		return attrCountFromOrderList;
+	}
+	/**
+	* Formats long text properties with HTML line breaks for better readability.
+	*/
+	function formatPropertyText(type, left, right) {
+		if (!["Comment", "Definition"].includes(type)) return {
+			left,
+			right
+		};
+		const format = (text) => {
+			if (!text) return text;
+			return text.replace(/\. ([A-Z])/g, ".<br>$1").replace(/; /g, ";<br>").replace(/ ([0-9]+\. )/g, "<br>$1").replace(/ ([-•] )/g, "<br>$1");
+		};
+		return {
+			left: format(left),
+			right: format(right)
+		};
+	}
+	function determineChange(left, right) {
+		if (left && right) return "A";
+		if (left) return "I";
+		if (right) return "E";
+		return "";
+	}
+	function determineView(type) {
+		if (type === "Entity/Table" || type === "Attribute/Column") return "L/P";
+		if (type === "Entity" || type === "Attribute") return "L";
+		if (type === "Table" || type === "Column") return "P";
+		return "";
+	}
+	function isAttributeType(type) {
+		return [
+			"Attribute/Column",
+			"Attribute",
+			"Column"
+		].includes(type);
+	}
+	/**
+	* Bottom-up pass to hoist "Calculated" status.
+	* A parent is ONLY calculated if ALL its children and properties are calculated.
+	*/
+	function hoistCalculatedStatus(rows) {
+		const rowsById = new Map(rows.map((r) => [r.id, r]));
+		for (let i = rows.length - 1; i >= 0; i--) {
+			const row = rows[i];
+			if (row.parentId && !row.isCalculated) {
+				const parent = rowsById.get(row.parentId);
+				if (parent) parent.isCalculated = false;
+			}
+		}
+	}
+	var init_data_enricher = __esmMin((() => {
+		init_types();
+	}));
+	//#endregion
+	//#region src/store/data-filter.ts
+	/**
+	* Advanced filtering and visibility logic for enriched data.
+	* Handles search, status filters, and hierarchical drill-down modes.
+	*/
+	function filterAndApplyVisibility(data, filters, visibility) {
+		if (data.length === 0) return [];
+		const rowsById = /* @__PURE__ */ new Map();
+		const childrenMap = /* @__PURE__ */ new Map();
+		for (const r of data) {
+			rowsById.set(r.id, r);
+			if (r.parentId) {
+				const list = childrenMap.get(r.parentId) || [];
+				list.push(r.id);
+				childrenMap.set(r.parentId, list);
+			}
+		}
+		let current = data;
+		if (filters.hideCalculated) current = current.filter((r) => !r.isCalculated);
+		if (filters.hiddenProps.size > 0) current = current.filter((r) => {
+			if (r.isHeader) return true;
+			const key = `${r.type}|${r.spaces}|${r.parentType}`;
+			return !filters.hiddenProps.has(key);
+		});
+		current = applyDrillDown(current, filters, rowsById, childrenMap);
+		current = applyChangeFilter(current, filters, childrenMap);
+		current = applySearchFilter(current, filters, rowsById, childrenMap);
+		return applyHierarchicalVisibility(current, {
+			...visibility,
+			onlyEntities: filters.onlyEntities,
+			onlyEntitiesAndAttributes: filters.onlyEntitiesAndAttributes
+		}, rowsById);
+	}
+	function applyDrillDown(data, filters, rowsById, childrenMap) {
+		if (!filters.onlyEntities && !filters.onlyEntitiesAndAttributes) return data;
+		const allowedIds = /* @__PURE__ */ new Set();
+		const addAncestors = (id) => {
+			let curr = id;
+			while (curr) {
+				allowedIds.add(curr);
+				curr = rowsById.get(curr)?.parentId;
+			}
+		};
+		const addDescendants = (id) => {
+			allowedIds.add(id);
+			childrenMap.get(id)?.forEach(addDescendants);
+		};
+		for (const r of data) if (filters.onlyEntities ? r.prop === "Ent" && r.isHeader : (r.prop === "Ent" || r.prop === "Atr") && r.isHeader) {
+			addAncestors(r.id);
+			addDescendants(r.id);
+		}
+		return data.filter((r) => allowedIds.has(r.id) && r.type !== "Model");
+	}
+	function applyChangeFilter(data, filters, childrenMap) {
+		if (!filters.change) return data;
+		const matchingIds = /* @__PURE__ */ new Set();
+		const addDescendants = (id) => {
+			matchingIds.add(id);
+			childrenMap.get(id)?.forEach(addDescendants);
+		};
+		for (const r of data) if (r.isHeader && r.prop === "Ent" && r.change === filters.change) addDescendants(r.id);
+		return data.filter((r) => matchingIds.has(r.id));
+	}
+	function applySearchFilter(data, filters, rowsById, childrenMap) {
+		if (!filters.name) return data;
+		const search = filters.name.toLowerCase();
+		const hits = /* @__PURE__ */ new Set();
+		for (const r of data) if (r.type.toLowerCase().includes(search) || r.left.toLowerCase().includes(search) || r.right.toLowerCase().includes(search)) hits.add(r.id);
+		const familyIds = /* @__PURE__ */ new Set();
+		const addAncestors = (id) => {
+			let curr = id;
+			while (curr) {
+				familyIds.add(curr);
+				curr = rowsById.get(curr)?.parentId;
+			}
+		};
+		const addDescendants = (id) => {
+			familyIds.add(id);
+			childrenMap.get(id)?.forEach(addDescendants);
+		};
+		for (const id of hits) {
+			const row = rowsById.get(id);
+			if (!row) continue;
+			const rootId = !row.isHeader && row.parentId ? row.parentId : id;
+			addAncestors(rootId);
+			addDescendants(rootId);
+		}
+		return data.filter((r) => familyIds.has(r.id));
+	}
+	/**
+	* Efficiently computes visibility for all rows in a single pass.
+	* Replaces recursive "isRowHidden" checks during render.
+	*/
+	function applyHierarchicalVisibility(data, visibility, rowsById) {
+		const visibleRows = [];
+		const hiddenAncestors = /* @__PURE__ */ new Set();
+		for (const row of data) {
+			if (row.parentId && hiddenAncestors.has(row.parentId)) {
+				hiddenAncestors.add(row.id);
+				continue;
+			}
+			if (row.parentId) {
+				const parent = rowsById.get(row.parentId);
+				if (parent) {
+					let shouldHide = false;
+					if (!row.isHeader) {
+						const isParentToggled = visibility.toggledProps.has(row.parentId);
+						if (!(visibility.globalShowProps ? !isParentToggled : isParentToggled)) shouldHide = true;
+					}
+					if (row.isHeader && !shouldHide) {
+						let isSubHidden = visibility.hiddenSubs.has(row.parentId);
+						if (isSubHidden && parent.type === "Model" && (row.prop === "Ent" || row.prop === "Atr")) isSubHidden = false;
+						if (visibility.onlyEntities && parent.prop === "Ent" && row.prop !== "Ent") isSubHidden = !isSubHidden;
+						if (visibility.onlyEntitiesAndAttributes) {
+							if (parent.prop === "Ent" && row.prop !== "Atr") isSubHidden = !isSubHidden;
+							if (parent.prop === "Atr" && row.type !== "Field") isSubHidden = !isSubHidden;
+						}
+						if (isSubHidden) shouldHide = true;
+					}
+					if (shouldHide) {
+						hiddenAncestors.add(row.id);
+						continue;
+					}
+				}
+			}
+			visibleRows.push(row);
+		}
+		return visibleRows;
+	}
+	var init_data_filter = __esmMin((() => {}));
+	//#endregion
 	//#region src/store/data.store.ts
-	var modelData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, hiddenProperties$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, isPropertyDrawerOpen$, enrichedData$, filteredData$, uniqueProperties$, toggleProperty, hideAllProperties, resetHiddenProperties, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, resetFilters, setOnlyEntities, setOnlyEntitiesAndAttributes, toggleFlip, togglePropertiesGlobal, statsSummary$, isLongNamingConvention$;
+	var modelData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, hiddenProperties$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, isPropertyDrawerOpen$, enrichedData$, filteredData$, uniqueProperties$, toggleProperty, hideAllProperties, resetHiddenProperties, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, resetFilters, setOnlyEntities, setOnlyEntitiesAndAttributes, toggleFlip, togglePropertiesGlobal, statsSummary$, isLongNamingConvention$, copyTablesToClipboard;
 	var init_data_store = __esmMin((() => {
 		init_nanostores();
-		init_types();
+		init_data_enricher();
+		init_data_filter();
 		modelData$ = /* @__PURE__ */ atom(null);
 		isLoading$ = /* @__PURE__ */ atom(false);
 		fileName$ = /* @__PURE__ */ atom(null);
@@ -1132,104 +1423,7 @@
 		isPropertyDrawerOpen$ = /* @__PURE__ */ atom(false);
 		enrichedData$ = /* @__PURE__ */ computed(modelData$, (model) => {
 			if (!model) return [];
-			const result = [];
-			function process(obj, parentId = "") {
-				const headerMatch = HEADERS_CONFIG.find((h) => h.object === obj.id.type && h.indentation.includes(obj.id.spaces));
-				const id = parentId ? `${parentId}|${obj.id.type}-${obj.id.left || obj.id.right}` : `root-${obj.id.type}`;
-				const enrichedHeader = {
-					...obj.id,
-					id,
-					parentId,
-					prop: headerMatch?.prop || "",
-					change: "",
-					view: "",
-					isHeader: true,
-					isGrouping: false,
-					isUDP: false,
-					isCalculated: obj.id.left === obj.id.right
-				};
-				if (obj.id.type === "Entity/Table" || obj.id.type === "Attribute/Column") enrichedHeader.view = "L/P";
-				else if (obj.id.type === "Entity" || obj.id.type === "Attribute") enrichedHeader.view = "L";
-				else if (obj.id.type === "Table" || obj.id.type === "Column") enrichedHeader.view = "P";
-				if (obj.id.left && obj.id.right) enrichedHeader.change = "A";
-				else if (obj.id.left) enrichedHeader.change = "I";
-				else if (obj.id.right) enrichedHeader.change = "E";
-				let attrCountFromOrderList = 0;
-				const enrichedProperties = (obj.properties || []).map((p, idx) => {
-					const isUDP = p.type.includes(".Physical.") || p.type.includes(".Logical.");
-					let left = p.left;
-					let right = p.right;
-					if (["Comment", "Definition"].includes(p.type)) {
-						const formatText = (text) => {
-							if (!text) return text;
-							let formatted = text;
-							formatted = formatted.replace(/\. ([A-Z])/g, ".<br>$1");
-							formatted = formatted.replace(/; /g, ";<br>");
-							formatted = formatted.replace(/ ([0-9]+\. )/g, "<br>$1");
-							formatted = formatted.replace(/ ([-•] )/g, "<br>$1");
-							return formatted;
-						};
-						left = formatText(left);
-						right = formatText(right);
-					}
-					if ([
-						"Column Order List",
-						"Attribute Order List",
-						"Field Order"
-					].includes(p.type)) {
-						const count = Math.max(p.left ? p.left.split(",").length : 0, p.right ? p.right.split(",").length : 0);
-						attrCountFromOrderList = Math.max(attrCountFromOrderList, count);
-					}
-					const prop = {
-						...p,
-						left,
-						right,
-						id: `${id}-p-${idx}`,
-						parentId: id,
-						parentType: obj.id.type,
-						prop: enrichedHeader.prop,
-						change: p.left && p.right ? "A" : p.left ? "I" : "E",
-						view: "",
-						isHeader: false,
-						isGrouping: false,
-						isUDP,
-						isCalculated: p.left === p.right || p.left.endsWith("[Calculated]") && p.right.endsWith("[Calculated]")
-					};
-					if (p.type === "Logical Only" && p.left === "true") enrichedHeader.view = "L";
-					if (p.type === "Physical Only" && p.left === "true") enrichedHeader.view = "P";
-					return prop;
-				});
-				result.push(enrichedHeader);
-				result.push(...enrichedProperties);
-				let childAttrCount = 0;
-				let hasActualSubObjects = false;
-				if (obj.children) for (const children of Object.values(obj.children)) {
-					if (!children || children.length === 0) continue;
-					hasActualSubObjects = true;
-					for (const child of children) {
-						process(child, id);
-						if ([
-							"Attribute/Column",
-							"Attribute",
-							"Column"
-						].includes(child.id.type)) childAttrCount++;
-					}
-				}
-				enrichedHeader.hasSubObjects = hasActualSubObjects;
-				enrichedHeader.hasProperties = enrichedProperties.length > 0;
-				const finalAttrCount = Math.max(childAttrCount, attrCountFromOrderList);
-				if (finalAttrCount > 0 && enrichedHeader.prop === "Ent") enrichedHeader.attributeCount = finalAttrCount;
-			}
-			process(model);
-			const rowsById = new Map(result.map((r) => [r.id, r]));
-			for (let i = result.length - 1; i >= 0; i--) {
-				const row = result[i];
-				if (row.parentId && !row.isCalculated) {
-					const parent = rowsById.get(row.parentId);
-					if (parent) parent.isCalculated = false;
-				}
-			}
-			return result;
+			return flattenAndEnrichModel(model);
 		});
 		filteredData$ = /* @__PURE__ */ computed([
 			enrichedData$,
@@ -1238,80 +1432,23 @@
 			onlyEntities$,
 			onlyEntitiesAndAttributes$,
 			hideCalculated$,
-			hiddenProperties$
-		], (data, change, name, onlyEntities, onlyEntitiesAndAttributes, hideCalculated, hiddenProps) => {
-			if (data.length === 0) return [];
-			const rowsById = /* @__PURE__ */ new Map();
-			const childrenMap = /* @__PURE__ */ new Map();
-			for (const r of data) {
-				rowsById.set(r.id, r);
-				if (r.parentId) {
-					const list = childrenMap.get(r.parentId) || [];
-					list.push(r.id);
-					childrenMap.set(r.parentId, list);
-				}
-			}
-			let current = data;
-			if (hideCalculated) current = current.filter((r) => !r.isCalculated);
-			if (hiddenProps.size > 0) current = current.filter((r) => {
-				if (r.isHeader) return true;
-				const key = `${r.type}|${r.spaces}|${r.parentType}`;
-				return !hiddenProps.has(key);
+			hiddenProperties$,
+			showProperties$,
+			toggledPropertiesIds$,
+			hiddenSubObjectsIds$
+		], (data, change, name, onlyEnt, onlyEntAtr, hideCalc, hiddenProps, globalShowProps, toggledProps, hiddenSubs) => {
+			return filterAndApplyVisibility(data, {
+				change,
+				name,
+				onlyEntities: onlyEnt,
+				onlyEntitiesAndAttributes: onlyEntAtr,
+				hideCalculated: hideCalc,
+				hiddenProps
+			}, {
+				globalShowProps,
+				toggledProps,
+				hiddenSubs
 			});
-			if (onlyEntities || onlyEntitiesAndAttributes) {
-				const allowedIds = /* @__PURE__ */ new Set();
-				const addAncestors = (id) => {
-					let curr = id;
-					while (curr) {
-						allowedIds.add(curr);
-						curr = rowsById.get(curr)?.parentId;
-					}
-				};
-				const addDescendants = (id) => {
-					allowedIds.add(id);
-					childrenMap.get(id)?.forEach(addDescendants);
-				};
-				for (const r of current) if (onlyEntities ? r.prop === "Ent" && r.isHeader : (r.prop === "Ent" || r.prop === "Atr") && r.isHeader) {
-					addAncestors(r.id);
-					addDescendants(r.id);
-				}
-				current = current.filter((r) => allowedIds.has(r.id) && r.type !== "Model");
-			}
-			if (change) {
-				const matchingIds = /* @__PURE__ */ new Set();
-				const addDescendants = (id) => {
-					matchingIds.add(id);
-					childrenMap.get(id)?.forEach(addDescendants);
-				};
-				for (const r of current) if (r.isHeader && r.prop === "Ent" && r.change === change) addDescendants(r.id);
-				current = current.filter((r) => matchingIds.has(r.id));
-			}
-			if (name) {
-				const search = name.toLowerCase();
-				const hits = /* @__PURE__ */ new Set();
-				for (const r of current) if (r.type.toLowerCase().includes(search) || r.left.toLowerCase().includes(search) || r.right.toLowerCase().includes(search)) hits.add(r.id);
-				const familyIds = /* @__PURE__ */ new Set();
-				const addAncestors = (id) => {
-					let curr = id;
-					while (curr) {
-						familyIds.add(curr);
-						curr = rowsById.get(curr)?.parentId;
-					}
-				};
-				const addDescendants = (id) => {
-					familyIds.add(id);
-					childrenMap.get(id)?.forEach(addDescendants);
-				};
-				for (const id of hits) {
-					const row = rowsById.get(id);
-					if (!row) continue;
-					const rootId = !row.isHeader && row.parentId ? row.parentId : id;
-					addAncestors(rootId);
-					addDescendants(rootId);
-				}
-				current = current.filter((r) => familyIds.has(r.id));
-			}
-			return current;
 		});
 		uniqueProperties$ = /* @__PURE__ */ computed(enrichedData$, (data) => {
 			const parentTypeOrder = [];
@@ -1354,9 +1491,7 @@
 			});
 			hiddenProperties$.set(allKeys);
 		};
-		resetHiddenProperties = () => {
-			hiddenProperties$.set(/* @__PURE__ */ new Set());
-		};
+		resetHiddenProperties = () => hiddenProperties$.set(/* @__PURE__ */ new Set());
 		togglePropertiesIndividual = (id) => {
 			const current = new Set(toggledPropertiesIds$.get());
 			if (current.has(id)) current.delete(id);
@@ -1378,16 +1513,16 @@
 				currentChecked.add(id);
 				if (showProperties$.get()) propsToggled.add(id);
 				else propsToggled.delete(id);
-				const onlyEnt = onlyEntities$.get();
-				const onlyEntAtr = onlyEntitiesAndAttributes$.get();
 				const row = enrichedData$.get().find((r) => r.id === id);
-				let baseSubHidden = false;
 				if (row) {
+					const onlyEnt = onlyEntities$.get();
+					const onlyEntAtr = onlyEntitiesAndAttributes$.get();
+					let baseSubHidden = false;
 					if (onlyEnt && row.prop === "Ent" && row.hasSubObjects) baseSubHidden = true;
 					if (onlyEntAtr && row.prop === "Atr" && row.hasSubObjects) baseSubHidden = true;
+					if (baseSubHidden) subsHidden.delete(id);
+					else subsHidden.add(id);
 				}
-				if (baseSubHidden) subsHidden.delete(id);
-				else subsHidden.add(id);
 			} else {
 				currentChecked.delete(id);
 				propsToggled.delete(id);
@@ -1489,6 +1624,14 @@
 			const modelName = `${modelRow.left} ${modelRow.right}`.toLowerCase();
 			return sgbds.some((sgbd) => modelName.includes(sgbd));
 		});
+		copyTablesToClipboard = () => {
+			const tables = enrichedData$.get().filter((row) => row.isHeader && row.prop === "Ent" && (row.left || row.right)).map((row) => row.left || row.right).filter((v, i, a) => v && a.indexOf(v) === i).join("\n");
+			if (tables) {
+				navigator.clipboard.writeText(tables);
+				return true;
+			}
+			return false;
+		};
 		if (typeof window !== "undefined") window.erwinData = {
 			modelData$,
 			enrichedData$,
@@ -3406,14 +3549,12 @@
 			* Provides visual feedback upon successful copy.
 			*/
 			_copyTablesToClipboard() {
-				const tables = enrichedData$.get().filter((row) => row.isHeader && row.prop === "Ent" && (row.left || row.right)).map((row) => row.left || row.right).filter((v, i, a) => v && a.indexOf(v) === i).join("\n");
-				if (tables) navigator.clipboard.writeText(tables).then(() => {
+				if (copyTablesToClipboard()) {
 					this.isCopying = true;
 					setTimeout(() => {
 						this.isCopying = false;
 					}, 2e3);
-				});
-				else alert(get("stats.messages.no_tables"));
+				} else alert(get("stats.messages.no_tables"));
 			}
 		};
 		__decorate([r$1()], AppStats.prototype, "isCopying", void 0);
@@ -3553,58 +3694,9 @@
 				this.styles = r$5(app_table_default);
 			}
 			render() {
-				const globalShowProps = this.showProps.value;
-				const toggledPropsSet = this.toggledProps.value;
-				const hiddenSubsSet = this.hiddenSubs.value;
-				const checkedSet = this.checked.value;
+				const visibleRows = this.data.value;
 				const flipped = this.isFlipped.value;
-				const onlyEntities = this.onlyEnt.value;
-				const onlyEntitiesAndAttributes = this.onlyEntAtr.value;
-				const allRows = this.data.value;
-				const rowMap = new Map(allRows.map((r) => [r.id, r]));
-				/**
-				* Determines if a row should be hidden based on global toggles, individual toggles,
-				* and the hierarchical state of its ancestors.
-				*/
-				const isRowHidden = (rowId) => {
-					if (!rowId) return false;
-					const row = rowMap.get(rowId);
-					if (!row) return false;
-					if (row.parentId) {
-						const parent = rowMap.get(row.parentId);
-						if (parent) {
-							if (!row.isHeader) {
-								const isParentToggled = toggledPropsSet.has(row.parentId);
-								if (!(globalShowProps ? !isParentToggled : isParentToggled)) return true;
-							}
-							if (row.isHeader) {
-								let isHidden = hiddenSubsSet.has(row.parentId);
-								if (isHidden && parent.type === "Model" && (row.prop === "Ent" || row.prop === "Atr")) isHidden = false;
-								if (onlyEntities && parent.prop === "Ent" && row.prop !== "Ent") isHidden = !isHidden;
-								if (onlyEntitiesAndAttributes) {
-									if (parent.prop === "Ent" && row.prop !== "Atr") isHidden = !isHidden;
-									if (parent.prop === "Atr" && row.type !== "Field") isHidden = !isHidden;
-								}
-								if (isHidden) return true;
-							}
-							if (isRowHidden(row.parentId)) return true;
-						}
-					}
-					return false;
-				};
-				const visibleRows = allRows.filter((row) => !isRowHidden(row.id));
-				/** Returns true if the sub-objects of the given header row are currently hidden. */
-				const areSubObjectsHidden = (row) => {
-					let isHidden = hiddenSubsSet.has(row.id ?? "");
-					if (onlyEntities && row.prop === "Ent" && row.hasSubObjects) isHidden = !isHidden;
-					if (onlyEntitiesAndAttributes && (row.prop === "Ent" || row.prop === "Atr") && row.hasSubObjects) isHidden = !isHidden;
-					return isHidden;
-				};
-				/** Returns true if the properties of the given header row are currently hidden. */
-				const arePropertiesHidden = (row) => {
-					const isParentToggled = toggledPropsSet.has(row.id ?? "");
-					return !(globalShowProps ? !isParentToggled : isParentToggled);
-				};
+				const checkedSet = this.checked.value;
 				return b`
       <table class="table table-condensed table-hover table-container">
           <thead>
@@ -3620,153 +3712,141 @@
             </tr>
           </thead>
           <tbody>
-            ${visibleRows.length === 0 ? b`
-              <tr>
-                <td colspan="8" class="text-center empty-cell">
-                  <div class="callout">
-                    <span class="callout-icon">${icons["clipboard-list"]}</span>
-                    ${translate("table.empty")}
-                  </div>
-                </td>
-              </tr>
-            ` : c(visibleRows, (row) => row.id, (row) => {
-					const isIdentificationRow = row.isHeader && !row.isGrouping;
-					const isNameProp = row.type === "Physical Name" || row.type === "Name";
-					const showCopy = isIdentificationRow || isNameProp;
-					const level = row.level;
-					const isChecked = row.id ? checkedSet.has(row.id) : false;
-					const leftVal = flipped ? row.right : row.left;
-					const rightVal = flipped ? row.left : row.right;
-					let change = row.change;
-					if (flipped) {
-						if (change === "I") change = "E";
-						else if (change === "E") change = "I";
-					}
-					return b`
-                <tr 
-                  data-change="${change}" 
-                  data-level="${level}"
-                  data-prop="${row.prop}"
-                  data-header="${row.isHeader || false}"
-                  data-grouping="${row.isGrouping || false}"
-                  data-calculated="${row.isCalculated || false}"
-                  data-udp="${row.isUDP || false}"
-                  class="${isChecked ? "checked-row" : ""} ${isIdentificationRow ? "clickable-row" : ""}"
-                  @click=${() => {
-						if (isIdentificationRow && row.id && row.hasProperties) togglePropertiesIndividual(row.id);
-					}}
-                  @contextmenu=${(e) => {
-						if (isIdentificationRow && row.id && row.hasSubObjects) {
-							e.preventDefault();
-							toggleSubObjects(row.id);
-						}
-					}}
-                >
-                  <td class="col-check" @click=${(e) => e.stopPropagation()}>
-                     <input 
-                      type="checkbox" 
-                      .checked=${isChecked}
-                      @change=${() => row.id && toggleCheck(row.id)}
-                     />
-                  </td>
-                  <td class="row-type">
-                    <div class="tree-node">
-                      <div class="indent-dots">
-                        ${Array.from({ length: level }).map(() => b`<span class="dot">·</span>`)}
-                      </div>
-                      <span class="type-text" title="${row.type}">${row.type}</span>
-                      ${this._renderAttributeCounter(row)}
-
-                      <div class="row-indicators">
-                        ${row.isHeader && row.hasProperties ? b`
-                          <span class="icon-indicator prop-indicator ${!arePropertiesHidden(row) ? "expanded" : ""}">
-                            ${icons["chevron-down"]}
-                          </span>
-                        ` : ""}
-                        ${row.isHeader && row.hasSubObjects ? b`
-                          <span class="icon-indicator sub-indicator">
-                            ${areSubObjectsHidden(row) ? icons["schema-off"] : icons.schema}
-                          </span>
-                        ` : ""}
-                      </div>
-                    </div>
-                  </td>
-                  <td class="row-left">
-                  <div class="content-wrapper">
-                    <span class="value-text">${o$1(leftVal)}</span>
-                    <div class="row-actions">
-                      ${this._renderLenCounter(row, leftVal)}
-                      ${showCopy && leftVal ? b`
-                        <button 
-                          class="btn btn-default btn-xs copy-btn ${this.copiedId === row.id && this.copiedSide === "left" ? "copy-success" : ""}" 
-                          title="${translate("table.copy_left")}" 
-                          @click=${(e) => {
-						e.stopPropagation();
-						this._handleCopy(row.id, leftVal, "left");
-					}}
-                        >${this.copiedId === row.id && this.copiedSide === "left" ? icons.check : icons.copy}</button>
-                      ` : ""}
-                    </div>
-                  </div>
-                </td>
-                <td class="row-right">
-                  <div class="content-wrapper">
-                    <span class="value-text">${o$1(rightVal)}</span>
-                    <div class="row-actions">
-                      ${this._renderLenCounter(row, rightVal)}
-                      ${showCopy && rightVal ? b`
-                        <button 
-                          class="btn btn-default btn-xs copy-btn ${this.copiedId === row.id && this.copiedSide === "right" ? "copy-success" : ""}" 
-                          title="${translate("table.copy_right")}" 
-                          @click=${(e) => {
-						e.stopPropagation();
-						this._handleCopy(row.id, rightVal, "right");
-					}}
-                        >${this.copiedId === row.id && this.copiedSide === "right" ? icons.check : icons.copy}</button>
-                      ` : ""}
-                    </div>
-                  </div>
-                </td>
-                <td class="row-prop">${row.prop}</td>
-                <td class="row-change">${isIdentificationRow ? change : ""}</td>
-                <td class="row-view">${isIdentificationRow ? row.view : ""}</td>
-                <td class="row-cal">${row.isCalculated ? "C" : ""}</td>
-              </tr>
-            `;
-				})}
+            ${visibleRows.length === 0 ? this._renderEmptyState() : c(visibleRows, (row) => row.id, (row) => this._renderRow(row, flipped, checkedSet))}
         </tbody>
       </table>
     `;
 			}
-			/** Renders a badge showing the number of attributes/columns for an entity/table. */
+			_renderEmptyState() {
+				return b`
+      <tr>
+        <td colspan="8" class="text-center empty-cell">
+          <div class="callout">
+            <span class="callout-icon">${icons["clipboard-list"]}</span>
+            ${translate("table.empty")}
+          </div>
+        </td>
+      </tr>
+    `;
+			}
+			_renderRow(row, flipped, checkedSet) {
+				const isIdentificationRow = row.isHeader && !row.isGrouping;
+				const isNameProp = row.type === "Physical Name" || row.type === "Name";
+				const showCopy = isIdentificationRow || isNameProp;
+				const isChecked = checkedSet.has(row.id);
+				const leftVal = flipped ? row.right : row.left;
+				const rightVal = flipped ? row.left : row.right;
+				let change = row.change;
+				if (flipped) {
+					if (change === "I") change = "E";
+					else if (change === "E") change = "I";
+				}
+				return b`
+      <tr 
+        data-change="${change}" 
+        data-level="${row.level}"
+        data-prop="${row.prop}"
+        data-header="${row.isHeader || false}"
+        data-grouping="${row.isGrouping || false}"
+        data-calculated="${row.isCalculated || false}"
+        data-udp="${row.isUDP || false}"
+        class="${isChecked ? "checked-row" : ""} ${isIdentificationRow ? "clickable-row" : ""}"
+        @click=${() => isIdentificationRow && row.hasProperties && togglePropertiesIndividual(row.id)}
+        @contextmenu=${(e) => {
+					if (isIdentificationRow && row.hasSubObjects) {
+						e.preventDefault();
+						toggleSubObjects(row.id);
+					}
+				}}
+      >
+        <td class="col-check" @click=${(e) => e.stopPropagation()}>
+           <input type="checkbox" .checked=${isChecked} @change=${() => toggleCheck(row.id)} />
+        </td>
+        <td class="row-type">
+          <div class="tree-node">
+            <div class="indent-dots">
+              ${Array.from({ length: row.level }).map(() => b`<span class="dot">·</span>`)}
+            </div>
+            <span class="type-text" title="${row.type}">${row.type}</span>
+            ${this._renderAttributeCounter(row)}
+            <div class="row-indicators">
+              ${this._renderIndicators(row)}
+            </div>
+          </div>
+        </td>
+        <td class="row-left">${this._renderValueCell(row, leftVal, "left", showCopy)}</td>
+        <td class="row-right">${this._renderValueCell(row, rightVal, "right", showCopy)}</td>
+        <td class="row-prop">${row.prop}</td>
+        <td class="row-change">${isIdentificationRow ? change : ""}</td>
+        <td class="row-view">${isIdentificationRow ? row.view : ""}</td>
+        <td class="row-cal">${row.isCalculated ? "C" : ""}</td>
+      </tr>
+    `;
+			}
+			_renderIndicators(row) {
+				if (!row.isHeader) return b``;
+				const arePropsHidden = this._arePropertiesHidden(row);
+				const areSubsHidden = this._areSubObjectsHidden(row);
+				return b`
+      ${row.hasProperties ? b`
+        <span class="icon-indicator prop-indicator ${!arePropsHidden ? "expanded" : ""}">
+          ${icons["chevron-down"]}
+        </span>
+      ` : ""}
+      ${row.hasSubObjects ? b`
+        <span class="icon-indicator sub-indicator">
+          ${areSubsHidden ? icons["schema-off"] : icons.schema}
+        </span>
+      ` : ""}
+    `;
+			}
+			_renderValueCell(row, value, side, showCopy) {
+				return b`
+      <div class="content-wrapper">
+        <span class="value-text">${o$1(value)}</span>
+        <div class="row-actions">
+          ${this._renderLenCounter(row, value)}
+          ${showCopy && value ? b`
+            <button 
+              class="btn btn-default btn-xs copy-btn ${this.copiedId === row.id && this.copiedSide === side ? "copy-success" : ""}" 
+              title="${translate(`table.copy_${side}`)}" 
+              @click=${(e) => {
+					e.stopPropagation();
+					this._handleCopy(row.id, value, side);
+				}}
+            >${this.copiedId === row.id && this.copiedSide === side ? icons.check : icons.copy}</button>
+          ` : ""}
+        </div>
+      </div>
+    `;
+			}
 			_renderAttributeCounter(row) {
 				if (!(row.prop === "Ent" && row.isHeader)) return "";
-				const count = row.attributeCount;
-				return b`<span class="attr-badge">${count !== void 0 ? count : "?"}</span>`;
+				return b`<span class="attr-badge">${row.attributeCount ?? "?"}</span>`;
 			}
-			/** Renders a character counter badge for physical names, with warning state for lengths > 18. */
 			_renderLenCounter(row, value) {
 				const isPhysicalName = row.type === "Physical Name";
 				const isIdentificationRow = row.isHeader && !row.isGrouping && (row.prop === "Ent" || row.prop === "Atr");
 				if (!(isPhysicalName || isIdentificationRow) || !value) return "";
-				/** Calculates normalized length by stripping technical suffixes and owner prefixes. */
 				const getLen = (val) => {
-					let clean = val.trim();
-					clean = clean.replace(/\s*\[Calculated\]$/, "");
-					clean = clean.replace(/\s*\(FK\)$/, "");
-					if (clean.includes(".")) {
-						const parts = clean.split(".");
-						clean = parts[parts.length - 1];
-					}
+					let clean = val.trim().replace(/\s*\[Calculated\]$/, "").replace(/\s*\(FK\)$/, "");
+					if (clean.includes(".")) clean = clean.split(".").pop() || clean;
 					return clean.length;
 				};
 				const len = getLen(value);
 				if (len === 0) return "";
 				return b`<span class="len-badge ${len > (this.isLongNamingConvention.value ? 50 : 18) ? "len-warn" : "len-ok"}">${len}</span>`;
 			}
-			/**
-			* Copies text to the clipboard and handles visual feedback state.
-			*/
+			_areSubObjectsHidden(row) {
+				let isHidden = this.hiddenSubs.value.has(row.id);
+				if (this.onlyEnt.value && row.prop === "Ent" && row.hasSubObjects) isHidden = !isHidden;
+				if (this.onlyEntAtr.value && (row.prop === "Ent" || row.prop === "Atr") && row.hasSubObjects) isHidden = !isHidden;
+				return isHidden;
+			}
+			_arePropertiesHidden(row) {
+				const isParentToggled = this.toggledProps.value.has(row.id);
+				return this.showProps.value ? isParentToggled : !isParentToggled;
+			}
 			_handleCopy(id, text, side) {
 				let cleanText = text.includes(".") ? text.split(".")[1].trim() : text.trim();
 				cleanText = cleanText.replace("(FK)", "").replace("[Calculated]", "").trim();
