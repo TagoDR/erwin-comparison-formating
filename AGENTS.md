@@ -113,9 +113,11 @@ The project delivers three primary outputs:
 
 ## 6. Build and Distribution
 
-- `npm run build`: Generates Standalone and Userscript outputs.
+- `npm run build`: Generates all the build options.
 - `npm run dev`: Starts dev server with **hot-reloading sample data** (via `sampleGeneratorPlugin`).
 - `npm run build:lib`: Generates the reusable library bundle.
+- `npm run build:monkey`: Generates the userscript for Tampermonkey.
+- `npm run build:standalone`: Generates the single file html for standalone use.
 - `npm run gen:sample`: Manually synchronize `sample.html` with `sample.ts`.
 - **Userscript UX:** Includes an immediate loading spinner to provide feedback during large file ingestion.
 - **Showcase**: `showcase.html` demonstrates programmatic usage of the library.

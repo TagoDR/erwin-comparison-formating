@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --mode standalone && vite build --mode monkey",
+    "build": "vite build --mode standalone && vite build --mode monkey && vite build --mode library",
     "build:standalone": "vite build --mode standalone",
     "build:monkey": "vite build --mode monkey",
     "build:lib": "vite build --mode library",
