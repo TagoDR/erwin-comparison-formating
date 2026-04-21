@@ -19,19 +19,10 @@ export function filterAndApplyVisibility(
     toggledProps: Set<string>;
     hiddenSubs: Set<string>;
   },
+  rowsById: Map<string, EnrichedDiffRow>,
+  childrenMap: Map<string, string[]>,
 ): EnrichedDiffRow[] {
   if (data.length === 0) return [];
-
-  const rowsById = new Map<string, EnrichedDiffRow>();
-  const childrenMap = new Map<string, string[]>();
-  for (const r of data) {
-    rowsById.set(r.id, r);
-    if (r.parentId) {
-      const list = childrenMap.get(r.parentId) || [];
-      list.push(r.id);
-      childrenMap.set(r.parentId, list);
-    }
-  }
 
   let current = data;
 

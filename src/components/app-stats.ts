@@ -41,6 +41,7 @@ export class AppStats extends LitElement {
 
   private onlyEntAtr = new StoreController(this, onlyEntitiesAndAttributes$);
   @state() private isCopying = false;
+  private searchDebounceTimeout?: number;
 
   render() {
     if (this.stats.value.length === 0) return html``;
@@ -190,11 +191,20 @@ export class AppStats extends LitElement {
 
   /**
    * Updates the name search filter based on user input.
+   * Includes a 300ms debounce to avoid expensive re-filtering on every keystroke.
    * @param e The input event from the text field.
    */
   private _updateNameFilter(e: Event) {
     const val = (e.target as HTMLInputElement).value;
-    filterName$.set(val);
+
+    if (this.searchDebounceTimeout) {
+      window.clearTimeout(this.searchDebounceTimeout);
+    }
+
+    this.searchDebounceTimeout = window.setTimeout(() => {
+      filterName$.set(val);
+      this.searchDebounceTimeout = undefined;
+    }, 300);
   }
 
   /**

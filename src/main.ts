@@ -4,7 +4,7 @@ import { customElement } from 'lit/decorators.js';
 import { translate } from 'lit-translate';
 import icons from './icons';
 import { parseErwinHtml } from './parser/html-parser.js';
-import { fileName$, initializeVisibility, isLoading$, modelData$ } from './store/data.store.js';
+import { fileName$, initializeVisibility, isLoading$, setModelData } from './store/data.store.js';
 
 // Import Global CSS
 import './index.css';
@@ -65,8 +65,8 @@ export class AppRoot extends LitElement {
     const showData = !!this.fileName.value && !this.isLoading.value;
 
     return html`
-	<div class="main-content" @file-selected=${this._onFileSelected}>
-	<app-header></app-header>
+      <div class="main-content" @file-selected=${this._onFileSelected}>
+        <app-header></app-header>
         <div class="display-area">
           ${
             showData
@@ -194,7 +194,7 @@ export class AppRoot extends LitElement {
    */
   private _processFileContent(content: string) {
     const model = parseErwinHtml(content);
-    modelData$.set(model);
+    setModelData(model);
     initializeVisibility();
     isLoading$.set(false);
   }
