@@ -35,7 +35,7 @@ The project delivers three primary outputs:
 - **`src/components/app-header.ts`**: Top navigation and file management.
 - **`src/components/app-stats.ts`**: Summary panel with Change/Search filters (Debounced).
 - **`src/components/app-table.ts`**: Virtualized data grid using flex-based layout.
-- **`src/components/property-drawer.ts`**: Global property visibility management.
+- **`src/components/property-drawer.ts`**: Global property and object type visibility management.
 
 ## 4. UI/UX Requirements
 
@@ -43,20 +43,23 @@ The project delivers three primary outputs:
 1. **Header**: Title, File Management, Theme/Lang toggles.
 2. **Main Display**:
    - **Stats Panel**: Changes summary and action buttons.
-   - **Filter Panel**: Search (300ms debounce), Status filters, Drill-down modes.
-   - **Data Table**: Virtualized list with hierarchy visualization.
+   - **Filter Panel**: Search (300ms debounce), Status filters, Drill-down modes (Only Entities, Only Ent+Atr).
+   - **Data Table**: Virtualized list with hierarchy visualization and manual toggle overrides.
 
 ### 4.2. Performance Engine (The 50MB Rule)
 - **Memory Optimization**: Initial `ModelObject` tree is cleared after enrichment.
 - **O(1) Lookups**: Filtering uses pre-calculated `rowsById` and `childrenMap`.
 - **Virtual Scrolling**: Only visible rows are rendered to the DOM.
 - **Search Debouncing**: Prevents expensive re-filtering on every keystroke.
+- **Single-Pass Visibility**: Hierarchical visibility (cascading hides) is calculated in a single pass O(N).
 
 ### 4.3. Data Processing Details
 - **Indentation**: 3 spaces = 1 Level. Visualized with dots (`·`).
 - **Calculated Status (C)**: Inherited bottom-up (Parent is calculated only if all descendants are).
 - **UDP Highlighting**: Automatic teal background for User Defined Properties.
 - **Smart Attribute Counting**: Combined child object and Order List property detection.
+- **Explicit Visibility State**: Manual toggles (Right click) are preserved even when switching modes, using a dual-set system (`hiddenSubs` and `shownSubs`).
+- **Type-based Filtering**: Global visibility can be toggled by object type (e.g., hide all Subject Areas) via the Property Drawer.
 
 ## 5. Visual Encoding (Office 2010 Palette)
 
