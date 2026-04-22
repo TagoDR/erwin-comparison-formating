@@ -145,7 +145,7 @@
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit-html/directive.js
 	var t$8, e$9, i$8;
-	var init_directive$2 = __esmMin((() => {
+	var init_directive$3 = __esmMin((() => {
 		t$8 = {
 			ATTRIBUTE: 1,
 			CHILD: 2,
@@ -175,8 +175,8 @@
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit/directive.js
-	var init_directive$1 = __esmMin((() => {
-		init_directive$2();
+	var init_directive$2 = __esmMin((() => {
+		init_directive$3();
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit-html/lit-html.js
@@ -191,21 +191,21 @@
 		const u = d$4(i) ? void 0 : i._$litDirective$;
 		return (null == r ? void 0 : r.constructor) !== u && (null === (n = null == r ? void 0 : r._$AO) || void 0 === n || n.call(r, !1), void 0 === u ? r = void 0 : (r = new u(t), r._$AT(t, s, e)), void 0 !== e ? (null !== (l = (h = s)._$Co) && void 0 !== l ? l : h._$Co = [])[e] = r : s._$Cl = r), void 0 !== r && (i = S$2(t, r._$AS(t, i.values), r, e)), i;
 	}
-	var t$7, i$7, s$6, e$8, o$9, n$7, l$5, h$5, r$8, u$5, d$4, c$7, v$3, a$3, f$4, _$1, m$3, p$4, g$1, $$1, y$2, w$1, T$1, A$1, E$1, C$1, V$1, N$1, M$2, R$1, k$1, H$1, I$1, L$1, z$1, Z$1, j$2, B$1, init_lit_html$1 = __esmMin((() => {
-		i$7 = window, s$6 = i$7.trustedTypes, e$8 = s$6 ? s$6.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, o$9 = "$lit$", n$7 = `lit$${(Math.random() + "").slice(9)}$`, l$5 = "?" + n$7, h$5 = `<${l$5}>`, r$8 = document, u$5 = () => r$8.createComment(""), d$4 = (t) => null === t || "object" != typeof t && "function" != typeof t, c$7 = Array.isArray, v$3 = (t) => c$7(t) || "function" == typeof (null == t ? void 0 : t[Symbol.iterator]), a$3 = "[ 	\n\f\r]", f$4 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _$1 = /-->/g, m$3 = />/g, p$4 = RegExp(`>|${a$3}(?:([^\\s"'>=/]+)(${a$3}*=${a$3}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), g$1 = /'/g, $$1 = /"/g, y$2 = /^(?:script|style|textarea|title)$/i, w$1 = (t) => (i, ...s) => ({
+	var t$7, i$7, s$7, e$8, o$10, n$8, l$5, h$6, r$9, u$5, d$4, c$8, v$3, a$3, f$5, _$1, m$3, p$4, g$1, $$1, y$2, w$1, T$1, A$1, E$1, C$1, V$1, N$1, M$2, R$1, k$1, H$1, I$1, L$1, z$1, Z$1, j$2, B$1, init_lit_html$1 = __esmMin((() => {
+		i$7 = window, s$7 = i$7.trustedTypes, e$8 = s$7 ? s$7.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, o$10 = "$lit$", n$8 = `lit$${(Math.random() + "").slice(9)}$`, l$5 = "?" + n$8, h$6 = `<${l$5}>`, r$9 = document, u$5 = () => r$9.createComment(""), d$4 = (t) => null === t || "object" != typeof t && "function" != typeof t, c$8 = Array.isArray, v$3 = (t) => c$8(t) || "function" == typeof (null == t ? void 0 : t[Symbol.iterator]), a$3 = "[ 	\n\f\r]", f$5 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _$1 = /-->/g, m$3 = />/g, p$4 = RegExp(`>|${a$3}(?:([^\\s"'>=/]+)(${a$3}*=${a$3}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), g$1 = /'/g, $$1 = /"/g, y$2 = /^(?:script|style|textarea|title)$/i, w$1 = (t) => (i, ...s) => ({
 			_$litType$: t,
 			strings: i,
 			values: s
-		}), w$1(1), w$1(2), T$1 = Symbol.for("lit-noChange"), A$1 = Symbol.for("lit-nothing"), E$1 = /* @__PURE__ */ new WeakMap(), C$1 = r$8.createTreeWalker(r$8, 129, null, !1);
+		}), w$1(1), w$1(2), T$1 = Symbol.for("lit-noChange"), A$1 = Symbol.for("lit-nothing"), E$1 = /* @__PURE__ */ new WeakMap(), C$1 = r$9.createTreeWalker(r$9, 129, null, !1);
 		V$1 = (t, i) => {
 			const s = t.length - 1, e = [];
-			let l, r = 2 === i ? "<svg>" : "", u = f$4;
+			let l, r = 2 === i ? "<svg>" : "", u = f$5;
 			for (let i = 0; i < s; i++) {
 				const s = t[i];
 				let d, c, v = -1, a = 0;
-				for (; a < s.length && (u.lastIndex = a, c = u.exec(s), null !== c);) a = u.lastIndex, u === f$4 ? "!--" === c[1] ? u = _$1 : void 0 !== c[1] ? u = m$3 : void 0 !== c[2] ? (y$2.test(c[2]) && (l = RegExp("</" + c[2], "g")), u = p$4) : void 0 !== c[3] && (u = p$4) : u === p$4 ? ">" === c[0] ? (u = null != l ? l : f$4, v = -1) : void 0 === c[1] ? v = -2 : (v = u.lastIndex - c[2].length, d = c[1], u = void 0 === c[3] ? p$4 : "\"" === c[3] ? $$1 : g$1) : u === $$1 || u === g$1 ? u = p$4 : u === _$1 || u === m$3 ? u = f$4 : (u = p$4, l = void 0);
+				for (; a < s.length && (u.lastIndex = a, c = u.exec(s), null !== c);) a = u.lastIndex, u === f$5 ? "!--" === c[1] ? u = _$1 : void 0 !== c[1] ? u = m$3 : void 0 !== c[2] ? (y$2.test(c[2]) && (l = RegExp("</" + c[2], "g")), u = p$4) : void 0 !== c[3] && (u = p$4) : u === p$4 ? ">" === c[0] ? (u = null != l ? l : f$5, v = -1) : void 0 === c[1] ? v = -2 : (v = u.lastIndex - c[2].length, d = c[1], u = void 0 === c[3] ? p$4 : "\"" === c[3] ? $$1 : g$1) : u === $$1 || u === g$1 ? u = p$4 : u === _$1 || u === m$3 ? u = f$5 : (u = p$4, l = void 0);
 				const w = u === p$4 && t[i + 1].startsWith("/>") ? " " : "";
-				r += u === f$4 ? s + h$5 : v >= 0 ? (e.push(d), s.slice(0, v) + o$9 + s.slice(v) + n$7 + w) : s + n$7 + (-2 === v ? (e.push(void 0), i) : w);
+				r += u === f$5 ? s + h$6 : v >= 0 ? (e.push(d), s.slice(0, v) + o$10 + s.slice(v) + n$8 + w) : s + n$8 + (-2 === v ? (e.push(void 0), i) : w);
 			}
 			return [P$1(t, r + (t[s] || "<?>") + (2 === i ? "</svg>" : "")), e];
 		};
@@ -223,10 +223,10 @@
 					if (1 === h.nodeType) {
 						if (h.hasAttributes()) {
 							const t = [];
-							for (const i of h.getAttributeNames()) if (i.endsWith(o$9) || i.startsWith(n$7)) {
+							for (const i of h.getAttributeNames()) if (i.endsWith(o$10) || i.startsWith(n$8)) {
 								const s = f[d++];
 								if (t.push(i), void 0 !== s) {
-									const t = h.getAttribute(s.toLowerCase() + o$9).split(n$7), i = /([.?@])?(.*)/.exec(s);
+									const t = h.getAttribute(s.toLowerCase() + o$10).split(n$8), i = /([.?@])?(.*)/.exec(s);
 									v.push({
 										type: 1,
 										index: r,
@@ -242,9 +242,9 @@
 							for (const i of t) h.removeAttribute(i);
 						}
 						if (y$2.test(h.tagName)) {
-							const t = h.textContent.split(n$7), i = t.length - 1;
+							const t = h.textContent.split(n$8), i = t.length - 1;
 							if (i > 0) {
-								h.textContent = s$6 ? s$6.emptyScript : "";
+								h.textContent = s$7 ? s$7.emptyScript : "";
 								for (let s = 0; s < i; s++) h.append(t[s], u$5()), C$1.nextNode(), v.push({
 									type: 2,
 									index: ++r
@@ -258,16 +258,16 @@
 					});
 					else {
 						let t = -1;
-						for (; -1 !== (t = h.data.indexOf(n$7, t + 1));) v.push({
+						for (; -1 !== (t = h.data.indexOf(n$8, t + 1));) v.push({
 							type: 7,
 							index: r
-						}), t += n$7.length - 1;
+						}), t += n$8.length - 1;
 					}
 					r++;
 				}
 			}
 			static createElement(t, i) {
-				const s = r$8.createElement("template");
+				const s = r$9.createElement("template");
 				return s.innerHTML = t, s;
 			}
 		};
@@ -283,7 +283,7 @@
 			}
 			u(t) {
 				var i;
-				const { el: { content: s }, parts: e } = this._$AD, o = (null !== (i = null == t ? void 0 : t.creationScope) && void 0 !== i ? i : r$8).importNode(s, !0);
+				const { el: { content: s }, parts: e } = this._$AD, o = (null !== (i = null == t ? void 0 : t.creationScope) && void 0 !== i ? i : r$9).importNode(s, !0);
 				C$1.currentNode = o;
 				let n = C$1.nextNode(), l = 0, h = 0, u = e[0];
 				for (; void 0 !== u;) {
@@ -293,7 +293,7 @@
 					}
 					l !== (null == u ? void 0 : u.index) && (n = C$1.nextNode(), l++);
 				}
-				return C$1.currentNode = r$8, o;
+				return C$1.currentNode = r$9, o;
 			}
 			v(t) {
 				let i = 0;
@@ -330,7 +330,7 @@
 				this._$AH !== t && (this._$AR(), this._$AH = this.k(t));
 			}
 			_(t) {
-				this._$AH !== A$1 && d$4(this._$AH) ? this._$AA.nextSibling.data = t : this.$(r$8.createTextNode(t)), this._$AH = t;
+				this._$AH !== A$1 && d$4(this._$AH) ? this._$AA.nextSibling.data = t : this.$(r$9.createTextNode(t)), this._$AH = t;
 			}
 			g(t) {
 				var i;
@@ -346,7 +346,7 @@
 				return void 0 === i && E$1.set(t.strings, i = new N$1(t)), i;
 			}
 			T(t) {
-				c$7(this._$AH) || (this._$AH = [], this._$AR());
+				c$8(this._$AH) || (this._$AH = [], this._$AR());
 				const i = this._$AH;
 				let s, e = 0;
 				for (const o of t) e === i.length ? i.push(s = new R$1(this.k(u$5()), this.k(u$5()), this, this.options)) : s = i[e], s._$AI(o), e++;
@@ -397,7 +397,7 @@
 				this.element[this.name] = t === A$1 ? void 0 : t;
 			}
 		};
-		I$1 = s$6 ? s$6.emptyScript : "";
+		I$1 = s$7 ? s$7.emptyScript : "";
 		L$1 = class extends k$1 {
 			constructor() {
 				super(...arguments), this.type = 4;
@@ -433,8 +433,8 @@
 			}
 		};
 		j$2 = {
-			O: o$9,
-			P: n$7,
+			O: o$10,
+			P: n$8,
 			A: l$5,
 			C: 1,
 			M: V$1,
@@ -456,32 +456,32 @@
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit-html/async-directive.js
-	function n$5(i) {
-		void 0 !== this._$AN ? (o$8(this), this._$AM = i, r$6(this)) : this._$AM = i;
+	function n$6(i) {
+		void 0 !== this._$AN ? (o$9(this), this._$AM = i, r$7(this)) : this._$AM = i;
 	}
-	function h$3(i, t = !1, e = 0) {
+	function h$4(i, t = !1, e = 0) {
 		const r = this._$AH, n = this._$AN;
-		if (void 0 !== n && 0 !== n.size) if (t) if (Array.isArray(r)) for (let i = e; i < r.length; i++) s$4(r[i], !1), o$8(r[i]);
-		else null != r && (s$4(r, !1), o$8(r));
-		else s$4(this, i);
+		if (void 0 !== n && 0 !== n.size) if (t) if (Array.isArray(r)) for (let i = e; i < r.length; i++) s$5(r[i], !1), o$9(r[i]);
+		else null != r && (s$5(r, !1), o$9(r));
+		else s$5(this, i);
 	}
-	var s$4, o$8, r$6, l$3, c$5;
-	var init_async_directive$1 = __esmMin((() => {
+	var s$5, o$9, r$7, l$3, c$6;
+	var init_async_directive$3 = __esmMin((() => {
 		init_directive_helpers$1();
-		init_directive$2();
-		s$4 = (i, t) => {
+		init_directive$3();
+		s$5 = (i, t) => {
 			var e, o;
 			const r = i._$AN;
 			if (void 0 === r) return !1;
-			for (const i of r) null === (o = (e = i)._$AO) || void 0 === o || o.call(e, t, !1), s$4(i, t);
+			for (const i of r) null === (o = (e = i)._$AO) || void 0 === o || o.call(e, t, !1), s$5(i, t);
 			return !0;
-		}, o$8 = (i) => {
+		}, o$9 = (i) => {
 			let t, e;
 			do {
 				if (void 0 === (t = i._$AM)) break;
 				e = t._$AN, e.delete(i), i = t;
 			} while (0 === (null == e ? void 0 : e.size));
-		}, r$6 = (i) => {
+		}, r$7 = (i) => {
 			for (let t; t = i._$AM; i = t) {
 				let e = t._$AN;
 				if (void 0 === e) t._$AN = e = /* @__PURE__ */ new Set();
@@ -491,18 +491,18 @@
 		};
 		l$3 = (i) => {
 			var t, s, o, r;
-			i.type == t$8.CHILD && (null !== (t = (o = i)._$AP) && void 0 !== t || (o._$AP = h$3), null !== (s = (r = i)._$AQ) && void 0 !== s || (r._$AQ = n$5));
+			i.type == t$8.CHILD && (null !== (t = (o = i)._$AP) && void 0 !== t || (o._$AP = h$4), null !== (s = (r = i)._$AQ) && void 0 !== s || (r._$AQ = n$6));
 		};
-		c$5 = class extends i$8 {
+		c$6 = class extends i$8 {
 			constructor() {
 				super(...arguments), this._$AN = void 0;
 			}
 			_$AT(i, t, e) {
-				super._$AT(i, t, e), r$6(this), this.isConnected = i._$AU;
+				super._$AT(i, t, e), r$7(this), this.isConnected = i._$AU;
 			}
 			_$AO(i, t = !0) {
 				var e, r;
-				i !== this.isConnected && (this.isConnected = i, i ? null === (e = this.reconnected) || void 0 === e || e.call(this) : null === (r = this.disconnected) || void 0 === r || r.call(this)), t && (s$4(this, i), o$8(this));
+				i !== this.isConnected && (this.isConnected = i, i ? null === (e = this.reconnected) || void 0 === e || e.call(this) : null === (r = this.disconnected) || void 0 === r || r.call(this)), t && (s$5(this, i), o$9(this));
 			}
 			setValue(t) {
 				if (e$7(this._$Ct)) this._$Ct._$AI(t, this);
@@ -517,16 +517,16 @@
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit/async-directive.js
-	var init_async_directive = __esmMin((() => {
-		init_async_directive$1();
+	var init_async_directive$2 = __esmMin((() => {
+		init_async_directive$3();
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/directives/lang-changed-base.js
 	var LangChangedDirectiveBase;
 	var init_lang_changed_base = __esmMin((() => {
-		init_async_directive();
+		init_async_directive$2();
 		init_util();
-		LangChangedDirectiveBase = class extends c$5 {
+		LangChangedDirectiveBase = class extends c$6 {
 			constructor() {
 				super(...arguments);
 				this.langChangedSubscription = null;
@@ -579,7 +579,7 @@
 	//#region node_modules/lit-translate/directives/translate.js
 	var TranslateDirective, translate;
 	var init_translate = __esmMin((() => {
-		init_directive$1();
+		init_directive$2();
 		init_util();
 		init_lang_changed_base();
 		TranslateDirective = class extends LangChangedDirectiveBase {
@@ -591,10 +591,10 @@
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit-html/directives/unsafe-html.js
-	var e$6, o$7;
+	var e$6, o$8;
 	var init_unsafe_html$3 = __esmMin((() => {
 		init_lit_html$1();
-		init_directive$2();
+		init_directive$3();
 		e$6 = class extends i$8 {
 			constructor(i) {
 				if (super(i), this.et = A$1, i.type !== t$8.CHILD) throw Error(this.constructor.directiveName + "() can only be used in child bindings");
@@ -614,7 +614,7 @@
 			}
 		};
 		e$6.directiveName = "unsafeHTML", e$6.resultType = 1;
-		o$7 = e$9(e$6);
+		o$8 = e$9(e$6);
 	}));
 	//#endregion
 	//#region node_modules/lit-translate/node_modules/lit/directives/unsafe-html.js
@@ -622,19 +622,19 @@
 		init_unsafe_html$3();
 	})), TranslateUnsafeHTMLDirective;
 	var init_translate_unsafe_html = __esmMin((() => {
-		init_directive$1();
+		init_directive$2();
 		init_unsafe_html$2();
 		init_translate();
 		init_util();
 		TranslateUnsafeHTMLDirective = class extends TranslateDirective {
 			render(key, values, config) {
-				return this.renderValue(() => o$7(get(key, values, config)));
+				return this.renderValue(() => o$8(get(key, values, config)));
 			}
 		};
 		e$9(TranslateUnsafeHTMLDirective);
 	})), LangChangedDirective;
 	var init_lang_changed = __esmMin((() => {
-		init_directive$1();
+		init_directive$2();
 		init_lang_changed_base();
 		LangChangedDirective = class extends LangChangedDirectiveBase {
 			render(getValue) {
@@ -1273,18 +1273,8 @@
 	* Advanced filtering and visibility logic for enriched data.
 	* Handles search, status filters, and hierarchical drill-down modes.
 	*/
-	function filterAndApplyVisibility(data, filters, visibility) {
+	function filterAndApplyVisibility(data, filters, visibility, rowsById, childrenMap) {
 		if (data.length === 0) return [];
-		const rowsById = /* @__PURE__ */ new Map();
-		const childrenMap = /* @__PURE__ */ new Map();
-		for (const r of data) {
-			rowsById.set(r.id, r);
-			if (r.parentId) {
-				const list = childrenMap.get(r.parentId) || [];
-				list.push(r.id);
-				childrenMap.set(r.parentId, list);
-			}
-		}
 		let current = data;
 		if (filters.hideCalculated) current = current.filter((r) => !r.isCalculated);
 		if (filters.hiddenProps.size > 0) current = current.filter((r) => {
@@ -1400,7 +1390,21 @@
 	var init_data_filter = __esmMin((() => {}));
 	//#endregion
 	//#region src/store/data.store.ts
-	var modelData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, hiddenProperties$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, isPropertyDrawerOpen$, enrichedData$, filteredData$, uniqueProperties$, togglePropertyGroup, toggleProperty, hideAllProperties, resetHiddenProperties, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, resetFilters, setOnlyEntities, setOnlyEntitiesAndAttributes, toggleFlip, togglePropertiesGlobal, statsSummary$, isLongNamingConvention$, copyTablesToClipboard;
+	/**
+	* Processes and loads raw model data into the enriched store.
+	* Immediately clears the hierarchical model to free up memory.
+	*/
+	function setModelData(model) {
+		if (!model) {
+			enrichedData$.set([]);
+			modelData$.set(null);
+			return;
+		}
+		const enriched = flattenAndEnrichModel(model);
+		enrichedData$.set(enriched);
+		modelData$.set(null);
+	}
+	var modelData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, hiddenProperties$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, isPropertyDrawerOpen$, enrichedData$, rowsById$, childrenMap$, filteredData$, uniqueProperties$, togglePropertyGroup, toggleProperty, hideAllProperties, resetHiddenProperties, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, resetFilters, setOnlyEntities, setOnlyEntitiesAndAttributes, toggleFlip, togglePropertiesGlobal, statsSummary$, isLongNamingConvention$, copyTablesToClipboard;
 	var init_data_store = __esmMin((() => {
 		init_nanostores();
 		init_data_enricher();
@@ -1421,12 +1425,25 @@
 		checkedIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		isFlipped$ = /* @__PURE__ */ atom(false);
 		isPropertyDrawerOpen$ = /* @__PURE__ */ atom(false);
-		enrichedData$ = /* @__PURE__ */ computed(modelData$, (model) => {
-			if (!model) return [];
-			return flattenAndEnrichModel(model);
+		enrichedData$ = /* @__PURE__ */ atom([]);
+		rowsById$ = /* @__PURE__ */ computed(enrichedData$, (data) => {
+			const map = /* @__PURE__ */ new Map();
+			for (const r of data) map.set(r.id, r);
+			return map;
+		});
+		childrenMap$ = /* @__PURE__ */ computed(enrichedData$, (data) => {
+			const map = /* @__PURE__ */ new Map();
+			for (const r of data) if (r.parentId) {
+				const list = map.get(r.parentId) || [];
+				list.push(r.id);
+				map.set(r.parentId, list);
+			}
+			return map;
 		});
 		filteredData$ = /* @__PURE__ */ computed([
 			enrichedData$,
+			rowsById$,
+			childrenMap$,
 			filterChange$,
 			filterName$,
 			onlyEntities$,
@@ -1436,7 +1453,7 @@
 			showProperties$,
 			toggledPropertiesIds$,
 			hiddenSubObjectsIds$
-		], (data, change, name, onlyEnt, onlyEntAtr, hideCalc, hiddenProps, globalShowProps, toggledProps, hiddenSubs) => {
+		], (data, rowsById, childrenMap, change, name, onlyEnt, onlyEntAtr, hideCalc, hiddenProps, globalShowProps, toggledProps, hiddenSubs) => {
 			return filterAndApplyVisibility(data, {
 				change,
 				name,
@@ -1448,7 +1465,7 @@
 				globalShowProps,
 				toggledProps,
 				hiddenSubs
-			});
+			}, rowsById, childrenMap);
 		});
 		uniqueProperties$ = /* @__PURE__ */ computed(enrichedData$, (data) => {
 			const parentTypeOrder = [];
@@ -1955,12 +1972,12 @@
 				return withStores_1.withStores;
 			}
 		});
-	})), t$5, e$5, s$3, o$6, n$4, r$5, S$1, c$4;
+	})), t$5, e$5, s$4, o$7, n$5, r$6, S$1, c$5;
 	var init_css_tag = __esmMin((() => {
-		t$5 = globalThis, e$5 = t$5.ShadowRoot && (void 0 === t$5.ShadyCSS || t$5.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s$3 = Symbol(), o$6 = /* @__PURE__ */ new WeakMap();
-		n$4 = class {
+		t$5 = globalThis, e$5 = t$5.ShadowRoot && (void 0 === t$5.ShadyCSS || t$5.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s$4 = Symbol(), o$7 = /* @__PURE__ */ new WeakMap();
+		n$5 = class {
 			constructor(t, e, o) {
-				if (this._$cssResult$ = !0, o !== s$3) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+				if (this._$cssResult$ = !0, o !== s$4) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
 				this.cssText = t, this.t = e;
 			}
 			get styleSheet() {
@@ -1968,7 +1985,7 @@
 				const s = this.t;
 				if (e$5 && void 0 === t) {
 					const e = void 0 !== s && 1 === s.length;
-					e && (t = o$6.get(s)), void 0 === t && ((this.o = t = new CSSStyleSheet()).replaceSync(this.cssText), e && o$6.set(s, t));
+					e && (t = o$7.get(s)), void 0 === t && ((this.o = t = new CSSStyleSheet()).replaceSync(this.cssText), e && o$7.set(s, t));
 				}
 				return t;
 			}
@@ -1976,24 +1993,24 @@
 				return this.cssText;
 			}
 		};
-		r$5 = (t) => new n$4("string" == typeof t ? t : t + "", void 0, s$3), S$1 = (s, o) => {
+		r$6 = (t) => new n$5("string" == typeof t ? t : t + "", void 0, s$4), S$1 = (s, o) => {
 			if (e$5) s.adoptedStyleSheets = o.map((t) => t instanceof CSSStyleSheet ? t : t.styleSheet);
 			else for (const e of o) {
 				const o = document.createElement("style"), n = t$5.litNonce;
 				void 0 !== n && o.setAttribute("nonce", n), o.textContent = e.cssText, s.appendChild(o);
 			}
-		}, c$4 = e$5 ? (t) => t : (t) => t instanceof CSSStyleSheet ? ((t) => {
+		}, c$5 = e$5 ? (t) => t : (t) => t instanceof CSSStyleSheet ? ((t) => {
 			let e = "";
 			for (const s of t.cssRules) e += s.cssText;
-			return r$5(e);
+			return r$6(e);
 		})(t) : t;
 	}));
 	//#endregion
 	//#region node_modules/@lit/reactive-element/reactive-element.js
-	var i$4, e$4, h$2, r$4, o$5, n$3, a$1, c$3, l$2, p$2, d$2, u$3, f$2, b$1, y$1;
+	var i$4, e$4, h$3, r$5, o$6, n$4, a$1, c$4, l$2, p$2, d$2, u$3, f$3, b$1, y$1;
 	var init_reactive_element = __esmMin((() => {
 		init_css_tag();
-		({is: i$4, defineProperty: e$4, getOwnPropertyDescriptor: h$2, getOwnPropertyNames: r$4, getOwnPropertySymbols: o$5, getPrototypeOf: n$3} = Object), a$1 = globalThis, c$3 = a$1.trustedTypes, l$2 = c$3 ? c$3.emptyScript : "", p$2 = a$1.reactiveElementPolyfillSupport, d$2 = (t, s) => t, u$3 = {
+		({is: i$4, defineProperty: e$4, getOwnPropertyDescriptor: h$3, getOwnPropertyNames: r$5, getOwnPropertySymbols: o$6, getPrototypeOf: n$4} = Object), a$1 = globalThis, c$4 = a$1.trustedTypes, l$2 = c$4 ? c$4.emptyScript : "", p$2 = a$1.reactiveElementPolyfillSupport, d$2 = (t, s) => t, u$3 = {
 			toAttribute(t, s) {
 				switch (s) {
 					case Boolean:
@@ -2022,13 +2039,13 @@
 				}
 				return i;
 			}
-		}, f$2 = (t, s) => !i$4(t, s), b$1 = {
+		}, f$3 = (t, s) => !i$4(t, s), b$1 = {
 			attribute: !0,
 			type: String,
 			converter: u$3,
 			reflect: !1,
 			useDefault: !1,
-			hasChanged: f$2
+			hasChanged: f$3
 		};
 		Symbol.metadata ??= Symbol("metadata"), a$1.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
 		y$1 = class extends HTMLElement {
@@ -2045,7 +2062,7 @@
 				}
 			}
 			static getPropertyDescriptor(t, s, i) {
-				const { get: e, set: r } = h$2(this.prototype, t) ?? {
+				const { get: e, set: r } = h$3(this.prototype, t) ?? {
 					get() {
 						return this[s];
 					},
@@ -2068,13 +2085,13 @@
 			}
 			static _$Ei() {
 				if (this.hasOwnProperty(d$2("elementProperties"))) return;
-				const t = n$3(this);
+				const t = n$4(this);
 				t.finalize(), void 0 !== t.l && (this.l = [...t.l]), this.elementProperties = new Map(t.elementProperties);
 			}
 			static finalize() {
 				if (this.hasOwnProperty(d$2("finalized"))) return;
 				if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(d$2("properties"))) {
-					const t = this.properties, s = [...r$4(t), ...o$5(t)];
+					const t = this.properties, s = [...r$5(t), ...o$6(t)];
 					for (const i of s) this.createProperty(i, t[i]);
 				}
 				const t = this[Symbol.metadata];
@@ -2093,8 +2110,8 @@
 				const i = [];
 				if (Array.isArray(s)) {
 					const e = new Set(s.flat(Infinity).reverse());
-					for (const s of e) i.unshift(c$4(s));
-				} else void 0 !== s && i.push(c$4(s));
+					for (const s of e) i.unshift(c$5(s));
+				} else void 0 !== s && i.push(c$5(s));
 				return i;
 			}
 			static _$Eu(t, s) {
@@ -2151,7 +2168,7 @@
 			requestUpdate(t, s, i, e = !1, h) {
 				if (void 0 !== t) {
 					const r = this.constructor;
-					if (!1 === e && (h = this[t]), i ??= r.getPropertyOptions(t), !((i.hasChanged ?? f$2)(h, s) || i.useDefault && i.reflect && h === this._$Ej?.get(t) && !this.hasAttribute(r._$Eu(t, i)))) return;
+					if (!1 === e && (h = this[t]), i ??= r.getPropertyOptions(t), !((i.hasChanged ?? f$3)(h, s) || i.useDefault && i.reflect && h === this._$Ej?.get(t) && !this.hasAttribute(r._$Eu(t, i)))) return;
 					this.C(t, s, i);
 				}
 				!1 === this.isUpdatePending && (this._$ES = this._$EP());
@@ -2230,9 +2247,9 @@
 		const o = a(i) ? void 0 : i._$litDirective$;
 		return h?.constructor !== o && (h?._$AO?.(!1), void 0 === o ? h = void 0 : (h = new o(t), h._$AT(t, s, e)), void 0 !== e ? (s._$Co ??= [])[e] = h : s._$Cl = h), void 0 !== h && (i = M$1(t, h._$AS(t, i.values), h, e)), i;
 	}
-	var t$4, i$3, s$2, e$3, h$1, o$4, n$2, r$3, l$1, c$2, a, u$2, d$1, f$1, v$1, _, m$1, p$1, g, $, y, x, b, E, A, C, P, N, S, R, k, H, I, L, z, Z, j$1, B, D;
+	var t$4, i$3, s$3, e$3, h$2, o$5, n$3, r$4, l$1, c$3, a, u$2, d$1, f$2, v$1, _, m$1, p$1, g, $, y, x, b, E, A, C, P, N, S, R, k, H, I, L, z, Z, j$1, B, D;
 	var init_lit_html = __esmMin((() => {
-		t$4 = globalThis, i$3 = (t) => t, s$2 = t$4.trustedTypes, e$3 = s$2 ? s$2.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, h$1 = "$lit$", o$4 = `lit$${Math.random().toFixed(9).slice(2)}$`, n$2 = "?" + o$4, r$3 = `<${n$2}>`, l$1 = document, c$2 = () => l$1.createComment(""), a = (t) => null === t || "object" != typeof t && "function" != typeof t, u$2 = Array.isArray, d$1 = (t) => u$2(t) || "function" == typeof t?.[Symbol.iterator], f$1 = "[ 	\n\f\r]", v$1 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _ = /-->/g, m$1 = />/g, p$1 = RegExp(`>|${f$1}(?:([^\\s"'>=/]+)(${f$1}*=${f$1}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), g = /'/g, $ = /"/g, y = /^(?:script|style|textarea|title)$/i, x = (t) => (i, ...s) => ({
+		t$4 = globalThis, i$3 = (t) => t, s$3 = t$4.trustedTypes, e$3 = s$3 ? s$3.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, h$2 = "$lit$", o$5 = `lit$${Math.random().toFixed(9).slice(2)}$`, n$3 = "?" + o$5, r$4 = `<${n$3}>`, l$1 = document, c$3 = () => l$1.createComment(""), a = (t) => null === t || "object" != typeof t && "function" != typeof t, u$2 = Array.isArray, d$1 = (t) => u$2(t) || "function" == typeof t?.[Symbol.iterator], f$2 = "[ 	\n\f\r]", v$1 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _ = /-->/g, m$1 = />/g, p$1 = RegExp(`>|${f$2}(?:([^\\s"'>=/]+)(${f$2}*=${f$2}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), g = /'/g, $ = /"/g, y = /^(?:script|style|textarea|title)$/i, x = (t) => (i, ...s) => ({
 			_$litType$: t,
 			strings: i,
 			values: s
@@ -2245,7 +2262,7 @@
 				let a, u, d = -1, f = 0;
 				for (; f < s.length && (c.lastIndex = f, u = c.exec(s), null !== u);) f = c.lastIndex, c === v$1 ? "!--" === u[1] ? c = _ : void 0 !== u[1] ? c = m$1 : void 0 !== u[2] ? (y.test(u[2]) && (n = RegExp("</" + u[2], "g")), c = p$1) : void 0 !== u[3] && (c = p$1) : c === p$1 ? ">" === u[0] ? (c = n ?? v$1, d = -1) : void 0 === u[1] ? d = -2 : (d = c.lastIndex - u[2].length, a = u[1], c = void 0 === u[3] ? p$1 : "\"" === u[3] ? $ : g) : c === $ || c === g ? c = p$1 : c === _ || c === m$1 ? c = v$1 : (c = p$1, n = void 0);
 				const x = c === p$1 && t[i + 1].startsWith("/>") ? " " : "";
-				l += c === v$1 ? s + r$3 : d >= 0 ? (e.push(a), s.slice(0, d) + h$1 + s.slice(d) + o$4 + x) : s + o$4 + (-2 === d ? i : x);
+				l += c === v$1 ? s + r$4 : d >= 0 ? (e.push(a), s.slice(0, d) + h$2 + s.slice(d) + o$5 + x) : s + o$5 + (-2 === d ? i : x);
 			}
 			return [V(t, l + (t[s] || "<?>") + (2 === i ? "</svg>" : 3 === i ? "</math>" : "")), e];
 		};
@@ -2261,8 +2278,8 @@
 				}
 				for (; null !== (r = P.nextNode()) && d.length < u;) {
 					if (1 === r.nodeType) {
-						if (r.hasAttributes()) for (const t of r.getAttributeNames()) if (t.endsWith(h$1)) {
-							const i = v[a++], s = r.getAttribute(t).split(o$4), e = /([.?@])?(.*)/.exec(i);
+						if (r.hasAttributes()) for (const t of r.getAttributeNames()) if (t.endsWith(h$2)) {
+							const i = v[a++], s = r.getAttribute(t).split(o$5), e = /([.?@])?(.*)/.exec(i);
 							d.push({
 								type: 1,
 								index: l,
@@ -2270,31 +2287,31 @@
 								strings: s,
 								ctor: "." === e[1] ? I : "?" === e[1] ? L : "@" === e[1] ? z : H
 							}), r.removeAttribute(t);
-						} else t.startsWith(o$4) && (d.push({
+						} else t.startsWith(o$5) && (d.push({
 							type: 6,
 							index: l
 						}), r.removeAttribute(t));
 						if (y.test(r.tagName)) {
-							const t = r.textContent.split(o$4), i = t.length - 1;
+							const t = r.textContent.split(o$5), i = t.length - 1;
 							if (i > 0) {
-								r.textContent = s$2 ? s$2.emptyScript : "";
-								for (let s = 0; s < i; s++) r.append(t[s], c$2()), P.nextNode(), d.push({
+								r.textContent = s$3 ? s$3.emptyScript : "";
+								for (let s = 0; s < i; s++) r.append(t[s], c$3()), P.nextNode(), d.push({
 									type: 2,
 									index: ++l
 								});
-								r.append(t[i], c$2());
+								r.append(t[i], c$3());
 							}
 						}
-					} else if (8 === r.nodeType) if (r.data === n$2) d.push({
+					} else if (8 === r.nodeType) if (r.data === n$3) d.push({
 						type: 2,
 						index: l
 					});
 					else {
 						let t = -1;
-						for (; -1 !== (t = r.data.indexOf(o$4, t + 1));) d.push({
+						for (; -1 !== (t = r.data.indexOf(o$5, t + 1));) d.push({
 							type: 7,
 							index: l
-						}), t += o$4.length - 1;
+						}), t += o$5.length - 1;
 					}
 					l++;
 				}
@@ -2378,7 +2395,7 @@
 				u$2(this._$AH) || (this._$AH = [], this._$AR());
 				const i = this._$AH;
 				let s, e = 0;
-				for (const h of t) e === i.length ? i.push(s = new k(this.O(c$2()), this.O(c$2()), this, this.options)) : s = i[e], s._$AI(h), e++;
+				for (const h of t) e === i.length ? i.push(s = new k(this.O(c$3()), this.O(c$3()), this, this.options)) : s = i[e], s._$AI(h), e++;
 				e < i.length && (this._$AR(s && s._$AB.nextSibling, e), i.length = e);
 			}
 			_$AR(t = this._$AA.nextSibling, s) {
@@ -2457,9 +2474,9 @@
 			}
 		};
 		j$1 = {
-			M: h$1,
-			P: o$4,
-			A: n$2,
+			M: h$2,
+			P: o$5,
+			A: n$3,
 			C: 1,
 			L: N,
 			R,
@@ -2478,20 +2495,20 @@
 			let h = e._$litPart$;
 			if (void 0 === h) {
 				const t = s?.renderBefore ?? null;
-				e._$litPart$ = h = new k(i.insertBefore(c$2(), t), t, void 0, s ?? {});
+				e._$litPart$ = h = new k(i.insertBefore(c$3(), t), t, void 0, s ?? {});
 			}
 			return h._$AI(t), h;
 		};
 	}));
 	//#endregion
 	//#region node_modules/lit-element/lit-element.js
-	var s$1, i$2, o$3;
+	var s$2, i$2, o$4;
 	var init_lit_element = __esmMin((() => {
 		init_reactive_element();
 		init_reactive_element();
 		init_lit_html();
 		init_lit_html();
-		s$1 = globalThis;
+		s$2 = globalThis;
 		i$2 = class extends y$1 {
 			constructor() {
 				super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
@@ -2514,10 +2531,10 @@
 				return E;
 			}
 		};
-		i$2._$litElement$ = !0, i$2["finalized"] = !0, s$1.litElementHydrateSupport?.({ LitElement: i$2 });
-		o$3 = s$1.litElementPolyfillSupport;
-		o$3?.({ LitElement: i$2 });
-		(s$1.litElementVersions ??= []).push("4.2.2");
+		i$2._$litElement$ = !0, i$2["finalized"] = !0, s$2.litElementHydrateSupport?.({ LitElement: i$2 });
+		o$4 = s$2.litElementPolyfillSupport;
+		o$4?.({ LitElement: i$2 });
+		(s$2.litElementVersions ??= []).push("4.2.2");
 	}));
 	//#endregion
 	//#region node_modules/lit-html/is-server.js
@@ -2542,22 +2559,22 @@
 	}));
 	//#endregion
 	//#region node_modules/@lit/reactive-element/decorators/property.js
-	function n$1(t) {
-		return (e, o) => "object" == typeof o ? r$2(t, e, o) : ((t, e, o) => {
+	function n$2(t) {
+		return (e, o) => "object" == typeof o ? r$3(t, e, o) : ((t, e, o) => {
 			const r = e.hasOwnProperty(o);
 			return e.constructor.createProperty(o, t), r ? Object.getOwnPropertyDescriptor(e, o) : void 0;
 		})(t, e, o);
 	}
-	var o$2, r$2;
-	var init_property = __esmMin((() => {
+	var o$3, r$3;
+	var init_property$1 = __esmMin((() => {
 		init_reactive_element();
-		o$2 = {
+		o$3 = {
 			attribute: !0,
 			type: String,
 			converter: u$3,
 			reflect: !1,
-			hasChanged: f$2
-		}, r$2 = (t = o$2, e, r) => {
+			hasChanged: f$3
+		}, r$3 = (t = o$3, e, r) => {
 			const { kind: n, metadata: i } = r;
 			let s = globalThis.litPropertyMetadata.get(i);
 			if (void 0 === s && globalThis.litPropertyMetadata.set(i, s = /* @__PURE__ */ new Map()), "setter" === n && ((t = Object.create(t)).wrapped = !0), s.set(r.name, t), "accessor" === n) {
@@ -2588,15 +2605,15 @@
 	* @license
 	* Copyright 2017 Google LLC
 	* SPDX-License-Identifier: BSD-3-Clause
-	*/ function r$1(r) {
-		return n$1({
+	*/ function r$2(r) {
+		return n$2({
 			...r,
 			state: !0,
 			attribute: !1
 		});
 	}
 	var init_state = __esmMin((() => {
-		init_property();
+		init_property$1();
 	}));
 	//#endregion
 	//#region node_modules/@lit/reactive-element/decorators/event-options.js
@@ -2620,7 +2637,7 @@
 	//#region node_modules/lit/decorators.js
 	var init_decorators = __esmMin((() => {
 		init_custom_element();
-		init_property();
+		init_property$1();
 		init_state();
 		init_event_options();
 		init_query();
@@ -2632,7 +2649,7 @@
 	//#endregion
 	//#region node_modules/lit-html/directive.js
 	var t$2, e$2, i$1;
-	var init_directive = __esmMin((() => {
+	var init_directive$1 = __esmMin((() => {
 		t$2 = {
 			ATTRIBUTE: 1,
 			CHILD: 2,
@@ -2662,10 +2679,10 @@
 	}));
 	//#endregion
 	//#region node_modules/lit-html/directives/unsafe-html.js
-	var e$1, o$1;
+	var e$1, o$2;
 	var init_unsafe_html$1 = __esmMin((() => {
 		init_lit_html();
-		init_directive();
+		init_directive$1();
 		e$1 = class extends i$1 {
 			constructor(i) {
 				if (super(i), this.it = A, i.type !== t$2.CHILD) throw Error(this.constructor.directiveName + "() can only be used in child bindings");
@@ -2685,17 +2702,17 @@
 			}
 		};
 		e$1.directiveName = "unsafeHTML", e$1.resultType = 1;
-		o$1 = e$2(e$1);
+		o$2 = e$2(e$1);
 	}));
 	//#endregion
 	//#region node_modules/lit-html/directives/unsafe-svg.js
-	var t$1, o;
+	var t$1, o$1;
 	var init_unsafe_svg$1 = __esmMin((() => {
-		init_directive();
+		init_directive$1();
 		init_unsafe_html$1();
 		t$1 = class extends e$1 {};
 		t$1.directiveName = "unsafeSVG", t$1.resultType = 2;
-		o = e$2(t$1);
+		o$1 = e$2(t$1);
 	}));
 	//#endregion
 	//#region node_modules/lit/directives/unsafe-svg.js
@@ -2828,23 +2845,23 @@
 		init_switch_horizontal();
 		init_x();
 		icons = {
-			check: b`${o(check_default)}`,
-			"chevron-down": b`${o(chevron_down_default)}`,
-			"clipboard-copy": b`${o(clipboard_copy_default)}`,
-			"clipboard-list": b`${o(clipboard_list_default)}`,
-			copy: b`${o(copy_default)}`,
-			"file-diff": b`${o(file_diff_default)}`,
-			"file-upload": b`${o(file_upload_default)}`,
-			filter: b`${o(filter_default)}`,
-			"filter-off": b`${o(filter_off_default)}`,
-			"list-search": b`${o(list_search_default)}`,
-			moon: b`${o(moon_default)}`,
-			schema: b`${o(schema_default)}`,
-			"schema-off": b`${o(schema_off_default)}`,
-			"square-check": b`${o(square_check_default)}`,
-			sun: b`${o(sun_default)}`,
-			"switch-horizontal": b`${o(switch_horizontal_default)}`,
-			x: b`${o(x_default)}`
+			check: b`${o$1(check_default)}`,
+			"chevron-down": b`${o$1(chevron_down_default)}`,
+			"clipboard-copy": b`${o$1(clipboard_copy_default)}`,
+			"clipboard-list": b`${o$1(clipboard_list_default)}`,
+			copy: b`${o$1(copy_default)}`,
+			"file-diff": b`${o$1(file_diff_default)}`,
+			"file-upload": b`${o$1(file_upload_default)}`,
+			filter: b`${o$1(filter_default)}`,
+			"filter-off": b`${o$1(filter_off_default)}`,
+			"list-search": b`${o$1(list_search_default)}`,
+			moon: b`${o$1(moon_default)}`,
+			schema: b`${o$1(schema_default)}`,
+			"schema-off": b`${o$1(schema_off_default)}`,
+			"square-check": b`${o$1(square_check_default)}`,
+			sun: b`${o$1(sun_default)}`,
+			"switch-horizontal": b`${o$1(switch_horizontal_default)}`,
+			x: b`${o$1(x_default)}`
 		};
 	}));
 	//#endregion
@@ -2877,7 +2894,7 @@
 	}));
 	//#endregion
 	//#region \0@oxc-project+runtime@0.124.0/helpers/decorate.js
-	function __decorate(decorators, target, key, desc) {
+	function __decorate$1(decorators, target, key, desc) {
 		var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 		if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
 		else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -2905,7 +2922,7 @@
 				this.isDragging = false;
 			}
 			static {
-				this.styles = r$5(app_header_default);
+				this.styles = r$6(app_header_default);
 			}
 			render() {
 				return b`
@@ -2980,12 +2997,12 @@
 			*/
 			_closeFile() {
 				fileName$.set(null);
-				modelData$.set(null);
+				setModelData(null);
 				filterName$.set("");
 			}
 		};
-		__decorate([r$1()], AppHeader.prototype, "isDragging", void 0);
-		AppHeader = __decorate([t$3("app-header")], AppHeader);
+		__decorate$1([r$2()], AppHeader.prototype, "isDragging", void 0);
+		AppHeader = __decorate$1([t$3("app-header")], AppHeader);
 	}));
 	//#endregion
 	//#region src/components/app-stats.css?inline
@@ -3019,7 +3036,7 @@
 				this._hiddenStore = new import_lib$3.StoreController(this, hiddenProperties$);
 			}
 			static {
-				this.styles = r$5(property_drawer_default);
+				this.styles = r$6(property_drawer_default);
 			}
 			render() {
 				const open = this._isOpenStore.value;
@@ -3082,7 +3099,7 @@
 				isPropertyDrawerOpen$.set(false);
 			}
 		};
-		PropertyDrawer = __decorate([t$3("property-drawer")], PropertyDrawer);
+		PropertyDrawer = __decorate$1([t$3("property-drawer")], PropertyDrawer);
 	}));
 	//#endregion
 	//#region src/components/app-stats.ts
@@ -3110,7 +3127,7 @@
 				this.isCopying = false;
 			}
 			static {
-				this.styles = r$5(app_stats_default);
+				this.styles = r$6(app_stats_default);
 			}
 			render() {
 				if (this.stats.value.length === 0) return b``;
@@ -3252,11 +3269,16 @@
 			}
 			/**
 			* Updates the name search filter based on user input.
+			* Includes a 300ms debounce to avoid expensive re-filtering on every keystroke.
 			* @param e The input event from the text field.
 			*/
 			_updateNameFilter(e) {
 				const val = e.target.value;
-				filterName$.set(val);
+				if (this.searchDebounceTimeout) window.clearTimeout(this.searchDebounceTimeout);
+				this.searchDebounceTimeout = window.setTimeout(() => {
+					filterName$.set(val);
+					this.searchDebounceTimeout = void 0;
+				}, 300);
 			}
 			/**
 			* Handles clicks on the statistics table cells to apply filters.
@@ -3286,14 +3308,38 @@
 				} else alert(get("stats.messages.no_tables"));
 			}
 		};
-		__decorate([r$1()], AppStats.prototype, "isCopying", void 0);
-		AppStats = __decorate([t$3("app-stats")], AppStats);
-	})), t, i, s, v, u$1, m, p, M, h;
+		__decorate$1([r$2()], AppStats.prototype, "isCopying", void 0);
+		AppStats = __decorate$1([t$3("app-stats")], AppStats);
+	}));
+	//#endregion
+	//#region node_modules/lit/directives/unsafe-html.js
+	var init_unsafe_html = __esmMin((() => {
+		init_unsafe_html$1();
+	}));
+	//#endregion
+	//#region node_modules/tslib/tslib.es6.mjs
+	function __decorate(decorators, target, key, desc) {
+		var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+		if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+		else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+		return c > 3 && r && Object.defineProperty(target, key, r), r;
+	}
+	var init_tslib_es6 = __esmMin((() => {}));
+	//#endregion
+	//#region node_modules/lit/decorators/property.js
+	var init_property = __esmMin((() => {
+		init_property$1();
+	}));
+	//#endregion
+	//#region node_modules/lit/directive.js
+	var init_directive = __esmMin((() => {
+		init_directive$1();
+	})), t, i, r$1, s$1, v, u$1, m, p, M, h$1;
 	var init_directive_helpers = __esmMin((() => {
 		init_lit_html();
-		({I: t} = j$1), i = (o) => o, s = () => document.createComment(""), v = (o, n, e) => {
+		({I: t} = j$1), i = (o) => o, r$1 = (o) => void 0 === o.strings, s$1 = () => document.createComment(""), v = (o, n, e) => {
 			const l = o._$AA.parentNode, d = void 0 === n ? o._$AB : n._$AA;
-			if (void 0 === e) e = new t(l.insertBefore(s(), d), l.insertBefore(s(), d), o, o.options);
+			if (void 0 === e) e = new t(l.insertBefore(s$1(), d), l.insertBefore(s$1(), d), o, o.options);
 			else {
 				const t = e._$AB.nextSibling, n = e._$AM, c = n !== o;
 				if (c) {
@@ -3309,16 +3355,79 @@
 				}
 			}
 			return e;
-		}, u$1 = (o, t, i = o) => (o._$AI(t, i), o), m = {}, p = (o, t = m) => o._$AH = t, M = (o) => o._$AH, h = (o) => {
+		}, u$1 = (o, t, i = o) => (o._$AI(t, i), o), m = {}, p = (o, t = m) => o._$AH = t, M = (o) => o._$AH, h$1 = (o) => {
 			o._$AR(), o._$AA.remove();
 		};
+	}));
+	//#endregion
+	//#region node_modules/lit-html/async-directive.js
+	function h(i) {
+		void 0 !== this._$AN ? (o(this), this._$AM = i, r(this)) : this._$AM = i;
+	}
+	function n(i, t = !1, e = 0) {
+		const r = this._$AH, h = this._$AN;
+		if (void 0 !== h && 0 !== h.size) if (t) if (Array.isArray(r)) for (let i = e; i < r.length; i++) s(r[i], !1), o(r[i]);
+		else null != r && (s(r, !1), o(r));
+		else s(this, i);
+	}
+	var s, o, r, c$1, f;
+	var init_async_directive$1 = __esmMin((() => {
+		init_directive_helpers();
+		init_directive$1();
+		s = (i, t) => {
+			const e = i._$AN;
+			if (void 0 === e) return !1;
+			for (const i of e) i._$AO?.(t, !1), s(i, t);
+			return !0;
+		}, o = (i) => {
+			let t, e;
+			do {
+				if (void 0 === (t = i._$AM)) break;
+				e = t._$AN, e.delete(i), i = t;
+			} while (0 === e?.size);
+		}, r = (i) => {
+			for (let t; t = i._$AM; i = t) {
+				let e = t._$AN;
+				if (void 0 === e) t._$AN = e = /* @__PURE__ */ new Set();
+				else if (e.has(i)) break;
+				e.add(i), c$1(t);
+			}
+		};
+		c$1 = (i) => {
+			i.type == t$2.CHILD && (i._$AP ??= n, i._$AQ ??= h);
+		};
+		f = class extends i$1 {
+			constructor() {
+				super(...arguments), this._$AN = void 0;
+			}
+			_$AT(i, t, e) {
+				super._$AT(i, t, e), r(this), this.isConnected = i._$AU;
+			}
+			_$AO(i, t = !0) {
+				i !== this.isConnected && (this.isConnected = i, i ? this.reconnected?.() : this.disconnected?.()), t && (s(this, i), o(this));
+			}
+			setValue(t) {
+				if (r$1(this._$Ct)) this._$Ct._$AI(t, this);
+				else {
+					const i = [...this._$Ct._$AH];
+					i[this._$Ci] = t, this._$Ct._$AI(i, this, 0);
+				}
+			}
+			disconnected() {}
+			reconnected() {}
+		};
+	}));
+	//#endregion
+	//#region node_modules/lit/async-directive.js
+	var init_async_directive = __esmMin((() => {
+		init_async_directive$1();
 	}));
 	//#endregion
 	//#region node_modules/lit-html/directives/repeat.js
 	var u, c;
 	var init_repeat$1 = __esmMin((() => {
 		init_lit_html();
-		init_directive();
+		init_directive$1();
 		init_directive_helpers();
 		u = (e, s, t) => {
 			const r = /* @__PURE__ */ new Map();
@@ -3345,30 +3454,30 @@
 			update(s, [t, r, c]) {
 				const d = M(s), { values: p$5, keys: a } = this.dt(t, r, c);
 				if (!Array.isArray(d)) return this.ut = a, p$5;
-				const h$6 = this.ut ??= [], v$4 = [];
+				const h = this.ut ??= [], v$4 = [];
 				let m, y, x = 0, j = d.length - 1, k = 0, w = p$5.length - 1;
 				for (; x <= j && k <= w;) if (null === d[x]) x++;
 				else if (null === d[j]) j--;
-				else if (h$6[x] === a[k]) v$4[k] = u$1(d[x], p$5[k]), x++, k++;
-				else if (h$6[j] === a[w]) v$4[w] = u$1(d[j], p$5[w]), j--, w--;
-				else if (h$6[x] === a[w]) v$4[w] = u$1(d[x], p$5[w]), v(s, v$4[w + 1], d[x]), x++, w--;
-				else if (h$6[j] === a[k]) v$4[k] = u$1(d[j], p$5[k]), v(s, d[x], d[j]), j--, k++;
-				else if (void 0 === m && (m = u(a, k, w), y = u(h$6, x, j)), m.has(h$6[x])) if (m.has(h$6[j])) {
+				else if (h[x] === a[k]) v$4[k] = u$1(d[x], p$5[k]), x++, k++;
+				else if (h[j] === a[w]) v$4[w] = u$1(d[j], p$5[w]), j--, w--;
+				else if (h[x] === a[w]) v$4[w] = u$1(d[x], p$5[w]), v(s, v$4[w + 1], d[x]), x++, w--;
+				else if (h[j] === a[k]) v$4[k] = u$1(d[j], p$5[k]), v(s, d[x], d[j]), j--, k++;
+				else if (void 0 === m && (m = u(a, k, w), y = u(h, x, j)), m.has(h[x])) if (m.has(h[j])) {
 					const e = y.get(a[k]), t = void 0 !== e ? d[e] : null;
 					if (null === t) {
 						const e = v(s, d[x]);
 						u$1(e, p$5[k]), v$4[k] = e;
 					} else v$4[k] = u$1(t, p$5[k]), v(s, d[x], t), d[e] = null;
 					k++;
-				} else h(d[j]), j--;
-				else h(d[x]), x++;
+				} else h$1(d[j]), j--;
+				else h$1(d[x]), x++;
 				for (; k <= w;) {
 					const e = v(s, v$4[w + 1]);
 					u$1(e, p$5[k]), v$4[k++] = e;
 				}
 				for (; x <= j;) {
 					const e = d[x++];
-					null !== e && h(e);
+					null !== e && h$1(e);
 				}
 				return this.ut = a, p(s, v$4), E;
 			}
@@ -3380,15 +3489,1662 @@
 		init_repeat$1();
 	}));
 	//#endregion
-	//#region node_modules/lit/directives/unsafe-html.js
-	var init_unsafe_html = __esmMin((() => {
-		init_unsafe_html$1();
+	//#region node_modules/@lit-labs/virtualizer/events.js
+	var RangeChangedEvent, VisibilityChangedEvent, UnpinnedEvent;
+	var init_events = __esmMin((() => {
+		RangeChangedEvent = class RangeChangedEvent extends Event {
+			constructor(range) {
+				super(RangeChangedEvent.eventName, { bubbles: false });
+				this.first = range.first;
+				this.last = range.last;
+			}
+		};
+		RangeChangedEvent.eventName = "rangeChanged";
+		VisibilityChangedEvent = class VisibilityChangedEvent extends Event {
+			constructor(range) {
+				super(VisibilityChangedEvent.eventName, { bubbles: false });
+				this.first = range.first;
+				this.last = range.last;
+			}
+		};
+		VisibilityChangedEvent.eventName = "visibilityChanged";
+		UnpinnedEvent = class UnpinnedEvent extends Event {
+			constructor() {
+				super(UnpinnedEvent.eventName, { bubbles: false });
+			}
+		};
+		UnpinnedEvent.eventName = "unpinned";
+	}));
+	//#endregion
+	//#region node_modules/@lit-labs/virtualizer/ScrollerController.js
+	var ScrollerShim, ScrollerController;
+	var init_ScrollerController = __esmMin((() => {
+		ScrollerShim = class {
+			constructor(element) {
+				this._element = null;
+				this._node = element ?? window;
+				if (element) this._element = element;
+			}
+			get element() {
+				return this._element || document.scrollingElement || document.documentElement;
+			}
+			get scrollTop() {
+				return this.element.scrollTop || window.scrollY;
+			}
+			get scrollLeft() {
+				return this.element.scrollLeft || window.scrollX;
+			}
+			get scrollHeight() {
+				return this.element.scrollHeight;
+			}
+			get scrollWidth() {
+				return this.element.scrollWidth;
+			}
+			get viewportHeight() {
+				return this._element ? this._element.getBoundingClientRect().height : window.innerHeight;
+			}
+			get viewportWidth() {
+				return this._element ? this._element.getBoundingClientRect().width : window.innerWidth;
+			}
+			get maxScrollTop() {
+				return this.scrollHeight - this.viewportHeight;
+			}
+			get maxScrollLeft() {
+				return this.scrollWidth - this.viewportWidth;
+			}
+		};
+		ScrollerController = class extends ScrollerShim {
+			constructor(client, element) {
+				super(element);
+				this._clients = /* @__PURE__ */ new Set();
+				this._retarget = null;
+				this._end = null;
+				this.__destination = null;
+				this.correctingScrollError = false;
+				this._checkForArrival = this._checkForArrival.bind(this);
+				this._updateManagedScrollTo = this._updateManagedScrollTo.bind(this);
+				this.scrollTo = this.scrollTo.bind(this);
+				this.scrollBy = this.scrollBy.bind(this);
+				const node = this._node;
+				this._originalScrollTo = node.scrollTo;
+				this._originalScrollBy = node.scrollBy;
+				this._originalScroll = node.scroll;
+				this._attach(client);
+			}
+			get _destination() {
+				return this.__destination;
+			}
+			get scrolling() {
+				return this._destination !== null;
+			}
+			scrollTo(p1, p2) {
+				const options = typeof p1 === "number" && typeof p2 === "number" ? {
+					left: p1,
+					top: p2
+				} : p1;
+				this._scrollTo(options);
+			}
+			scrollBy(p1, p2) {
+				const options = typeof p1 === "number" && typeof p2 === "number" ? {
+					left: p1,
+					top: p2
+				} : p1;
+				if (options.top !== void 0) options.top += this.scrollTop;
+				if (options.left !== void 0) options.left += this.scrollLeft;
+				this._scrollTo(options);
+			}
+			_nativeScrollTo(options) {
+				this._originalScrollTo.bind(this._element || window)(options);
+			}
+			_scrollTo(options, retarget = null, end = null) {
+				if (this._end !== null) this._end();
+				if (options.behavior === "smooth") {
+					this._setDestination(options);
+					this._retarget = retarget;
+					this._end = end;
+				} else this._resetScrollState();
+				this._nativeScrollTo(options);
+			}
+			_setDestination(options) {
+				let { top, left } = options;
+				top = top === void 0 ? void 0 : Math.max(0, Math.min(top, this.maxScrollTop));
+				left = left === void 0 ? void 0 : Math.max(0, Math.min(left, this.maxScrollLeft));
+				if (this._destination !== null && left === this._destination.left && top === this._destination.top) return false;
+				this.__destination = {
+					top,
+					left,
+					behavior: "smooth"
+				};
+				return true;
+			}
+			_resetScrollState() {
+				this.__destination = null;
+				this._retarget = null;
+				this._end = null;
+			}
+			_updateManagedScrollTo(coordinates) {
+				if (this._destination) {
+					if (this._setDestination(coordinates)) this._nativeScrollTo(this._destination);
+				}
+			}
+			managedScrollTo(options, retarget, end) {
+				this._scrollTo(options, retarget, end);
+				return this._updateManagedScrollTo;
+			}
+			correctScrollError(coordinates) {
+				this.correctingScrollError = true;
+				requestAnimationFrame(() => requestAnimationFrame(() => this.correctingScrollError = false));
+				this._nativeScrollTo(coordinates);
+				if (this._retarget) this._setDestination(this._retarget());
+				if (this._destination) this._nativeScrollTo(this._destination);
+			}
+			_checkForArrival() {
+				if (this._destination !== null) {
+					const { scrollTop, scrollLeft } = this;
+					let { top, left } = this._destination;
+					top = Math.min(top || 0, this.maxScrollTop);
+					left = Math.min(left || 0, this.maxScrollLeft);
+					const topDiff = Math.abs(top - scrollTop);
+					const leftDiff = Math.abs(left - scrollLeft);
+					if (topDiff < 1 && leftDiff < 1) {
+						if (this._end) this._end();
+						this._resetScrollState();
+					}
+				}
+			}
+			detach(client) {
+				this._clients.delete(client);
+				/**
+				* If there aren't any more clients, then return the node's default
+				* scrolling methods
+				*/
+				if (this._clients.size === 0) {
+					this._node.scrollTo = this._originalScrollTo;
+					this._node.scrollBy = this._originalScrollBy;
+					this._node.scroll = this._originalScroll;
+					this._node.removeEventListener("scroll", this._checkForArrival);
+				}
+				return null;
+			}
+			_attach(client) {
+				this._clients.add(client);
+				/**
+				* The node should only have the methods shimmed when adding the first
+				* client – otherwise it's redundant
+				*/
+				if (this._clients.size === 1) {
+					this._node.scrollTo = this.scrollTo;
+					this._node.scrollBy = this.scrollBy;
+					this._node.scroll = this.scrollTo;
+					this._node.addEventListener("scroll", this._checkForArrival);
+				}
+			}
+		};
+	}));
+	//#endregion
+	//#region node_modules/@lit-labs/virtualizer/layouts/shared/SizeCache.js
+	var SizeCache;
+	var init_SizeCache = __esmMin((() => {
+		SizeCache = class {
+			constructor(config) {
+				this._map = /* @__PURE__ */ new Map();
+				this._roundAverageSize = false;
+				this.totalSize = 0;
+				if (config?.roundAverageSize === true) this._roundAverageSize = true;
+			}
+			set(index, value) {
+				const prev = this._map.get(index) || 0;
+				this._map.set(index, value);
+				this.totalSize += value - prev;
+			}
+			get averageSize() {
+				if (this._map.size > 0) {
+					const average = this.totalSize / this._map.size;
+					return this._roundAverageSize ? Math.round(average) : average;
+				}
+				return 0;
+			}
+			getSize(index) {
+				return this._map.get(index);
+			}
+			clear() {
+				this._map.clear();
+				this.totalSize = 0;
+			}
+		};
+	}));
+	//#endregion
+	//#region node_modules/@lit-labs/virtualizer/layouts/shared/BaseLayout.js
+	/**
+	* @license
+	* Copyright 2021 Google LLC
+	* SPDX-License-Identifier: BSD-3-Clause
+	*/
+	function dim1(direction) {
+		return direction === "horizontal" ? "width" : "height";
+	}
+	var BaseLayout;
+	var init_BaseLayout = __esmMin((() => {
+		BaseLayout = class {
+			_getDefaultConfig() {
+				return { direction: "vertical" };
+			}
+			constructor(hostSink, config) {
+				/**
+				* The last set viewport scroll position.
+				*/
+				this._latestCoords = {
+					left: 0,
+					top: 0
+				};
+				/**
+				* Scrolling direction.
+				*/
+				this._direction = null;
+				/**
+				* Dimensions of the viewport.
+				*/
+				this._viewportSize = {
+					width: 0,
+					height: 0
+				};
+				this.totalScrollSize = {
+					width: 0,
+					height: 0
+				};
+				this.offsetWithinScroller = {
+					left: 0,
+					top: 0
+				};
+				/**
+				* Flag for debouncing asynchronous reflow requests.
+				*/
+				this._pendingReflow = false;
+				this._pendingLayoutUpdate = false;
+				this._pin = null;
+				/**
+				* The index of the first item intersecting the viewport.
+				*/
+				this._firstVisible = 0;
+				/**
+				* The index of the last item intersecting the viewport.
+				*/
+				this._lastVisible = 0;
+				/**
+				* Pixel offset in the scroll direction of the first child.
+				*/
+				this._physicalMin = 0;
+				/**
+				* Pixel offset in the scroll direction of the last child.
+				*/
+				this._physicalMax = 0;
+				/**
+				* Index of the first child.
+				*/
+				this._first = -1;
+				/**
+				* Index of the last child.
+				*/
+				this._last = -1;
+				/**
+				* Length in the scrolling direction.
+				*/
+				this._sizeDim = "height";
+				/**
+				* Length in the non-scrolling direction.
+				*/
+				this._secondarySizeDim = "width";
+				/**
+				* Position in the scrolling direction.
+				*/
+				this._positionDim = "top";
+				/**
+				* Position in the non-scrolling direction.
+				*/
+				this._secondaryPositionDim = "left";
+				/**
+				* Current scroll offset in pixels.
+				*/
+				this._scrollPosition = 0;
+				/**
+				* Difference between current scroll offset and scroll offset calculated due
+				* to a reflow.
+				*/
+				this._scrollError = 0;
+				/**
+				* Total number of items that could possibly be displayed. Used to help
+				* calculate the scroll size.
+				*/
+				this._items = [];
+				/**
+				* The total (estimated) length of all items in the scrolling direction.
+				*/
+				this._scrollSize = 1;
+				/**
+				* Number of pixels beyond the viewport to still include
+				* in the active range of items.
+				*/
+				this._overhang = 1e3;
+				this._hostSink = hostSink;
+				Promise.resolve().then(() => this.config = config || this._getDefaultConfig());
+			}
+			set config(config) {
+				Object.assign(this, Object.assign({}, this._getDefaultConfig(), config));
+			}
+			get config() {
+				return { direction: this.direction };
+			}
+			/**
+			* Maximum index of children + 1, to help estimate total height of the scroll
+			* space.
+			*/
+			get items() {
+				return this._items;
+			}
+			set items(items) {
+				this._setItems(items);
+			}
+			_setItems(items) {
+				if (items !== this._items) {
+					this._items = items;
+					this._scheduleReflow();
+				}
+			}
+			/**
+			* Primary scrolling direction.
+			*/
+			get direction() {
+				return this._direction;
+			}
+			set direction(dir) {
+				dir = dir === "horizontal" ? dir : "vertical";
+				if (dir !== this._direction) {
+					this._direction = dir;
+					this._sizeDim = dir === "horizontal" ? "width" : "height";
+					this._secondarySizeDim = dir === "horizontal" ? "height" : "width";
+					this._positionDim = dir === "horizontal" ? "left" : "top";
+					this._secondaryPositionDim = dir === "horizontal" ? "top" : "left";
+					this._triggerReflow();
+				}
+			}
+			/**
+			* Height and width of the viewport.
+			*/
+			get viewportSize() {
+				return this._viewportSize;
+			}
+			set viewportSize(dims) {
+				const { _viewDim1, _viewDim2 } = this;
+				Object.assign(this._viewportSize, dims);
+				if (_viewDim2 !== this._viewDim2) this._scheduleLayoutUpdate();
+				else if (_viewDim1 !== this._viewDim1) this._checkThresholds();
+			}
+			/**
+			* Scroll offset of the viewport.
+			*/
+			get viewportScroll() {
+				return this._latestCoords;
+			}
+			set viewportScroll(coords) {
+				Object.assign(this._latestCoords, coords);
+				const oldPos = this._scrollPosition;
+				this._scrollPosition = this._latestCoords[this._positionDim];
+				if (Math.abs(oldPos - this._scrollPosition) >= 1) this._checkThresholds();
+			}
+			/**
+			* Perform a reflow if one has been scheduled.
+			*/
+			reflowIfNeeded(force = false) {
+				if (force || this._pendingReflow) {
+					this._pendingReflow = false;
+					this._reflow();
+				}
+			}
+			set pin(options) {
+				this._pin = options;
+				this._triggerReflow();
+			}
+			get pin() {
+				if (this._pin !== null) {
+					const { index, block } = this._pin;
+					return {
+						index: Math.max(0, Math.min(index, this.items.length - 1)),
+						block
+					};
+				}
+				return null;
+			}
+			_clampScrollPosition(val) {
+				return Math.max(-this.offsetWithinScroller[this._positionDim], Math.min(val, this.totalScrollSize[dim1(this.direction)] - this._viewDim1));
+			}
+			unpin() {
+				if (this._pin !== null) {
+					this._sendUnpinnedMessage();
+					this._pin = null;
+				}
+			}
+			_updateLayout() {}
+			/**
+			* The height or width of the viewport, whichever corresponds to the scrolling direction.
+			*/
+			get _viewDim1() {
+				return this._viewportSize[this._sizeDim];
+			}
+			/**
+			* The height or width of the viewport, whichever does NOT correspond to the scrolling direction.
+			*/
+			get _viewDim2() {
+				return this._viewportSize[this._secondarySizeDim];
+			}
+			_scheduleReflow() {
+				this._pendingReflow = true;
+			}
+			_scheduleLayoutUpdate() {
+				this._pendingLayoutUpdate = true;
+				this._scheduleReflow();
+			}
+			_triggerReflow() {
+				this._scheduleLayoutUpdate();
+				Promise.resolve().then(() => this.reflowIfNeeded());
+			}
+			_reflow() {
+				if (this._pendingLayoutUpdate) {
+					this._updateLayout();
+					this._pendingLayoutUpdate = false;
+				}
+				this._updateScrollSize();
+				this._setPositionFromPin();
+				this._getActiveItems();
+				this._updateVisibleIndices();
+				this._sendStateChangedMessage();
+			}
+			/**
+			* If we are supposed to be pinned to a particular
+			* item or set of coordinates, we set `_scrollPosition`
+			* accordingly and adjust `_scrollError` as needed
+			* so that the virtualizer can keep the scroll
+			* position in the DOM in sync
+			*/
+			_setPositionFromPin() {
+				if (this.pin !== null) {
+					const lastScrollPosition = this._scrollPosition;
+					const { index, block } = this.pin;
+					this._scrollPosition = this._calculateScrollIntoViewPosition({
+						index,
+						block: block || "start"
+					}) - this.offsetWithinScroller[this._positionDim];
+					this._scrollError = lastScrollPosition - this._scrollPosition;
+				}
+			}
+			/**
+			* Calculate the coordinates to scroll to, given
+			* a request to scroll to the element at a specific
+			* index.
+			*
+			* Supports the same positioning options (`start`,
+			* `center`, `end`, `nearest`) as the standard
+			* `Element.scrollIntoView()` method, but currently
+			* only considers the provided value in the `block`
+			* dimension, since we don't yet have any layouts
+			* that support virtualization in two dimensions.
+			*/
+			_calculateScrollIntoViewPosition(options) {
+				const { block } = options;
+				const index = Math.min(this.items.length, Math.max(0, options.index));
+				const itemStartPosition = this._getItemPosition(index)[this._positionDim];
+				let scrollPosition = itemStartPosition;
+				if (block !== "start") {
+					const itemSize = this._getItemSize(index)[this._sizeDim];
+					if (block === "center") scrollPosition = itemStartPosition - .5 * this._viewDim1 + .5 * itemSize;
+					else {
+						const itemEndPosition = itemStartPosition - this._viewDim1 + itemSize;
+						if (block === "end") scrollPosition = itemEndPosition;
+						else {
+							const currentScrollPosition = this._scrollPosition;
+							scrollPosition = Math.abs(currentScrollPosition - itemStartPosition) < Math.abs(currentScrollPosition - itemEndPosition) ? itemStartPosition : itemEndPosition;
+						}
+					}
+				}
+				scrollPosition += this.offsetWithinScroller[this._positionDim];
+				return this._clampScrollPosition(scrollPosition);
+			}
+			getScrollIntoViewCoordinates(options) {
+				return { [this._positionDim]: this._calculateScrollIntoViewPosition(options) };
+			}
+			_sendUnpinnedMessage() {
+				this._hostSink({ type: "unpinned" });
+			}
+			_sendVisibilityChangedMessage() {
+				this._hostSink({
+					type: "visibilityChanged",
+					firstVisible: this._firstVisible,
+					lastVisible: this._lastVisible
+				});
+			}
+			_sendStateChangedMessage() {
+				const childPositions = /* @__PURE__ */ new Map();
+				if (this._first !== -1 && this._last !== -1) for (let idx = this._first; idx <= this._last; idx++) childPositions.set(idx, this._getItemPosition(idx));
+				const message = {
+					type: "stateChanged",
+					scrollSize: {
+						[this._sizeDim]: this._scrollSize,
+						[this._secondarySizeDim]: null
+					},
+					range: {
+						first: this._first,
+						last: this._last,
+						firstVisible: this._firstVisible,
+						lastVisible: this._lastVisible
+					},
+					childPositions
+				};
+				if (this._scrollError) {
+					message.scrollError = {
+						[this._positionDim]: this._scrollError,
+						[this._secondaryPositionDim]: 0
+					};
+					this._scrollError = 0;
+				}
+				this._hostSink(message);
+			}
+			/**
+			* Number of items to display.
+			*/
+			get _num() {
+				if (this._first === -1 || this._last === -1) return 0;
+				return this._last - this._first + 1;
+			}
+			_checkThresholds() {
+				if (this._viewDim1 === 0 && this._num > 0 || this._pin !== null) this._scheduleReflow();
+				else {
+					const min = Math.max(0, this._scrollPosition - this._overhang);
+					const max = Math.min(this._scrollSize, this._scrollPosition + this._viewDim1 + this._overhang);
+					if (this._physicalMin > min || this._physicalMax < max) this._scheduleReflow();
+					else this._updateVisibleIndices({ emit: true });
+				}
+			}
+			/**
+			* Find the indices of the first and last items to intersect the viewport.
+			* Emit a visibleindiceschange event when either index changes.
+			*/
+			_updateVisibleIndices(options) {
+				if (this._first === -1 || this._last === -1) return;
+				let firstVisible = this._first;
+				while (firstVisible < this._last && Math.round(this._getItemPosition(firstVisible)[this._positionDim] + this._getItemSize(firstVisible)[this._sizeDim]) <= Math.round(this._scrollPosition)) firstVisible++;
+				let lastVisible = this._last;
+				while (lastVisible > this._first && Math.round(this._getItemPosition(lastVisible)[this._positionDim]) >= Math.round(this._scrollPosition + this._viewDim1)) lastVisible--;
+				if (firstVisible !== this._firstVisible || lastVisible !== this._lastVisible) {
+					this._firstVisible = firstVisible;
+					this._lastVisible = lastVisible;
+					if (options && options.emit) this._sendVisibilityChangedMessage();
+				}
+			}
+		};
+	}));
+	//#endregion
+	//#region node_modules/@lit-labs/virtualizer/layouts/flow.js
+	var flow_exports = /* @__PURE__ */ __exportAll({
+		FlowLayout: () => FlowLayout,
+		flow: () => flow
+	});
+	function leadingMargin(direction) {
+		return direction === "horizontal" ? "marginLeft" : "marginTop";
+	}
+	function trailingMargin(direction) {
+		return direction === "horizontal" ? "marginRight" : "marginBottom";
+	}
+	function offset(direction) {
+		return direction === "horizontal" ? "xOffset" : "yOffset";
+	}
+	function collapseMargins(a, b) {
+		const m = [a, b].sort();
+		return m[1] <= 0 ? Math.min(...m) : m[0] >= 0 ? Math.max(...m) : m[0] + m[1];
+	}
+	var flow, MetricsCache, FlowLayout;
+	var init_flow = __esmMin((() => {
+		init_SizeCache();
+		init_BaseLayout();
+		flow = (config) => Object.assign({ type: FlowLayout }, config);
+		MetricsCache = class {
+			constructor() {
+				this._childSizeCache = new SizeCache();
+				this._marginSizeCache = new SizeCache();
+				this._metricsCache = /* @__PURE__ */ new Map();
+			}
+			update(metrics, direction) {
+				const marginsToUpdate = /* @__PURE__ */ new Set();
+				Object.keys(metrics).forEach((key) => {
+					const k = Number(key);
+					this._metricsCache.set(k, metrics[k]);
+					this._childSizeCache.set(k, metrics[k][dim1(direction)]);
+					marginsToUpdate.add(k);
+					marginsToUpdate.add(k + 1);
+				});
+				for (const k of marginsToUpdate) {
+					const a = this._metricsCache.get(k)?.[leadingMargin(direction)] || 0;
+					const b = this._metricsCache.get(k - 1)?.[trailingMargin(direction)] || 0;
+					this._marginSizeCache.set(k, collapseMargins(a, b));
+				}
+			}
+			get averageChildSize() {
+				return this._childSizeCache.averageSize;
+			}
+			get totalChildSize() {
+				return this._childSizeCache.totalSize;
+			}
+			get averageMarginSize() {
+				return this._marginSizeCache.averageSize;
+			}
+			get totalMarginSize() {
+				return this._marginSizeCache.totalSize;
+			}
+			getLeadingMarginValue(index, direction) {
+				return this._metricsCache.get(index)?.[leadingMargin(direction)] || 0;
+			}
+			getChildSize(index) {
+				return this._childSizeCache.getSize(index);
+			}
+			getMarginSize(index) {
+				return this._marginSizeCache.getSize(index);
+			}
+			clear() {
+				this._childSizeCache.clear();
+				this._marginSizeCache.clear();
+				this._metricsCache.clear();
+			}
+		};
+		FlowLayout = class extends BaseLayout {
+			constructor() {
+				super(...arguments);
+				/**
+				* Initial estimate of item size
+				*/
+				this._itemSize = {
+					width: 100,
+					height: 100
+				};
+				/**
+				* Indices of children mapped to their (position and length) in the scrolling
+				* direction. Used to keep track of children that are in range.
+				*/
+				this._physicalItems = /* @__PURE__ */ new Map();
+				/**
+				* Used in tandem with _physicalItems to track children in range across
+				* reflows.
+				*/
+				this._newPhysicalItems = /* @__PURE__ */ new Map();
+				/**
+				* Width and height of children by their index.
+				*/
+				this._metricsCache = new MetricsCache();
+				/**
+				* anchorIdx is the anchor around which we reflow. It is designed to allow
+				* jumping to any point of the scroll size. We choose it once and stick with
+				* it until stable. _first and _last are deduced around it.
+				*/
+				this._anchorIdx = null;
+				/**
+				* Position in the scrolling direction of the anchor child.
+				*/
+				this._anchorPos = null;
+				/**
+				* Whether all children in range were in range during the previous reflow.
+				*/
+				this._stable = true;
+				this._measureChildren = true;
+				this._estimate = true;
+			}
+			get measureChildren() {
+				return this._measureChildren;
+			}
+			/**
+			* Determine the average size of all children represented in the sizes
+			* argument.
+			*/
+			updateItemSizes(sizes) {
+				this._metricsCache.update(sizes, this.direction);
+				this._scheduleReflow();
+			}
+			/**
+			* Set the average item size based on the total length and number of children
+			* in range.
+			*/
+			_getPhysicalItem(idx) {
+				return this._newPhysicalItems.get(idx) ?? this._physicalItems.get(idx);
+			}
+			_getSize(idx) {
+				return this._getPhysicalItem(idx) && this._metricsCache.getChildSize(idx);
+			}
+			_getAverageSize() {
+				return this._metricsCache.averageChildSize || this._itemSize[this._sizeDim];
+			}
+			_estimatePosition(idx) {
+				const c = this._metricsCache;
+				if (this._first === -1 || this._last === -1) return c.averageMarginSize + idx * (c.averageMarginSize + this._getAverageSize());
+				else if (idx < this._first) {
+					const delta = this._first - idx;
+					return this._getPhysicalItem(this._first).pos - (c.getMarginSize(this._first - 1) || c.averageMarginSize) - (delta * c.averageChildSize + (delta - 1) * c.averageMarginSize);
+				} else {
+					const delta = idx - this._last;
+					return this._getPhysicalItem(this._last).pos + (c.getChildSize(this._last) || c.averageChildSize) + (c.getMarginSize(this._last) || c.averageMarginSize) + delta * (c.averageChildSize + c.averageMarginSize);
+				}
+			}
+			/**
+			* Returns the position in the scrolling direction of the item at idx.
+			* Estimates it if the item at idx is not in the DOM.
+			*/
+			_getPosition(idx) {
+				const item = this._getPhysicalItem(idx);
+				const { averageMarginSize } = this._metricsCache;
+				return idx === 0 ? this._metricsCache.getMarginSize(0) ?? averageMarginSize : item ? item.pos : this._estimatePosition(idx);
+			}
+			_calculateAnchor(lower, upper) {
+				if (lower <= 0) return 0;
+				if (upper > this._scrollSize - this._viewDim1) return this.items.length - 1;
+				return Math.max(0, Math.min(this.items.length - 1, Math.floor((lower + upper) / 2 / this._delta)));
+			}
+			_getAnchor(lower, upper) {
+				if (this._physicalItems.size === 0) return this._calculateAnchor(lower, upper);
+				if (this._first < 0) return this._calculateAnchor(lower, upper);
+				if (this._last < 0) return this._calculateAnchor(lower, upper);
+				const firstItem = this._getPhysicalItem(this._first), lastItem = this._getPhysicalItem(this._last), firstMin = firstItem.pos;
+				if (lastItem.pos + this._metricsCache.getChildSize(this._last) < lower) return this._calculateAnchor(lower, upper);
+				if (firstMin > upper) return this._calculateAnchor(lower, upper);
+				let candidateIdx = this._firstVisible - 1;
+				let cMax = -Infinity;
+				while (cMax < lower) cMax = this._getPhysicalItem(++candidateIdx).pos + this._metricsCache.getChildSize(candidateIdx);
+				return candidateIdx;
+			}
+			/**
+			* Updates _first and _last based on items that should be in the current
+			* viewed range.
+			*/
+			_getActiveItems() {
+				if (this._viewDim1 === 0 || this.items.length === 0) this._clearItems();
+				else this._getItems();
+			}
+			/**
+			* Sets the range to empty.
+			*/
+			_clearItems() {
+				this._first = -1;
+				this._last = -1;
+				this._physicalMin = 0;
+				this._physicalMax = 0;
+				const items = this._newPhysicalItems;
+				this._newPhysicalItems = this._physicalItems;
+				this._newPhysicalItems.clear();
+				this._physicalItems = items;
+				this._stable = true;
+			}
+			_getItems() {
+				const items = this._newPhysicalItems;
+				this._stable = true;
+				let lower, upper;
+				if (this.pin !== null) {
+					const { index } = this.pin;
+					this._anchorIdx = index;
+					this._anchorPos = this._getPosition(index);
+				}
+				lower = this._scrollPosition - this._overhang;
+				upper = this._scrollPosition + this._viewDim1 + this._overhang;
+				if (upper < 0 || lower > this._scrollSize) {
+					this._clearItems();
+					return;
+				}
+				if (this._anchorIdx === null || this._anchorPos === null) {
+					this._anchorIdx = this._getAnchor(lower, upper);
+					this._anchorPos = this._getPosition(this._anchorIdx);
+				}
+				let anchorSize = this._getSize(this._anchorIdx);
+				if (anchorSize === void 0) {
+					this._stable = false;
+					anchorSize = this._getAverageSize();
+				}
+				const anchorLeadingMargin = this._metricsCache.getMarginSize(this._anchorIdx) ?? this._metricsCache.averageMarginSize;
+				const anchorTrailingMargin = this._metricsCache.getMarginSize(this._anchorIdx + 1) ?? this._metricsCache.averageMarginSize;
+				if (this._anchorIdx === 0) this._anchorPos = anchorLeadingMargin;
+				if (this._anchorIdx === this.items.length - 1) this._anchorPos = this._scrollSize - anchorTrailingMargin - anchorSize;
+				let anchorErr = 0;
+				if (this._anchorPos + anchorSize + anchorTrailingMargin < lower) anchorErr = lower - (this._anchorPos + anchorSize + anchorTrailingMargin);
+				if (this._anchorPos - anchorLeadingMargin > upper) anchorErr = upper - (this._anchorPos - anchorLeadingMargin);
+				if (anchorErr) {
+					this._scrollPosition -= anchorErr;
+					lower -= anchorErr;
+					upper -= anchorErr;
+					this._scrollError += anchorErr;
+				}
+				items.set(this._anchorIdx, {
+					pos: this._anchorPos,
+					size: anchorSize
+				});
+				this._first = this._last = this._anchorIdx;
+				this._physicalMin = this._anchorPos - anchorLeadingMargin;
+				this._physicalMax = this._anchorPos + anchorSize + anchorTrailingMargin;
+				while (this._physicalMin > lower && this._first > 0) {
+					let size = this._getSize(--this._first);
+					if (size === void 0) {
+						this._stable = false;
+						size = this._getAverageSize();
+					}
+					let margin = this._metricsCache.getMarginSize(this._first);
+					if (margin === void 0) {
+						this._stable = false;
+						margin = this._metricsCache.averageMarginSize;
+					}
+					this._physicalMin -= size;
+					const pos = this._physicalMin;
+					items.set(this._first, {
+						pos,
+						size
+					});
+					this._physicalMin -= margin;
+					if (this._stable === false && this._estimate === false) break;
+				}
+				while (this._physicalMax < upper && this._last < this.items.length - 1) {
+					let size = this._getSize(++this._last);
+					if (size === void 0) {
+						this._stable = false;
+						size = this._getAverageSize();
+					}
+					let margin = this._metricsCache.getMarginSize(this._last);
+					if (margin === void 0) {
+						this._stable = false;
+						margin = this._metricsCache.averageMarginSize;
+					}
+					const pos = this._physicalMax;
+					items.set(this._last, {
+						pos,
+						size
+					});
+					this._physicalMax += size + margin;
+					if (!this._stable && !this._estimate) break;
+				}
+				const extentErr = this._calculateError();
+				if (extentErr) {
+					this._physicalMin -= extentErr;
+					this._physicalMax -= extentErr;
+					this._anchorPos -= extentErr;
+					this._scrollPosition -= extentErr;
+					items.forEach((item) => item.pos -= extentErr);
+					this._scrollError += extentErr;
+				}
+				if (this._stable) {
+					this._newPhysicalItems = this._physicalItems;
+					this._newPhysicalItems.clear();
+					this._physicalItems = items;
+				}
+			}
+			_calculateError() {
+				if (this._first === 0) return this._physicalMin;
+				else if (this._physicalMin <= 0) return this._physicalMin - this._first * this._delta;
+				else if (this._last === this.items.length - 1) return this._physicalMax - this._scrollSize;
+				else if (this._physicalMax >= this._scrollSize) return this._physicalMax - this._scrollSize + (this.items.length - 1 - this._last) * this._delta;
+				return 0;
+			}
+			_reflow() {
+				const { _first, _last } = this;
+				super._reflow();
+				if (this._first === -1 && this._last == -1 || this._first === _first && this._last === _last) this._resetReflowState();
+			}
+			_resetReflowState() {
+				this._anchorIdx = null;
+				this._anchorPos = null;
+				this._stable = true;
+			}
+			_updateScrollSize() {
+				const { averageMarginSize } = this._metricsCache;
+				this._scrollSize = Math.max(1, this.items.length * (averageMarginSize + this._getAverageSize()) + averageMarginSize);
+			}
+			/**
+			* Returns the average size (precise or estimated) of an item in the scrolling direction,
+			* including any surrounding space.
+			*/
+			get _delta() {
+				const { averageMarginSize } = this._metricsCache;
+				return this._getAverageSize() + averageMarginSize;
+			}
+			/**
+			* Returns the top and left positioning of the item at idx.
+			*/
+			_getItemPosition(idx) {
+				return {
+					[this._positionDim]: this._getPosition(idx),
+					[this._secondaryPositionDim]: 0,
+					[offset(this.direction)]: -(this._metricsCache.getLeadingMarginValue(idx, this.direction) ?? this._metricsCache.averageMarginSize)
+				};
+			}
+			/**
+			* Returns the height and width of the item at idx.
+			*/
+			_getItemSize(idx) {
+				return {
+					[this._sizeDim]: this._getSize(idx) || this._getAverageSize(),
+					[this._secondarySizeDim]: this._itemSize[this._secondarySizeDim]
+				};
+			}
+			_viewDim2Changed() {
+				this._metricsCache.clear();
+				this._scheduleReflow();
+			}
+		};
+	}));
+	//#endregion
+	//#region node_modules/@lit-labs/virtualizer/Virtualizer.js
+	function getMargins(el) {
+		const style = window.getComputedStyle(el);
+		return {
+			marginTop: getMarginValue(style.marginTop),
+			marginRight: getMarginValue(style.marginRight),
+			marginBottom: getMarginValue(style.marginBottom),
+			marginLeft: getMarginValue(style.marginLeft)
+		};
+	}
+	function getMarginValue(value) {
+		const float = value ? parseFloat(value) : NaN;
+		return Number.isNaN(float) ? 0 : float;
+	}
+	function getParentElement(el) {
+		if (el.assignedSlot !== null) return el.assignedSlot;
+		if (el.parentElement !== null) return el.parentElement;
+		const parentNode = el.parentNode;
+		if (parentNode && parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) return parentNode.host || null;
+		return null;
+	}
+	function getElementAncestors(el, includeSelf = false) {
+		const ancestors = [];
+		let parent = includeSelf ? el : getParentElement(el);
+		while (parent !== null) {
+			ancestors.push(parent);
+			parent = getParentElement(parent);
+		}
+		return ancestors;
+	}
+	function getClippingAncestors(el, includeSelf = false) {
+		let foundFixed = false;
+		return getElementAncestors(el, includeSelf).filter((a) => {
+			if (foundFixed) return false;
+			const style = getComputedStyle(a);
+			foundFixed = style.position === "fixed";
+			return style.overflow !== "visible";
+		});
+	}
+	var _ResizeObserver, virtualizerRef, SIZER_ATTRIBUTE, DefaultLayoutConstructor, Virtualizer;
+	var init_Virtualizer = __esmMin((() => {
+		init_events();
+		init_ScrollerController();
+		_ResizeObserver = typeof window !== "undefined" ? window.ResizeObserver : void 0;
+		virtualizerRef = Symbol("virtualizerRef");
+		SIZER_ATTRIBUTE = "virtualizer-sizer";
+		Virtualizer = class {
+			constructor(config) {
+				this._benchmarkStart = null;
+				this._layout = null;
+				this._clippingAncestors = [];
+				/**
+				* Layout provides these values, we set them on _render().
+				* TODO @straversi: Can we find an XOR type, usable for the key here?
+				*/
+				this._scrollSize = null;
+				/**
+				* Difference between scroll target's current and required scroll offsets.
+				* Provided by layout.
+				*/
+				this._scrollError = null;
+				/**
+				* A list of the positions (top, left) of the children in the current range.
+				*/
+				this._childrenPos = null;
+				this._childMeasurements = null;
+				this._toBeMeasured = /* @__PURE__ */ new Map();
+				this._rangeChanged = true;
+				this._itemsChanged = true;
+				this._visibilityChanged = true;
+				this._scrollerController = null;
+				this._isScroller = false;
+				this._sizer = null;
+				/**
+				* Resize observer attached to hostElement.
+				*/
+				this._hostElementRO = null;
+				/**
+				* Resize observer attached to children.
+				*/
+				this._childrenRO = null;
+				this._mutationObserver = null;
+				this._scrollEventListeners = [];
+				this._scrollEventListenerOptions = { passive: true };
+				this._loadListener = this._childLoaded.bind(this);
+				/**
+				* Index of element to scroll into view, plus scroll
+				* behavior options, as imperatively specified via
+				* `element(index).scrollIntoView()`
+				*/
+				this._scrollIntoViewTarget = null;
+				this._updateScrollIntoViewCoordinates = null;
+				/**
+				* Items to render. Set by items.
+				*/
+				this._items = [];
+				/**
+				* Index of the first child in the range, not necessarily the first visible child.
+				* TODO @straversi: Consider renaming these.
+				*/
+				this._first = -1;
+				/**
+				* Index of the last child in the range.
+				*/
+				this._last = -1;
+				/**
+				* Index of the first item intersecting the viewport.
+				*/
+				this._firstVisible = -1;
+				/**
+				* Index of the last item intersecting the viewport.
+				*/
+				this._lastVisible = -1;
+				this._scheduled = /* @__PURE__ */ new WeakSet();
+				/**
+				* Invoked at the end of each render cycle: children in the range are
+				* measured, and their dimensions passed to this callback. Use it to layout
+				* children as needed.
+				*/
+				this._measureCallback = null;
+				this._measureChildOverride = null;
+				/**
+				* State for `layoutComplete` promise
+				*/
+				this._layoutCompletePromise = null;
+				this._layoutCompleteResolver = null;
+				this._layoutCompleteRejecter = null;
+				this._pendingLayoutComplete = null;
+				/**
+				* Layout initialization is async because we dynamically load
+				* the default layout if none is specified. This state is to track
+				* whether init is complete.
+				*/
+				this._layoutInitialized = null;
+				/**
+				* Track connection state to guard against errors / unnecessary work
+				*/
+				this._connected = false;
+				if (!config) throw new Error("Virtualizer constructor requires a configuration object");
+				if (config.hostElement) this._init(config);
+				else throw new Error("Virtualizer configuration requires the \"hostElement\" property");
+			}
+			set items(items) {
+				if (Array.isArray(items) && items !== this._items) {
+					this._itemsChanged = true;
+					this._items = items;
+					this._schedule(this._updateLayout);
+				}
+			}
+			_init(config) {
+				this._isScroller = !!config.scroller;
+				this._initHostElement(config);
+				const layoutConfig = config.layout || {};
+				this._layoutInitialized = this._initLayout(layoutConfig);
+			}
+			_initObservers() {
+				this._mutationObserver = new MutationObserver(this._finishDOMUpdate.bind(this));
+				this._hostElementRO = new _ResizeObserver(() => this._hostElementSizeChanged());
+				this._childrenRO = new _ResizeObserver(this._childrenSizeChanged.bind(this));
+			}
+			_initHostElement(config) {
+				const hostElement = this._hostElement = config.hostElement;
+				this._applyVirtualizerStyles();
+				hostElement[virtualizerRef] = this;
+			}
+			connected() {
+				this._initObservers();
+				const includeSelf = this._isScroller;
+				this._clippingAncestors = getClippingAncestors(this._hostElement, includeSelf);
+				this._scrollerController = new ScrollerController(this, this._clippingAncestors[0]);
+				this._schedule(this._updateLayout);
+				this._observeAndListen();
+				this._connected = true;
+			}
+			_observeAndListen() {
+				this._mutationObserver.observe(this._hostElement, { childList: true });
+				this._hostElementRO.observe(this._hostElement);
+				this._scrollEventListeners.push(window);
+				window.addEventListener("scroll", this, this._scrollEventListenerOptions);
+				this._clippingAncestors.forEach((ancestor) => {
+					ancestor.addEventListener("scroll", this, this._scrollEventListenerOptions);
+					this._scrollEventListeners.push(ancestor);
+					this._hostElementRO.observe(ancestor);
+				});
+				this._hostElementRO.observe(this._scrollerController.element);
+				this._children.forEach((child) => this._childrenRO.observe(child));
+				this._scrollEventListeners.forEach((target) => target.addEventListener("scroll", this, this._scrollEventListenerOptions));
+			}
+			disconnected() {
+				this._scrollEventListeners.forEach((target) => target.removeEventListener("scroll", this, this._scrollEventListenerOptions));
+				this._scrollEventListeners = [];
+				this._clippingAncestors = [];
+				this._scrollerController?.detach(this);
+				this._scrollerController = null;
+				this._mutationObserver?.disconnect();
+				this._mutationObserver = null;
+				this._hostElementRO?.disconnect();
+				this._hostElementRO = null;
+				this._childrenRO?.disconnect();
+				this._childrenRO = null;
+				this._rejectLayoutCompletePromise("disconnected");
+				this._connected = false;
+			}
+			_applyVirtualizerStyles() {
+				const style = this._hostElement.style;
+				style.display = style.display || "block";
+				style.position = style.position || "relative";
+				style.contain = style.contain || "size layout";
+				if (this._isScroller) {
+					style.overflow = style.overflow || "auto";
+					style.minHeight = style.minHeight || "150px";
+				}
+			}
+			_getSizer() {
+				const hostElement = this._hostElement;
+				if (!this._sizer) {
+					let sizer = hostElement.querySelector(`[${SIZER_ATTRIBUTE}]`);
+					if (!sizer) {
+						sizer = document.createElement("div");
+						sizer.setAttribute(SIZER_ATTRIBUTE, "");
+						hostElement.appendChild(sizer);
+					}
+					Object.assign(sizer.style, {
+						position: "absolute",
+						margin: "-2px 0 0 0",
+						padding: 0,
+						visibility: "hidden",
+						fontSize: "2px"
+					});
+					sizer.textContent = "&nbsp;";
+					sizer.setAttribute(SIZER_ATTRIBUTE, "");
+					this._sizer = sizer;
+				}
+				return this._sizer;
+			}
+			async updateLayoutConfig(layoutConfig) {
+				await this._layoutInitialized;
+				const Ctor = layoutConfig.type || DefaultLayoutConstructor;
+				if (typeof Ctor === "function" && this._layout instanceof Ctor) {
+					const config = { ...layoutConfig };
+					delete config.type;
+					this._layout.config = config;
+					return true;
+				}
+				return false;
+			}
+			async _initLayout(layoutConfig) {
+				let config;
+				let Ctor;
+				if (typeof layoutConfig.type === "function") {
+					Ctor = layoutConfig.type;
+					const copy = { ...layoutConfig };
+					delete copy.type;
+					config = copy;
+				} else config = layoutConfig;
+				if (Ctor === void 0) DefaultLayoutConstructor = Ctor = (await Promise.resolve().then(() => (init_flow(), flow_exports))).FlowLayout;
+				this._layout = new Ctor((message) => this._handleLayoutMessage(message), config);
+				if (this._layout.measureChildren && typeof this._layout.updateItemSizes === "function") {
+					if (typeof this._layout.measureChildren === "function") this._measureChildOverride = this._layout.measureChildren;
+					this._measureCallback = this._layout.updateItemSizes.bind(this._layout);
+				}
+				if (this._layout.listenForChildLoadEvents) this._hostElement.addEventListener("load", this._loadListener, true);
+				this._schedule(this._updateLayout);
+			}
+			startBenchmarking() {
+				if (this._benchmarkStart === null) this._benchmarkStart = window.performance.now();
+			}
+			stopBenchmarking() {
+				if (this._benchmarkStart !== null) {
+					const now = window.performance.now();
+					const timeElapsed = now - this._benchmarkStart;
+					const virtualizationTime = performance.getEntriesByName("uv-virtualizing", "measure").filter((e) => e.startTime >= this._benchmarkStart && e.startTime < now).reduce((t, m) => t + m.duration, 0);
+					this._benchmarkStart = null;
+					return {
+						timeElapsed,
+						virtualizationTime
+					};
+				}
+				return null;
+			}
+			_measureChildren() {
+				const mm = {};
+				const children = this._children;
+				const fn = this._measureChildOverride || this._measureChild;
+				for (let i = 0; i < children.length; i++) {
+					const child = children[i];
+					const idx = this._first + i;
+					if (this._itemsChanged || this._toBeMeasured.has(child)) mm[idx] = fn.call(this, child, this._items[idx]);
+				}
+				this._childMeasurements = mm;
+				this._schedule(this._updateLayout);
+				this._toBeMeasured.clear();
+			}
+			/**
+			* Returns the width, height, and margins of the given child.
+			*/
+			_measureChild(element) {
+				const { width, height } = element.getBoundingClientRect();
+				return Object.assign({
+					width,
+					height
+				}, getMargins(element));
+			}
+			async _schedule(method) {
+				if (!this._scheduled.has(method)) {
+					this._scheduled.add(method);
+					await Promise.resolve();
+					this._scheduled.delete(method);
+					method.call(this);
+				}
+			}
+			async _updateDOM(state) {
+				this._scrollSize = state.scrollSize;
+				this._adjustRange(state.range);
+				this._childrenPos = state.childPositions;
+				this._scrollError = state.scrollError || null;
+				const { _rangeChanged, _itemsChanged } = this;
+				if (this._visibilityChanged) {
+					this._notifyVisibility();
+					this._visibilityChanged = false;
+				}
+				if (_rangeChanged || _itemsChanged) {
+					this._notifyRange();
+					this._rangeChanged = false;
+				}
+				this._finishDOMUpdate();
+			}
+			_finishDOMUpdate() {
+				if (this._connected) {
+					this._children.forEach((child) => this._childrenRO.observe(child));
+					this._checkScrollIntoViewTarget(this._childrenPos);
+					this._positionChildren(this._childrenPos);
+					this._sizeHostElement(this._scrollSize);
+					this._correctScrollError();
+					if (this._benchmarkStart && "mark" in window.performance) window.performance.mark("uv-end");
+				}
+			}
+			_updateLayout() {
+				if (this._layout && this._connected) {
+					this._layout.items = this._items;
+					this._updateView();
+					if (this._childMeasurements !== null) {
+						if (this._measureCallback) this._measureCallback(this._childMeasurements);
+						this._childMeasurements = null;
+					}
+					this._layout.reflowIfNeeded();
+					if (this._benchmarkStart && "mark" in window.performance) window.performance.mark("uv-end");
+				}
+			}
+			_handleScrollEvent() {
+				if (this._benchmarkStart && "mark" in window.performance) {
+					try {
+						window.performance.measure("uv-virtualizing", "uv-start", "uv-end");
+					} catch (e) {
+						console.warn("Error measuring performance data: ", e);
+					}
+					window.performance.mark("uv-start");
+				}
+				if (this._scrollerController.correctingScrollError === false) this._layout?.unpin();
+				this._schedule(this._updateLayout);
+			}
+			handleEvent(event) {
+				switch (event.type) {
+					case "scroll":
+						if (event.currentTarget === window || this._clippingAncestors.includes(event.currentTarget)) this._handleScrollEvent();
+						break;
+					default: console.warn("event not handled", event);
+				}
+			}
+			_handleLayoutMessage(message) {
+				if (message.type === "stateChanged") this._updateDOM(message);
+				else if (message.type === "visibilityChanged") {
+					this._firstVisible = message.firstVisible;
+					this._lastVisible = message.lastVisible;
+					this._notifyVisibility();
+				} else if (message.type === "unpinned") this._hostElement.dispatchEvent(new UnpinnedEvent());
+			}
+			get _children() {
+				const arr = [];
+				let next = this._hostElement.firstElementChild;
+				while (next) {
+					if (!next.hasAttribute(SIZER_ATTRIBUTE)) arr.push(next);
+					next = next.nextElementSibling;
+				}
+				return arr;
+			}
+			_updateView() {
+				const hostElement = this._hostElement;
+				const scrollingElement = this._scrollerController?.element;
+				const layout = this._layout;
+				if (hostElement && scrollingElement && layout) {
+					let top, left, bottom, right;
+					const hostElementBounds = hostElement.getBoundingClientRect();
+					top = 0;
+					left = 0;
+					bottom = window.innerHeight;
+					right = window.innerWidth;
+					const ancestorBounds = this._clippingAncestors.map((ancestor) => ancestor.getBoundingClientRect());
+					ancestorBounds.unshift(hostElementBounds);
+					for (const bounds of ancestorBounds) {
+						top = Math.max(top, bounds.top);
+						left = Math.max(left, bounds.left);
+						bottom = Math.min(bottom, bounds.bottom);
+						right = Math.min(right, bounds.right);
+					}
+					const scrollingElementBounds = scrollingElement.getBoundingClientRect();
+					const offsetWithinScroller = {
+						left: hostElementBounds.left - scrollingElementBounds.left,
+						top: hostElementBounds.top - scrollingElementBounds.top
+					};
+					const totalScrollSize = {
+						width: scrollingElement.scrollWidth,
+						height: scrollingElement.scrollHeight
+					};
+					const scrollTop = top - hostElementBounds.top + hostElement.scrollTop;
+					const scrollLeft = left - hostElementBounds.left + hostElement.scrollLeft;
+					const height = Math.max(0, bottom - top);
+					layout.viewportSize = {
+						width: Math.max(0, right - left),
+						height
+					};
+					layout.viewportScroll = {
+						top: scrollTop,
+						left: scrollLeft
+					};
+					layout.totalScrollSize = totalScrollSize;
+					layout.offsetWithinScroller = offsetWithinScroller;
+				}
+			}
+			/**
+			* Styles the host element so that its size reflects the
+			* total size of all items.
+			*/
+			_sizeHostElement(size) {
+				const max = 82e5;
+				const h = size && size.width !== null ? Math.min(max, size.width) : 0;
+				const v = size && size.height !== null ? Math.min(max, size.height) : 0;
+				if (this._isScroller) this._getSizer().style.transform = `translate(${h}px, ${v}px)`;
+				else {
+					const style = this._hostElement.style;
+					style.minWidth = h ? `${h}px` : "100%";
+					style.minHeight = v ? `${v}px` : "100%";
+				}
+			}
+			/**
+			* Sets the top and left transform style of the children from the values in
+			* pos.
+			*/
+			_positionChildren(pos) {
+				if (pos) pos.forEach(({ top, left, width, height, xOffset, yOffset }, index) => {
+					const child = this._children[index - this._first];
+					if (child) {
+						child.style.position = "absolute";
+						child.style.boxSizing = "border-box";
+						child.style.transform = `translate(${left}px, ${top}px)`;
+						if (width !== void 0) child.style.width = width + "px";
+						if (height !== void 0) child.style.height = height + "px";
+						child.style.left = xOffset === void 0 ? null : xOffset + "px";
+						child.style.top = yOffset === void 0 ? null : yOffset + "px";
+					}
+				});
+			}
+			async _adjustRange(range) {
+				const { _first, _last, _firstVisible, _lastVisible } = this;
+				this._first = range.first;
+				this._last = range.last;
+				this._firstVisible = range.firstVisible;
+				this._lastVisible = range.lastVisible;
+				this._rangeChanged = this._rangeChanged || this._first !== _first || this._last !== _last;
+				this._visibilityChanged = this._visibilityChanged || this._firstVisible !== _firstVisible || this._lastVisible !== _lastVisible;
+			}
+			_correctScrollError() {
+				if (this._scrollError) {
+					const { scrollTop, scrollLeft } = this._scrollerController;
+					const { top, left } = this._scrollError;
+					this._scrollError = null;
+					this._scrollerController.correctScrollError({
+						top: scrollTop - top,
+						left: scrollLeft - left
+					});
+				}
+			}
+			element(index) {
+				if (index === Infinity) index = this._items.length - 1;
+				return this._items?.[index] === void 0 ? void 0 : { scrollIntoView: (options = {}) => this._scrollElementIntoView({
+					...options,
+					index
+				}) };
+			}
+			_scrollElementIntoView(options) {
+				if (options.index >= this._first && options.index <= this._last) this._children[options.index - this._first].scrollIntoView(options);
+				else {
+					options.index = Math.min(options.index, this._items.length - 1);
+					if (options.behavior === "smooth") {
+						const coordinates = this._layout.getScrollIntoViewCoordinates(options);
+						const { behavior } = options;
+						this._updateScrollIntoViewCoordinates = this._scrollerController.managedScrollTo(Object.assign(coordinates, { behavior }), () => this._layout.getScrollIntoViewCoordinates(options), () => this._scrollIntoViewTarget = null);
+						this._scrollIntoViewTarget = options;
+					} else this._layout.pin = options;
+				}
+			}
+			/**
+			* If we are smoothly scrolling to an element and the target element
+			* is in the DOM, we update our target coordinates as needed
+			*/
+			_checkScrollIntoViewTarget(pos) {
+				const { index } = this._scrollIntoViewTarget || {};
+				if (index && pos?.has(index)) this._updateScrollIntoViewCoordinates(this._layout.getScrollIntoViewCoordinates(this._scrollIntoViewTarget));
+			}
+			/**
+			* Emits a rangechange event with the current first, last, firstVisible, and
+			* lastVisible.
+			*/
+			_notifyRange() {
+				this._hostElement.dispatchEvent(new RangeChangedEvent({
+					first: this._first,
+					last: this._last
+				}));
+			}
+			_notifyVisibility() {
+				this._hostElement.dispatchEvent(new VisibilityChangedEvent({
+					first: this._firstVisible,
+					last: this._lastVisible
+				}));
+			}
+			get layoutComplete() {
+				if (!this._layoutCompletePromise) this._layoutCompletePromise = new Promise((resolve, reject) => {
+					this._layoutCompleteResolver = resolve;
+					this._layoutCompleteRejecter = reject;
+				});
+				return this._layoutCompletePromise;
+			}
+			_rejectLayoutCompletePromise(reason) {
+				if (this._layoutCompleteRejecter !== null) this._layoutCompleteRejecter(reason);
+				this._resetLayoutCompleteState();
+			}
+			_scheduleLayoutComplete() {
+				if (this._layoutCompletePromise && this._pendingLayoutComplete === null) this._pendingLayoutComplete = requestAnimationFrame(() => requestAnimationFrame(() => this._resolveLayoutCompletePromise()));
+			}
+			_resolveLayoutCompletePromise() {
+				if (this._layoutCompleteResolver !== null) this._layoutCompleteResolver();
+				this._resetLayoutCompleteState();
+			}
+			_resetLayoutCompleteState() {
+				this._layoutCompletePromise = null;
+				this._layoutCompleteResolver = null;
+				this._layoutCompleteRejecter = null;
+				this._pendingLayoutComplete = null;
+			}
+			/**
+			* Render and update the view at the next opportunity with the given
+			* hostElement size.
+			*/
+			_hostElementSizeChanged() {
+				this._schedule(this._updateLayout);
+			}
+			_childLoaded() {}
+			_childrenSizeChanged(changes) {
+				if (this._layout?.measureChildren) {
+					for (const change of changes) this._toBeMeasured.set(change.target, change.contentRect);
+					this._measureChildren();
+				}
+				this._scheduleLayoutComplete();
+				this._itemsChanged = false;
+				this._rangeChanged = false;
+			}
+		};
+	}));
+	//#endregion
+	//#region node_modules/@lit-labs/virtualizer/virtualize.js
+	var defaultKeyFunction, defaultRenderItem, VirtualizeDirective, virtualize;
+	var init_virtualize = __esmMin((() => {
+		init_lit();
+		init_directive();
+		init_async_directive();
+		init_repeat();
+		init_Virtualizer();
+		defaultKeyFunction = (item) => item;
+		defaultRenderItem = (item, idx) => b`${idx}: ${JSON.stringify(item, null, 2)}`;
+		VirtualizeDirective = class extends f {
+			constructor(part) {
+				super(part);
+				this._virtualizer = null;
+				this._first = 0;
+				this._last = -1;
+				this._renderItem = (item, idx) => defaultRenderItem(item, idx + this._first);
+				this._keyFunction = (item, idx) => defaultKeyFunction(item, idx + this._first);
+				this._items = [];
+				if (part.type !== t$2.CHILD) throw new Error("The virtualize directive can only be used in child expressions");
+			}
+			render(config) {
+				if (config) this._setFunctions(config);
+				const itemsToRender = [];
+				if (this._first >= 0 && this._last >= this._first) for (let i = this._first; i <= this._last; i++) itemsToRender.push(this._items[i]);
+				return c(itemsToRender, this._keyFunction, this._renderItem);
+			}
+			update(part, [config]) {
+				this._setFunctions(config);
+				const itemsChanged = this._items !== config.items;
+				this._items = config.items || [];
+				if (this._virtualizer) this._updateVirtualizerConfig(part, config);
+				else this._initialize(part, config);
+				return itemsChanged ? E : this.render();
+			}
+			async _updateVirtualizerConfig(part, config) {
+				if (!await this._virtualizer.updateLayoutConfig(config.layout || {})) {
+					const hostElement = part.parentNode;
+					this._makeVirtualizer(hostElement, config);
+				}
+				this._virtualizer.items = this._items;
+			}
+			_setFunctions(config) {
+				const { renderItem, keyFunction } = config;
+				if (renderItem) this._renderItem = (item, idx) => renderItem(item, idx + this._first);
+				if (keyFunction) this._keyFunction = (item, idx) => keyFunction(item, idx + this._first);
+			}
+			_makeVirtualizer(hostElement, config) {
+				if (this._virtualizer) this._virtualizer.disconnected();
+				const { layout, scroller, items } = config;
+				this._virtualizer = new Virtualizer({
+					hostElement,
+					layout,
+					scroller
+				});
+				this._virtualizer.items = items;
+				this._virtualizer.connected();
+			}
+			_initialize(part, config) {
+				const hostElement = part.parentNode;
+				if (hostElement && hostElement.nodeType === 1) {
+					hostElement.addEventListener("rangeChanged", (e) => {
+						this._first = e.first;
+						this._last = e.last;
+						this.setValue(this.render());
+					});
+					this._makeVirtualizer(hostElement, config);
+				}
+			}
+			disconnected() {
+				this._virtualizer?.disconnected();
+			}
+			reconnected() {
+				this._virtualizer?.connected();
+			}
+		};
+		virtualize = e$2(VirtualizeDirective);
+	}));
+	//#endregion
+	//#region node_modules/@lit-labs/virtualizer/LitVirtualizer.js
+	var LitVirtualizer;
+	var init_LitVirtualizer = __esmMin((() => {
+		init_tslib_es6();
+		init_lit();
+		init_property();
+		init_virtualize();
+		LitVirtualizer = class extends i$2 {
+			constructor() {
+				super(...arguments);
+				this.items = [];
+				this.renderItem = defaultRenderItem;
+				this.keyFunction = defaultKeyFunction;
+				this.layout = {};
+				this.scroller = false;
+			}
+			createRenderRoot() {
+				return this;
+			}
+			render() {
+				const { items, renderItem, keyFunction, layout, scroller } = this;
+				return b`${virtualize({
+					items,
+					renderItem,
+					keyFunction,
+					layout,
+					scroller
+				})}`;
+			}
+			element(index) {
+				return this[virtualizerRef]?.element(index);
+			}
+			get layoutComplete() {
+				return this[virtualizerRef]?.layoutComplete;
+			}
+			/**
+			* This scrollToIndex() shim is here to provide backwards compatibility with other 0.x versions of
+			* lit-virtualizer. It is deprecated and will likely be removed in the 1.0.0 release.
+			*/
+			scrollToIndex(index, position = "start") {
+				this.element(index)?.scrollIntoView({ block: position });
+			}
+		};
+		__decorate([n$2({ attribute: false })], LitVirtualizer.prototype, "items", void 0);
+		__decorate([n$2()], LitVirtualizer.prototype, "renderItem", void 0);
+		__decorate([n$2()], LitVirtualizer.prototype, "keyFunction", void 0);
+		__decorate([n$2({ attribute: false })], LitVirtualizer.prototype, "layout", void 0);
+		__decorate([n$2({
+			reflect: true,
+			type: Boolean
+		})], LitVirtualizer.prototype, "scroller", void 0);
+	}));
+	//#endregion
+	//#region node_modules/@lit-labs/virtualizer/lit-virtualizer.js
+	var init_lit_virtualizer = __esmMin((() => {
+		init_LitVirtualizer();
+		init_events();
+		/**
+		* Import this module to declare the lit-virtualizer custom element.
+		*/
+		customElements.define("lit-virtualizer", LitVirtualizer);
 	}));
 	//#endregion
 	//#region src/components/app-table.css?inline
 	var app_table_default;
 	var init_app_table$1 = __esmMin((() => {
-		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n}\r\n\r\n.table-container {\r\n  margin-top: 5px;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n  width: 100%;\r\n  table-layout: fixed;\r\n  border-collapse: separate; /* Changed to separate for better row hover stability */\r\n  border-spacing: 0;\r\n}\r\n\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\ntr[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-40);\r\n  color: var(--text-primary);\r\n}\r\n\r\n[data-theme=\"dark\"] tr[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-d25);\r\n}\r\n\r\n/* Remove 3D effects from header */\r\n.table-condensed > thead > tr > th {\r\n  border: none;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  text-shadow: none;\r\n  box-shadow: none;\r\n}\r\n\r\n.table-condensed > thead > tr > th,\r\n.table-condensed > tbody > tr > th,\r\n.table-condensed > tfoot > tr > th,\r\n.table-condensed > thead > tr > td,\r\n.table-condensed > tbody > tr > td,\r\n.table-condensed > tfoot > tr > td {\r\n  padding: 4px 8px;\r\n  border-bottom: 1px solid var(--border-color);\r\n  border-right: 1px solid var(--border-color);\r\n  vertical-align: middle;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-condensed > thead > tr > th:last-child,\r\n.table-condensed > tbody > tr > td:last-child {\r\n  border-right: none;\r\n}\r\n\r\n.col-check {\r\n  width: 30px;\r\n  text-align: center;\r\n}\r\n\r\n.col-type,\r\n.row-type {\r\n  width: 250px;\r\n  white-space: nowrap;\r\n}\r\n\r\n.col-left,\r\n.col-right,\r\n.row-left,\r\n.row-right {\r\n  text-align: left;\r\n}\r\n\r\n.col-prop,\r\n.row-prop {\r\n  width: 45px;\r\n  text-align: center;\r\n}\r\n\r\n.col-change,\r\n.row-change {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-view,\r\n.row-view {\r\n  width: 40px;\r\n  text-align: center;\r\n}\r\n\r\n.col-cal,\r\n.row-cal {\r\n  width: 35px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n}\r\n\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n.clickable-row {\r\n  cursor: pointer;\r\n  user-select: none;\r\n}\r\n\r\n/*\r\n   Whole row highlight using box-shadow on the row\r\n   and a persistent overlay on the cells.\r\n   Removed transition to prevent the \"flashing\" or \"dissipating\" feel.\r\n*/\r\n.clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.12);\r\n  background-image: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08));\r\n}\r\n\r\n[data-theme=\"light\"] .clickable-row:hover td {\r\n  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.05);\r\n  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n}\r\n\r\ntr[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Status Colors */\r\n\r\ntr[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Orange Scale for Everything Else (Headers) */\r\ntr[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not([data-grouping=\"true\"]) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\ntr[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"7\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"8\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\ntr[data-header=\"true\"][data-level=\"9\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n";
+		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n  display: block;\r\n  /* Fixed height is required for virtualizer to work */\r\n  height: calc(100vh - 140px);\r\n  margin-top: 5px;\r\n}\r\n\r\n.virtual-table {\r\n  display: flex;\r\n  flex-direction: column;\r\n  height: 100%;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n}\r\n\r\n.table-header {\r\n  display: flex;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  flex-shrink: 0;\r\n  /* Replicating .table thead styling */\r\n  border-bottom: 2px solid var(--border-color);\r\n}\r\n\r\n.table-body {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  display: block;\r\n}\r\n\r\n/* Row Styling */\r\n.table-row {\r\n  display: flex;\r\n  border-bottom: 1px solid var(--border-color);\r\n  min-height: 28px;\r\n  align-items: stretch;\r\n  width: 100%;\r\n  background-color: var(--row-bg-normal);\r\n}\r\n\r\n.table-header > div,\r\n.table-row > div {\r\n  padding: 4px 8px;\r\n  border-right: 1px solid var(--border-color);\r\n  display: flex;\r\n  align-items: center;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-header > div:last-child,\r\n.table-row > div:last-child {\r\n  border-right: none;\r\n}\r\n\r\n/* Column Widths - matching original table intent */\r\n.col-check {\r\n  width: 35px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-type {\r\n  width: 250px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-left,\r\n.col-right {\r\n  flex: 1;\r\n  min-width: 0;\r\n  /* Support multi-line in value cells */\r\n  word-break: break-all;\r\n  white-space: normal;\r\n  align-items: flex-start;\r\n  padding-top: 4px;\r\n  padding-bottom: 4px;\r\n}\r\n\r\n.col-prop {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-change {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-view {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-cal {\r\n  width: 40px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n/* Indentation & Tree Node */\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n  width: 100%;\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.table-row[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n/* Indicators */\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n/* Row States & Hover */\r\n.clickable-row {\r\n  cursor: pointer;\r\n}\r\n\r\n.clickable-row:hover {\r\n  background-color: var(--hover-bg);\r\n  opacity: 0.9;\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Office 2010 Palette Implementation for Rows */\r\n.table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-40);\r\n}\r\n\r\n[data-theme=\"dark\"] .table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-d25);\r\n}\r\n\r\n.table-row[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Other Header Colors */\r\n.table-row[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"7\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"8\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"9\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n/* Copy Buttons */\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: flex-start;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 4px;\r\n  flex-shrink: 0;\r\n  margin-left: 4px;\r\n}\r\n\r\n/* Badges */\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.empty-container {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  padding: 40px;\r\n  color: var(--text-secondary);\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-table.ts
@@ -3397,10 +5153,10 @@
 		import_lib$1 = require_lib();
 		init_lit();
 		init_decorators();
-		init_repeat();
 		init_unsafe_html();
 		init_lit_translate();
 		init_icons();
+		init_lit_virtualizer();
 		init_data_store();
 		init_app_table$1();
 		init_decorate();
@@ -3408,54 +5164,54 @@
 			constructor(..._args) {
 				super(..._args);
 				this.data = new import_lib$1.StoreController(this, filteredData$);
-				this.showProps = new import_lib$1.StoreController(this, showProperties$);
-				this.toggledProps = new import_lib$1.StoreController(this, toggledPropertiesIds$);
-				this.hiddenSubs = new import_lib$1.StoreController(this, hiddenSubObjectsIds$);
 				this.checked = new import_lib$1.StoreController(this, checkedIds$);
 				this.isFlipped = new import_lib$1.StoreController(this, isFlipped$);
 				this.onlyEnt = new import_lib$1.StoreController(this, onlyEntities$);
 				this.onlyEntAtr = new import_lib$1.StoreController(this, onlyEntitiesAndAttributes$);
 				this.isLongNamingConvention = new import_lib$1.StoreController(this, isLongNamingConvention$);
+				this.showProps = new import_lib$1.StoreController(this, showProperties$);
+				this.toggledProps = new import_lib$1.StoreController(this, toggledPropertiesIds$);
+				this.hiddenSubs = new import_lib$1.StoreController(this, hiddenSubObjectsIds$);
 				this.copiedId = null;
 				this.copiedSide = null;
 			}
 			static {
-				this.styles = r$5(app_table_default);
+				this.styles = r$6(app_table_default);
 			}
 			render() {
 				const visibleRows = this.data.value;
 				const flipped = this.isFlipped.value;
 				const checkedSet = this.checked.value;
+				if (visibleRows.length === 0) return this._renderEmptyState();
 				return b`
-      <table class="table table-condensed table-hover table-container">
-          <thead>
-            <tr>
-              <th class="col-check">${icons["square-check"]}</th>
-              <th class="col-type">${translate("table.col_type")}</th>
-              <th class="col-left">${flipped ? translate("table.col_right") : translate("table.col_left")}</th>
-              <th class="col-right">${flipped ? translate("table.col_left") : translate("table.col_right")}</th>
-              <th class="col-prop">${translate("table.col_prop")}</th>
-              <th class="col-change">${translate("table.col_change")}</th>
-              <th class="col-view">${translate("table.col_view")}</th>
-              <th class="col-cal">Cal</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${visibleRows.length === 0 ? this._renderEmptyState() : c(visibleRows, (row) => row.id, (row) => this._renderRow(row, flipped, checkedSet))}
-        </tbody>
-      </table>
+      <div class="virtual-table">
+        <div class="table-header">
+          <div class="col-check">${icons["square-check"]}</div>
+          <div class="col-type">${translate("table.col_type")}</div>
+          <div class="col-left">${flipped ? translate("table.col_right") : translate("table.col_left")}</div>
+          <div class="col-right">${flipped ? translate("table.col_left") : translate("table.col_right")}</div>
+          <div class="col-prop">${translate("table.col_prop")}</div>
+          <div class="col-change">${translate("table.col_change")}</div>
+          <div class="col-view">${translate("table.col_view")}</div>
+          <div class="col-cal">Cal</div>
+        </div>
+        
+        <lit-virtualizer
+          class="table-body"
+          .items=${visibleRows}
+          .renderItem=${(row) => this._renderRow(row, flipped, checkedSet)}
+        ></lit-virtualizer>
+      </div>
     `;
 			}
 			_renderEmptyState() {
 				return b`
-      <tr>
-        <td colspan="8" class="text-center empty-cell">
-          <div class="callout">
-            <span class="callout-icon">${icons["clipboard-list"]}</span>
-            ${translate("table.empty")}
-          </div>
-        </td>
-      </tr>
+      <div class="empty-container">
+        <div class="callout">
+          <span class="callout-icon">${icons["clipboard-list"]}</span>
+          ${translate("table.empty")}
+        </div>
+      </div>
     `;
 			}
 			_renderRow(row, flipped, checkedSet) {
@@ -3471,7 +5227,8 @@
 					else if (change === "E") change = "I";
 				}
 				return b`
-      <tr 
+      <div 
+        class="table-row ${isChecked ? "checked-row" : ""} ${isIdentificationRow ? "clickable-row" : ""}"
         data-change="${change}" 
         data-level="${row.level}"
         data-prop="${row.prop}"
@@ -3479,7 +5236,6 @@
         data-grouping="${row.isGrouping || false}"
         data-calculated="${row.isCalculated || false}"
         data-udp="${row.isUDP || false}"
-        class="${isChecked ? "checked-row" : ""} ${isIdentificationRow ? "clickable-row" : ""}"
         @click=${() => isIdentificationRow && row.hasProperties && togglePropertiesIndividual(row.id)}
         @contextmenu=${(e) => {
 					if (isIdentificationRow && row.hasSubObjects) {
@@ -3488,10 +5244,10 @@
 					}
 				}}
       >
-        <td class="col-check" @click=${(e) => e.stopPropagation()}>
+        <div class="col-check" @click=${(e) => e.stopPropagation()}>
            <input type="checkbox" .checked=${isChecked} @change=${() => toggleCheck(row.id)} />
-        </td>
-        <td class="row-type">
+        </div>
+        <div class="col-type">
           <div class="tree-node">
             <div class="indent-dots">
               ${Array.from({ length: row.level }).map(() => b`<span class="dot">·</span>`)}
@@ -3502,14 +5258,14 @@
               ${this._renderIndicators(row)}
             </div>
           </div>
-        </td>
-        <td class="row-left">${this._renderValueCell(row, leftVal, "left", showCopy)}</td>
-        <td class="row-right">${this._renderValueCell(row, rightVal, "right", showCopy)}</td>
-        <td class="row-prop">${row.prop}</td>
-        <td class="row-change">${isIdentificationRow ? change : ""}</td>
-        <td class="row-view">${isIdentificationRow ? row.view : ""}</td>
-        <td class="row-cal">${row.isCalculated ? "C" : ""}</td>
-      </tr>
+        </div>
+        <div class="col-left">${this._renderValueCell(row, leftVal, "left", showCopy)}</div>
+        <div class="col-right">${this._renderValueCell(row, rightVal, "right", showCopy)}</div>
+        <div class="col-prop">${row.prop}</div>
+        <div class="col-change">${isIdentificationRow ? change : ""}</div>
+        <div class="col-view">${isIdentificationRow ? row.view : ""}</div>
+        <div class="col-cal">${row.isCalculated ? "C" : ""}</div>
+      </div>
     `;
 			}
 			_renderIndicators(row) {
@@ -3532,7 +5288,7 @@
 			_renderValueCell(row, value, side, showCopy) {
 				return b`
       <div class="content-wrapper">
-        <span class="value-text">${o$1(value)}</span>
+        <span class="value-text">${o$2(value)}</span>
         <div class="row-actions">
           ${this._renderLenCounter(row, value)}
           ${showCopy && value ? b`
@@ -3589,9 +5345,9 @@
 				});
 			}
 		};
-		__decorate([r$1()], AppTable.prototype, "copiedId", void 0);
-		__decorate([r$1()], AppTable.prototype, "copiedSide", void 0);
-		AppTable = __decorate([t$3("app-table")], AppTable);
+		__decorate$1([r$2()], AppTable.prototype, "copiedId", void 0);
+		__decorate$1([r$2()], AppTable.prototype, "copiedSide", void 0);
+		AppTable = __decorate$1([t$3("app-table")], AppTable);
 	}));
 	//#endregion
 	//#region src/main.ts
@@ -3617,7 +5373,7 @@
 				this.fileName = new import_lib.StoreController(this, fileName$);
 			}
 			static {
-				this.styles = r$5(main_default);
+				this.styles = r$6(main_default);
 			}
 			/**
 			* Programmatically loads and processes an Erwin HTML report.
@@ -3644,8 +5400,8 @@
 			render() {
 				const showData = !!this.fileName.value && !this.isLoading.value;
 				return b`
-	<div class="main-content" @file-selected=${this._onFileSelected}>
-	<app-header></app-header>
+      <div class="main-content" @file-selected=${this._onFileSelected}>
+        <app-header></app-header>
         <div class="display-area">
           ${showData ? b`
             <app-stats></app-stats>
@@ -3743,13 +5499,12 @@
 			* @param content The decoded HTML string.
 			*/
 			_processFileContent(content) {
-				const model = parseErwinHtml(content);
-				modelData$.set(model);
+				setModelData(parseErwinHtml(content));
 				initializeVisibility();
 				isLoading$.set(false);
 			}
 		};
-		AppRoot = __decorate([t$3("app-root")], AppRoot);
+		AppRoot = __decorate$1([t$3("app-root")], AppRoot);
 	}));
 	//#endregion
 	//#region src/index.ts
@@ -3787,8 +5542,7 @@
 			isLoading$.set(true);
 			document.body.innerHTML = "<app-root></app-root>";
 			setTimeout(() => {
-				const model = parseErwinHtml(originalHTML);
-				modelData$.set(model);
+				setModelData(parseErwinHtml(originalHTML));
 				initializeVisibility();
 				isLoading$.set(false);
 			}, 100);

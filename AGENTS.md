@@ -13,111 +13,58 @@ The project delivers three primary outputs:
 
 - **Framework:** Vite 6+ with TypeScript
 - **State Management:** [Nanostores](https://github.com/nanostores/nanostores) for [Lit](https://lit.dev/)
-- **i18n:** [lit-translate](https://github.com/andreasbm/lit-translate) with **Build-time Optimization** (bundles only the system or specified language).
-- **Output Types:**
-  - Single-file HTML (using `vite-plugin-singlefile`)
-  - Tampermonkey Userscript (custom Rollup build with metadata)
-  - Web Component Library (UMD/ES formats with CSS injection)
-- **UI Framework:** [Bootflat](http://bootflat.github.io/) (based on Bootstrap 3) with a custom **Flat Theme**.
+- **i18n:** [lit-translate](https://github.com/andreasbm/lit-translate) with **Build-time Optimization**.
+- **Virtualization:** [@lit-labs/virtualizer](https://github.com/lit/lit/tree/main/packages/virtualizer) for handling 5000+ rows.
+- **Output Types:** Single-file HTML, Userscript, and Web Component.
+- **UI Framework:** [Bootflat](http://bootflat.github.io/) (based on Bootstrap 3).
 - **Icons:** Tabler Icons
 
 ## 3. Project Structure & Index
 
 ### 3.1. Core Configuration
-
 - **`src/types.ts`**: Centralized TypeScript interfaces and constants.
-- **`package.json`**: Build scripts (including `build:lib`), dependencies, and formatting.
-- **`vite.config.ts`**: Multi-mode build logic with system language detection.
+- **`package.json`**: Build scripts and dependencies.
 
 ### 3.2. Data Processing (Parser & Store)
-
-- **`src/parser/html-parser.ts`**: High-performance DOM parser. Converts raw Erwin HTML tables into a structured **`ModelObject`** tree, accurately reflecting the source hierarchy.
-- **`src/store/data.store.ts`**: State management core. Uses `nanostores` to manage application state and computed derived data.
-- **`src/store/data-enricher.ts`**: Logic for flattening the recursive `ModelObject` tree into `EnrichedDiffRow` objects. Handles status hoisting and property formatting.
-- **`src/store/data-filter.ts`**: High-performance filtering and visibility engine. Computes final renderable rows by applying search, status, and hierarchical visibility rules in optimized passes.
-- **`src/store/sample.ts`**: Source of truth for mock data used during development.
-- **`src/store/sample.html`**: Generated HTML report used for testing the parser (synced via Vite dev server).
+- **`src/parser/html-parser.ts`**: DOM-based parser for Erwin HTML tables.
+- **`src/store/data.store.ts`**: State management core. Optimized with pre-calculated maps and memory clearing.
+- **`src/store/data-enricher.ts`**: Logic for flattening the recursive tree and status hoisting.
+- **`src/store/data-filter.ts`**: High-performance filtering engine using O(1) map lookups.
 
 ### 3.3. UI Components (Lit)
-
-- **`src/components/app-header.ts`**: Top navigation bar containing file upload, global search, and theme/language toggles.
-- **`src/components/app-stats.ts`**: Summary panel showing counts for Tables and Columns (added, changed, deleted). Supports filter triggering on cell click.
-- **`src/components/app-table.ts`**: Main data grid. Implements complex visibility logic and hierarchical visual guides (dots and indicators).
-- **`src/components/property-drawer.ts`**: Left-side panel for managing property visibility globally by name, organized by object type in discovery order.
-
-### 3.4. Assets & I18n
-
-- **`src/icons/`**: Tabler Icons as SVG strings for optimized bundling.
-- **`src/i18n/`**: Localization files (JSON) for English, Portuguese, Spanish, and French.
-- **`src/library.ts`**: Entry point for the reusable library build.
-
-### 3.5. Utility Scripts
-
-- **`scripts/generate-sample-html.ts`**: Core logic for transforming structured JSON into legacy Erwin HTML tables. Integrated into Vite for hot-reloading.
+- **`src/components/app-header.ts`**: Top navigation and file management.
+- **`src/components/app-stats.ts`**: Summary panel with Change/Search filters (Debounced).
+- **`src/components/app-table.ts`**: Virtualized data grid using flex-based layout.
+- **`src/components/property-drawer.ts`**: Global property visibility management.
 
 ## 4. UI/UX Requirements
 
 ### 4.1. Layout
+1. **Header**: Title, File Management, Theme/Lang toggles.
+2. **Main Display**:
+   - **Stats Panel**: Changes summary and action buttons.
+   - **Filter Panel**: Search (300ms debounce), Status filters, Drill-down modes.
+   - **Data Table**: Virtualized list with hierarchy visualization.
 
-1. **Header (Static Top Bar):**
-   - **Brand:** Localized title.
-   - **File Management:** Upload zone (drag-and-drop) or "Close File" button.
-   - **Global Controls:** Language selector and Theme toggle.
+### 4.2. Performance Engine (The 50MB Rule)
+- **Memory Optimization**: Initial `ModelObject` tree is cleared after enrichment.
+- **O(1) Lookups**: Filtering uses pre-calculated `rowsById` and `childrenMap`.
+- **Virtual Scrolling**: Only visible rows are rendered to the DOM.
+- **Search Debouncing**: Prevents expensive re-filtering on every keystroke.
 
-2. **Main Display:**
-   - **Stats Panel:** Summary table with integrated action buttons.
-     - **Flip Side:** Global side-swapping.
-     - **Copy Tables:** Quick export of table names.
-   - **Filter Panel:**
-     - Grouped switches: "Show Properties", "**Hide Calculated**" (ON by default), "Only Entities", and "Only Ent+Atr".
-     - Search and status filters.
-     - **Property Drawer Toggle**: Button to manage hidden metadata by name.
-   - **Data Table Panel:** Fixed-layout grid with hierarchy visualization and **dynamic indicators**.
-
-### 4.2. Data Processing (Parser Logic)
-
-- **Performance Engine:** Optimized for **50MB+ reports** using Map-based lookups and $O(1)$ constant-time family pre-calculations.
-- **Indentation Parsing:** **3 spaces = 1 Level**. Indentation is visualized using dots (`·`).
-- **Heuristics**: Automatically formats long blocks of text (periods, semicolons, lists) with HTML line breaks.
-- **Classification (`HEADERS_CONFIG`):** Exact space counting combined with type matching to identify object headers.
-- **Permanent Filters:** Grouping rows, empty rows, and specifically hidden metadata families are permanently removed from the data pipeline.
-- **UDP (User Defined Properties):** Automatic teal highlighting based on naming patterns.
-- **Calculated Status (C):** Root objects inherit "Calculated" status only if ALL descendants are identical.
-- **Smart Attribute Counting**: Detects number of columns via actual child objects OR comma-separated order list properties.
-
-### 4.3. Interactions
-
-| Interaction      | Effect                                                                 |
-| :--------------- | :--------------------------------------------------------------------- |
-| **Left Click**   | Toggle property visibility for the selected object.                    |
-| **Right Click**  | Toggle sub-object (children) visibility.                               |
-| **"Only" Modes** | Acts as "default collapsed" states; allow manual drill-down via click. |
-| **Copy Icons**   | Copies value to clipboard with feedback.                               |
+### 4.3. Data Processing Details
+- **Indentation**: 3 spaces = 1 Level. Visualized with dots (`·`).
+- **Calculated Status (C)**: Inherited bottom-up (Parent is calculated only if all descendants are).
+- **UDP Highlighting**: Automatic teal background for User Defined Properties.
+- **Smart Attribute Counting**: Combined child object and Order List property detection.
 
 ## 5. Visual Encoding (Office 2010 Palette)
 
-### 5.1. Status Colors
-
-| Object               | Addition (Green) | Change (Purple) | Deletion (Red) | Calculated (Orange) | Text  |
-| :------------------- | :--------------- | :-------------- | :------------- | :------------------ | :---- |
-| **Table/Entity**     | #9BBB59 (Base)   | #8064A2 (Base)  | #C0504D (Base) | #F79646 (Base)      | White |
-| **Attribute/Column** | #D7E3BC (60%)    | #CCC1D9 (60%)   | #E5B9B7 (60%)  | #FBD5B5 (60%)       | Black |
-
-### 5.2. Name Fields (Character Counter)
-
-- **Target Objects:** Physical Name and Header rows only.
-- **Normalization:** Strips owner prefix, `[Calculated]`, and `(FK)` before counting.
-- **Thresholds**:
-  - **50 characters** if "Model" name contains: Oracle, Mysql, Mongo, Postgres, or Hive.
-  - **18 characters** for all other cases.
+- **Tables/Entities**: Base colors (Green/Purple/Red/Orange).
+- **Attributes/Columns**: 60% lighter tints of base colors.
+- **Character Counter**: Warns if physical names exceed 18 (standard) or 50 (SGBD-specific) characters.
 
 ## 6. Build and Distribution
-
-- `npm run build`: Generates all the build options.
-- `npm run dev`: Starts dev server with **hot-reloading sample data** (via `sampleGeneratorPlugin`).
-- `npm run build:lib`: Generates the reusable library bundle.
-- `npm run build:monkey`: Generates the userscript for Tampermonkey.
-- `npm run build:standalone`: Generates the single file html for standalone use.
-- `npm run gen:sample`: Manually synchronize `sample.html` with `sample.ts`.
-- **Userscript UX:** Includes an immediate loading spinner to provide feedback during large file ingestion.
-- **Showcase**: `showcase.html` demonstrates programmatic usage of the library.
+- `npm run build`: Multi-mode build.
+- `npm run dev`: Hot-reloading development server.
+- `npm run gen:sample`: Synchronize sample HTML from JSON source.

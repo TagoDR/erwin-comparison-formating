@@ -126,6 +126,7 @@ export default defineConfig(({ mode }): UserConfig => {
         rollupOptions: {
           output: {
             extend: true,
+            inlineDynamicImports: true,
           },
         },
       },
@@ -156,6 +157,7 @@ export default defineConfig(({ mode }): UserConfig => {
       rollupOptions: {
         output: {
           extend: true,
+          inlineDynamicImports: true,
         },
       },
     },
