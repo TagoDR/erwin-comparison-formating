@@ -3,9 +3,11 @@
     "title": "Erwin Compare Formatter",
     "comparison": "Comparaison",
     "flip": "Inverser",
-    "flip_tooltip": "Inverser les côtés des modèles",
-    "upload": "Déposez le fichier HTML Erwin ici ou cliquez pour télécharger",
-    "close": "Fermer le fichier",
+    "flip_tooltip": "Changer les côtés du modèle",
+    "upload": "Déposez l'HTML Erwin ici ou cliquez pour télécharger",
+    "close": "Fermer le Fichier",
+    "change_theme": "Changer de Thème",
+
     "filters": {
       "change": "Type de changement",
       "category": "Catégorie",
