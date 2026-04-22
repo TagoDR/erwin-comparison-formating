@@ -7,12 +7,14 @@ import icons from '../icons';
 import '@lit-labs/virtualizer';
 import {
   checkedIds$,
+  enrichedData$,
   filteredData$,
   hiddenSubObjectsIds$,
   isFlipped$,
   isLongNamingConvention$,
   onlyEntities$,
   onlyEntitiesAndAttributes$,
+  shownSubObjectsIds$,
   showProperties$,
   toggleCheck,
   toggledPropertiesIds$,
@@ -38,6 +40,7 @@ export class AppTable extends LitElement {
   private showProps = new StoreController(this, showProperties$);
   private toggledProps = new StoreController(this, toggledPropertiesIds$);
   private hiddenSubs = new StoreController(this, hiddenSubObjectsIds$);
+  private shownSubs = new StoreController(this, shownSubObjectsIds$);
 
   @state() private copiedId: string | null = null;
   @state() private copiedSide: 'left' | 'right' | null = null;
@@ -46,10 +49,6 @@ export class AppTable extends LitElement {
     const visibleRows = this.data.value;
     const flipped = this.isFlipped.value;
     const checkedSet = this.checked.value;
-
-    if (visibleRows.length === 0) {
-      return this._renderEmptyState();
-    }
 
     return html`
       <div class="virtual-table">
@@ -64,16 +63,23 @@ export class AppTable extends LitElement {
           <div class="col-cal">Cal</div>
         </div>
         
-        <lit-virtualizer
-          class="table-body"
-          .items=${visibleRows}
-          .renderItem=${(row: EnrichedDiffRow) => this._renderRow(row, flipped, checkedSet)}
-        ></lit-virtualizer>
+        ${
+          visibleRows.length === 0
+            ? this._renderEmptyState()
+            : html`
+            <lit-virtualizer
+              class="table-body"
+              .items=${visibleRows}
+              .renderItem=${(row: EnrichedDiffRow) => this._renderRow(row, flipped, checkedSet)}
+            ></lit-virtualizer>
+          `
+        }
       </div>
     `;
   }
 
   private _renderEmptyState() {
+    if (enrichedData$.value.length !== 0) return '';
     return html`
       <div class="empty-container">
         <div class="callout">
@@ -228,11 +234,29 @@ export class AppTable extends LitElement {
   }
 
   private _areSubObjectsHidden(row: EnrichedDiffRow): boolean {
-    let isHidden = this.hiddenSubs.value.has(row.id);
-    if (this.onlyEnt.value && row.prop === 'Ent' && row.hasSubObjects) isHidden = !isHidden;
-    if (this.onlyEntAtr.value && (row.prop === 'Ent' || row.prop === 'Atr') && row.hasSubObjects)
-      isHidden = !isHidden;
-    return isHidden;
+    // 1. Determine Default Visibility for this row's sub-objects based on current modes
+    let isDefaultHidden = false;
+
+    if (this.onlyEnt.value && row.prop === 'Ent' && row.hasSubObjects) {
+      isDefaultHidden = true;
+    }
+    if (this.onlyEntAtr.value && (row.prop === 'Ent' || row.prop === 'Atr') && row.hasSubObjects) {
+      isDefaultHidden = true;
+    }
+
+    // Model children are always visible by default
+    if (row.type === 'Model') {
+      isDefaultHidden = false;
+    }
+
+    // 2. Apply Manual Overrides
+    if (isDefaultHidden) {
+      // If hidden by default, it's ONLY shown if explicitly in shownSubs
+      return !this.shownSubs.value.has(row.id);
+    } else {
+      // If visible by default, it's hidden IF explicitly in hiddenSubs
+      return this.hiddenSubs.value.has(row.id);
+    }
   }
 
   private _arePropertiesHidden(row: EnrichedDiffRow): boolean {

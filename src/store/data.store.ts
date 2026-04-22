@@ -34,6 +34,7 @@ export const hiddenProperties$ = atom<Set<string>>(new Set());
 export const showProperties$ = atom<boolean>(false);
 export const toggledPropertiesIds$ = atom<Set<string>>(new Set());
 export const hiddenSubObjectsIds$ = atom<Set<string>>(new Set());
+export const shownSubObjectsIds$ = atom<Set<string>>(new Set());
 export const checkedIds$ = atom<Set<string>>(new Set());
 export const isFlipped$ = atom<boolean>(false);
 export const isPropertyDrawerOpen$ = atom<boolean>(false);
@@ -86,6 +87,7 @@ export const filteredData$ = computed(
     showProperties$,
     toggledPropertiesIds$,
     hiddenSubObjectsIds$,
+    shownSubObjectsIds$,
   ],
   (
     data,
@@ -100,6 +102,7 @@ export const filteredData$ = computed(
     globalShowProps,
     toggledProps,
     hiddenSubs,
+    shownSubs,
   ) => {
     return filterAndApplyVisibility(
       data,
@@ -115,6 +118,7 @@ export const filteredData$ = computed(
         globalShowProps,
         toggledProps,
         hiddenSubs,
+        shownSubs,
       },
       rowsById,
       childrenMap,
@@ -241,10 +245,29 @@ export const togglePropertiesIndividual = (id: string) => {
  * @param id The unique ID of the header row.
  */
 export const toggleSubObjects = (id: string) => {
-  const current = new Set(hiddenSubObjectsIds$.get());
-  if (current.has(id)) current.delete(id);
-  else current.add(id);
-  hiddenSubObjectsIds$.set(current);
+  const row = rowsById$.get().get(id);
+  if (!row) return;
+
+  const onlyEnt = onlyEntities$.get();
+  const onlyEntAtr = onlyEntitiesAndAttributes$.get();
+
+  // Determine if children are hidden by default in current mode
+  let isDefaultHidden = false;
+  if (onlyEnt && row.prop === 'Ent' && row.hasSubObjects) isDefaultHidden = true;
+  if (onlyEntAtr && (row.prop === 'Ent' || row.prop === 'Atr') && row.hasSubObjects)
+    isDefaultHidden = true;
+
+  if (isDefaultHidden) {
+    const current = new Set(shownSubObjectsIds$.get());
+    if (current.has(id)) current.delete(id);
+    else current.add(id);
+    shownSubObjectsIds$.set(current);
+  } else {
+    const current = new Set(hiddenSubObjectsIds$.get());
+    if (current.has(id)) current.delete(id);
+    else current.add(id);
+    hiddenSubObjectsIds$.set(current);
+  }
 };
 
 /**
@@ -258,6 +281,7 @@ export const toggleCheck = (id: string) => {
 
   const propsToggled = new Set(toggledPropertiesIds$.get());
   const subsHidden = new Set(hiddenSubObjectsIds$.get());
+  const subsShown = new Set(shownSubObjectsIds$.get());
 
   if (becomingChecked) {
     currentChecked.add(id);
@@ -269,21 +293,27 @@ export const toggleCheck = (id: string) => {
     if (row) {
       const onlyEnt = onlyEntities$.get();
       const onlyEntAtr = onlyEntitiesAndAttributes$.get();
-      let baseSubHidden = false;
-      if (onlyEnt && row.prop === 'Ent' && row.hasSubObjects) baseSubHidden = true;
-      if (onlyEntAtr && row.prop === 'Atr' && row.hasSubObjects) baseSubHidden = true;
+      let isDefaultHidden = false;
+      if (onlyEnt && row.prop === 'Ent' && row.hasSubObjects) isDefaultHidden = true;
+      if (onlyEntAtr && (row.prop === 'Ent' || row.prop === 'Atr') && row.hasSubObjects)
+        isDefaultHidden = true;
 
-      if (baseSubHidden) subsHidden.delete(id);
-      else subsHidden.add(id);
+      if (isDefaultHidden) {
+        subsShown.add(id);
+      } else {
+        subsHidden.add(id);
+      }
     }
   } else {
     currentChecked.delete(id);
     propsToggled.delete(id);
     subsHidden.delete(id);
+    subsShown.delete(id);
   }
 
   toggledPropertiesIds$.set(propsToggled);
   hiddenSubObjectsIds$.set(subsHidden);
+  shownSubObjectsIds$.set(subsShown);
   checkedIds$.set(currentChecked);
 };
 
@@ -291,6 +321,7 @@ export const initializeVisibility = () => {
   showProperties$.set(false);
   toggledPropertiesIds$.set(new Set());
   hiddenSubObjectsIds$.set(new Set());
+  shownSubObjectsIds$.set(new Set());
   isFlipped$.set(false);
   resetHiddenProperties();
 };
@@ -308,18 +339,20 @@ export const setOnlyEntities = (val: boolean) => {
   onlyEntities$.set(val);
   if (val) {
     onlyEntitiesAndAttributes$.set(false);
-    hiddenSubObjectsIds$.set(new Set());
-    toggledPropertiesIds$.set(new Set());
   }
+  hiddenSubObjectsIds$.set(new Set());
+  shownSubObjectsIds$.set(new Set());
+  toggledPropertiesIds$.set(new Set());
 };
 
 export const setOnlyEntitiesAndAttributes = (val: boolean) => {
   onlyEntitiesAndAttributes$.set(val);
   if (val) {
     onlyEntities$.set(false);
-    hiddenSubObjectsIds$.set(new Set());
-    toggledPropertiesIds$.set(new Set());
   }
+  hiddenSubObjectsIds$.set(new Set());
+  shownSubObjectsIds$.set(new Set());
+  toggledPropertiesIds$.set(new Set());
 };
 
 export const toggleFlip = () => isFlipped$.set(!isFlipped$.get());
@@ -417,6 +450,8 @@ if (typeof window !== 'undefined') {
     onlyEntitiesAndAttributes$,
     uniqueProperties$,
     hiddenProperties$,
+    hiddenSubObjectsIds$,
+    shownSubObjectsIds$,
     isPropertyDrawerOpen$,
     isLongNamingConvention$,
   };

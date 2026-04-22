@@ -140,9 +140,7 @@ export class AppStats extends LitElement {
                 <label class="switch-label">
                   <div class="switch">
                     <input type="checkbox" .checked=${this.onlyEnt.value} @change=${(e: Event) => {
-                      onlyEntities$.set((e.target as HTMLInputElement).checked);
-                      if ((e.target as HTMLInputElement).checked)
-                        onlyEntitiesAndAttributes$.set(false);
+                      setOnlyEntities((e.target as HTMLInputElement).checked);
                     }}>
                     <span class="slider round"></span>
                   </div>
@@ -154,8 +152,7 @@ export class AppStats extends LitElement {
                     <input type="checkbox" .checked=${this.onlyEntAtr.value} @change=${(
                       e: Event,
                     ) => {
-                      onlyEntitiesAndAttributes$.set((e.target as HTMLInputElement).checked);
-                      if ((e.target as HTMLInputElement).checked) onlyEntities$.set(false);
+                      setOnlyEntitiesAndAttributes((e.target as HTMLInputElement).checked);
                     }}>
                     <span class="slider round"></span>
                   </div>
