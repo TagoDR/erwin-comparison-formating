@@ -1218,17 +1218,31 @@
 	* Formats long text properties with HTML line breaks for better readability.
 	*/
 	function formatPropertyText(type, left, right) {
-		if (!["Comment", "Definition"].includes(type)) return {
+		if (["Comments", "Definition"].includes(type)) {
+			const format = (text) => {
+				if (!text) return text;
+				return text.replace(/ ([0-9]+\. \w+)/g, "<br> $1").replace(/\.(^<br>) ([A-Z])/g, ".<br> $1").replace(/;(^<br>) /g, ";<br> ").replace(/ (\d* ?[-•] )/g, "<br> $1").replace(/<br> *<br>/g, "<br>");
+			};
+			return {
+				left: format(left),
+				right: format(right)
+			};
+		} else if ([
+			"Column Order List",
+			"Attribute Order List",
+			"Field Order"
+		].includes(type)) {
+			const format = (text) => {
+				if (!text) return text;
+				return "<ol class=\"multi-column\">" + text.split(",").map((item) => `<li>${item.trim()},</li>`).join("") + "</ol>";
+			};
+			return {
+				left: format(left),
+				right: format(right)
+			};
+		} else return {
 			left,
 			right
-		};
-		const format = (text) => {
-			if (!text) return text;
-			return text.replace(/\. ([A-Z])/g, ".<br>$1").replace(/; /g, ";<br>").replace(/ ([0-9]+\. )/g, "<br>$1").replace(/ ([-•] )/g, "<br>$1");
-		};
-		return {
-			left: format(left),
-			right: format(right)
 		};
 	}
 	function determineChange(left, right) {
@@ -1277,9 +1291,8 @@
 		if (data.length === 0) return [];
 		let current = data;
 		if (filters.hideCalculated) current = current.filter((r) => !r.isCalculated);
-		if (filters.hiddenProps.size > 0) current = current.filter((r) => {
-			if (r.isHeader) return true;
-			const key = `${r.type}|${r.spaces}|${r.parentType}`;
+		if (filters.hiddenProps.size > 0) current = current.filter((row) => {
+			const key = row.isHeader ? `H|${row.type}|${row.spaces}` : `P|${row.type}|${row.spaces}|${row.parentType}`;
 			return !filters.hiddenProps.has(key);
 		});
 		current = applyDrillDown(current, filters, rowsById, childrenMap);
@@ -1288,7 +1301,8 @@
 		return applyHierarchicalVisibility(current, {
 			...visibility,
 			onlyEntities: filters.onlyEntities,
-			onlyEntitiesAndAttributes: filters.onlyEntitiesAndAttributes
+			onlyEntitiesAndAttributes: filters.onlyEntitiesAndAttributes,
+			hiddenProps: filters.hiddenProps
 		}, rowsById);
 	}
 	function applyDrillDown(data, filters, rowsById, childrenMap) {
@@ -1355,6 +1369,13 @@
 		const visibleRows = [];
 		const hiddenAncestors = /* @__PURE__ */ new Set();
 		for (const row of data) {
+			if (row.isHeader) {
+				const headerKey = `H|${row.type}|${row.spaces}`;
+				if (visibility.hiddenProps.has(headerKey)) {
+					hiddenAncestors.add(row.id);
+					continue;
+				}
+			}
 			if (row.parentId && hiddenAncestors.has(row.parentId)) {
 				hiddenAncestors.add(row.id);
 				continue;
@@ -1368,14 +1389,16 @@
 						if (!(visibility.globalShowProps ? !isParentToggled : isParentToggled)) shouldHide = true;
 					}
 					if (row.isHeader && !shouldHide) {
-						let isSubHidden = visibility.hiddenSubs.has(row.parentId);
-						if (isSubHidden && parent.type === "Model" && (row.prop === "Ent" || row.prop === "Atr")) isSubHidden = false;
-						if (visibility.onlyEntities && parent.prop === "Ent" && row.prop !== "Ent") isSubHidden = !isSubHidden;
+						let isDefaultHidden = false;
+						if (visibility.onlyEntities && parent.prop === "Ent" && row.prop !== "Ent") isDefaultHidden = true;
 						if (visibility.onlyEntitiesAndAttributes) {
-							if (parent.prop === "Ent" && row.prop !== "Atr") isSubHidden = !isSubHidden;
-							if (parent.prop === "Atr" && row.type !== "Field") isSubHidden = !isSubHidden;
+							if (parent.prop === "Ent" && row.prop !== "Atr") isDefaultHidden = true;
+							if (parent.prop === "Atr" && row.type !== "Field") isDefaultHidden = true;
 						}
-						if (isSubHidden) shouldHide = true;
+						if (parent.type === "Model" && (row.prop === "Ent" || row.prop === "Atr")) isDefaultHidden = false;
+						if (isDefaultHidden) {
+							if (!visibility.shownSubs.has(row.parentId)) shouldHide = true;
+						} else if (visibility.hiddenSubs.has(row.parentId)) shouldHide = true;
 					}
 					if (shouldHide) {
 						hiddenAncestors.add(row.id);
@@ -1404,7 +1427,7 @@
 		enrichedData$.set(enriched);
 		modelData$.set(null);
 	}
-	var modelData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, hiddenProperties$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, checkedIds$, isFlipped$, isPropertyDrawerOpen$, enrichedData$, rowsById$, childrenMap$, filteredData$, uniqueProperties$, togglePropertyGroup, toggleProperty, hideAllProperties, resetHiddenProperties, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, resetFilters, setOnlyEntities, setOnlyEntitiesAndAttributes, toggleFlip, togglePropertiesGlobal, statsSummary$, isLongNamingConvention$, copyTablesToClipboard;
+	var modelData$, isLoading$, fileName$, isUserscript$, filterChange$, filterName$, onlyEntities$, onlyEntitiesAndAttributes$, hideCalculated$, hiddenProperties$, showProperties$, toggledPropertiesIds$, hiddenSubObjectsIds$, shownSubObjectsIds$, checkedIds$, isFlipped$, isPropertyDrawerOpen$, enrichedData$, rowsById$, childrenMap$, filteredData$, uniqueProperties$, togglePropertyGroup, toggleProperty, hideAllProperties, resetHiddenProperties, togglePropertiesIndividual, toggleSubObjects, toggleCheck, initializeVisibility, resetFilters, setOnlyEntities, setOnlyEntitiesAndAttributes, toggleFlip, togglePropertiesGlobal, statsSummary$, isLongNamingConvention$, copyTablesToClipboard;
 	var init_data_store = __esmMin((() => {
 		init_nanostores();
 		init_data_enricher();
@@ -1422,6 +1445,7 @@
 		showProperties$ = /* @__PURE__ */ atom(false);
 		toggledPropertiesIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		hiddenSubObjectsIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
+		shownSubObjectsIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		checkedIds$ = /* @__PURE__ */ atom(/* @__PURE__ */ new Set());
 		isFlipped$ = /* @__PURE__ */ atom(false);
 		isPropertyDrawerOpen$ = /* @__PURE__ */ atom(false);
@@ -1452,8 +1476,9 @@
 			hiddenProperties$,
 			showProperties$,
 			toggledPropertiesIds$,
-			hiddenSubObjectsIds$
-		], (data, rowsById, childrenMap, change, name, onlyEnt, onlyEntAtr, hideCalc, hiddenProps, globalShowProps, toggledProps, hiddenSubs) => {
+			hiddenSubObjectsIds$,
+			shownSubObjectsIds$
+		], (data, rowsById, childrenMap, change, name, onlyEnt, onlyEntAtr, hideCalc, hiddenProps, globalShowProps, toggledProps, hiddenSubs, shownSubs) => {
 			return filterAndApplyVisibility(data, {
 				change,
 				name,
@@ -1464,40 +1489,66 @@
 			}, {
 				globalShowProps,
 				toggledProps,
-				hiddenSubs
+				hiddenSubs,
+				shownSubs
 			}, rowsById, childrenMap);
 		});
 		uniqueProperties$ = /* @__PURE__ */ computed(enrichedData$, (data) => {
-			const parentTypeOrder = [];
-			const propertyMap = /* @__PURE__ */ new Map();
-			const seenPropertyKeys = /* @__PURE__ */ new Set();
+			const definitions = [];
+			const seenKeys = /* @__PURE__ */ new Set();
 			for (const r of data) {
-				if (r.isHeader || !r.parentType) continue;
-				const parentType = r.parentType;
-				const key = `${r.type}|${r.spaces}|${parentType}`;
-				if (!parentTypeOrder.includes(parentType)) parentTypeOrder.push(parentType);
-				if (!seenPropertyKeys.has(key)) {
-					seenPropertyKeys.add(key);
-					const list = propertyMap.get(parentType) || [];
-					list.push({
+				if (r.isGrouping) continue;
+				let key;
+				let type;
+				let parentType;
+				let isHeader = false;
+				if (r.isHeader) {
+					key = `H|${r.type}|${r.spaces}`;
+					type = r.type;
+					parentType = r.type;
+					isHeader = true;
+				} else {
+					key = `P|${r.type}|${r.spaces}|${r.parentType}`;
+					type = r.type;
+					parentType = r.parentType;
+				}
+				if (!seenKeys.has(key)) {
+					seenKeys.add(key);
+					definitions.push({
 						key,
-						type: r.type,
+						type,
 						spaces: r.spaces,
-						parentType
+						parentType,
+						isHeader
 					});
-					propertyMap.set(parentType, list);
 				}
 			}
-			return parentTypeOrder.map((parentType) => ({
-				parentType,
-				children: propertyMap.get(parentType) || []
-			}));
+			const groups = [];
+			const groupMap = /* @__PURE__ */ new Map();
+			for (const def of definitions) {
+				const groupKey = def.isHeader ? def.type : def.parentType;
+				let group = groupMap.get(groupKey);
+				if (!group) {
+					group = {
+						parentType: groupKey,
+						children: []
+					};
+					groupMap.set(groupKey, group);
+					groups.push(group);
+				}
+				if (def.isHeader) {
+					group.headerKey = def.key;
+					group.headerSpaces = def.spaces;
+				} else group.children.push(def);
+			}
+			return groups;
 		});
 		togglePropertyGroup = (parentType) => {
 			const group = uniqueProperties$.get().find((g) => g.parentType === parentType);
 			if (!group) return;
 			const currentHidden = new Set(hiddenProperties$.get());
 			const allKeys = group.children.map((p) => p.key);
+			if (group.headerKey) allKeys.push(group.headerKey);
 			if (allKeys.some((k) => !currentHidden.has(k))) for (const k of allKeys) currentHidden.add(k);
 			else for (const k of allKeys) currentHidden.delete(k);
 			hiddenProperties$.set(currentHidden);
@@ -1505,12 +1556,16 @@
 		toggleProperty = (key) => {
 			const current = new Set(hiddenProperties$.get());
 			if (current.has(key)) current.delete(key);
-			else current.add(key);
+			else {
+				if (key.startsWith("H|Model|")) return;
+				current.add(key);
+			}
 			hiddenProperties$.set(current);
 		};
 		hideAllProperties = () => {
 			const allKeys = /* @__PURE__ */ new Set();
 			uniqueProperties$.get().forEach((group) => {
+				if (group.headerKey && !group.headerKey.startsWith("H|Model|")) allKeys.add(group.headerKey);
 				group.children.forEach((p) => {
 					allKeys.add(p.key);
 				});
@@ -1525,16 +1580,31 @@
 			toggledPropertiesIds$.set(current);
 		};
 		toggleSubObjects = (id) => {
-			const current = new Set(hiddenSubObjectsIds$.get());
-			if (current.has(id)) current.delete(id);
-			else current.add(id);
-			hiddenSubObjectsIds$.set(current);
+			const row = rowsById$.get().get(id);
+			if (!row) return;
+			const onlyEnt = onlyEntities$.get();
+			const onlyEntAtr = onlyEntitiesAndAttributes$.get();
+			let isDefaultHidden = false;
+			if (onlyEnt && row.prop === "Ent" && row.hasSubObjects) isDefaultHidden = true;
+			if (onlyEntAtr && (row.prop === "Ent" || row.prop === "Atr") && row.hasSubObjects) isDefaultHidden = true;
+			if (isDefaultHidden) {
+				const current = new Set(shownSubObjectsIds$.get());
+				if (current.has(id)) current.delete(id);
+				else current.add(id);
+				shownSubObjectsIds$.set(current);
+			} else {
+				const current = new Set(hiddenSubObjectsIds$.get());
+				if (current.has(id)) current.delete(id);
+				else current.add(id);
+				hiddenSubObjectsIds$.set(current);
+			}
 		};
 		toggleCheck = (id) => {
 			const currentChecked = new Set(checkedIds$.get());
 			const becomingChecked = !currentChecked.has(id);
 			const propsToggled = new Set(toggledPropertiesIds$.get());
 			const subsHidden = new Set(hiddenSubObjectsIds$.get());
+			const subsShown = new Set(shownSubObjectsIds$.get());
 			if (becomingChecked) {
 				currentChecked.add(id);
 				if (showProperties$.get()) propsToggled.add(id);
@@ -1543,25 +1613,28 @@
 				if (row) {
 					const onlyEnt = onlyEntities$.get();
 					const onlyEntAtr = onlyEntitiesAndAttributes$.get();
-					let baseSubHidden = false;
-					if (onlyEnt && row.prop === "Ent" && row.hasSubObjects) baseSubHidden = true;
-					if (onlyEntAtr && row.prop === "Atr" && row.hasSubObjects) baseSubHidden = true;
-					if (baseSubHidden) subsHidden.delete(id);
+					let isDefaultHidden = false;
+					if (onlyEnt && row.prop === "Ent" && row.hasSubObjects) isDefaultHidden = true;
+					if (onlyEntAtr && (row.prop === "Ent" || row.prop === "Atr") && row.hasSubObjects) isDefaultHidden = true;
+					if (isDefaultHidden) subsShown.add(id);
 					else subsHidden.add(id);
 				}
 			} else {
 				currentChecked.delete(id);
 				propsToggled.delete(id);
 				subsHidden.delete(id);
+				subsShown.delete(id);
 			}
 			toggledPropertiesIds$.set(propsToggled);
 			hiddenSubObjectsIds$.set(subsHidden);
+			shownSubObjectsIds$.set(subsShown);
 			checkedIds$.set(currentChecked);
 		};
 		initializeVisibility = () => {
 			showProperties$.set(false);
 			toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
 			hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
+			shownSubObjectsIds$.set(/* @__PURE__ */ new Set());
 			isFlipped$.set(false);
 			resetHiddenProperties();
 		};
@@ -1575,19 +1648,17 @@
 		};
 		setOnlyEntities = (val) => {
 			onlyEntities$.set(val);
-			if (val) {
-				onlyEntitiesAndAttributes$.set(false);
-				hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
-				toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
-			}
+			if (val) onlyEntitiesAndAttributes$.set(false);
+			hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
+			shownSubObjectsIds$.set(/* @__PURE__ */ new Set());
+			toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
 		};
 		setOnlyEntitiesAndAttributes = (val) => {
 			onlyEntitiesAndAttributes$.set(val);
-			if (val) {
-				onlyEntities$.set(false);
-				hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
-				toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
-			}
+			if (val) onlyEntities$.set(false);
+			hiddenSubObjectsIds$.set(/* @__PURE__ */ new Set());
+			shownSubObjectsIds$.set(/* @__PURE__ */ new Set());
+			toggledPropertiesIds$.set(/* @__PURE__ */ new Set());
 		};
 		toggleFlip = () => isFlipped$.set(!isFlipped$.get());
 		togglePropertiesGlobal = () => {
@@ -1670,6 +1741,8 @@
 			onlyEntitiesAndAttributes$,
 			uniqueProperties$,
 			hiddenProperties$,
+			hiddenSubObjectsIds$,
+			shownSubObjectsIds$,
 			isPropertyDrawerOpen$,
 			isLongNamingConvention$
 		};
@@ -1694,6 +1767,7 @@
 				"flip_tooltip": "Inverter lados dos modelos",
 				"upload": "Arraste o HTML do Erwin aqui ou clique para carregar",
 				"close": "Fechar Arquivo",
+				"change_theme": "Alterar Tema",
 				"filters": {
 					"change": "Tipo de Alteração",
 					"category": "Categoria",
@@ -2949,7 +3023,7 @@
         `}
 
         <div class="header-controls">
-          <button class="theme-toggle" @click=${toggleTheme} title="Change Theme">
+          <button class="theme-toggle" @click=${toggleTheme} title="${translate("header.change_theme")}">
             ${this.theme.value === "dark" ? icons.sun : icons.moon}
           </button>
           
@@ -3014,7 +3088,7 @@
 	//#region src/components/property-drawer.css?inline
 	var property_drawer_default;
 	var init_property_drawer$1 = __esmMin((() => {
-		property_drawer_default = ":host {\r\n  --drawer-width: 350px;\r\n  --transition-speed: 0.3s;\r\n  --drawer-bg: var(--bg-panel);\r\n  --drawer-header-bg: var(--bg-main);\r\n  --drawer-header-text: var(--text-primary);\r\n  --drawer-group-bg: var(--bg-alt);\r\n  --drawer-group-text: var(--text-secondary);\r\n  --drawer-item-bg: var(--bg-panel);\r\n  --drawer-item-border: var(--border-subtle);\r\n  --drawer-item-hover-bg: var(--hover-bg);\r\n  --drawer-text-main: var(--text-primary);\r\n  --drawer-text-muted: var(--text-secondary);\r\n  --drawer-accent-blue: var(--accent-blue);\r\n  --drawer-accent-green: var(--accent-green);\r\n}\r\n\r\n.drawer-overlay {\r\n  position: fixed;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100vw;\r\n  height: 100vh;\r\n  background: rgba(0, 0, 0, 0.4);\r\n  opacity: 0;\r\n  visibility: hidden;\r\n  transition: opacity var(--transition-speed);\r\n  z-index: 2000;\r\n}\r\n\r\n.drawer-overlay.active {\r\n  opacity: 1;\r\n  visibility: visible;\r\n}\r\n\r\n.property-drawer {\r\n  position: fixed;\r\n  top: 0;\r\n  left: calc(-1 * var(--drawer-width));\r\n  width: var(--drawer-width);\r\n  height: 100vh;\r\n  background: var(--drawer-bg);\r\n  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);\r\n  transition: left var(--transition-speed) ease-in-out;\r\n  z-index: 2001;\r\n  display: flex;\r\n  flex-direction: column;\r\n}\r\n\r\n.property-drawer.open {\r\n  left: 0;\r\n}\r\n\r\n.drawer-header {\r\n  padding: 1rem;\r\n  background: var(--drawer-header-bg);\r\n  color: var(--drawer-header-text);\r\n  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n.header-main {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n  margin-bottom: 0.8rem;\r\n}\r\n\r\n.header-main h3 {\r\n  margin: 0;\r\n  font-size: 1rem;\r\n  font-weight: 700;\r\n  letter-spacing: 0.5px;\r\n  text-transform: uppercase;\r\n}\r\n\r\n/* Close button - maintaining consistency with header icons */\r\n.close-btn {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  transition: opacity 0.2s;\r\n  padding: 4px;\r\n  display: flex;\r\n  cursor: pointer;\r\n}\r\n\r\n.close-btn:hover {\r\n  opacity: 1;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-actions {\r\n  display: flex;\r\n  gap: 0.5rem;\r\n}\r\n\r\n/* Let Bootflat handle button styling by removing overrides,\r\n   just ensuring they fill the container */\r\n.header-actions .btn {\r\n  flex: 1;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n}\r\n\r\n.drawer-content {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  background: var(--drawer-bg);\r\n}\r\n\r\n.property-group {\r\n  margin-bottom: 0px;\r\n}\r\n\r\n.group-header {\r\n  background: var(--drawer-group-bg);\r\n  padding: 0.5rem 1rem;\r\n  border-bottom: 1px solid var(--drawer-item-border);\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.8rem;\r\n}\r\n\r\n.group-header.clickable {\r\n  cursor: pointer;\r\n  transition: background 0.2s;\r\n}\r\n\r\n.group-header.clickable:hover {\r\n  background: var(--drawer-item-hover-bg);\r\n}\r\n\r\n.group-header input[type=\"checkbox\"] {\r\n  width: 14px;\r\n  height: 14px;\r\n  margin: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.group-label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--drawer-group-text);\r\n  text-transform: uppercase;\r\n  letter-spacing: 1px;\r\n}\r\n\r\n.property-list {\r\n  list-style: none;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n.property-item {\r\n  padding: 0.6rem 1rem;\r\n  background: var(--drawer-item-bg);\r\n  border-bottom: 1px solid var(--drawer-item-border);\r\n  cursor: pointer;\r\n  transition: all 0.2s;\r\n}\r\n\r\n.property-item:hover {\r\n  background: var(--drawer-item-hover-bg);\r\n}\r\n\r\n.item-row-content {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.8rem;\r\n  width: 100%;\r\n}\r\n\r\n.item-row-content input[type=\"checkbox\"],\r\n.group-header input[type=\"checkbox\"] {\r\n  width: 14px;\r\n  height: 14px;\r\n  margin: 0;\r\n  cursor: pointer;\r\n  accent-color: var(--drawer-accent-green);\r\n  /* Prevent checkbox from catching click events independently */\r\n  pointer-events: none;\r\n}\r\n\r\n.item-info {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  flex: 1;\r\n}\r\n\r\n.prop-type {\r\n  font-size: 0.8rem;\r\n  font-weight: 600;\r\n  color: var(--drawer-text-main);\r\n}\r\n\r\n.prop-meta {\r\n  display: flex;\r\n  align-items: center;\r\n}\r\n\r\n.indent-indicator {\r\n  font-family: \"JetBrains Mono\", monospace;\r\n  letter-spacing: 2px;\r\n  font-weight: 900;\r\n  color: var(--drawer-accent-blue);\r\n  font-size: 1rem;\r\n  line-height: 1;\r\n}\r\n\r\n.empty-state {\r\n  padding: 3rem 1.5rem;\r\n  text-align: center;\r\n  color: var(--drawer-text-muted);\r\n  font-style: italic;\r\n  font-size: 0.85rem;\r\n}\r\n\r\n/* Custom Scrollbar */\r\n.drawer-content::-webkit-scrollbar {\r\n  width: 4px;\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-track {\r\n  background: var(--drawer-bg);\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-thumb {\r\n  background: var(--border-subtle);\r\n  border-radius: 4px;\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-thumb:hover {\r\n  background: var(--text-secondary);\r\n}\r\n";
+		property_drawer_default = ":host {\r\n  --drawer-width: 350px;\r\n  --transition-speed: 0.3s;\r\n  --drawer-bg: var(--bg-panel);\r\n  --drawer-header-bg: var(--bg-main);\r\n  --drawer-header-text: var(--text-primary);\r\n  --drawer-group-bg: var(--bg-alt);\r\n  --drawer-group-text: var(--text-secondary);\r\n  --drawer-item-bg: var(--bg-panel);\r\n  --drawer-item-border: var(--border-subtle);\r\n  --drawer-item-hover-bg: var(--hover-bg);\r\n  --drawer-text-main: var(--text-primary);\r\n  --drawer-text-muted: var(--text-secondary);\r\n  --drawer-accent-blue: var(--accent-blue);\r\n  --drawer-accent-green: var(--accent-green);\r\n}\r\n\r\n.drawer-overlay {\r\n  position: fixed;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100vw;\r\n  height: 100vh;\r\n  background: rgba(0, 0, 0, 0.4);\r\n  opacity: 0;\r\n  visibility: hidden;\r\n  transition: opacity var(--transition-speed);\r\n  z-index: 2000;\r\n}\r\n\r\n.drawer-overlay.active {\r\n  opacity: 1;\r\n  visibility: visible;\r\n}\r\n\r\n.property-drawer {\r\n  position: fixed;\r\n  top: 0;\r\n  left: calc(-1 * var(--drawer-width));\r\n  width: var(--drawer-width);\r\n  height: 100vh;\r\n  background: var(--drawer-bg);\r\n  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);\r\n  transition: left var(--transition-speed) ease-in-out;\r\n  z-index: 2001;\r\n  display: flex;\r\n  flex-direction: column;\r\n}\r\n\r\n.property-drawer.open {\r\n  left: 0;\r\n}\r\n\r\n.drawer-header {\r\n  padding: 1rem;\r\n  background: var(--drawer-header-bg);\r\n  color: var(--drawer-header-text);\r\n  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n.header-main {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n  margin-bottom: 0.8rem;\r\n}\r\n\r\n.header-main h3 {\r\n  margin: 0;\r\n  font-size: 1rem;\r\n  font-weight: 700;\r\n  letter-spacing: 0.5px;\r\n  text-transform: uppercase;\r\n}\r\n\r\n/* Close button - maintaining consistency with header icons */\r\n.close-btn {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  transition: opacity 0.2s;\r\n  padding: 4px;\r\n  display: flex;\r\n  cursor: pointer;\r\n}\r\n\r\n.close-btn:hover {\r\n  opacity: 1;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-actions {\r\n  display: flex;\r\n  gap: 0.5rem;\r\n}\r\n\r\n/* Let Bootflat handle button styling by removing overrides,\r\n   just ensuring they fill the container */\r\n.header-actions .btn {\r\n  flex: 1;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n}\r\n\r\n.drawer-content {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  background: var(--drawer-bg);\r\n}\r\n\r\n.property-group {\r\n  margin-bottom: 0px;\r\n}\r\n\r\n.group-header {\r\n  background: var(--drawer-group-bg);\r\n  padding: 0.5rem 1rem;\r\n  border-bottom: 1px solid var(--drawer-item-border);\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.8rem;\r\n}\r\n\r\n.group-header.clickable {\r\n  cursor: pointer;\r\n  transition: background 0.2s;\r\n}\r\n\r\n.group-header.clickable:hover {\r\n  background: var(--drawer-item-hover-bg);\r\n}\r\n\r\n.group-header input[type=\"checkbox\"] {\r\n  width: 14px;\r\n  height: 14px;\r\n  margin: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.group-info {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  flex: 1;\r\n}\r\n\r\n.group-label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--drawer-group-text);\r\n  text-transform: uppercase;\r\n  letter-spacing: 1px;\r\n}\r\n\r\n.group-meta {\r\n  font-family: \"JetBrains Mono\", monospace;\r\n  letter-spacing: 2px;\r\n  font-weight: 900;\r\n  color: var(--drawer-accent-blue);\r\n  font-size: 0.9rem;\r\n  line-height: 1;\r\n}\r\n\r\n.property-list {\r\n  list-style: none;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n.property-item {\r\n  padding: 0.6rem 1rem;\r\n  background: var(--drawer-item-bg);\r\n  border-bottom: 1px solid var(--drawer-item-border);\r\n  cursor: pointer;\r\n  transition: all 0.2s;\r\n}\r\n\r\n.property-item:hover {\r\n  background: var(--drawer-item-hover-bg);\r\n}\r\n\r\n.item-row-content {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.8rem;\r\n  width: 100%;\r\n}\r\n\r\n.item-row-content input[type=\"checkbox\"],\r\n.group-header input[type=\"checkbox\"] {\r\n  width: 14px;\r\n  height: 14px;\r\n  margin: 0;\r\n  cursor: pointer;\r\n  accent-color: var(--drawer-accent-green);\r\n  /* Prevent checkbox from catching click events independently */\r\n  pointer-events: none;\r\n}\r\n\r\n.item-info {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  flex: 1;\r\n}\r\n\r\n.prop-type {\r\n  font-size: 0.8rem;\r\n  font-weight: 600;\r\n  color: var(--drawer-text-main);\r\n}\r\n\r\n.prop-meta {\r\n  display: flex;\r\n  align-items: center;\r\n}\r\n\r\n.indent-indicator {\r\n  font-family: \"JetBrains Mono\", monospace;\r\n  letter-spacing: 2px;\r\n  font-weight: 900;\r\n  color: var(--drawer-accent-blue);\r\n  font-size: 1rem;\r\n  line-height: 1;\r\n}\r\n\r\n.empty-state {\r\n  padding: 3rem 1.5rem;\r\n  text-align: center;\r\n  color: var(--drawer-text-muted);\r\n  font-style: italic;\r\n  font-size: 0.85rem;\r\n}\r\n\r\n/* Custom Scrollbar */\r\n.drawer-content::-webkit-scrollbar {\r\n  width: 4px;\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-track {\r\n  background: var(--drawer-bg);\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-thumb {\r\n  background: var(--border-subtle);\r\n  border-radius: 4px;\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-thumb:hover {\r\n  background: var(--text-secondary);\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/property-drawer.ts
@@ -3064,13 +3138,19 @@
 
         <div class="drawer-content">
           ${groups.length === 0 ? b`<div class="empty-state">${translate("drawer.no_props")}</div>` : groups.map((group) => {
-					const allVisible = group.children.every((p) => !hiddenSet.has(p.key));
+					const headerVisible = group.headerKey ? !hiddenSet.has(group.headerKey) : true;
+					const allVisible = headerVisible && group.children.every((p) => !hiddenSet.has(p.key));
 					return b`
             <div class="property-group">
               <div class="group-header clickable" @click=${() => togglePropertyGroup(group.parentType)}>
-                <input type="checkbox" .checked=${allVisible} .indeterminate=${group.children.some((p) => !hiddenSet.has(p.key)) && !allVisible} readonly />
-                <span class="group-label">${group.parentType}</span>
+                <input type="checkbox" .checked=${allVisible} .indeterminate=${(headerVisible || group.children.some((p) => !hiddenSet.has(p.key))) && !allVisible} readonly />
+                <div class="group-info">
+                   <span class="group-label">${group.parentType}</span>
+                   ${group.headerSpaces ? b`<span class="group-meta">${"·".repeat(group.headerSpaces / 3)}</span>` : ""}
+                </div>
               </div>
+              
+              ${group.children.length > 0 ? b`
               <ul class="property-list">
                 ${group.children.map((p) => {
 						return b`
@@ -3088,6 +3168,7 @@
                   `;
 					})}
               </ul>
+              ` : ""}
             </div>
           `;
 				})}
@@ -3223,8 +3304,7 @@
                 <label class="switch-label">
                   <div class="switch">
                     <input type="checkbox" .checked=${this.onlyEnt.value} @change=${(e) => {
-					onlyEntities$.set(e.target.checked);
-					if (e.target.checked) onlyEntitiesAndAttributes$.set(false);
+					setOnlyEntities(e.target.checked);
 				}}>
                     <span class="slider round"></span>
                   </div>
@@ -3234,8 +3314,7 @@
                 <label class="switch-label">
                   <div class="switch">
                     <input type="checkbox" .checked=${this.onlyEntAtr.value} @change=${(e) => {
-					onlyEntitiesAndAttributes$.set(e.target.checked);
-					if (e.target.checked) onlyEntities$.set(false);
+					setOnlyEntitiesAndAttributes(e.target.checked);
 				}}>
                     <span class="slider round"></span>
                   </div>
@@ -5144,7 +5223,7 @@
 	//#region src/components/app-table.css?inline
 	var app_table_default;
 	var init_app_table$1 = __esmMin((() => {
-		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n  display: block;\r\n  /* Fixed height is required for virtualizer to work */\r\n  height: calc(100vh - 140px);\r\n  margin-top: 5px;\r\n}\r\n\r\n.virtual-table {\r\n  display: flex;\r\n  flex-direction: column;\r\n  height: 100%;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n}\r\n\r\n.table-header {\r\n  display: flex;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  flex-shrink: 0;\r\n  /* Replicating .table thead styling */\r\n  border-bottom: 2px solid var(--border-color);\r\n}\r\n\r\n.table-body {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  display: block;\r\n}\r\n\r\n/* Row Styling */\r\n.table-row {\r\n  display: flex;\r\n  border-bottom: 1px solid var(--border-color);\r\n  min-height: 28px;\r\n  align-items: stretch;\r\n  width: 100%;\r\n  background-color: var(--row-bg-normal);\r\n}\r\n\r\n.table-header > div,\r\n.table-row > div {\r\n  padding: 4px 8px;\r\n  border-right: 1px solid var(--border-color);\r\n  display: flex;\r\n  align-items: center;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-header > div:last-child,\r\n.table-row > div:last-child {\r\n  border-right: none;\r\n}\r\n\r\n/* Column Widths - matching original table intent */\r\n.col-check {\r\n  width: 35px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-type {\r\n  width: 250px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-left,\r\n.col-right {\r\n  flex: 1;\r\n  min-width: 0;\r\n  /* Support multi-line in value cells */\r\n  word-break: break-all;\r\n  white-space: normal;\r\n  align-items: flex-start;\r\n  padding-top: 4px;\r\n  padding-bottom: 4px;\r\n}\r\n\r\n.col-prop {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-change {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-view {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-cal {\r\n  width: 40px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n/* Indentation & Tree Node */\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n  width: 100%;\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.table-row[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n/* Indicators */\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n/* Row States & Hover */\r\n.clickable-row {\r\n  cursor: pointer;\r\n}\r\n\r\n.clickable-row:hover {\r\n  background-color: var(--hover-bg);\r\n  opacity: 0.9;\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Office 2010 Palette Implementation for Rows */\r\n.table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-40);\r\n}\r\n\r\n[data-theme=\"dark\"] .table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-d25);\r\n}\r\n\r\n.table-row[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Other Header Colors */\r\n.table-row[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"7\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"8\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"9\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n/* Copy Buttons */\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: flex-start;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 4px;\r\n  flex-shrink: 0;\r\n  margin-left: 4px;\r\n}\r\n\r\n/* Badges */\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.empty-container {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  padding: 40px;\r\n  color: var(--text-secondary);\r\n}\r\n";
+		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n  display: block;\r\n  /* Fixed height is required for virtualizer to work */\r\n  height: calc(100vh - 140px);\r\n  margin-top: 5px;\r\n}\r\n\r\n.virtual-table {\r\n  display: flex;\r\n  flex-direction: column;\r\n  height: 100%;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n}\r\n\r\n.table-header {\r\n  display: flex;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  flex-shrink: 0;\r\n  /* Replicating .table thead styling */\r\n  border-bottom: 2px solid var(--border-color);\r\n}\r\n\r\n.table-body {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  display: block;\r\n}\r\n\r\n/* Row Styling */\r\n.table-row {\r\n  display: flex;\r\n  border-bottom: 1px solid var(--border-color);\r\n  min-height: 28px;\r\n  align-items: stretch;\r\n  width: 100%;\r\n  background-color: var(--row-bg-normal);\r\n}\r\n\r\n.table-header > div,\r\n.table-row > div {\r\n  padding: 4px 8px;\r\n  border-right: 1px solid var(--border-color);\r\n  display: flex;\r\n  align-items: center;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-header > div:last-child,\r\n.table-row > div:last-child {\r\n  border-right: none;\r\n}\r\n\r\n/* Column Widths - matching original table intent */\r\n.col-check {\r\n  width: 35px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-type {\r\n  width: 250px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-left,\r\n.col-right {\r\n  flex: 1;\r\n  min-width: 0;\r\n  /* Support multi-line in value cells */\r\n  word-break: break-all;\r\n  white-space: normal;\r\n  align-items: flex-start;\r\n  padding-top: 4px;\r\n  padding-bottom: 4px;\r\n}\r\n\r\n.col-prop {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-change {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-view {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-cal {\r\n  width: 40px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n/* Indentation & Tree Node */\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n  width: 100%;\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.table-row[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n/* Indicators */\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n/* Row States & Hover */\r\n.clickable-row {\r\n  cursor: pointer;\r\n}\r\n\r\n.clickable-row:hover {\r\n  background-color: var(--hover-bg);\r\n  opacity: 0.9;\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n  color: slategray;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Office 2010 Palette Implementation for Rows */\r\n.table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-40);\r\n}\r\n\r\n[data-theme=\"dark\"] .table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-d25);\r\n}\r\n\r\n.table-row[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Other Header Colors */\r\n.table-row[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"7\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"8\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"9\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n/* Copy Buttons */\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: flex-start;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 4px;\r\n  flex-shrink: 0;\r\n  margin-left: 4px;\r\n}\r\n\r\n/* Badges */\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.empty-container {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  padding: 40px;\r\n  color: var(--text-secondary);\r\n}\r\n\r\nol.multi-column {\r\n  column-count: 3;\r\n  column-gap: 40px;\r\n  list-style-position: inside;\r\n  padding: 0;\r\n  margin: 3px;\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-table.ts
@@ -5172,6 +5251,7 @@
 				this.showProps = new import_lib$1.StoreController(this, showProperties$);
 				this.toggledProps = new import_lib$1.StoreController(this, toggledPropertiesIds$);
 				this.hiddenSubs = new import_lib$1.StoreController(this, hiddenSubObjectsIds$);
+				this.shownSubs = new import_lib$1.StoreController(this, shownSubObjectsIds$);
 				this.copiedId = null;
 				this.copiedSide = null;
 			}
@@ -5182,7 +5262,6 @@
 				const visibleRows = this.data.value;
 				const flipped = this.isFlipped.value;
 				const checkedSet = this.checked.value;
-				if (visibleRows.length === 0) return this._renderEmptyState();
 				return b`
       <div class="virtual-table">
         <div class="table-header">
@@ -5196,15 +5275,18 @@
           <div class="col-cal">Cal</div>
         </div>
         
-        <lit-virtualizer
-          class="table-body"
-          .items=${visibleRows}
-          .renderItem=${(row) => this._renderRow(row, flipped, checkedSet)}
-        ></lit-virtualizer>
+        ${visibleRows.length === 0 ? this._renderEmptyState() : b`
+            <lit-virtualizer
+              class="table-body"
+              .items=${visibleRows}
+              .renderItem=${(row) => this._renderRow(row, flipped, checkedSet)}
+            ></lit-virtualizer>
+          `}
       </div>
     `;
 			}
 			_renderEmptyState() {
+				if (enrichedData$.value.length !== 0) return "";
 				return b`
       <div class="empty-container">
         <div class="callout">
@@ -5323,10 +5405,12 @@
 				return b`<span class="len-badge ${len > (this.isLongNamingConvention.value ? 50 : 18) ? "len-warn" : "len-ok"}">${len}</span>`;
 			}
 			_areSubObjectsHidden(row) {
-				let isHidden = this.hiddenSubs.value.has(row.id);
-				if (this.onlyEnt.value && row.prop === "Ent" && row.hasSubObjects) isHidden = !isHidden;
-				if (this.onlyEntAtr.value && (row.prop === "Ent" || row.prop === "Atr") && row.hasSubObjects) isHidden = !isHidden;
-				return isHidden;
+				let isDefaultHidden = false;
+				if (this.onlyEnt.value && row.prop === "Ent" && row.hasSubObjects) isDefaultHidden = true;
+				if (this.onlyEntAtr.value && (row.prop === "Ent" || row.prop === "Atr") && row.hasSubObjects) isDefaultHidden = true;
+				if (row.type === "Model") isDefaultHidden = false;
+				if (isDefaultHidden) return !this.shownSubs.value.has(row.id);
+				else return this.hiddenSubs.value.has(row.id);
 			}
 			_arePropertiesHidden(row) {
 				const isParentToggled = this.toggledProps.value.has(row.id);

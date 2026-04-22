@@ -1517,14 +1517,25 @@ function Cn(e, t) {
 	return n;
 }
 function wn(e, t, n) {
-	if (!["Comment", "Definition"].includes(e)) return {
+	if (["Comments", "Definition"].includes(e)) {
+		let e = (e) => e && e.replace(/ ([0-9]+\. \w+)/g, "<br> $1").replace(/\.(^<br>) ([A-Z])/g, ".<br> $1").replace(/;(^<br>) /g, ";<br> ").replace(/ (\d* ?[-•] )/g, "<br> $1").replace(/<br> *<br>/g, "<br>");
+		return {
+			left: e(t),
+			right: e(n)
+		};
+	} else if ([
+		"Column Order List",
+		"Attribute Order List",
+		"Field Order"
+	].includes(e)) {
+		let e = (e) => e && "<ol class=\"multi-column\">" + e.split(",").map((e) => `<li>${e.trim()},</li>`).join("") + "</ol>";
+		return {
+			left: e(t),
+			right: e(n)
+		};
+	} else return {
 		left: t,
 		right: n
-	};
-	let r = (e) => e && e.replace(/\. ([A-Z])/g, ".<br>$1").replace(/; /g, ";<br>").replace(/ ([0-9]+\. )/g, "<br>$1").replace(/ ([-•] )/g, "<br>$1");
-	return {
-		left: r(t),
-		right: r(n)
 	};
 }
 function Tn(e, t) {
@@ -1556,13 +1567,13 @@ function kn(e, t, n, r, i) {
 	if (e.length === 0) return [];
 	let a = e;
 	return t.hideCalculated && (a = a.filter((e) => !e.isCalculated)), t.hiddenProps.size > 0 && (a = a.filter((e) => {
-		if (e.isHeader) return !0;
-		let n = `${e.type}|${e.spaces}|${e.parentType}`;
+		let n = e.isHeader ? `H|${e.type}|${e.spaces}` : `P|${e.type}|${e.spaces}|${e.parentType}`;
 		return !t.hiddenProps.has(n);
 	})), a = An(a, t, r, i), a = jn(a, t, i), a = Mn(a, t, r, i), Nn(a, {
 		...n,
 		onlyEntities: t.onlyEntities,
-		onlyEntitiesAndAttributes: t.onlyEntitiesAndAttributes
+		onlyEntitiesAndAttributes: t.onlyEntitiesAndAttributes,
+		hiddenProps: t.hiddenProps
 	}, r);
 }
 function An(e, t, n, r) {
@@ -1605,6 +1616,13 @@ function Mn(e, t, n, r) {
 function Nn(e, t, n) {
 	let r = [], i = /* @__PURE__ */ new Set();
 	for (let a of e) {
+		if (a.isHeader) {
+			let e = `H|${a.type}|${a.spaces}`;
+			if (t.hiddenProps.has(e)) {
+				i.add(a.id);
+				continue;
+			}
+		}
 		if (a.parentId && i.has(a.parentId)) {
 			i.add(a.id);
 			continue;
@@ -1618,8 +1636,8 @@ function Nn(e, t, n) {
 					(t.globalShowProps ? !e : e) || (n = !0);
 				}
 				if (a.isHeader && !n) {
-					let r = t.hiddenSubs.has(a.parentId);
-					r && e.type === "Model" && (a.prop === "Ent" || a.prop === "Atr") && (r = !1), t.onlyEntities && e.prop === "Ent" && a.prop !== "Ent" && (r = !r), t.onlyEntitiesAndAttributes && (e.prop === "Ent" && a.prop !== "Atr" && (r = !r), e.prop === "Atr" && a.type !== "Field" && (r = !r)), r && (n = !0);
+					let r = !1;
+					t.onlyEntities && e.prop === "Ent" && a.prop !== "Ent" && (r = !0), t.onlyEntitiesAndAttributes && (e.prop === "Ent" && a.prop !== "Atr" && (r = !0), e.prop === "Atr" && a.type !== "Field" && (r = !0)), e.type === "Model" && (a.prop === "Ent" || a.prop === "Atr") && (r = !1), r ? t.shownSubs.has(a.parentId) || (n = !0) : t.hiddenSubs.has(a.parentId) && (n = !0);
 				}
 				if (n) {
 					i.add(a.id);
@@ -1633,14 +1651,14 @@ function Nn(e, t, n) {
 }
 //#endregion
 //#region src/store/data.store.ts
-var Pn = /* @__PURE__ */ z(null), V = /* @__PURE__ */ z(!1), H = /* @__PURE__ */ z(null), Fn = /* @__PURE__ */ z(!1), U = /* @__PURE__ */ z(""), W = /* @__PURE__ */ z(""), G = /* @__PURE__ */ z(!1), K = /* @__PURE__ */ z(!1), In = /* @__PURE__ */ z(!0), q = /* @__PURE__ */ z(/* @__PURE__ */ new Set()), J = /* @__PURE__ */ z(!1), Y = /* @__PURE__ */ z(/* @__PURE__ */ new Set()), X = /* @__PURE__ */ z(/* @__PURE__ */ new Set()), Ln = /* @__PURE__ */ z(/* @__PURE__ */ new Set()), Rn = /* @__PURE__ */ z(!1), zn = /* @__PURE__ */ z(!1), Z = /* @__PURE__ */ z([]), Bn = /* @__PURE__ */ B([
-	Z,
-	/* @__PURE__ */ B(Z, (e) => {
-		let t = /* @__PURE__ */ new Map();
-		for (let n of e) t.set(n.id, n);
-		return t;
-	}),
-	/* @__PURE__ */ B(Z, (e) => {
+var Pn = /* @__PURE__ */ z(null), V = /* @__PURE__ */ z(!1), H = /* @__PURE__ */ z(null), Fn = /* @__PURE__ */ z(!1), In = /* @__PURE__ */ z(""), Ln = /* @__PURE__ */ z(""), U = /* @__PURE__ */ z(!1), W = /* @__PURE__ */ z(!1), Rn = /* @__PURE__ */ z(!0), G = /* @__PURE__ */ z(/* @__PURE__ */ new Set()), K = /* @__PURE__ */ z(!1), q = /* @__PURE__ */ z(/* @__PURE__ */ new Set()), J = /* @__PURE__ */ z(/* @__PURE__ */ new Set()), Y = /* @__PURE__ */ z(/* @__PURE__ */ new Set()), zn = /* @__PURE__ */ z(/* @__PURE__ */ new Set()), Bn = /* @__PURE__ */ z(!1), Vn = /* @__PURE__ */ z(!1), X = /* @__PURE__ */ z([]), Hn = /* @__PURE__ */ B(X, (e) => {
+	let t = /* @__PURE__ */ new Map();
+	for (let n of e) t.set(n.id, n);
+	return t;
+}), Un = /* @__PURE__ */ B([
+	X,
+	Hn,
+	/* @__PURE__ */ B(X, (e) => {
 		let t = /* @__PURE__ */ new Map();
 		for (let n of e) if (n.parentId) {
 			let e = t.get(n.parentId) || [];
@@ -1648,16 +1666,17 @@ var Pn = /* @__PURE__ */ z(null), V = /* @__PURE__ */ z(!1), H = /* @__PURE__ */
 		}
 		return t;
 	}),
+	In,
+	Ln,
 	U,
 	W,
+	Rn,
 	G,
 	K,
-	In,
 	q,
 	J,
-	Y,
-	X
-], (e, t, n, r, i, a, o, s, c, l, u, d) => kn(e, {
+	Y
+], (e, t, n, r, i, a, o, s, c, l, u, d, f) => kn(e, {
 	change: r,
 	name: i,
 	onlyEntities: a,
@@ -1667,81 +1686,97 @@ var Pn = /* @__PURE__ */ z(null), V = /* @__PURE__ */ z(!1), H = /* @__PURE__ */
 }, {
 	globalShowProps: l,
 	toggledProps: u,
-	hiddenSubs: d
-}, t, n)), Vn = /* @__PURE__ */ B(Z, (e) => {
-	let t = [], n = /* @__PURE__ */ new Map(), r = /* @__PURE__ */ new Set();
-	for (let i of e) {
-		if (i.isHeader || !i.parentType) continue;
-		let e = i.parentType, a = `${i.type}|${i.spaces}|${e}`;
-		if (t.includes(e) || t.push(e), !r.has(a)) {
-			r.add(a);
-			let t = n.get(e) || [];
-			t.push({
-				key: a,
-				type: i.type,
-				spaces: i.spaces,
-				parentType: e
-			}), n.set(e, t);
-		}
+	hiddenSubs: d,
+	shownSubs: f
+}, t, n)), Wn = /* @__PURE__ */ B(X, (e) => {
+	let t = [], n = /* @__PURE__ */ new Set();
+	for (let r of e) {
+		if (r.isGrouping) continue;
+		let e, i, a, o = !1;
+		r.isHeader ? (e = `H|${r.type}|${r.spaces}`, i = r.type, a = r.type, o = !0) : (e = `P|${r.type}|${r.spaces}|${r.parentType}`, i = r.type, a = r.parentType), n.has(e) || (n.add(e), t.push({
+			key: e,
+			type: i,
+			spaces: r.spaces,
+			parentType: a,
+			isHeader: o
+		}));
 	}
-	return t.map((e) => ({
-		parentType: e,
-		children: n.get(e) || []
-	}));
+	let r = [], i = /* @__PURE__ */ new Map();
+	for (let e of t) {
+		let t = e.isHeader ? e.type : e.parentType, n = i.get(t);
+		n || (n = {
+			parentType: t,
+			children: []
+		}, i.set(t, n), r.push(n)), e.isHeader ? (n.headerKey = e.key, n.headerSpaces = e.spaces) : n.children.push(e);
+	}
+	return r;
 });
-function Hn(e) {
+function Gn(e) {
 	if (!e) {
-		Z.set([]), Pn.set(null);
+		X.set([]), Pn.set(null);
 		return;
 	}
 	let t = bn(e);
-	Z.set(t), Pn.set(null);
+	X.set(t), Pn.set(null);
 }
-var Un = (e) => {
-	let t = Vn.get().find((t) => t.parentType === e);
+var Kn = (e) => {
+	let t = Wn.get().find((t) => t.parentType === e);
 	if (!t) return;
-	let n = new Set(q.get()), r = t.children.map((e) => e.key);
-	if (r.some((e) => !n.has(e))) for (let e of r) n.add(e);
+	let n = new Set(G.get()), r = t.children.map((e) => e.key);
+	if (t.headerKey && r.push(t.headerKey), r.some((e) => !n.has(e))) for (let e of r) n.add(e);
 	else for (let e of r) n.delete(e);
-	q.set(n);
-}, Wn = (e) => {
-	let t = new Set(q.get());
-	t.has(e) ? t.delete(e) : t.add(e), q.set(t);
-}, Gn = () => {
+	G.set(n);
+}, qn = (e) => {
+	let t = new Set(G.get());
+	if (t.has(e)) t.delete(e);
+	else {
+		if (e.startsWith("H|Model|")) return;
+		t.add(e);
+	}
+	G.set(t);
+}, Jn = () => {
 	let e = /* @__PURE__ */ new Set();
-	Vn.get().forEach((t) => {
-		t.children.forEach((t) => {
+	Wn.get().forEach((t) => {
+		t.headerKey && !t.headerKey.startsWith("H|Model|") && e.add(t.headerKey), t.children.forEach((t) => {
 			e.add(t.key);
 		});
-	}), q.set(e);
-}, Kn = () => q.set(/* @__PURE__ */ new Set()), qn = (e) => {
-	let t = new Set(Y.get());
-	t.has(e) ? t.delete(e) : t.add(e), Y.set(t);
-}, Jn = (e) => {
-	let t = new Set(X.get());
-	t.has(e) ? t.delete(e) : t.add(e), X.set(t);
-}, Yn = (e) => {
-	let t = new Set(Ln.get()), n = !t.has(e), r = new Set(Y.get()), i = new Set(X.get());
-	if (n) {
-		t.add(e), J.get() ? r.add(e) : r.delete(e);
-		let n = Z.get().find((t) => t.id === e);
-		if (n) {
-			let t = G.get(), r = K.get(), a = !1;
-			t && n.prop === "Ent" && n.hasSubObjects && (a = !0), r && n.prop === "Atr" && n.hasSubObjects && (a = !0), a ? i.delete(e) : i.add(e);
-		}
-	} else t.delete(e), r.delete(e), i.delete(e);
-	Y.set(r), X.set(i), Ln.set(t);
-}, Xn = () => {
-	J.set(!1), Y.set(/* @__PURE__ */ new Set()), X.set(/* @__PURE__ */ new Set()), Rn.set(!1), Kn();
-}, Zn = () => {
-	U.set(""), W.set(""), G.set(!1), K.set(!1), In.set(!0), Xn();
+	}), G.set(e);
+}, Yn = () => G.set(/* @__PURE__ */ new Set()), Xn = (e) => {
+	let t = new Set(q.get());
+	t.has(e) ? t.delete(e) : t.add(e), q.set(t);
+}, Zn = (e) => {
+	let t = Hn.get().get(e);
+	if (!t) return;
+	let n = U.get(), r = W.get(), i = !1;
+	if (n && t.prop === "Ent" && t.hasSubObjects && (i = !0), r && (t.prop === "Ent" || t.prop === "Atr") && t.hasSubObjects && (i = !0), i) {
+		let t = new Set(Y.get());
+		t.has(e) ? t.delete(e) : t.add(e), Y.set(t);
+	} else {
+		let t = new Set(J.get());
+		t.has(e) ? t.delete(e) : t.add(e), J.set(t);
+	}
 }, Qn = (e) => {
-	G.set(e), e && (K.set(!1), X.set(/* @__PURE__ */ new Set()), Y.set(/* @__PURE__ */ new Set()));
-}, $n = (e) => {
-	K.set(e), e && (G.set(!1), X.set(/* @__PURE__ */ new Set()), Y.set(/* @__PURE__ */ new Set()));
-}, er = () => Rn.set(!Rn.get()), tr = () => {
-	J.set(!J.get()), Y.set(/* @__PURE__ */ new Set());
-}, nr = /* @__PURE__ */ B([Z, Rn], (e, t) => {
+	let t = new Set(zn.get()), n = !t.has(e), r = new Set(q.get()), i = new Set(J.get()), a = new Set(Y.get());
+	if (n) {
+		t.add(e), K.get() ? r.add(e) : r.delete(e);
+		let n = X.get().find((t) => t.id === e);
+		if (n) {
+			let t = U.get(), r = W.get(), o = !1;
+			t && n.prop === "Ent" && n.hasSubObjects && (o = !0), r && (n.prop === "Ent" || n.prop === "Atr") && n.hasSubObjects && (o = !0), o ? a.add(e) : i.add(e);
+		}
+	} else t.delete(e), r.delete(e), i.delete(e), a.delete(e);
+	q.set(r), J.set(i), Y.set(a), zn.set(t);
+}, $n = () => {
+	K.set(!1), q.set(/* @__PURE__ */ new Set()), J.set(/* @__PURE__ */ new Set()), Y.set(/* @__PURE__ */ new Set()), Bn.set(!1), Yn();
+}, er = () => {
+	In.set(""), Ln.set(""), U.set(!1), W.set(!1), Rn.set(!0), $n();
+}, tr = (e) => {
+	U.set(e), e && W.set(!1), J.set(/* @__PURE__ */ new Set()), Y.set(/* @__PURE__ */ new Set()), q.set(/* @__PURE__ */ new Set());
+}, nr = (e) => {
+	W.set(e), e && U.set(!1), J.set(/* @__PURE__ */ new Set()), Y.set(/* @__PURE__ */ new Set()), q.set(/* @__PURE__ */ new Set());
+}, rr = () => Bn.set(!Bn.get()), ir = () => {
+	K.set(!K.get()), q.set(/* @__PURE__ */ new Set());
+}, ar = /* @__PURE__ */ B([X, Bn], (e, t) => {
 	let n = {
 		Tables: {
 			type: "Tables",
@@ -1774,7 +1809,7 @@ var Un = (e) => {
 		e && r.attributeCount && r.attributeCount > 11 && (o.largeTablesCount = (o.largeTablesCount || 0) + 1);
 	}
 	return Object.values(n);
-}), rr = /* @__PURE__ */ B(Z, (e) => {
+}), or = /* @__PURE__ */ B(X, (e) => {
 	let t = e[0];
 	if (!t) return !1;
 	let n = [
@@ -1785,38 +1820,40 @@ var Un = (e) => {
 		"hive"
 	], r = `${t.left} ${t.right}`.toLowerCase();
 	return n.some((e) => r.includes(e));
-}), ir = () => {
-	let e = Z.get().filter((e) => e.isHeader && e.prop === "Ent" && (e.left || e.right)).map((e) => e.left || e.right).filter((e, t, n) => e && n.indexOf(e) === t).join("\n");
+}), sr = () => {
+	let e = X.get().filter((e) => e.isHeader && e.prop === "Ent" && (e.left || e.right)).map((e) => e.left || e.right).filter((e, t, n) => e && n.indexOf(e) === t).join("\n");
 	return e ? (navigator.clipboard.writeText(e), !0) : !1;
 };
 typeof window < "u" && (window.erwinData = {
 	modelData$: Pn,
-	enrichedData$: Z,
-	filteredData$: Bn,
-	filterChange$: U,
-	filterName$: W,
-	showProperties$: J,
-	hideCalculated$: In,
-	onlyEntities$: G,
-	onlyEntitiesAndAttributes$: K,
-	uniqueProperties$: Vn,
-	hiddenProperties$: q,
-	isPropertyDrawerOpen$: zn,
-	isLongNamingConvention$: rr
+	enrichedData$: X,
+	filteredData$: Un,
+	filterChange$: In,
+	filterName$: Ln,
+	showProperties$: K,
+	hideCalculated$: Rn,
+	onlyEntities$: U,
+	onlyEntitiesAndAttributes$: W,
+	uniqueProperties$: Wn,
+	hiddenProperties$: G,
+	hiddenSubObjectsIds$: J,
+	shownSubObjectsIds$: Y,
+	isPropertyDrawerOpen$: Vn,
+	isLongNamingConvention$: or
 });
 //#endregion
 //#region src/main.css?inline
-var ar = ":host {\r\n  display: block;\r\n  min-height: 100vh;\r\n  background-color: var(--bg-main);\r\n}\r\n\r\n.main-content {\r\n  position: relative;\r\n}\r\n\r\n.display-area {\r\n  padding: 0.5rem;\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.loading-overlay {\r\n  position: fixed;\r\n  top: 0;\r\n  left: 0;\r\n  right: 0;\r\n  bottom: 0;\r\n  background: var(--bg-empty);\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n  align-items: center;\r\n  z-index: 2000;\r\n  color: var(--text-primary);\r\n  gap: 1.5rem;\r\n}\r\n\r\n.spinner {\r\n  width: 50px;\r\n  height: 50px;\r\n  border: 5px solid var(--border-subtle);\r\n  border-top: 5px solid var(--accent-blue);\r\n  border-radius: 50%;\r\n  animation: spin 1s linear infinite;\r\n}\r\n\r\n.loading-text {\r\n  font-size: 1rem;\r\n  font-weight: 600;\r\n  color: var(--text-secondary);\r\n  letter-spacing: 0.05em;\r\n  text-transform: uppercase;\r\n}\r\n\r\n@keyframes spin {\r\n  0% {\r\n    transform: rotate(0deg);\r\n  }\r\n  100% {\r\n    transform: rotate(360deg);\r\n  }\r\n}\r\n\r\n.empty-state {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  padding-top: 10vh;\r\n  color: var(--text-muted);\r\n}\r\n\r\n.empty-icon {\r\n  font-size: 4rem;\r\n  margin-bottom: 1rem;\r\n}\r\n\r\n.main-content svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n\r\n.empty-icon svg {\r\n  width: 64px;\r\n  height: 64px;\r\n}\r\n", or = /* @__PURE__ */ z("dark"), sr = () => {
-	let e = or.get() === "dark" ? "light" : "dark";
-	or.set(e), document.documentElement.setAttribute("data-theme", e);
+var cr = ":host {\r\n  display: block;\r\n  min-height: 100vh;\r\n  background-color: var(--bg-main);\r\n}\r\n\r\n.main-content {\r\n  position: relative;\r\n}\r\n\r\n.display-area {\r\n  padding: 0.5rem;\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.loading-overlay {\r\n  position: fixed;\r\n  top: 0;\r\n  left: 0;\r\n  right: 0;\r\n  bottom: 0;\r\n  background: var(--bg-empty);\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n  align-items: center;\r\n  z-index: 2000;\r\n  color: var(--text-primary);\r\n  gap: 1.5rem;\r\n}\r\n\r\n.spinner {\r\n  width: 50px;\r\n  height: 50px;\r\n  border: 5px solid var(--border-subtle);\r\n  border-top: 5px solid var(--accent-blue);\r\n  border-radius: 50%;\r\n  animation: spin 1s linear infinite;\r\n}\r\n\r\n.loading-text {\r\n  font-size: 1rem;\r\n  font-weight: 600;\r\n  color: var(--text-secondary);\r\n  letter-spacing: 0.05em;\r\n  text-transform: uppercase;\r\n}\r\n\r\n@keyframes spin {\r\n  0% {\r\n    transform: rotate(0deg);\r\n  }\r\n  100% {\r\n    transform: rotate(360deg);\r\n  }\r\n}\r\n\r\n.empty-state {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  padding-top: 10vh;\r\n  color: var(--text-muted);\r\n}\r\n\r\n.empty-icon {\r\n  font-size: 4rem;\r\n  margin-bottom: 1rem;\r\n}\r\n\r\n.main-content svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n\r\n.empty-icon svg {\r\n  width: 64px;\r\n  height: 64px;\r\n}\r\n", lr = /* @__PURE__ */ z("dark"), ur = () => {
+	let e = lr.get() === "dark" ? "light" : "dark";
+	lr.set(e), document.documentElement.setAttribute("data-theme", e);
 };
-document.documentElement.setAttribute("data-theme", or.get());
+document.documentElement.setAttribute("data-theme", lr.get());
 //#endregion
 //#region src/components/app-header.css?inline
-var cr = ":host {\r\n  display: block;\r\n  position: sticky;\r\n  top: 0;\r\n  z-index: 1000;\r\n  background: var(--bg-panel);\r\n  border-bottom: 2px solid var(--border-subtle);\r\n  padding: 0.5rem 1.5rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-layout {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  height: 2.5rem;\r\n}\r\n\r\n.brand {\r\n  flex-basis: 10%;\r\n  font-size: 1.125rem;\r\n  font-weight: 800;\r\n  letter-spacing: -0.025em;\r\n  white-space: nowrap;\r\n  margin-right: 15px;\r\n}\r\n\r\n.file-drop-zone {\r\n  flex: 1;\r\n  border: 2px dashed var(--border-subtle);\r\n  border-radius: 6px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.75rem;\r\n  padding: 0.1rem 1rem;\r\n  font-size: 0.8125rem;\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s ease;\r\n  position: relative;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-drop-zone.dragging {\r\n  border-color: var(--accent-blue);\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.file-drop-zone input[type=\"file\"] {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-info {\r\n  flex: 1;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 1.5rem;\r\n  border-radius: 4px;\r\n  border: 1px solid var(--border-subtle);\r\n}\r\n\r\n.file-name {\r\n  color: var(--accent-blue);\r\n  font-weight: 600;\r\n  font-family: monospace;\r\n  font-size: 0.875rem;\r\n  max-width: 400px;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.close-btn {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  padding: 0.2rem 0.8rem;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n  font-size: 0.7rem;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.close-btn span {\r\n  line-height: 1;\r\n}\r\n\r\n.header-controls {\r\n  flex-basis: auto;\r\n  display: flex;\r\n  flex-direction: row;\r\n  align-items: center;\r\n  justify-content: flex-end;\r\n  gap: 12px;\r\n  margin-left: 15px;\r\n}\r\n\r\n.version-tag {\r\n  font-size: 10px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  font-weight: bold;\r\n  pointer-events: none;\r\n  order: 3;\r\n}\r\n\r\n.lang-select {\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-size: 11px;\r\n  font-weight: bold;\r\n  padding: 2px 4px;\r\n  border-radius: 4px;\r\n  cursor: pointer;\r\n  outline: none;\r\n}\r\n\r\n.theme-toggle {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  padding: 2px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  border-radius: 4px;\r\n  transition: background 0.2s;\r\n  order: 2;\r\n}\r\n\r\n.theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n[data-theme=\"dark\"] .theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n.header-layout svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
+var dr = ":host {\r\n  display: block;\r\n  position: sticky;\r\n  top: 0;\r\n  z-index: 1000;\r\n  background: var(--bg-panel);\r\n  border-bottom: 2px solid var(--border-subtle);\r\n  padding: 0.5rem 1.5rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-layout {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  height: 2.5rem;\r\n}\r\n\r\n.brand {\r\n  flex-basis: 10%;\r\n  font-size: 1.125rem;\r\n  font-weight: 800;\r\n  letter-spacing: -0.025em;\r\n  white-space: nowrap;\r\n  margin-right: 15px;\r\n}\r\n\r\n.file-drop-zone {\r\n  flex: 1;\r\n  border: 2px dashed var(--border-subtle);\r\n  border-radius: 6px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.75rem;\r\n  padding: 0.1rem 1rem;\r\n  font-size: 0.8125rem;\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s ease;\r\n  position: relative;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-drop-zone.dragging {\r\n  border-color: var(--accent-blue);\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.file-drop-zone input[type=\"file\"] {\r\n  position: absolute;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  opacity: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.file-info {\r\n  flex: 1;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 1.5rem;\r\n  border-radius: 4px;\r\n  border: 1px solid var(--border-subtle);\r\n}\r\n\r\n.file-name {\r\n  color: var(--accent-blue);\r\n  font-weight: 600;\r\n  font-family: monospace;\r\n  font-size: 0.875rem;\r\n  max-width: 400px;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.close-btn {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  padding: 0.2rem 0.8rem;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n  font-size: 0.7rem;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.close-btn span {\r\n  line-height: 1;\r\n}\r\n\r\n.header-controls {\r\n  flex-basis: auto;\r\n  display: flex;\r\n  flex-direction: row;\r\n  align-items: center;\r\n  justify-content: flex-end;\r\n  gap: 12px;\r\n  margin-left: 15px;\r\n}\r\n\r\n.version-tag {\r\n  font-size: 10px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  font-weight: bold;\r\n  pointer-events: none;\r\n  order: 3;\r\n}\r\n\r\n.lang-select {\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-size: 11px;\r\n  font-weight: bold;\r\n  padding: 2px 4px;\r\n  border-radius: 4px;\r\n  cursor: pointer;\r\n  outline: none;\r\n}\r\n\r\n.theme-toggle {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  padding: 2px;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  border-radius: 4px;\r\n  transition: background 0.2s;\r\n  order: 2;\r\n}\r\n\r\n.theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n[data-theme=\"dark\"] .theme-toggle:hover {\r\n  background: var(--hover-bg);\r\n}\r\n\r\n.header-layout svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n";
 //#endregion
 //#region \0@oxc-project+runtime@0.124.0/helpers/decorate.js
-function Q(e, t, n, r) {
+function Z(e, t, n, r) {
 	var i = arguments.length, a = i < 3 ? t : r === null ? r = Object.getOwnPropertyDescriptor(t, n) : r, o;
 	if (typeof Reflect == "object" && typeof Reflect.decorate == "function") a = Reflect.decorate(e, t, n, r);
 	else for (var s = e.length - 1; s >= 0; s--) (o = e[s]) && (a = (i < 3 ? o(a) : i > 3 ? o(t, n, a) : o(t, n)) || a);
@@ -1824,12 +1861,12 @@ function Q(e, t, n, r) {
 }
 //#endregion
 //#region src/components/app-header.ts
-var lr = class extends w {
+var fr = class extends w {
 	constructor(...e) {
-		super(...e), this.fileName = new c.StoreController(this, H), this.theme = new c.StoreController(this, or), this.isUserscript = new c.StoreController(this, Fn), this.isDragging = !1;
+		super(...e), this.fileName = new c.StoreController(this, H), this.theme = new c.StoreController(this, lr), this.isUserscript = new c.StoreController(this, Fn), this.isDragging = !1;
 	}
 	static {
-		this.styles = m(cr);
+		this.styles = m(dr);
 	}
 	render() {
 		return y`
@@ -1856,7 +1893,7 @@ var lr = class extends w {
         `}
 
         <div class="header-controls">
-          <button class="theme-toggle" @click=${sr} title="Change Theme">
+          <button class="theme-toggle" @click=${ur} title="${P("header.change_theme")}">
             ${this.theme.value === "dark" ? I.sun : I.moon}
           </button>
           
@@ -1884,18 +1921,18 @@ var lr = class extends w {
 		this.isDragging = !1;
 	}
 	_closeFile() {
-		H.set(null), Hn(null), W.set("");
+		H.set(null), Gn(null), Ln.set("");
 	}
 };
-Q([$e()], lr.prototype, "isDragging", void 0), lr = Q([Xe("app-header")], lr);
+Z([$e()], fr.prototype, "isDragging", void 0), fr = Z([Xe("app-header")], fr);
 //#endregion
 //#region src/components/app-stats.css?inline
-var ur = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.layout-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n}\r\n\r\n.left-stats {\r\n  display: flex;\r\n  align-items: stretch;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.stats-container {\r\n  display: flex;\r\n  align-items: stretch;\r\n  background: var(--bg-panel);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 6px;\r\n  overflow: hidden;\r\n  min-width: 450px;\r\n}\r\n\r\n.flip-btn,\r\n.copy-side-btn {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.25rem;\r\n  border: none;\r\n  border-radius: 0;\r\n  padding: 0 0.75rem;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  background: var(--bg-main);\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.flip-btn {\r\n  border-right: 1px solid var(--border-subtle);\r\n}\r\n\r\n.copy-side-btn {\r\n  border-left: 1px solid var(--border-subtle);\r\n}\r\n\r\n.flip-btn:hover,\r\n.copy-side-btn:hover {\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.flip-btn svg,\r\n.copy-side-btn svg {\r\n  width: 1.25rem;\r\n  height: 1.25rem;\r\n}\r\n\r\n.stats-table {\r\n  width: 100%;\r\n  border-collapse: collapse;\r\n  font-size: 0.75rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\nth {\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 0.6rem;\r\n  text-align: left;\r\n  font-weight: 700;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  border-bottom: 2px solid var(--border-subtle);\r\n}\r\n\r\ntd {\r\n  padding: 0.3rem 0.6rem;\r\n  border-bottom: 1px solid var(--border-subtle);\r\n}\r\n\r\n.clickable-cell {\r\n  cursor: pointer;\r\n  transition:\r\n    opacity 0.2s,\r\n    transform 0.1s;\r\n}\r\n\r\n.clickable-cell:hover {\r\n  opacity: 0.8;\r\n  filter: brightness(1.1);\r\n}\r\n\r\n.clickable-cell:active {\r\n  transform: scale(0.95);\r\n}\r\n\r\n.val-col {\r\n  text-align: center;\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.val-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 6px;\r\n}\r\n\r\n.large-count-bubble {\r\n  padding: 2px 3px;\r\n  border-radius: 10px;\r\n  min-width: 16px;\r\n  text-align: center;\r\n  line-height: 1;\r\n  font-size: 0.75rem;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n}\r\n\r\n/* --- Phase 1: Office 2010 Stats Summary Colors --- */\r\n\r\n/* Tables Row (Base Colors) */\r\ntr[data-type=\"Tables\"] {\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .type-col {\r\n  color: var(--text-on-dark);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Tables\"] .status-I {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-A {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-E {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-C {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .total-col {\r\n  background-color: var(--off-blue-40);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Columns Row (60% Lighter Colors) */\r\ntr[data-type=\"Columns\"] {\r\n  background-color: var(--off-blue-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .type-col {\r\n  color: var(--text-on-light);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Columns\"] .status-I {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-A {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-E {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-C {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .total-col {\r\n  background-color: var(--off-blue-80);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Filter Panel Styling */\r\n.filter-panel {\r\n  display: flex;\r\n  flex-direction: row;\r\n  gap: 1.5rem;\r\n  background: var(--bg-panel);\r\n  padding: 0.6rem 1.2rem;\r\n  border-radius: 6px;\r\n  border: 1px solid var(--border-subtle);\r\n  align-items: center;\r\n}\r\n\r\n.filter-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.3rem;\r\n}\r\n\r\n.filter-item label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.filter-item .form-control {\r\n  height: 1.8rem;\r\n  padding: 0.2rem 0.5rem;\r\n  font-size: 0.75rem;\r\n  min-width: 120px;\r\n}\r\n\r\n.search-input-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 4px;\r\n  padding: 0 0.5rem;\r\n  height: 1.8rem;\r\n}\r\n\r\n.search-input-wrapper input {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  font-size: 0.75rem;\r\n  width: 150px;\r\n  outline: none;\r\n}\r\n\r\n.search-input-wrapper svg {\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n}\r\n\r\n.filter-switches {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 1.5rem;\r\n  padding-left: 1.5rem;\r\n  border-left: 1px solid var(--border-subtle);\r\n  align-self: stretch;\r\n}\r\n\r\n.filters-area,\r\n.clear-filters-area {\r\n  display: flex;\r\n  align-items: center;\r\n  padding-left: 1.5rem;\r\n  border-left: 1px solid var(--border-subtle);\r\n  align-self: stretch;\r\n  gap: 0.5rem;\r\n}\r\n\r\n.clear-btn,\r\n.filter-btn {\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-secondary);\r\n  width: 2.2rem;\r\n  height: 2.2rem;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  border-radius: 4px;\r\n  transition: all 0.2s;\r\n}\r\n\r\n.filter-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: white;\r\n}\r\n\r\n.clear-btn path:nth-child(3) {\r\n  color: var(--btn-danger-border);\r\n}\r\n\r\n.clear-btn:hover {\r\n  background: var(--off-red-base);\r\n  border-color: var(--off-red-base);\r\n  color: white;\r\n}\r\n\r\n.main-switch {\r\n  font-size: 0.75rem;\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.stacked-switches {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.4rem;\r\n  justify-content: center;\r\n}\r\n\r\n.switch-label {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  font-size: 0.65rem;\r\n  font-weight: bold;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  margin-bottom: 0;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.02em;\r\n}\r\n\r\n/* The switch - the box around the slider */\r\n.switch {\r\n  position: relative;\r\n  display: inline-block;\r\n  width: 32px;\r\n  height: 16px;\r\n}\r\n\r\n/* Hide default HTML checkbox */\r\n.switch input {\r\n  opacity: 0;\r\n  width: 0;\r\n  height: 0;\r\n}\r\n\r\n/* The slider */\r\n.slider {\r\n  position: absolute;\r\n  cursor: pointer;\r\n  top: 0;\r\n  left: 0;\r\n  right: 0;\r\n  bottom: 0;\r\n  background-color: #7f8c8d;\r\n  -webkit-transition: 0.4s;\r\n  transition: 0.4s;\r\n}\r\n\r\n.slider:before {\r\n  position: absolute;\r\n  content: \"\";\r\n  height: 12px;\r\n  width: 12px;\r\n  left: 2px;\r\n  bottom: 2px;\r\n  background-color: white;\r\n  -webkit-transition: 0.4s;\r\n  transition: 0.4s;\r\n}\r\n\r\ninput:checked + .slider {\r\n  background-color: #2ecc71;\r\n}\r\n\r\ninput:focus + .slider {\r\n  box-shadow: 0 0 1px #2ecc71;\r\n}\r\n\r\ninput:checked + .slider:before {\r\n  -webkit-transform: translateX(16px);\r\n  -ms-transform: translateX(16px);\r\n  transform: translateX(16px);\r\n}\r\n\r\n/* Rounded sliders */\r\n.slider.round {\r\n  border-radius: 16px;\r\n}\r\n\r\n.slider.round:before {\r\n  border-radius: 50%;\r\n}\r\n\r\n/* Action Panel on the right */\r\n.action-panel {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.5rem;\r\n  justify-content: center;\r\n}\r\n\r\n.action-btn {\r\n  background: var(--bg-main);\r\n  color: var(--text-primary);\r\n  border: 1px solid var(--border-subtle);\r\n  padding: 0.4rem 1rem;\r\n  border-radius: 4px;\r\n  font-size: 0.7rem;\r\n  font-weight: bold;\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.6rem;\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  min-width: 160px;\r\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n.action-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.action-btn:active {\r\n  transform: translateY(1px);\r\n}\r\n\r\n.layout-stats svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n", dr = ":host {\r\n  --drawer-width: 350px;\r\n  --transition-speed: 0.3s;\r\n  --drawer-bg: var(--bg-panel);\r\n  --drawer-header-bg: var(--bg-main);\r\n  --drawer-header-text: var(--text-primary);\r\n  --drawer-group-bg: var(--bg-alt);\r\n  --drawer-group-text: var(--text-secondary);\r\n  --drawer-item-bg: var(--bg-panel);\r\n  --drawer-item-border: var(--border-subtle);\r\n  --drawer-item-hover-bg: var(--hover-bg);\r\n  --drawer-text-main: var(--text-primary);\r\n  --drawer-text-muted: var(--text-secondary);\r\n  --drawer-accent-blue: var(--accent-blue);\r\n  --drawer-accent-green: var(--accent-green);\r\n}\r\n\r\n.drawer-overlay {\r\n  position: fixed;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100vw;\r\n  height: 100vh;\r\n  background: rgba(0, 0, 0, 0.4);\r\n  opacity: 0;\r\n  visibility: hidden;\r\n  transition: opacity var(--transition-speed);\r\n  z-index: 2000;\r\n}\r\n\r\n.drawer-overlay.active {\r\n  opacity: 1;\r\n  visibility: visible;\r\n}\r\n\r\n.property-drawer {\r\n  position: fixed;\r\n  top: 0;\r\n  left: calc(-1 * var(--drawer-width));\r\n  width: var(--drawer-width);\r\n  height: 100vh;\r\n  background: var(--drawer-bg);\r\n  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);\r\n  transition: left var(--transition-speed) ease-in-out;\r\n  z-index: 2001;\r\n  display: flex;\r\n  flex-direction: column;\r\n}\r\n\r\n.property-drawer.open {\r\n  left: 0;\r\n}\r\n\r\n.drawer-header {\r\n  padding: 1rem;\r\n  background: var(--drawer-header-bg);\r\n  color: var(--drawer-header-text);\r\n  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n.header-main {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n  margin-bottom: 0.8rem;\r\n}\r\n\r\n.header-main h3 {\r\n  margin: 0;\r\n  font-size: 1rem;\r\n  font-weight: 700;\r\n  letter-spacing: 0.5px;\r\n  text-transform: uppercase;\r\n}\r\n\r\n/* Close button - maintaining consistency with header icons */\r\n.close-btn {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  transition: opacity 0.2s;\r\n  padding: 4px;\r\n  display: flex;\r\n  cursor: pointer;\r\n}\r\n\r\n.close-btn:hover {\r\n  opacity: 1;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-actions {\r\n  display: flex;\r\n  gap: 0.5rem;\r\n}\r\n\r\n/* Let Bootflat handle button styling by removing overrides,\r\n   just ensuring they fill the container */\r\n.header-actions .btn {\r\n  flex: 1;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n}\r\n\r\n.drawer-content {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  background: var(--drawer-bg);\r\n}\r\n\r\n.property-group {\r\n  margin-bottom: 0px;\r\n}\r\n\r\n.group-header {\r\n  background: var(--drawer-group-bg);\r\n  padding: 0.5rem 1rem;\r\n  border-bottom: 1px solid var(--drawer-item-border);\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.8rem;\r\n}\r\n\r\n.group-header.clickable {\r\n  cursor: pointer;\r\n  transition: background 0.2s;\r\n}\r\n\r\n.group-header.clickable:hover {\r\n  background: var(--drawer-item-hover-bg);\r\n}\r\n\r\n.group-header input[type=\"checkbox\"] {\r\n  width: 14px;\r\n  height: 14px;\r\n  margin: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.group-label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--drawer-group-text);\r\n  text-transform: uppercase;\r\n  letter-spacing: 1px;\r\n}\r\n\r\n.property-list {\r\n  list-style: none;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n.property-item {\r\n  padding: 0.6rem 1rem;\r\n  background: var(--drawer-item-bg);\r\n  border-bottom: 1px solid var(--drawer-item-border);\r\n  cursor: pointer;\r\n  transition: all 0.2s;\r\n}\r\n\r\n.property-item:hover {\r\n  background: var(--drawer-item-hover-bg);\r\n}\r\n\r\n.item-row-content {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.8rem;\r\n  width: 100%;\r\n}\r\n\r\n.item-row-content input[type=\"checkbox\"],\r\n.group-header input[type=\"checkbox\"] {\r\n  width: 14px;\r\n  height: 14px;\r\n  margin: 0;\r\n  cursor: pointer;\r\n  accent-color: var(--drawer-accent-green);\r\n  /* Prevent checkbox from catching click events independently */\r\n  pointer-events: none;\r\n}\r\n\r\n.item-info {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  flex: 1;\r\n}\r\n\r\n.prop-type {\r\n  font-size: 0.8rem;\r\n  font-weight: 600;\r\n  color: var(--drawer-text-main);\r\n}\r\n\r\n.prop-meta {\r\n  display: flex;\r\n  align-items: center;\r\n}\r\n\r\n.indent-indicator {\r\n  font-family: \"JetBrains Mono\", monospace;\r\n  letter-spacing: 2px;\r\n  font-weight: 900;\r\n  color: var(--drawer-accent-blue);\r\n  font-size: 1rem;\r\n  line-height: 1;\r\n}\r\n\r\n.empty-state {\r\n  padding: 3rem 1.5rem;\r\n  text-align: center;\r\n  color: var(--drawer-text-muted);\r\n  font-style: italic;\r\n  font-size: 0.85rem;\r\n}\r\n\r\n/* Custom Scrollbar */\r\n.drawer-content::-webkit-scrollbar {\r\n  width: 4px;\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-track {\r\n  background: var(--drawer-bg);\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-thumb {\r\n  background: var(--border-subtle);\r\n  border-radius: 4px;\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-thumb:hover {\r\n  background: var(--text-secondary);\r\n}\r\n", fr = class extends w {
+var pr = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.layout-stats {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 2rem;\r\n}\r\n\r\n.left-stats {\r\n  display: flex;\r\n  align-items: stretch;\r\n  gap: 1.5rem;\r\n}\r\n\r\n.stats-container {\r\n  display: flex;\r\n  align-items: stretch;\r\n  background: var(--bg-panel);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 6px;\r\n  overflow: hidden;\r\n  min-width: 450px;\r\n}\r\n\r\n.flip-btn,\r\n.copy-side-btn {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 0.25rem;\r\n  border: none;\r\n  border-radius: 0;\r\n  padding: 0 0.75rem;\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  background: var(--bg-main);\r\n  color: var(--text-secondary);\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.flip-btn {\r\n  border-right: 1px solid var(--border-subtle);\r\n}\r\n\r\n.copy-side-btn {\r\n  border-left: 1px solid var(--border-subtle);\r\n}\r\n\r\n.flip-btn:hover,\r\n.copy-side-btn:hover {\r\n  background: var(--hover-bg);\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.flip-btn svg,\r\n.copy-side-btn svg {\r\n  width: 1.25rem;\r\n  height: 1.25rem;\r\n}\r\n\r\n.stats-table {\r\n  width: 100%;\r\n  border-collapse: collapse;\r\n  font-size: 0.75rem;\r\n  color: var(--text-primary);\r\n}\r\n\r\nth {\r\n  background: var(--bg-main);\r\n  padding: 0.3rem 0.6rem;\r\n  text-align: left;\r\n  font-weight: 700;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  border-bottom: 2px solid var(--border-subtle);\r\n}\r\n\r\ntd {\r\n  padding: 0.3rem 0.6rem;\r\n  border-bottom: 1px solid var(--border-subtle);\r\n}\r\n\r\n.clickable-cell {\r\n  cursor: pointer;\r\n  transition:\r\n    opacity 0.2s,\r\n    transform 0.1s;\r\n}\r\n\r\n.clickable-cell:hover {\r\n  opacity: 0.8;\r\n  filter: brightness(1.1);\r\n}\r\n\r\n.clickable-cell:active {\r\n  transform: scale(0.95);\r\n}\r\n\r\n.val-col {\r\n  text-align: center;\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.val-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  gap: 6px;\r\n}\r\n\r\n.large-count-bubble {\r\n  padding: 2px 3px;\r\n  border-radius: 10px;\r\n  min-width: 16px;\r\n  text-align: center;\r\n  line-height: 1;\r\n  font-size: 0.75rem;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n}\r\n\r\n/* --- Phase 1: Office 2010 Stats Summary Colors --- */\r\n\r\n/* Tables Row (Base Colors) */\r\ntr[data-type=\"Tables\"] {\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .type-col {\r\n  color: var(--text-on-dark);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Tables\"] .status-I {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-A {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-E {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .status-C {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\ntr[data-type=\"Tables\"] .total-col {\r\n  background-color: var(--off-blue-40);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n/* Columns Row (60% Lighter Colors) */\r\ntr[data-type=\"Columns\"] {\r\n  background-color: var(--off-blue-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .type-col {\r\n  color: var(--text-on-light);\r\n  font-weight: bold;\r\n}\r\ntr[data-type=\"Columns\"] .status-I {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-A {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-E {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .status-C {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\ntr[data-type=\"Columns\"] .total-col {\r\n  background-color: var(--off-blue-80);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Filter Panel Styling */\r\n.filter-panel {\r\n  display: flex;\r\n  flex-direction: row;\r\n  gap: 1.5rem;\r\n  background: var(--bg-panel);\r\n  padding: 0.6rem 1.2rem;\r\n  border-radius: 6px;\r\n  border: 1px solid var(--border-subtle);\r\n  align-items: center;\r\n}\r\n\r\n.filter-item {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.3rem;\r\n}\r\n\r\n.filter-item label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--text-secondary);\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n}\r\n\r\n.filter-item .form-control {\r\n  height: 1.8rem;\r\n  padding: 0.2rem 0.5rem;\r\n  font-size: 0.75rem;\r\n  min-width: 120px;\r\n}\r\n\r\n.search-input-wrapper {\r\n  display: flex;\r\n  align-items: center;\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  border-radius: 4px;\r\n  padding: 0 0.5rem;\r\n  height: 1.8rem;\r\n}\r\n\r\n.search-input-wrapper input {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-primary);\r\n  font-size: 0.75rem;\r\n  width: 150px;\r\n  outline: none;\r\n}\r\n\r\n.search-input-wrapper svg {\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n}\r\n\r\n.filter-switches {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 1.5rem;\r\n  padding-left: 1.5rem;\r\n  border-left: 1px solid var(--border-subtle);\r\n  align-self: stretch;\r\n}\r\n\r\n.filters-area,\r\n.clear-filters-area {\r\n  display: flex;\r\n  align-items: center;\r\n  padding-left: 1.5rem;\r\n  border-left: 1px solid var(--border-subtle);\r\n  align-self: stretch;\r\n  gap: 0.5rem;\r\n}\r\n\r\n.clear-btn,\r\n.filter-btn {\r\n  background: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-secondary);\r\n  width: 2.2rem;\r\n  height: 2.2rem;\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  border-radius: 4px;\r\n  transition: all 0.2s;\r\n}\r\n\r\n.filter-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: white;\r\n}\r\n\r\n.clear-btn path:nth-child(3) {\r\n  color: var(--btn-danger-border);\r\n}\r\n\r\n.clear-btn:hover {\r\n  background: var(--off-red-base);\r\n  border-color: var(--off-red-base);\r\n  color: white;\r\n}\r\n\r\n.main-switch {\r\n  font-size: 0.75rem;\r\n  color: var(--accent-blue);\r\n}\r\n\r\n.stacked-switches {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.4rem;\r\n  justify-content: center;\r\n}\r\n\r\n.switch-label {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.5rem;\r\n  font-size: 0.65rem;\r\n  font-weight: bold;\r\n  color: var(--text-primary);\r\n  cursor: pointer;\r\n  margin-bottom: 0;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.02em;\r\n}\r\n\r\n/* The switch - the box around the slider */\r\n.switch {\r\n  position: relative;\r\n  display: inline-block;\r\n  width: 32px;\r\n  height: 16px;\r\n}\r\n\r\n/* Hide default HTML checkbox */\r\n.switch input {\r\n  opacity: 0;\r\n  width: 0;\r\n  height: 0;\r\n}\r\n\r\n/* The slider */\r\n.slider {\r\n  position: absolute;\r\n  cursor: pointer;\r\n  top: 0;\r\n  left: 0;\r\n  right: 0;\r\n  bottom: 0;\r\n  background-color: #7f8c8d;\r\n  -webkit-transition: 0.4s;\r\n  transition: 0.4s;\r\n}\r\n\r\n.slider:before {\r\n  position: absolute;\r\n  content: \"\";\r\n  height: 12px;\r\n  width: 12px;\r\n  left: 2px;\r\n  bottom: 2px;\r\n  background-color: white;\r\n  -webkit-transition: 0.4s;\r\n  transition: 0.4s;\r\n}\r\n\r\ninput:checked + .slider {\r\n  background-color: #2ecc71;\r\n}\r\n\r\ninput:focus + .slider {\r\n  box-shadow: 0 0 1px #2ecc71;\r\n}\r\n\r\ninput:checked + .slider:before {\r\n  -webkit-transform: translateX(16px);\r\n  -ms-transform: translateX(16px);\r\n  transform: translateX(16px);\r\n}\r\n\r\n/* Rounded sliders */\r\n.slider.round {\r\n  border-radius: 16px;\r\n}\r\n\r\n.slider.round:before {\r\n  border-radius: 50%;\r\n}\r\n\r\n/* Action Panel on the right */\r\n.action-panel {\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 0.5rem;\r\n  justify-content: center;\r\n}\r\n\r\n.action-btn {\r\n  background: var(--bg-main);\r\n  color: var(--text-primary);\r\n  border: 1px solid var(--border-subtle);\r\n  padding: 0.4rem 1rem;\r\n  border-radius: 4px;\r\n  font-size: 0.7rem;\r\n  font-weight: bold;\r\n  cursor: pointer;\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.6rem;\r\n  transition: all 0.2s;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.05em;\r\n  min-width: 160px;\r\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n.action-btn:hover {\r\n  background: var(--accent-blue);\r\n  border-color: var(--accent-blue);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.action-btn:active {\r\n  transform: translateY(1px);\r\n}\r\n\r\n.layout-stats svg {\r\n  width: var(--icon-size);\r\n  height: var(--icon-size);\r\n}\r\n", mr = ":host {\r\n  --drawer-width: 350px;\r\n  --transition-speed: 0.3s;\r\n  --drawer-bg: var(--bg-panel);\r\n  --drawer-header-bg: var(--bg-main);\r\n  --drawer-header-text: var(--text-primary);\r\n  --drawer-group-bg: var(--bg-alt);\r\n  --drawer-group-text: var(--text-secondary);\r\n  --drawer-item-bg: var(--bg-panel);\r\n  --drawer-item-border: var(--border-subtle);\r\n  --drawer-item-hover-bg: var(--hover-bg);\r\n  --drawer-text-main: var(--text-primary);\r\n  --drawer-text-muted: var(--text-secondary);\r\n  --drawer-accent-blue: var(--accent-blue);\r\n  --drawer-accent-green: var(--accent-green);\r\n}\r\n\r\n.drawer-overlay {\r\n  position: fixed;\r\n  top: 0;\r\n  left: 0;\r\n  width: 100vw;\r\n  height: 100vh;\r\n  background: rgba(0, 0, 0, 0.4);\r\n  opacity: 0;\r\n  visibility: hidden;\r\n  transition: opacity var(--transition-speed);\r\n  z-index: 2000;\r\n}\r\n\r\n.drawer-overlay.active {\r\n  opacity: 1;\r\n  visibility: visible;\r\n}\r\n\r\n.property-drawer {\r\n  position: fixed;\r\n  top: 0;\r\n  left: calc(-1 * var(--drawer-width));\r\n  width: var(--drawer-width);\r\n  height: 100vh;\r\n  background: var(--drawer-bg);\r\n  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);\r\n  transition: left var(--transition-speed) ease-in-out;\r\n  z-index: 2001;\r\n  display: flex;\r\n  flex-direction: column;\r\n}\r\n\r\n.property-drawer.open {\r\n  left: 0;\r\n}\r\n\r\n.drawer-header {\r\n  padding: 1rem;\r\n  background: var(--drawer-header-bg);\r\n  color: var(--drawer-header-text);\r\n  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\r\n}\r\n\r\n.header-main {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n  margin-bottom: 0.8rem;\r\n}\r\n\r\n.header-main h3 {\r\n  margin: 0;\r\n  font-size: 1rem;\r\n  font-weight: 700;\r\n  letter-spacing: 0.5px;\r\n  text-transform: uppercase;\r\n}\r\n\r\n/* Close button - maintaining consistency with header icons */\r\n.close-btn {\r\n  background: transparent;\r\n  border: none;\r\n  color: var(--text-secondary);\r\n  opacity: 0.7;\r\n  transition: opacity 0.2s;\r\n  padding: 4px;\r\n  display: flex;\r\n  cursor: pointer;\r\n}\r\n\r\n.close-btn:hover {\r\n  opacity: 1;\r\n  color: var(--text-primary);\r\n}\r\n\r\n.header-actions {\r\n  display: flex;\r\n  gap: 0.5rem;\r\n}\r\n\r\n/* Let Bootflat handle button styling by removing overrides,\r\n   just ensuring they fill the container */\r\n.header-actions .btn {\r\n  flex: 1;\r\n  font-weight: 700;\r\n  text-transform: uppercase;\r\n}\r\n\r\n.drawer-content {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  background: var(--drawer-bg);\r\n}\r\n\r\n.property-group {\r\n  margin-bottom: 0px;\r\n}\r\n\r\n.group-header {\r\n  background: var(--drawer-group-bg);\r\n  padding: 0.5rem 1rem;\r\n  border-bottom: 1px solid var(--drawer-item-border);\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.8rem;\r\n}\r\n\r\n.group-header.clickable {\r\n  cursor: pointer;\r\n  transition: background 0.2s;\r\n}\r\n\r\n.group-header.clickable:hover {\r\n  background: var(--drawer-item-hover-bg);\r\n}\r\n\r\n.group-header input[type=\"checkbox\"] {\r\n  width: 14px;\r\n  height: 14px;\r\n  margin: 0;\r\n  cursor: pointer;\r\n}\r\n\r\n.group-info {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  flex: 1;\r\n}\r\n\r\n.group-label {\r\n  font-size: 0.65rem;\r\n  font-weight: 800;\r\n  color: var(--drawer-group-text);\r\n  text-transform: uppercase;\r\n  letter-spacing: 1px;\r\n}\r\n\r\n.group-meta {\r\n  font-family: \"JetBrains Mono\", monospace;\r\n  letter-spacing: 2px;\r\n  font-weight: 900;\r\n  color: var(--drawer-accent-blue);\r\n  font-size: 0.9rem;\r\n  line-height: 1;\r\n}\r\n\r\n.property-list {\r\n  list-style: none;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n.property-item {\r\n  padding: 0.6rem 1rem;\r\n  background: var(--drawer-item-bg);\r\n  border-bottom: 1px solid var(--drawer-item-border);\r\n  cursor: pointer;\r\n  transition: all 0.2s;\r\n}\r\n\r\n.property-item:hover {\r\n  background: var(--drawer-item-hover-bg);\r\n}\r\n\r\n.item-row-content {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 0.8rem;\r\n  width: 100%;\r\n}\r\n\r\n.item-row-content input[type=\"checkbox\"],\r\n.group-header input[type=\"checkbox\"] {\r\n  width: 14px;\r\n  height: 14px;\r\n  margin: 0;\r\n  cursor: pointer;\r\n  accent-color: var(--drawer-accent-green);\r\n  /* Prevent checkbox from catching click events independently */\r\n  pointer-events: none;\r\n}\r\n\r\n.item-info {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: space-between;\r\n  flex: 1;\r\n}\r\n\r\n.prop-type {\r\n  font-size: 0.8rem;\r\n  font-weight: 600;\r\n  color: var(--drawer-text-main);\r\n}\r\n\r\n.prop-meta {\r\n  display: flex;\r\n  align-items: center;\r\n}\r\n\r\n.indent-indicator {\r\n  font-family: \"JetBrains Mono\", monospace;\r\n  letter-spacing: 2px;\r\n  font-weight: 900;\r\n  color: var(--drawer-accent-blue);\r\n  font-size: 1rem;\r\n  line-height: 1;\r\n}\r\n\r\n.empty-state {\r\n  padding: 3rem 1.5rem;\r\n  text-align: center;\r\n  color: var(--drawer-text-muted);\r\n  font-style: italic;\r\n  font-size: 0.85rem;\r\n}\r\n\r\n/* Custom Scrollbar */\r\n.drawer-content::-webkit-scrollbar {\r\n  width: 4px;\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-track {\r\n  background: var(--drawer-bg);\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-thumb {\r\n  background: var(--border-subtle);\r\n  border-radius: 4px;\r\n}\r\n\r\n.drawer-content::-webkit-scrollbar-thumb:hover {\r\n  background: var(--text-secondary);\r\n}\r\n", hr = class extends w {
 	constructor(...e) {
-		super(...e), this._isOpenStore = new c.StoreController(this, zn), this._propertiesStore = new c.StoreController(this, Vn), this._hiddenStore = new c.StoreController(this, q);
+		super(...e), this._isOpenStore = new c.StoreController(this, Vn), this._propertiesStore = new c.StoreController(this, Wn), this._hiddenStore = new c.StoreController(this, G);
 	}
 	static {
-		this.styles = m(dr);
+		this.styles = m(mr);
 	}
 	render() {
 		let e = this._isOpenStore.value, t = this._hiddenStore.value, n = this._propertiesStore.value;
@@ -1910,10 +1947,10 @@ var ur = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.
             </button>
           </div>
           <div class="header-actions">
-            <button class="btn btn-primary btn-xs" @click=${Gn}>
+            <button class="btn btn-primary btn-xs" @click=${Jn}>
               ${P("drawer.hide_all")}
             </button>
-            <button class="btn btn-default btn-xs" @click=${Kn}>
+            <button class="btn btn-default btn-xs" @click=${Yn}>
               ${P("drawer.show_all")}
             </button>
           </div>
@@ -1921,16 +1958,21 @@ var ur = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.
 
         <div class="drawer-content">
           ${n.length === 0 ? y`<div class="empty-state">${P("drawer.no_props")}</div>` : n.map((e) => {
-			let n = e.children.every((e) => !t.has(e.key));
+			let n = e.headerKey ? !t.has(e.headerKey) : !0, r = n && e.children.every((e) => !t.has(e.key));
 			return y`
             <div class="property-group">
-              <div class="group-header clickable" @click=${() => Un(e.parentType)}>
-                <input type="checkbox" .checked=${n} .indeterminate=${e.children.some((e) => !t.has(e.key)) && !n} readonly />
-                <span class="group-label">${e.parentType}</span>
+              <div class="group-header clickable" @click=${() => Kn(e.parentType)}>
+                <input type="checkbox" .checked=${r} .indeterminate=${(n || e.children.some((e) => !t.has(e.key))) && !r} readonly />
+                <div class="group-info">
+                   <span class="group-label">${e.parentType}</span>
+                   ${e.headerSpaces ? y`<span class="group-meta">${"·".repeat(e.headerSpaces / 3)}</span>` : ""}
+                </div>
               </div>
+              
+              ${e.children.length > 0 ? y`
               <ul class="property-list">
                 ${e.children.map((e) => y`
-                    <li class="property-item" @click=${() => Wn(e.key)}>
+                    <li class="property-item" @click=${() => qn(e.key)}>
                       <div class="item-row-content">
                         <input type="checkbox" .checked=${!t.has(e.key)} readonly>
                         <div class="item-info">
@@ -1943,6 +1985,7 @@ var ur = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.
                     </li>
                   `)}
               </ul>
+              ` : ""}
             </div>
           `;
 		})}
@@ -1951,18 +1994,18 @@ var ur = ":host {\r\n  display: block;\r\n  margin-bottom: 1.5rem;\r\n}\r\n\r\n.
     `;
 	}
 	_close() {
-		zn.set(!1);
+		Vn.set(!1);
 	}
 };
-fr = Q([Xe("property-drawer")], fr);
+hr = Z([Xe("property-drawer")], hr);
 //#endregion
 //#region src/components/app-stats.ts
-var pr = class extends w {
+var gr = class extends w {
 	constructor(...e) {
-		super(...e), this.stats = new c.StoreController(this, nr), this.nameFilter = new c.StoreController(this, W), this.changeFilter = new c.StoreController(this, U), this.showProps = new c.StoreController(this, J), this.hideCalc = new c.StoreController(this, In), this.onlyEnt = new c.StoreController(this, G), this.onlyEntAtr = new c.StoreController(this, K), this.isCopying = !1;
+		super(...e), this.stats = new c.StoreController(this, ar), this.nameFilter = new c.StoreController(this, Ln), this.changeFilter = new c.StoreController(this, In), this.showProps = new c.StoreController(this, K), this.hideCalc = new c.StoreController(this, Rn), this.onlyEnt = new c.StoreController(this, U), this.onlyEntAtr = new c.StoreController(this, W), this.isCopying = !1;
 	}
 	static {
-		this.styles = m(ur);
+		this.styles = m(pr);
 	}
 	render() {
 		return this.stats.value.length === 0 ? y`` : y`
@@ -1970,7 +2013,7 @@ var pr = class extends w {
       <div class="layout-stats">
         <div class="left-stats">
           <div class="stats-container">
-            <button class="btn btn-primary btn-xs flip-btn" @click=${er} title="${P("header.flip_tooltip")}">
+            <button class="btn btn-primary btn-xs flip-btn" @click=${rr} title="${P("header.flip_tooltip")}">
                ${I["switch-horizontal"]} <span>${P("header.flip")}</span>
             </button>
             <table class="table table-condensed stats-table">
@@ -2038,7 +2081,7 @@ var pr = class extends w {
               <div class="stacked-switches main-stacked">
                 <label class="switch-label main-switch">
                   <div class="switch">
-                    <input type="checkbox" .checked=${this.showProps.value} @change=${tr}>
+                    <input type="checkbox" .checked=${this.showProps.value} @change=${ir}>
                     <span class="slider round"></span>
                   </div>
                   <span>${P("stats.actions.show_props")}</span>
@@ -2046,7 +2089,7 @@ var pr = class extends w {
 
                 <label class="switch-label">
                   <div class="switch">
-                    <input type="checkbox" .checked=${this.hideCalc.value} @change=${(e) => In.set(e.target.checked)}>
+                    <input type="checkbox" .checked=${this.hideCalc.value} @change=${(e) => Rn.set(e.target.checked)}>
                     <span class="slider round"></span>
                   </div>
                   <span>${P("stats.actions.hide_calculated")}</span>
@@ -2057,7 +2100,7 @@ var pr = class extends w {
                 <label class="switch-label">
                   <div class="switch">
                     <input type="checkbox" .checked=${this.onlyEnt.value} @change=${(e) => {
-			G.set(e.target.checked), e.target.checked && K.set(!1);
+			tr(e.target.checked);
 		}}>
                     <span class="slider round"></span>
                   </div>
@@ -2067,7 +2110,7 @@ var pr = class extends w {
                 <label class="switch-label">
                   <div class="switch">
                     <input type="checkbox" .checked=${this.onlyEntAtr.value} @change=${(e) => {
-			K.set(e.target.checked), e.target.checked && G.set(!1);
+			nr(e.target.checked);
 		}}>
                     <span class="slider round"></span>
                   </div>
@@ -2077,12 +2120,12 @@ var pr = class extends w {
             </div>
 
             <div class="filters-area">
-               <button class="btn btn-primary btn-xs filter-btn" @click=${() => zn.set(!0)} title="${P("header.filters.properties")}">
+               <button class="btn btn-primary btn-xs filter-btn" @click=${() => Vn.set(!0)} title="${P("header.filters.properties")}">
                   ${I.filter}
                </button>
             </div>
             <div class="clear-filters-area">
-               <button class="btn btn-default btn-xs clear-btn" @click=${Zn} title="${P("header.filters.clear_filters")}">
+               <button class="btn btn-default btn-xs clear-btn" @click=${er} title="${P("header.filters.clear_filters")}">
                   ${I["filter-off"]}
                </button>
             </div>
@@ -2093,29 +2136,29 @@ var pr = class extends w {
 	}
 	_updateChangeFilter(e) {
 		let t = e.target.value;
-		U.set(t);
+		In.set(t);
 	}
 	_updateNameFilter(e) {
 		let t = e.target.value;
 		this.searchDebounceTimeout && window.clearTimeout(this.searchDebounceTimeout), this.searchDebounceTimeout = window.setTimeout(() => {
-			W.set(t), this.searchDebounceTimeout = void 0;
+			Ln.set(t), this.searchDebounceTimeout = void 0;
 		}, 300);
 	}
 	_handleCellClick(e, t) {
-		U.set(t);
+		In.set(t);
 		let n = this.renderRoot.querySelector("#change-filter");
-		n && (n.value = t), e === "Tables" ? Qn(t === "" ? !G.get() : !0) : e === "Columns" && $n(t === "" ? !K.get() : !0);
+		n && (n.value = t), e === "Tables" ? tr(t === "" ? !U.get() : !0) : e === "Columns" && nr(t === "" ? !W.get() : !0);
 	}
 	_copyTablesToClipboard() {
-		ir() ? (this.isCopying = !0, setTimeout(() => {
+		sr() ? (this.isCopying = !0, setTimeout(() => {
 			this.isCopying = !1;
 		}, 2e3)) : alert(ut("stats.messages.no_tables"));
 	}
 };
-Q([$e()], pr.prototype, "isCopying", void 0), pr = Q([Xe("app-stats")], pr);
+Z([$e()], gr.prototype, "isCopying", void 0), gr = Z([Xe("app-stats")], gr);
 //#endregion
 //#region node_modules/tslib/tslib.es6.mjs
-function mr(e, t, n, r) {
+function _r(e, t, n, r) {
 	var i = arguments.length, a = i < 3 ? t : r === null ? r = Object.getOwnPropertyDescriptor(t, n) : r, o;
 	if (typeof Reflect == "object" && typeof Reflect.decorate == "function") a = Reflect.decorate(e, t, n, r);
 	else for (var s = e.length - 1; s >= 0; s--) (o = e[s]) && (a = (i < 3 ? o(a) : i > 3 ? o(t, n, a) : o(t, n)) || a);
@@ -2123,9 +2166,9 @@ function mr(e, t, n, r) {
 }
 //#endregion
 //#region node_modules/lit-html/directive-helpers.js
-var { I: hr } = Ge, gr = (e) => e, _r = (e) => e.strings === void 0, vr = () => document.createComment(""), yr = (e, t, n) => {
+var { I: vr } = Ge, yr = (e) => e, br = (e) => e.strings === void 0, xr = () => document.createComment(""), Sr = (e, t, n) => {
 	let r = e._$AA.parentNode, i = t === void 0 ? e._$AB : t._$AA;
-	if (n === void 0) n = new hr(r.insertBefore(vr(), i), r.insertBefore(vr(), i), e, e.options);
+	if (n === void 0) n = new vr(r.insertBefore(xr(), i), r.insertBefore(xr(), i), e, e.options);
 	else {
 		let t = n._$AB.nextSibling, a = n._$AM, o = a !== e;
 		if (o) {
@@ -2135,56 +2178,56 @@ var { I: hr } = Ge, gr = (e) => e, _r = (e) => e.strings === void 0, vr = () => 
 		if (t !== i || o) {
 			let e = n._$AA;
 			for (; e !== t;) {
-				let t = gr(e).nextSibling;
-				gr(r).insertBefore(e, i), e = t;
+				let t = yr(e).nextSibling;
+				yr(r).insertBefore(e, i), e = t;
 			}
 		}
 	}
 	return n;
-}, $ = (e, t, n = e) => (e._$AI(t, n), e), br = {}, xr = (e, t = br) => e._$AH = t, Sr = (e) => e._$AH, Cr = (e) => {
+}, Q = (e, t, n = e) => (e._$AI(t, n), e), Cr = {}, wr = (e, t = Cr) => e._$AH = t, Tr = (e) => e._$AH, Er = (e) => {
 	e._$AR(), e._$AA.remove();
-}, wr = (e, t) => {
+}, Dr = (e, t) => {
 	let n = e._$AN;
 	if (n === void 0) return !1;
-	for (let e of n) e._$AO?.(t, !1), wr(e, t);
+	for (let e of n) e._$AO?.(t, !1), Dr(e, t);
 	return !0;
-}, Tr = (e) => {
+}, Or = (e) => {
 	let t, n;
 	do {
 		if ((t = e._$AM) === void 0) break;
 		n = t._$AN, n.delete(e), e = t;
 	} while (n?.size === 0);
-}, Er = (e) => {
+}, kr = (e) => {
 	for (let t; t = e._$AM; e = t) {
 		let n = t._$AN;
 		if (n === void 0) t._$AN = n = /* @__PURE__ */ new Set();
 		else if (n.has(e)) break;
-		n.add(e), kr(t);
+		n.add(e), Mr(t);
 	}
 };
-function Dr(e) {
-	this._$AN === void 0 ? this._$AM = e : (Tr(this), this._$AM = e, Er(this));
+function Ar(e) {
+	this._$AN === void 0 ? this._$AM = e : (Or(this), this._$AM = e, kr(this));
 }
-function Or(e, t = !1, n = 0) {
+function jr(e, t = !1, n = 0) {
 	let r = this._$AH, i = this._$AN;
-	if (i !== void 0 && i.size !== 0) if (t) if (Array.isArray(r)) for (let e = n; e < r.length; e++) wr(r[e], !1), Tr(r[e]);
-	else r != null && (wr(r, !1), Tr(r));
-	else wr(this, e);
+	if (i !== void 0 && i.size !== 0) if (t) if (Array.isArray(r)) for (let e = n; e < r.length; e++) Dr(r[e], !1), Or(r[e]);
+	else r != null && (Dr(r, !1), Or(r));
+	else Dr(this, e);
 }
-var kr = (e) => {
-	e.type == tn.CHILD && (e._$AP ??= Or, e._$AQ ??= Dr);
-}, Ar = class extends rn {
+var Mr = (e) => {
+	e.type == tn.CHILD && (e._$AP ??= jr, e._$AQ ??= Ar);
+}, Nr = class extends rn {
 	constructor() {
 		super(...arguments), this._$AN = void 0;
 	}
 	_$AT(e, t, n) {
-		super._$AT(e, t, n), Er(this), this.isConnected = e._$AU;
+		super._$AT(e, t, n), kr(this), this.isConnected = e._$AU;
 	}
 	_$AO(e, t = !0) {
-		e !== this.isConnected && (this.isConnected = e, e ? this.reconnected?.() : this.disconnected?.()), t && (wr(this, e), Tr(this));
+		e !== this.isConnected && (this.isConnected = e, e ? this.reconnected?.() : this.disconnected?.()), t && (Dr(this, e), Or(this));
 	}
 	setValue(e) {
-		if (_r(this._$Ct)) this._$Ct._$AI(e, this);
+		if (br(this._$Ct)) this._$Ct._$AI(e, this);
 		else {
 			let t = [...this._$Ct._$AH];
 			t[this._$Ci] = e, this._$Ct._$AI(t, this, 0);
@@ -2192,11 +2235,11 @@ var kr = (e) => {
 	}
 	disconnected() {}
 	reconnected() {}
-}, jr = (e, t, n) => {
+}, Pr = (e, t, n) => {
 	let r = /* @__PURE__ */ new Map();
 	for (let i = t; i <= n; i++) r.set(e[i], i);
 	return r;
-}, Mr = nn(class extends rn {
+}, Fr = nn(class extends rn {
 	constructor(e) {
 		if (super(e), e.type !== tn.CHILD) throw Error("repeat() can only be used in text expressions");
 	}
@@ -2214,55 +2257,55 @@ var kr = (e) => {
 		return this.dt(e, t, n).values;
 	}
 	update(e, [t, n, r]) {
-		let i = Sr(e), { values: a, keys: o } = this.dt(t, n, r);
+		let i = Tr(e), { values: a, keys: o } = this.dt(t, n, r);
 		if (!Array.isArray(i)) return this.ut = o, a;
 		let s = this.ut ??= [], c = [], l, u, d = 0, f = i.length - 1, p = 0, m = a.length - 1;
 		for (; d <= f && p <= m;) if (i[d] === null) d++;
 		else if (i[f] === null) f--;
-		else if (s[d] === o[p]) c[p] = $(i[d], a[p]), d++, p++;
-		else if (s[f] === o[m]) c[m] = $(i[f], a[m]), f--, m--;
-		else if (s[d] === o[m]) c[m] = $(i[d], a[m]), yr(e, c[m + 1], i[d]), d++, m--;
-		else if (s[f] === o[p]) c[p] = $(i[f], a[p]), yr(e, i[d], i[f]), f--, p++;
-		else if (l === void 0 && (l = jr(o, p, m), u = jr(s, d, f)), l.has(s[d])) if (l.has(s[f])) {
+		else if (s[d] === o[p]) c[p] = Q(i[d], a[p]), d++, p++;
+		else if (s[f] === o[m]) c[m] = Q(i[f], a[m]), f--, m--;
+		else if (s[d] === o[m]) c[m] = Q(i[d], a[m]), Sr(e, c[m + 1], i[d]), d++, m--;
+		else if (s[f] === o[p]) c[p] = Q(i[f], a[p]), Sr(e, i[d], i[f]), f--, p++;
+		else if (l === void 0 && (l = Pr(o, p, m), u = Pr(s, d, f)), l.has(s[d])) if (l.has(s[f])) {
 			let t = u.get(o[p]), n = t === void 0 ? null : i[t];
 			if (n === null) {
-				let t = yr(e, i[d]);
-				$(t, a[p]), c[p] = t;
-			} else c[p] = $(n, a[p]), yr(e, i[d], n), i[t] = null;
+				let t = Sr(e, i[d]);
+				Q(t, a[p]), c[p] = t;
+			} else c[p] = Q(n, a[p]), Sr(e, i[d], n), i[t] = null;
 			p++;
-		} else Cr(i[f]), f--;
-		else Cr(i[d]), d++;
+		} else Er(i[f]), f--;
+		else Er(i[d]), d++;
 		for (; p <= m;) {
-			let t = yr(e, c[m + 1]);
-			$(t, a[p]), c[p++] = t;
+			let t = Sr(e, c[m + 1]);
+			Q(t, a[p]), c[p++] = t;
 		}
 		for (; d <= f;) {
 			let e = i[d++];
-			e !== null && Cr(e);
+			e !== null && Er(e);
 		}
-		return this.ut = o, xr(e, c), b;
+		return this.ut = o, wr(e, c), b;
 	}
-}), Nr = class e extends Event {
+}), Ir = class e extends Event {
 	constructor(t) {
 		super(e.eventName, { bubbles: !1 }), this.first = t.first, this.last = t.last;
 	}
 };
-Nr.eventName = "rangeChanged";
-var Pr = class e extends Event {
+Ir.eventName = "rangeChanged";
+var Lr = class e extends Event {
 	constructor(t) {
 		super(e.eventName, { bubbles: !1 }), this.first = t.first, this.last = t.last;
 	}
 };
-Pr.eventName = "visibilityChanged";
-var Fr = class e extends Event {
+Lr.eventName = "visibilityChanged";
+var Rr = class e extends Event {
 	constructor() {
 		super(e.eventName, { bubbles: !1 });
 	}
 };
-Fr.eventName = "unpinned";
+Rr.eventName = "unpinned";
 //#endregion
 //#region node_modules/@lit-labs/virtualizer/ScrollerController.js
-var Ir = class {
+var zr = class {
 	constructor(e) {
 		this._element = null, this._node = e ?? window, e && (this._element = e);
 	}
@@ -2293,7 +2336,7 @@ var Ir = class {
 	get maxScrollLeft() {
 		return this.scrollWidth - this.viewportWidth;
 	}
-}, Lr = class extends Ir {
+}, Br = class extends zr {
 	constructor(e, t) {
 		super(t), this._clients = /* @__PURE__ */ new Set(), this._retarget = null, this._end = null, this.__destination = null, this.correctingScrollError = !1, this._checkForArrival = this._checkForArrival.bind(this), this._updateManagedScrollTo = this._updateManagedScrollTo.bind(this), this.scrollTo = this.scrollTo.bind(this), this.scrollBy = this.scrollBy.bind(this);
 		let n = this._node;
@@ -2359,8 +2402,8 @@ var Ir = class {
 	_attach(e) {
 		this._clients.add(e), this._clients.size === 1 && (this._node.scrollTo = this.scrollTo, this._node.scrollBy = this.scrollBy, this._node.scroll = this.scrollTo, this._node.addEventListener("scroll", this._checkForArrival));
 	}
-}, Rr, zr = t((() => {
-	Rr = class {
+}, Vr, Hr = t((() => {
+	Vr = class {
 		constructor(e) {
 			this._map = /* @__PURE__ */ new Map(), this._roundAverageSize = !1, this.totalSize = 0, e?.roundAverageSize === !0 && (this._roundAverageSize = !0);
 		}
@@ -2385,11 +2428,11 @@ var Ir = class {
 }));
 //#endregion
 //#region node_modules/@lit-labs/virtualizer/layouts/shared/BaseLayout.js
-function Br(e) {
+function Ur(e) {
 	return e === "horizontal" ? "width" : "height";
 }
-var Vr, Hr = t((() => {
-	Vr = class {
+var Wr, Gr = t((() => {
+	Wr = class {
 		_getDefaultConfig() {
 			return { direction: "vertical" };
 		}
@@ -2461,7 +2504,7 @@ var Vr, Hr = t((() => {
 			return null;
 		}
 		_clampScrollPosition(e) {
-			return Math.max(-this.offsetWithinScroller[this._positionDim], Math.min(e, this.totalScrollSize[Br(this.direction)] - this._viewDim1));
+			return Math.max(-this.offsetWithinScroller[this._positionDim], Math.min(e, this.totalScrollSize[Ur(this.direction)] - this._viewDim1));
 		}
 		unpin() {
 			this._pin !== null && (this._sendUnpinnedMessage(), this._pin = null);
@@ -2564,37 +2607,37 @@ var Vr, Hr = t((() => {
 			(t !== this._firstVisible || n !== this._lastVisible) && (this._firstVisible = t, this._lastVisible = n, e && e.emit && this._sendVisibilityChangedMessage());
 		}
 	};
-})), Ur = /* @__PURE__ */ r({
-	FlowLayout: () => Xr,
-	flow: () => Jr
+})), Kr = /* @__PURE__ */ r({
+	FlowLayout: () => $r,
+	flow: () => Zr
 });
-function Wr(e) {
+function qr(e) {
 	return e === "horizontal" ? "marginLeft" : "marginTop";
 }
-function Gr(e) {
+function Jr(e) {
 	return e === "horizontal" ? "marginRight" : "marginBottom";
 }
-function Kr(e) {
+function Yr(e) {
 	return e === "horizontal" ? "xOffset" : "yOffset";
 }
-function qr(e, t) {
+function Xr(e, t) {
 	let n = [e, t].sort();
 	return n[1] <= 0 ? Math.min(...n) : n[0] >= 0 ? Math.max(...n) : n[0] + n[1];
 }
-var Jr, Yr, Xr, Zr = t((() => {
-	zr(), Hr(), Jr = (e) => Object.assign({ type: Xr }, e), Yr = class {
+var Zr, Qr, $r, ei = t((() => {
+	Hr(), Gr(), Zr = (e) => Object.assign({ type: $r }, e), Qr = class {
 		constructor() {
-			this._childSizeCache = new Rr(), this._marginSizeCache = new Rr(), this._metricsCache = /* @__PURE__ */ new Map();
+			this._childSizeCache = new Vr(), this._marginSizeCache = new Vr(), this._metricsCache = /* @__PURE__ */ new Map();
 		}
 		update(e, t) {
 			let n = /* @__PURE__ */ new Set();
 			Object.keys(e).forEach((r) => {
 				let i = Number(r);
-				this._metricsCache.set(i, e[i]), this._childSizeCache.set(i, e[i][Br(t)]), n.add(i), n.add(i + 1);
+				this._metricsCache.set(i, e[i]), this._childSizeCache.set(i, e[i][Ur(t)]), n.add(i), n.add(i + 1);
 			});
 			for (let e of n) {
-				let n = this._metricsCache.get(e)?.[Wr(t)] || 0, r = this._metricsCache.get(e - 1)?.[Gr(t)] || 0;
-				this._marginSizeCache.set(e, qr(n, r));
+				let n = this._metricsCache.get(e)?.[qr(t)] || 0, r = this._metricsCache.get(e - 1)?.[Jr(t)] || 0;
+				this._marginSizeCache.set(e, Xr(n, r));
 			}
 		}
 		get averageChildSize() {
@@ -2610,7 +2653,7 @@ var Jr, Yr, Xr, Zr = t((() => {
 			return this._marginSizeCache.totalSize;
 		}
 		getLeadingMarginValue(e, t) {
-			return this._metricsCache.get(e)?.[Wr(t)] || 0;
+			return this._metricsCache.get(e)?.[qr(t)] || 0;
 		}
 		getChildSize(e) {
 			return this._childSizeCache.getSize(e);
@@ -2621,12 +2664,12 @@ var Jr, Yr, Xr, Zr = t((() => {
 		clear() {
 			this._childSizeCache.clear(), this._marginSizeCache.clear(), this._metricsCache.clear();
 		}
-	}, Xr = class extends Vr {
+	}, $r = class extends Wr {
 		constructor() {
 			super(...arguments), this._itemSize = {
 				width: 100,
 				height: 100
-			}, this._physicalItems = /* @__PURE__ */ new Map(), this._newPhysicalItems = /* @__PURE__ */ new Map(), this._metricsCache = new Yr(), this._anchorIdx = null, this._anchorPos = null, this._stable = !0, this._measureChildren = !0, this._estimate = !0;
+			}, this._physicalItems = /* @__PURE__ */ new Map(), this._newPhysicalItems = /* @__PURE__ */ new Map(), this._metricsCache = new Qr(), this._anchorIdx = null, this._anchorPos = null, this._stable = !0, this._measureChildren = !0, this._estimate = !0;
 		}
 		get measureChildren() {
 			return this._measureChildren;
@@ -2745,7 +2788,7 @@ var Jr, Yr, Xr, Zr = t((() => {
 			return {
 				[this._positionDim]: this._getPosition(e),
 				[this._secondaryPositionDim]: 0,
-				[Kr(this.direction)]: -(this._metricsCache.getLeadingMarginValue(e, this.direction) ?? this._metricsCache.averageMarginSize)
+				[Yr(this.direction)]: -(this._metricsCache.getLeadingMarginValue(e, this.direction) ?? this._metricsCache.averageMarginSize)
 			};
 		}
 		_getItemSize(e) {
@@ -2758,7 +2801,7 @@ var Jr, Yr, Xr, Zr = t((() => {
 			this._metricsCache.clear(), this._scheduleReflow();
 		}
 	};
-})), Qr = typeof window < "u" ? window.ResizeObserver : void 0, $r = Symbol("virtualizerRef"), ei = "virtualizer-sizer", ti, ni = class {
+})), ti = typeof window < "u" ? window.ResizeObserver : void 0, ni = Symbol("virtualizerRef"), ri = "virtualizer-sizer", ii, ai = class {
 	constructor(e) {
 		if (this._benchmarkStart = null, this._layout = null, this._clippingAncestors = [], this._scrollSize = null, this._scrollError = null, this._childrenPos = null, this._childMeasurements = null, this._toBeMeasured = /* @__PURE__ */ new Map(), this._rangeChanged = !0, this._itemsChanged = !0, this._visibilityChanged = !0, this._scrollerController = null, this._isScroller = !1, this._sizer = null, this._hostElementRO = null, this._childrenRO = null, this._mutationObserver = null, this._scrollEventListeners = [], this._scrollEventListenerOptions = { passive: !0 }, this._loadListener = this._childLoaded.bind(this), this._scrollIntoViewTarget = null, this._updateScrollIntoViewCoordinates = null, this._items = [], this._first = -1, this._last = -1, this._firstVisible = -1, this._lastVisible = -1, this._scheduled = /* @__PURE__ */ new WeakSet(), this._measureCallback = null, this._measureChildOverride = null, this._layoutCompletePromise = null, this._layoutCompleteResolver = null, this._layoutCompleteRejecter = null, this._pendingLayoutComplete = null, this._layoutInitialized = null, this._connected = !1, !e) throw Error("Virtualizer constructor requires a configuration object");
 		if (e.hostElement) this._init(e);
@@ -2773,16 +2816,16 @@ var Jr, Yr, Xr, Zr = t((() => {
 		this._layoutInitialized = this._initLayout(t);
 	}
 	_initObservers() {
-		this._mutationObserver = new MutationObserver(this._finishDOMUpdate.bind(this)), this._hostElementRO = new Qr(() => this._hostElementSizeChanged()), this._childrenRO = new Qr(this._childrenSizeChanged.bind(this));
+		this._mutationObserver = new MutationObserver(this._finishDOMUpdate.bind(this)), this._hostElementRO = new ti(() => this._hostElementSizeChanged()), this._childrenRO = new ti(this._childrenSizeChanged.bind(this));
 	}
 	_initHostElement(e) {
 		let t = this._hostElement = e.hostElement;
-		this._applyVirtualizerStyles(), t[$r] = this;
+		this._applyVirtualizerStyles(), t[ni] = this;
 	}
 	connected() {
 		this._initObservers();
 		let e = this._isScroller;
-		this._clippingAncestors = si(this._hostElement, e), this._scrollerController = new Lr(this, this._clippingAncestors[0]), this._schedule(this._updateLayout), this._observeAndListen(), this._connected = !0;
+		this._clippingAncestors = ui(this._hostElement, e), this._scrollerController = new Br(this, this._clippingAncestors[0]), this._schedule(this._updateLayout), this._observeAndListen(), this._connected = !0;
 	}
 	_observeAndListen() {
 		this._mutationObserver.observe(this._hostElement, { childList: !0 }), this._hostElementRO.observe(this._hostElement), this._scrollEventListeners.push(window), window.addEventListener("scroll", this, this._scrollEventListenerOptions), this._clippingAncestors.forEach((e) => {
@@ -2799,20 +2842,20 @@ var Jr, Yr, Xr, Zr = t((() => {
 	_getSizer() {
 		let e = this._hostElement;
 		if (!this._sizer) {
-			let t = e.querySelector(`[${ei}]`);
-			t || (t = document.createElement("div"), t.setAttribute(ei, ""), e.appendChild(t)), Object.assign(t.style, {
+			let t = e.querySelector(`[${ri}]`);
+			t || (t = document.createElement("div"), t.setAttribute(ri, ""), e.appendChild(t)), Object.assign(t.style, {
 				position: "absolute",
 				margin: "-2px 0 0 0",
 				padding: 0,
 				visibility: "hidden",
 				fontSize: "2px"
-			}), t.textContent = "&nbsp;", t.setAttribute(ei, ""), this._sizer = t;
+			}), t.textContent = "&nbsp;", t.setAttribute(ri, ""), this._sizer = t;
 		}
 		return this._sizer;
 	}
 	async updateLayoutConfig(e) {
 		await this._layoutInitialized;
-		let t = e.type || ti;
+		let t = e.type || ii;
 		if (typeof t == "function" && this._layout instanceof t) {
 			let t = { ...e };
 			return delete t.type, this._layout.config = t, !0;
@@ -2826,7 +2869,7 @@ var Jr, Yr, Xr, Zr = t((() => {
 			let r = { ...e };
 			delete r.type, t = r;
 		} else t = e;
-		n === void 0 && (ti = n = (await Promise.resolve().then(() => (Zr(), Ur))).FlowLayout), this._layout = new n((e) => this._handleLayoutMessage(e), t), this._layout.measureChildren && typeof this._layout.updateItemSizes == "function" && (typeof this._layout.measureChildren == "function" && (this._measureChildOverride = this._layout.measureChildren), this._measureCallback = this._layout.updateItemSizes.bind(this._layout)), this._layout.listenForChildLoadEvents && this._hostElement.addEventListener("load", this._loadListener, !0), this._schedule(this._updateLayout);
+		n === void 0 && (ii = n = (await Promise.resolve().then(() => (ei(), Kr))).FlowLayout), this._layout = new n((e) => this._handleLayoutMessage(e), t), this._layout.measureChildren && typeof this._layout.updateItemSizes == "function" && (typeof this._layout.measureChildren == "function" && (this._measureChildOverride = this._layout.measureChildren), this._measureCallback = this._layout.updateItemSizes.bind(this._layout)), this._layout.listenForChildLoadEvents && this._hostElement.addEventListener("load", this._loadListener, !0), this._schedule(this._updateLayout);
 	}
 	startBenchmarking() {
 		this._benchmarkStart === null && (this._benchmarkStart = window.performance.now());
@@ -2854,7 +2897,7 @@ var Jr, Yr, Xr, Zr = t((() => {
 		return Object.assign({
 			width: t,
 			height: n
-		}, ri(e));
+		}, oi(e));
 	}
 	async _schedule(e) {
 		this._scheduled.has(e) || (this._scheduled.add(e), await Promise.resolve(), this._scheduled.delete(e), e.call(this));
@@ -2890,11 +2933,11 @@ var Jr, Yr, Xr, Zr = t((() => {
 		}
 	}
 	_handleLayoutMessage(e) {
-		e.type === "stateChanged" ? this._updateDOM(e) : e.type === "visibilityChanged" ? (this._firstVisible = e.firstVisible, this._lastVisible = e.lastVisible, this._notifyVisibility()) : e.type === "unpinned" && this._hostElement.dispatchEvent(new Fr());
+		e.type === "stateChanged" ? this._updateDOM(e) : e.type === "visibilityChanged" ? (this._firstVisible = e.firstVisible, this._lastVisible = e.lastVisible, this._notifyVisibility()) : e.type === "unpinned" && this._hostElement.dispatchEvent(new Rr());
 	}
 	get _children() {
 		let e = [], t = this._hostElement.firstElementChild;
-		for (; t;) t.hasAttribute(ei) || e.push(t), t = t.nextElementSibling;
+		for (; t;) t.hasAttribute(ri) || e.push(t), t = t.nextElementSibling;
 		return e;
 	}
 	_updateView() {
@@ -2966,13 +3009,13 @@ var Jr, Yr, Xr, Zr = t((() => {
 		t && e?.has(t) && this._updateScrollIntoViewCoordinates(this._layout.getScrollIntoViewCoordinates(this._scrollIntoViewTarget));
 	}
 	_notifyRange() {
-		this._hostElement.dispatchEvent(new Nr({
+		this._hostElement.dispatchEvent(new Ir({
 			first: this._first,
 			last: this._last
 		}));
 	}
 	_notifyVisibility() {
-		this._hostElement.dispatchEvent(new Pr({
+		this._hostElement.dispatchEvent(new Lr({
 			first: this._firstVisible,
 			last: this._lastVisible
 		}));
@@ -3006,33 +3049,33 @@ var Jr, Yr, Xr, Zr = t((() => {
 		this._scheduleLayoutComplete(), this._itemsChanged = !1, this._rangeChanged = !1;
 	}
 };
-function ri(e) {
+function oi(e) {
 	let t = window.getComputedStyle(e);
 	return {
-		marginTop: ii(t.marginTop),
-		marginRight: ii(t.marginRight),
-		marginBottom: ii(t.marginBottom),
-		marginLeft: ii(t.marginLeft)
+		marginTop: si(t.marginTop),
+		marginRight: si(t.marginRight),
+		marginBottom: si(t.marginBottom),
+		marginLeft: si(t.marginLeft)
 	};
 }
-function ii(e) {
+function si(e) {
 	let t = e ? parseFloat(e) : NaN;
 	return Number.isNaN(t) ? 0 : t;
 }
-function ai(e) {
+function ci(e) {
 	if (e.assignedSlot !== null) return e.assignedSlot;
 	if (e.parentElement !== null) return e.parentElement;
 	let t = e.parentNode;
 	return t && t.nodeType === Node.DOCUMENT_FRAGMENT_NODE && t.host || null;
 }
-function oi(e, t = !1) {
-	let n = [], r = t ? e : ai(e);
-	for (; r !== null;) n.push(r), r = ai(r);
+function li(e, t = !1) {
+	let n = [], r = t ? e : ci(e);
+	for (; r !== null;) n.push(r), r = ci(r);
 	return n;
 }
-function si(e, t = !1) {
+function ui(e, t = !1) {
 	let n = !1;
-	return oi(e, t).filter((e) => {
+	return li(e, t).filter((e) => {
 		if (n) return !1;
 		let t = getComputedStyle(e);
 		return n = t.position === "fixed", t.overflow !== "visible";
@@ -3040,15 +3083,15 @@ function si(e, t = !1) {
 }
 //#endregion
 //#region node_modules/@lit-labs/virtualizer/virtualize.js
-var ci = (e) => e, li = (e, t) => y`${t}: ${JSON.stringify(e, null, 2)}`, ui = nn(class extends Ar {
+var di = (e) => e, fi = (e, t) => y`${t}: ${JSON.stringify(e, null, 2)}`, pi = nn(class extends Nr {
 	constructor(e) {
-		if (super(e), this._virtualizer = null, this._first = 0, this._last = -1, this._renderItem = (e, t) => li(e, t + this._first), this._keyFunction = (e, t) => ci(e, t + this._first), this._items = [], e.type !== tn.CHILD) throw Error("The virtualize directive can only be used in child expressions");
+		if (super(e), this._virtualizer = null, this._first = 0, this._last = -1, this._renderItem = (e, t) => fi(e, t + this._first), this._keyFunction = (e, t) => di(e, t + this._first), this._items = [], e.type !== tn.CHILD) throw Error("The virtualize directive can only be used in child expressions");
 	}
 	render(e) {
 		e && this._setFunctions(e);
 		let t = [];
 		if (this._first >= 0 && this._last >= this._first) for (let e = this._first; e <= this._last; e++) t.push(this._items[e]);
-		return Mr(t, this._keyFunction, this._renderItem);
+		return Fr(t, this._keyFunction, this._renderItem);
 	}
 	update(e, [t]) {
 		this._setFunctions(t);
@@ -3069,7 +3112,7 @@ var ci = (e) => e, li = (e, t) => y`${t}: ${JSON.stringify(e, null, 2)}`, ui = n
 	_makeVirtualizer(e, t) {
 		this._virtualizer && this._virtualizer.disconnected();
 		let { layout: n, scroller: r, items: i } = t;
-		this._virtualizer = new ni({
+		this._virtualizer = new ai({
 			hostElement: e,
 			layout: n,
 			scroller: r
@@ -3087,16 +3130,16 @@ var ci = (e) => e, li = (e, t) => y`${t}: ${JSON.stringify(e, null, 2)}`, ui = n
 	reconnected() {
 		this._virtualizer?.connected();
 	}
-}), di = class extends w {
+}), $ = class extends w {
 	constructor() {
-		super(...arguments), this.items = [], this.renderItem = li, this.keyFunction = ci, this.layout = {}, this.scroller = !1;
+		super(...arguments), this.items = [], this.renderItem = fi, this.keyFunction = di, this.layout = {}, this.scroller = !1;
 	}
 	createRenderRoot() {
 		return this;
 	}
 	render() {
 		let { items: e, renderItem: t, keyFunction: n, layout: r, scroller: i } = this;
-		return y`${ui({
+		return y`${pi({
 			items: e,
 			renderItem: t,
 			keyFunction: n,
@@ -3105,10 +3148,10 @@ var ci = (e) => e, li = (e, t) => y`${t}: ${JSON.stringify(e, null, 2)}`, ui = n
 		})}`;
 	}
 	element(e) {
-		return this[$r]?.element(e);
+		return this[ni]?.element(e);
 	}
 	get layoutComplete() {
-		return this[$r]?.layoutComplete;
+		return this[ni]?.layoutComplete;
 	}
 	scrollToIndex(e, t = "start") {
 		this.element(e)?.scrollIntoView({ block: t });
@@ -3116,22 +3159,22 @@ var ci = (e) => e, li = (e, t) => y`${t}: ${JSON.stringify(e, null, 2)}`, ui = n
 };
 //#endregion
 //#region node_modules/@lit-labs/virtualizer/lit-virtualizer.js
-mr([T({ attribute: !1 })], di.prototype, "items", void 0), mr([T()], di.prototype, "renderItem", void 0), mr([T()], di.prototype, "keyFunction", void 0), mr([T({ attribute: !1 })], di.prototype, "layout", void 0), mr([T({
+_r([T({ attribute: !1 })], $.prototype, "items", void 0), _r([T()], $.prototype, "renderItem", void 0), _r([T()], $.prototype, "keyFunction", void 0), _r([T({ attribute: !1 })], $.prototype, "layout", void 0), _r([T({
 	reflect: !0,
 	type: Boolean
-})], di.prototype, "scroller", void 0), customElements.define("lit-virtualizer", di);
+})], $.prototype, "scroller", void 0), customElements.define("lit-virtualizer", $);
 //#endregion
 //#region src/components/app-table.css?inline
-var fi = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n  display: block;\r\n  /* Fixed height is required for virtualizer to work */\r\n  height: calc(100vh - 140px);\r\n  margin-top: 5px;\r\n}\r\n\r\n.virtual-table {\r\n  display: flex;\r\n  flex-direction: column;\r\n  height: 100%;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n}\r\n\r\n.table-header {\r\n  display: flex;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  flex-shrink: 0;\r\n  /* Replicating .table thead styling */\r\n  border-bottom: 2px solid var(--border-color);\r\n}\r\n\r\n.table-body {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  display: block;\r\n}\r\n\r\n/* Row Styling */\r\n.table-row {\r\n  display: flex;\r\n  border-bottom: 1px solid var(--border-color);\r\n  min-height: 28px;\r\n  align-items: stretch;\r\n  width: 100%;\r\n  background-color: var(--row-bg-normal);\r\n}\r\n\r\n.table-header > div,\r\n.table-row > div {\r\n  padding: 4px 8px;\r\n  border-right: 1px solid var(--border-color);\r\n  display: flex;\r\n  align-items: center;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-header > div:last-child,\r\n.table-row > div:last-child {\r\n  border-right: none;\r\n}\r\n\r\n/* Column Widths - matching original table intent */\r\n.col-check {\r\n  width: 35px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-type {\r\n  width: 250px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-left,\r\n.col-right {\r\n  flex: 1;\r\n  min-width: 0;\r\n  /* Support multi-line in value cells */\r\n  word-break: break-all;\r\n  white-space: normal;\r\n  align-items: flex-start;\r\n  padding-top: 4px;\r\n  padding-bottom: 4px;\r\n}\r\n\r\n.col-prop {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-change {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-view {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-cal {\r\n  width: 40px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n/* Indentation & Tree Node */\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n  width: 100%;\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.table-row[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n/* Indicators */\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n/* Row States & Hover */\r\n.clickable-row {\r\n  cursor: pointer;\r\n}\r\n\r\n.clickable-row:hover {\r\n  background-color: var(--hover-bg);\r\n  opacity: 0.9;\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Office 2010 Palette Implementation for Rows */\r\n.table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-40);\r\n}\r\n\r\n[data-theme=\"dark\"] .table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-d25);\r\n}\r\n\r\n.table-row[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Other Header Colors */\r\n.table-row[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"7\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"8\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"9\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n/* Copy Buttons */\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: flex-start;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 4px;\r\n  flex-shrink: 0;\r\n  margin-left: 4px;\r\n}\r\n\r\n/* Badges */\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.empty-container {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  padding: 40px;\r\n  color: var(--text-secondary);\r\n}\r\n", pi = class extends w {
+var mi = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n  display: block;\r\n  /* Fixed height is required for virtualizer to work */\r\n  height: calc(100vh - 140px);\r\n  margin-top: 5px;\r\n}\r\n\r\n.virtual-table {\r\n  display: flex;\r\n  flex-direction: column;\r\n  height: 100%;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n}\r\n\r\n.table-header {\r\n  display: flex;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  flex-shrink: 0;\r\n  /* Replicating .table thead styling */\r\n  border-bottom: 2px solid var(--border-color);\r\n}\r\n\r\n.table-body {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  display: block;\r\n}\r\n\r\n/* Row Styling */\r\n.table-row {\r\n  display: flex;\r\n  border-bottom: 1px solid var(--border-color);\r\n  min-height: 28px;\r\n  align-items: stretch;\r\n  width: 100%;\r\n  background-color: var(--row-bg-normal);\r\n}\r\n\r\n.table-header > div,\r\n.table-row > div {\r\n  padding: 4px 8px;\r\n  border-right: 1px solid var(--border-color);\r\n  display: flex;\r\n  align-items: center;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-header > div:last-child,\r\n.table-row > div:last-child {\r\n  border-right: none;\r\n}\r\n\r\n/* Column Widths - matching original table intent */\r\n.col-check {\r\n  width: 35px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-type {\r\n  width: 250px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-left,\r\n.col-right {\r\n  flex: 1;\r\n  min-width: 0;\r\n  /* Support multi-line in value cells */\r\n  word-break: break-all;\r\n  white-space: normal;\r\n  align-items: flex-start;\r\n  padding-top: 4px;\r\n  padding-bottom: 4px;\r\n}\r\n\r\n.col-prop {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-change {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-view {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-cal {\r\n  width: 40px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n/* Indentation & Tree Node */\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n  width: 100%;\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.table-row[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n/* Indicators */\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n/* Row States & Hover */\r\n.clickable-row {\r\n  cursor: pointer;\r\n}\r\n\r\n.clickable-row:hover {\r\n  background-color: var(--hover-bg);\r\n  opacity: 0.9;\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n  color: slategray;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: #5cb85c;\r\n  border-color: #5cb85c;\r\n}\r\n\r\n/* Office 2010 Palette Implementation for Rows */\r\n.table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-40);\r\n}\r\n\r\n[data-theme=\"dark\"] .table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-d25);\r\n}\r\n\r\n.table-row[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Other Header Colors */\r\n.table-row[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"7\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"8\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"9\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n/* Copy Buttons */\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: flex-start;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 4px;\r\n  flex-shrink: 0;\r\n  margin-left: 4px;\r\n}\r\n\r\n/* Badges */\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: #5cb85c;\r\n}\r\n.len-warn {\r\n  background-color: #d9534f;\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.empty-container {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  padding: 40px;\r\n  color: var(--text-secondary);\r\n}\r\n\r\nol.multi-column {\r\n  column-count: 3;\r\n  column-gap: 40px;\r\n  list-style-position: inside;\r\n  padding: 0;\r\n  margin: 3px;\r\n}\r\n", hi = class extends w {
 	constructor(...e) {
-		super(...e), this.data = new c.StoreController(this, Bn), this.checked = new c.StoreController(this, Ln), this.isFlipped = new c.StoreController(this, Rn), this.onlyEnt = new c.StoreController(this, G), this.onlyEntAtr = new c.StoreController(this, K), this.isLongNamingConvention = new c.StoreController(this, rr), this.showProps = new c.StoreController(this, J), this.toggledProps = new c.StoreController(this, Y), this.hiddenSubs = new c.StoreController(this, X), this.copiedId = null, this.copiedSide = null;
+		super(...e), this.data = new c.StoreController(this, Un), this.checked = new c.StoreController(this, zn), this.isFlipped = new c.StoreController(this, Bn), this.onlyEnt = new c.StoreController(this, U), this.onlyEntAtr = new c.StoreController(this, W), this.isLongNamingConvention = new c.StoreController(this, or), this.showProps = new c.StoreController(this, K), this.toggledProps = new c.StoreController(this, q), this.hiddenSubs = new c.StoreController(this, J), this.shownSubs = new c.StoreController(this, Y), this.copiedId = null, this.copiedSide = null;
 	}
 	static {
-		this.styles = m(fi);
+		this.styles = m(mi);
 	}
 	render() {
 		let e = this.data.value, t = this.isFlipped.value, n = this.checked.value;
-		return e.length === 0 ? this._renderEmptyState() : y`
+		return y`
       <div class="virtual-table">
         <div class="table-header">
           <div class="col-check">${I["square-check"]}</div>
@@ -3144,23 +3187,25 @@ var fi = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n 
           <div class="col-cal">Cal</div>
         </div>
         
-        <lit-virtualizer
-          class="table-body"
-          .items=${e}
-          .renderItem=${(e) => this._renderRow(e, t, n)}
-        ></lit-virtualizer>
+        ${e.length === 0 ? this._renderEmptyState() : y`
+            <lit-virtualizer
+              class="table-body"
+              .items=${e}
+              .renderItem=${(e) => this._renderRow(e, t, n)}
+            ></lit-virtualizer>
+          `}
       </div>
     `;
 	}
 	_renderEmptyState() {
-		return y`
+		return X.value.length === 0 ? y`
       <div class="empty-container">
         <div class="callout">
           <span class="callout-icon">${I["clipboard-list"]}</span>
           ${P("table.empty")}
         </div>
       </div>
-    `;
+    ` : "";
 	}
 	_renderRow(e, t, n) {
 		let r = e.isHeader && !e.isGrouping, i = e.type === "Physical Name" || e.type === "Name", a = r || i, o = n.has(e.id), s = t ? e.right : e.left, c = t ? e.left : e.right, l = e.change;
@@ -3174,13 +3219,13 @@ var fi = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n 
         data-grouping="${e.isGrouping || !1}"
         data-calculated="${e.isCalculated || !1}"
         data-udp="${e.isUDP || !1}"
-        @click=${() => r && e.hasProperties && qn(e.id)}
+        @click=${() => r && e.hasProperties && Xn(e.id)}
         @contextmenu=${(t) => {
-			r && e.hasSubObjects && (t.preventDefault(), Jn(e.id));
+			r && e.hasSubObjects && (t.preventDefault(), Zn(e.id));
 		}}
       >
         <div class="col-check" @click=${(e) => e.stopPropagation()}>
-           <input type="checkbox" .checked=${o} @change=${() => Yn(e.id)} />
+           <input type="checkbox" .checked=${o} @change=${() => Qn(e.id)} />
         </div>
         <div class="col-type">
           <div class="tree-node">
@@ -3251,8 +3296,8 @@ var fi = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n 
 		return i === 0 ? "" : y`<span class="len-badge ${i > (this.isLongNamingConvention.value ? 50 : 18) ? "len-warn" : "len-ok"}">${i}</span>`;
 	}
 	_areSubObjectsHidden(e) {
-		let t = this.hiddenSubs.value.has(e.id);
-		return this.onlyEnt.value && e.prop === "Ent" && e.hasSubObjects && (t = !t), this.onlyEntAtr.value && (e.prop === "Ent" || e.prop === "Atr") && e.hasSubObjects && (t = !t), t;
+		let t = !1;
+		return this.onlyEnt.value && e.prop === "Ent" && e.hasSubObjects && (t = !0), this.onlyEntAtr.value && (e.prop === "Ent" || e.prop === "Atr") && e.hasSubObjects && (t = !0), e.type === "Model" && (t = !1), t ? !this.shownSubs.value.has(e.id) : this.hiddenSubs.value.has(e.id);
 	}
 	_arePropertiesHidden(e) {
 		let t = this.toggledProps.value.has(e.id);
@@ -3267,15 +3312,15 @@ var fi = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n 
 		});
 	}
 };
-Q([$e()], pi.prototype, "copiedId", void 0), Q([$e()], pi.prototype, "copiedSide", void 0), pi = Q([Xe("app-table")], pi);
+Z([$e()], hi.prototype, "copiedId", void 0), Z([$e()], hi.prototype, "copiedSide", void 0), hi = Z([Xe("app-table")], hi);
 //#endregion
 //#region src/main.ts
-var mi = class extends w {
+var gi = class extends w {
 	constructor(...e) {
 		super(...e), this.isLoading = new c.StoreController(this, V), this.fileName = new c.StoreController(this, H);
 	}
 	static {
-		this.styles = m(ar);
+		this.styles = m(cr);
 	}
 	loadHtml(e, t = "External Report") {
 		H.set(t), V.set(!0), setTimeout(() => {
@@ -3357,16 +3402,16 @@ var mi = class extends w {
 		}
 	}
 	_processFileContent(e) {
-		Hn(un(e)), Xn(), V.set(!1);
+		Gn(un(e)), $n(), V.set(!1);
 	}
 };
-mi = Q([Xe("app-root")], mi);
+gi = Z([Xe("app-root")], gi);
 //#endregion
 //#region src/store/i18n.store.ts
-var hi = /* @__PURE__ */ z("pt-BR"), gi = async (e) => {
-	await lt(e), hi.set(e);
+var _i = /* @__PURE__ */ z("pt-BR"), vi = async (e) => {
+	await lt(e), _i.set(e);
 };
-customElements.get("erwin-comparison-formatter") || customElements.define("erwin-comparison-formatter", mi), (async () => {
+customElements.get("erwin-comparison-formatter") || customElements.define("erwin-comparison-formatter", gi), (async () => {
 	at({ loader: (e) => Promise.resolve({
 		header: {
 			title: "Formatador de Comparação do Erwin",
@@ -3375,6 +3420,7 @@ customElements.get("erwin-comparison-formatter") || customElements.define("erwin
 			flip_tooltip: "Inverter lados dos modelos",
 			upload: "Arraste o HTML do Erwin aqui ou clique para carregar",
 			close: "Fechar Arquivo",
+			change_theme: "Alterar Tema",
 			filters: {
 				change: "Tipo de Alteração",
 				category: "Categoria",
@@ -3434,9 +3480,9 @@ customElements.get("erwin-comparison-formatter") || customElements.define("erwin
 			no_props: "Nenhuma propriedade encontrada nos dados.",
 			tooltip: "Abrir filtro de visibilidade de propriedades"
 		}
-	}) }), await gi("pt-BR");
+	}) }), await vi("pt-BR");
 })().catch((e) => {
 	console.error("[Erwin Library] Failed to initialize i18n:", e);
 });
 //#endregion
-export { mi as AppRoot };
+export { gi as AppRoot };
