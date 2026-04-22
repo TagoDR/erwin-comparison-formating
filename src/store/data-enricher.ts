@@ -162,18 +162,35 @@ function updateHeaderFromProperties(
  * Formats long text properties with HTML line breaks for better readability.
  */
 function formatPropertyText(type: string, left: string, right: string) {
-  if (!['Comment', 'Definition'].includes(type)) return { left, right };
+  if (['Comments', 'Definition'].includes(type)) {
+    const format = (text: string) => {
+      if (!text) return text;
+      return text
+        .replace(/ ([0-9]+\. \w+)/g, '<br> $1')
+        .replace(/\.(^<br>) ([A-Z])/g, '.<br> $1')
+        .replace(/;(^<br>) /g, ';<br> ')
+        .replace(/ (\d* ?[-•] )/g, '<br> $1')
+        .replace(/<br> *<br>/g, '<br>');
+    };
+    return { left: format(left), right: format(right) };
+  } else if (['Column Order List', 'Attribute Order List', 'Field Order'].includes(type)) {
+    const format = (text: string) => {
+      if (!text) return text;
+      // make html ordered list with multicolumn to save vertical space
 
-  const format = (text: string) => {
-    if (!text) return text;
-    return text
-      .replace(/\. ([A-Z])/g, '.<br>$1')
-      .replace(/; /g, ';<br>')
-      .replace(/ ([0-9]+\. )/g, '<br>$1')
-      .replace(/ ([-•] )/g, '<br>$1');
-  };
-
-  return { left: format(left), right: format(right) };
+      return (
+        '<ol class="multi-column">' +
+        text
+          .split(',')
+          .map(item => `<li>${item.trim()},</li>`)
+          .join('') +
+        '</ol>'
+      );
+    };
+    return { left: format(left), right: format(right) };
+  } else {
+    return { left, right };
+  }
 }
 
 function determineChange(left: string, right: string): Change {

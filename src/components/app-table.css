@@ -426,3 +426,11 @@
   padding: 40px;
   color: var(--text-secondary);
 }
+
+ol.multi-column {
+  column-count: 3;
+  column-gap: 40px;
+  list-style-position: inside;
+  padding: 0;
+  margin: 3px;
+}
