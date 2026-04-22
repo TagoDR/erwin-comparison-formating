@@ -55,15 +55,29 @@ export class PropertyDrawer extends LitElement {
             groups.length === 0
               ? html`<div class="empty-state">${translate('drawer.no_props')}</div>`
               : groups.map(group => {
-                  const allVisible = group.children.every(p => !hiddenSet.has(p.key));
-                  const anyVisible = group.children.some(p => !hiddenSet.has(p.key));
+                  const headerVisible = group.headerKey ? !hiddenSet.has(group.headerKey) : true;
+                  const allVisible =
+                    headerVisible && group.children.every(p => !hiddenSet.has(p.key));
+                  const anyVisible =
+                    headerVisible || group.children.some(p => !hiddenSet.has(p.key));
 
                   return html`
             <div class="property-group">
               <div class="group-header clickable" @click=${() => togglePropertyGroup(group.parentType)}>
                 <input type="checkbox" .checked=${allVisible} .indeterminate=${anyVisible && !allVisible} readonly />
-                <span class="group-label">${group.parentType}</span>
+                <div class="group-info">
+                   <span class="group-label">${group.parentType}</span>
+                   ${
+                     group.headerSpaces
+                       ? html`<span class="group-meta">${'·'.repeat(group.headerSpaces / 3)}</span>`
+                       : ''
+                   }
+                </div>
               </div>
+              
+              ${
+                group.children.length > 0
+                  ? html`
               <ul class="property-list">
                 ${group.children.map(p => {
                   const isVisible = !hiddenSet.has(p.key);
@@ -82,6 +96,9 @@ export class PropertyDrawer extends LitElement {
                   `;
                 })}
               </ul>
+              `
+                  : ''
+              }
             </div>
           `;
                 })

@@ -173,10 +173,13 @@ export interface PropertyDefinition {
   type: string;
   spaces: number;
   parentType: string;
+  isHeader?: boolean;
 }
 
 export interface PropertyTree {
   parentType: string;
+  headerKey?: string;
+  headerSpaces?: number;
   children: PropertyDefinition[];
 }
 

@@ -1,5 +1,11 @@
 import { atom, computed } from 'nanostores';
-import type { EnrichedDiffRow, ModelObject, PropertyDefinition, StatsSummary } from '../types.js';
+import type {
+  EnrichedDiffRow,
+  ModelObject,
+  PropertyDefinition,
+  PropertyTree,
+  StatsSummary,
+} from '../types.js';
 import { flattenAndEnrichModel } from './data-enricher.js';
 import { filterAndApplyVisibility } from './data-filter.js';
 
@@ -127,35 +133,66 @@ export const filteredData$ = computed(
 );
 
 /**
- * Extracts unique property definitions organized as a tree (grouped by Parent Type).
+ * Extracts unique object types and property definitions organized by hierarchy.
+ * This ensures the drawer follows the natural data structure.
  */
 export const uniqueProperties$ = computed(enrichedData$, data => {
-  const parentTypeOrder: string[] = [];
-  const propertyMap = new Map<string, PropertyDefinition[]>();
-  const seenPropertyKeys = new Set<string>();
+  const definitions: PropertyDefinition[] = [];
+  const seenKeys = new Set<string>();
 
   for (const r of data) {
-    if (r.isHeader || !r.parentType) continue;
+    if (r.isGrouping) continue;
 
-    const parentType = r.parentType;
-    const key = `${r.type}|${r.spaces}|${parentType}`;
+    let key: string;
+    let type: string;
+    let parentType: string;
+    let isHeader = false;
 
-    if (!parentTypeOrder.includes(parentType)) {
-      parentTypeOrder.push(parentType);
+    if (r.isHeader) {
+      key = `H|${r.type}|${r.spaces}`;
+      type = r.type;
+      parentType = r.type;
+      isHeader = true;
+    } else {
+      key = `P|${r.type}|${r.spaces}|${r.parentType}`;
+      type = r.type;
+      parentType = r.parentType;
     }
 
-    if (!seenPropertyKeys.has(key)) {
-      seenPropertyKeys.add(key);
-      const list = propertyMap.get(parentType) || [];
-      list.push({ key, type: r.type, spaces: r.spaces, parentType });
-      propertyMap.set(parentType, list);
+    if (!seenKeys.has(key)) {
+      seenKeys.add(key);
+      definitions.push({
+        key,
+        type,
+        spaces: r.spaces,
+        parentType,
+        isHeader,
+      });
     }
   }
 
-  return parentTypeOrder.map(parentType => ({
-    parentType,
-    children: propertyMap.get(parentType) || [],
-  }));
+  const groups: PropertyTree[] = [];
+  const groupMap = new Map<string, PropertyTree>();
+
+  for (const def of definitions) {
+    const groupKey = def.isHeader ? def.type : def.parentType;
+
+    let group = groupMap.get(groupKey);
+    if (!group) {
+      group = { parentType: groupKey, children: [] };
+      groupMap.set(groupKey, group);
+      groups.push(group);
+    }
+
+    if (def.isHeader) {
+      group.headerKey = def.key;
+      group.headerSpaces = def.spaces;
+    } else {
+      group.children.push(def);
+    }
+  }
+
+  return groups;
 });
 
 /**
@@ -178,7 +215,7 @@ export function setModelData(model: ModelObject | null) {
 }
 
 /**
- * Toggles all properties in a specific parent group.
+ * Toggles all properties in a specific group.
  * If at least one is visible, it hides all. If all are hidden, it shows all.
  */
 export const togglePropertyGroup = (parentType: string) => {
@@ -188,11 +225,15 @@ export const togglePropertyGroup = (parentType: string) => {
 
   const currentHidden = new Set(hiddenProperties$.get());
   const allKeys = group.children.map(p => p.key);
+  if (group.headerKey) allKeys.push(group.headerKey);
+
   const anyVisible = allKeys.some(k => !currentHidden.has(k));
 
   if (anyVisible) {
     // Hide all in this group
-    for (const k of allKeys) currentHidden.add(k);
+    for (const k of allKeys) {
+      currentHidden.add(k);
+    }
   } else {
     // Show all in this group
     for (const k of allKeys) currentHidden.delete(k);
@@ -201,13 +242,20 @@ export const togglePropertyGroup = (parentType: string) => {
 };
 
 /**
- * Toggles a property visibility in the hidden set by its unique key.
- * @param key Format: `${type}|${spaces}|${parentType}`
+ * Toggles a property or header visibility in the hidden set by its unique key.
+ * Also handles cascading hiding for headers.
  */
 export const toggleProperty = (key: string) => {
   const current = new Set(hiddenProperties$.get());
-  if (current.has(key)) current.delete(key);
-  else current.add(key);
+
+  if (current.has(key)) {
+    current.delete(key);
+  } else {
+    // Exception: Model header cannot be hidden
+    if (key.startsWith('H|Model|')) return;
+    current.add(key);
+  }
+
   hiddenProperties$.set(current);
 };
 
@@ -217,6 +265,9 @@ export const toggleProperty = (key: string) => {
 export const hideAllProperties = () => {
   const allKeys = new Set<string>();
   uniqueProperties$.get().forEach(group => {
+    if (group.headerKey && !group.headerKey.startsWith('H|Model|')) {
+      allKeys.add(group.headerKey);
+    }
     group.children.forEach(p => {
       allKeys.add(p.key);
     });
