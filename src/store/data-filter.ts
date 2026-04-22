@@ -18,6 +18,7 @@ export function filterAndApplyVisibility(
     globalShowProps: boolean;
     toggledProps: Set<string>;
     hiddenSubs: Set<string>;
+    shownSubs: Set<string>;
   },
   rowsById: Map<string, EnrichedDiffRow>,
   childrenMap: Map<string, string[]>,
@@ -165,6 +166,7 @@ function applyHierarchicalVisibility(
     globalShowProps: boolean;
     toggledProps: Set<string>;
     hiddenSubs: Set<string>;
+    shownSubs: Set<string>;
     onlyEntities?: boolean;
     onlyEntitiesAndAttributes?: boolean;
   },
@@ -195,28 +197,34 @@ function applyHierarchicalVisibility(
 
         // 2. Sub-Object Visibility
         if (row.isHeader && !shouldHide) {
-          let isSubHidden = visibility.hiddenSubs.has(row.parentId);
-
-          // Special Rule: Right clicking Model does not hide its direct Entity/Attribute children
-          if (
-            isSubHidden &&
-            parent.type === 'Model' &&
-            (row.prop === 'Ent' || row.prop === 'Atr')
-          ) {
-            isSubHidden = false;
-          }
-
-          // Default Collapse Logic for "Only X" Modes (Drill-down behavior)
-          // Note: These values should ideally come from filters, but they impact visibility logic here.
+          // Determine Default Visibility for this row based on mode
+          let isDefaultHidden = false;
+          
           if (visibility.onlyEntities && parent.prop === 'Ent' && row.prop !== 'Ent') {
-            isSubHidden = !isSubHidden;
+            isDefaultHidden = true;
           }
           if (visibility.onlyEntitiesAndAttributes) {
-            if (parent.prop === 'Ent' && row.prop !== 'Atr') isSubHidden = !isSubHidden;
-            if (parent.prop === 'Atr' && row.type !== 'Field') isSubHidden = !isSubHidden;
+            if (parent.prop === 'Ent' && row.prop !== 'Atr') isDefaultHidden = true;
+            if (parent.prop === 'Atr' && row.type !== 'Field') isDefaultHidden = true;
           }
 
-          if (isSubHidden) shouldHide = true;
+          // Special Rule: Model's direct Entity/Attribute children are always visible by default
+          if (parent.type === 'Model' && (row.prop === 'Ent' || row.prop === 'Atr')) {
+            isDefaultHidden = false;
+          }
+
+          // Apply Manual Overrides
+          if (isDefaultHidden) {
+            // If hidden by default, it's only shown if explicitly in shownSubs
+            if (!visibility.shownSubs.has(row.parentId)) {
+              shouldHide = true;
+            }
+          } else {
+            // If visible by default, it's hidden if explicitly in hiddenSubs
+            if (visibility.hiddenSubs.has(row.parentId)) {
+              shouldHide = true;
+            }
+          }
         }
 
         if (shouldHide) {
