@@ -54,7 +54,7 @@ export class AppHeader extends LitElement {
         }
 
         <div class="header-controls">
-          <button class="theme-toggle" @click=${toggleTheme} title="Change Theme">
+          <button class="theme-toggle" @click=${toggleTheme} title="${translate('header.change_theme')}">
             ${this.theme.value === 'dark' ? icons.sun : icons.moon}
           </button>
           
