@@ -212,6 +212,7 @@
   border: 1px solid transparent;
   background: transparent;
   box-shadow: none;
+  color: slategray;
 }
 
 .copy-btn svg {
