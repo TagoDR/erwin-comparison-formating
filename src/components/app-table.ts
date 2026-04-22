@@ -1,10 +1,10 @@
 import { StoreController } from '@nanostores/lit';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { repeat } from 'lit/directives/repeat.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { translate } from 'lit-translate';
 import icons from '../icons';
+import '@lit-labs/virtualizer';
 import {
   checkedIds$,
   filteredData$,
@@ -24,21 +24,20 @@ import tableStyles from './app-table.css?inline';
 
 /**
  * Main data grid component for displaying Erwin differences.
- * Uses optimized flat data from the store where hierarchical visibility
- * is already pre-calculated.
+ * Uses @lit-labs/virtualizer for high-performance rendering of massive datasets.
  */
 @customElement('app-table')
 export class AppTable extends LitElement {
   static styles = unsafeCSS(tableStyles);
   private data = new StoreController(this, filteredData$);
-  private showProps = new StoreController(this, showProperties$);
-  private toggledProps = new StoreController(this, toggledPropertiesIds$);
-  private hiddenSubs = new StoreController(this, hiddenSubObjectsIds$);
   private checked = new StoreController(this, checkedIds$);
   private isFlipped = new StoreController(this, isFlipped$);
   private onlyEnt = new StoreController(this, onlyEntities$);
   private onlyEntAtr = new StoreController(this, onlyEntitiesAndAttributes$);
   private isLongNamingConvention = new StoreController(this, isLongNamingConvention$);
+  private showProps = new StoreController(this, showProperties$);
+  private toggledProps = new StoreController(this, toggledPropertiesIds$);
+  private hiddenSubs = new StoreController(this, hiddenSubObjectsIds$);
 
   @state() private copiedId: string | null = null;
   @state() private copiedSide: 'left' | 'right' | null = null;
@@ -48,45 +47,40 @@ export class AppTable extends LitElement {
     const flipped = this.isFlipped.value;
     const checkedSet = this.checked.value;
 
+    if (visibleRows.length === 0) {
+      return this._renderEmptyState();
+    }
+
     return html`
-      <table class="table table-condensed table-hover table-container">
-          <thead>
-            <tr>
-              <th class="col-check">${icons['square-check']}</th>
-              <th class="col-type">${translate('table.col_type')}</th>
-              <th class="col-left">${flipped ? translate('table.col_right') : translate('table.col_left')}</th>
-              <th class="col-right">${flipped ? translate('table.col_left') : translate('table.col_right')}</th>
-              <th class="col-prop">${translate('table.col_prop')}</th>
-              <th class="col-change">${translate('table.col_change')}</th>
-              <th class="col-view">${translate('table.col_view')}</th>
-              <th class="col-cal">Cal</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${
-              visibleRows.length === 0
-                ? this._renderEmptyState()
-                : repeat(
-                    visibleRows,
-                    row => row.id,
-                    row => this._renderRow(row, flipped, checkedSet),
-                  )
-            }
-        </tbody>
-      </table>
+      <div class="virtual-table">
+        <div class="table-header">
+          <div class="col-check">${icons['square-check']}</div>
+          <div class="col-type">${translate('table.col_type')}</div>
+          <div class="col-left">${flipped ? translate('table.col_right') : translate('table.col_left')}</div>
+          <div class="col-right">${flipped ? translate('table.col_left') : translate('table.col_right')}</div>
+          <div class="col-prop">${translate('table.col_prop')}</div>
+          <div class="col-change">${translate('table.col_change')}</div>
+          <div class="col-view">${translate('table.col_view')}</div>
+          <div class="col-cal">Cal</div>
+        </div>
+        
+        <lit-virtualizer
+          class="table-body"
+          .items=${visibleRows}
+          .renderItem=${(row: EnrichedDiffRow) => this._renderRow(row, flipped, checkedSet)}
+        ></lit-virtualizer>
+      </div>
     `;
   }
 
   private _renderEmptyState() {
     return html`
-      <tr>
-        <td colspan="8" class="text-center empty-cell">
-          <div class="callout">
-            <span class="callout-icon">${icons['clipboard-list']}</span>
-            ${translate('table.empty')}
-          </div>
-        </td>
-      </tr>
+      <div class="empty-container">
+        <div class="callout">
+          <span class="callout-icon">${icons['clipboard-list']}</span>
+          ${translate('table.empty')}
+        </div>
+      </div>
     `;
   }
 
@@ -106,7 +100,8 @@ export class AppTable extends LitElement {
     }
 
     return html`
-      <tr 
+      <div 
+        class="table-row ${isChecked ? 'checked-row' : ''} ${isIdentificationRow ? 'clickable-row' : ''}"
         data-change="${change}" 
         data-level="${row.level}"
         data-prop="${row.prop}"
@@ -114,7 +109,6 @@ export class AppTable extends LitElement {
         data-grouping="${row.isGrouping || false}"
         data-calculated="${row.isCalculated || false}"
         data-udp="${row.isUDP || false}"
-        class="${isChecked ? 'checked-row' : ''} ${isIdentificationRow ? 'clickable-row' : ''}"
         @click=${() => isIdentificationRow && row.hasProperties && togglePropertiesIndividual(row.id)}
         @contextmenu=${(e: MouseEvent) => {
           if (isIdentificationRow && row.hasSubObjects) {
@@ -123,10 +117,10 @@ export class AppTable extends LitElement {
           }
         }}
       >
-        <td class="col-check" @click=${(e: Event) => e.stopPropagation()}>
+        <div class="col-check" @click=${(e: Event) => e.stopPropagation()}>
            <input type="checkbox" .checked=${isChecked} @change=${() => toggleCheck(row.id)} />
-        </td>
-        <td class="row-type">
+        </div>
+        <div class="col-type">
           <div class="tree-node">
             <div class="indent-dots">
               ${Array.from({ length: row.level }).map(() => html`<span class="dot">·</span>`)}
@@ -137,14 +131,14 @@ export class AppTable extends LitElement {
               ${this._renderIndicators(row)}
             </div>
           </div>
-        </td>
-        <td class="row-left">${this._renderValueCell(row, leftVal, 'left', showCopy)}</td>
-        <td class="row-right">${this._renderValueCell(row, rightVal, 'right', showCopy)}</td>
-        <td class="row-prop">${row.prop}</td>
-        <td class="row-change">${isIdentificationRow ? change : ''}</td>
-        <td class="row-view">${isIdentificationRow ? row.view : ''}</td>
-        <td class="row-cal">${row.isCalculated ? 'C' : ''}</td>
-      </tr>
+        </div>
+        <div class="col-left">${this._renderValueCell(row, leftVal, 'left', showCopy)}</div>
+        <div class="col-right">${this._renderValueCell(row, rightVal, 'right', showCopy)}</div>
+        <div class="col-prop">${row.prop}</div>
+        <div class="col-change">${isIdentificationRow ? change : ''}</div>
+        <div class="col-view">${isIdentificationRow ? row.view : ''}</div>
+        <div class="col-cal">${row.isCalculated ? 'C' : ''}</div>
+      </div>
     `;
   }
 
