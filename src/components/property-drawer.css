@@ -138,12 +138,28 @@
   cursor: pointer;
 }
 
+.group-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+}
+
 .group-label {
   font-size: 0.65rem;
   font-weight: 800;
   color: var(--drawer-group-text);
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.group-meta {
+  font-family: "JetBrains Mono", monospace;
+  letter-spacing: 2px;
+  font-weight: 900;
+  color: var(--drawer-accent-blue);
+  font-size: 0.9rem;
+  line-height: 1;
 }
 
 .property-list {

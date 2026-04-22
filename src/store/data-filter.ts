@@ -33,9 +33,10 @@ export function filterAndApplyVisibility(
   }
 
   if (filters.hiddenProps.size > 0) {
-    current = current.filter(r => {
-      if (r.isHeader) return true;
-      const key = `${r.type}|${r.spaces}|${r.parentType}`;
+    current = current.filter(row => {
+      const key = row.isHeader
+        ? `H|${row.type}|${row.spaces}`
+        : `P|${row.type}|${row.spaces}|${row.parentType}`;
       return !filters.hiddenProps.has(key);
     });
   }
@@ -52,6 +53,7 @@ export function filterAndApplyVisibility(
       ...visibility,
       onlyEntities: filters.onlyEntities,
       onlyEntitiesAndAttributes: filters.onlyEntitiesAndAttributes,
+      hiddenProps: filters.hiddenProps,
     },
     rowsById,
   );
@@ -169,6 +171,7 @@ function applyHierarchicalVisibility(
     shownSubs: Set<string>;
     onlyEntities?: boolean;
     onlyEntitiesAndAttributes?: boolean;
+    hiddenProps: Set<string>;
   },
   rowsById: Map<string, EnrichedDiffRow>,
 ): EnrichedDiffRow[] {
@@ -176,6 +179,15 @@ function applyHierarchicalVisibility(
   const hiddenAncestors = new Set<string>();
 
   for (const row of data) {
+    // 0. Static Filter for Header Types (Cascade to children)
+    if (row.isHeader) {
+      const headerKey = `H|${row.type}|${row.spaces}`;
+      if (visibility.hiddenProps.has(headerKey)) {
+        hiddenAncestors.add(row.id);
+        continue;
+      }
+    }
+
     // If any ancestor is already hidden, this row is hidden too.
     if (row.parentId && hiddenAncestors.has(row.parentId)) {
       hiddenAncestors.add(row.id);
@@ -199,7 +211,7 @@ function applyHierarchicalVisibility(
         if (row.isHeader && !shouldHide) {
           // Determine Default Visibility for this row based on mode
           let isDefaultHidden = false;
-          
+
           if (visibility.onlyEntities && parent.prop === 'Ent' && row.prop !== 'Ent') {
             isDefaultHidden = true;
           }
