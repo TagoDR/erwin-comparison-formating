@@ -272,3 +272,16 @@ export const GROUPING_KEYWORDS: GroupingKeyword[] = [
   'Themes',
   'Views',
 ];
+
+export const LIST_TYPES = [
+  'Attribute Order',
+  'Attribute Order List',
+  'Column Order',
+  'Column Order List',
+  'Field Order',
+  'Field Order List',
+  'Physical Order',
+  'Physical Order List',
+  'Database Order',
+  'Database Order List',
+];
