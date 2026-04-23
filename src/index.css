@@ -98,6 +98,11 @@
 
   --btn-danger-bg: #da4453;
   --btn-danger-border: #ed5565;
+
+  --success-color: #5cb85c;
+  --danger-color: #d9534f;
+  --warning-color: #f0ad4e;
+  --info-color: #4eb1ba;
 }
 
 [data-theme="light"] {

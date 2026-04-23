@@ -347,7 +347,7 @@ tr[data-type="Columns"] .total-col {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #7f8c8d;
+  background-color: var(--text-muted);
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
@@ -365,11 +365,11 @@ tr[data-type="Columns"] .total-col {
 }
 
 input:checked + .slider {
-  background-color: #2ecc71;
+  background-color: var(--success-color);
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2ecc71;
+  box-shadow: 0 0 1px var(--success-color);
 }
 
 input:checked + .slider:before {
