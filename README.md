@@ -11,6 +11,9 @@ A specialized utility to transform raw Erwin Data Modeler HTML difference report
   - **Only Entities**: Focus view on top-level objects (Hides 'Model' container and resets overrides).
   - **Only Ent+Atr**: Focus on Entities and Attributes (Hides 'Model' and resets overrides).
 - **High Performance**: Optimized data engine designed to handle large HTML reports (up to 50MB+).
+- **NoSQL & Nested Fields Support**: Full support for hierarchical NoSQL structures (e.g., MongoDB, JSON-like data).
+  - **Recursive Nesting**: Visualizes deeply nested fields with accurate indentation.
+  - **Independent Interaction**: Properties (Left Click) and Sub-objects (Right Click) can be toggled independently at any nesting level.
 - **Hierarchy Visualization**:
   - Structural guide using middle dots (`·`) for indentation levels.
   - **Type Hover**: Full type text visible on mouse hover when truncated.

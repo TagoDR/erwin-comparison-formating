@@ -50,7 +50,8 @@ The project delivers three primary outputs:
 - **Parser Benchmarking**: Instrumented with `performance.mark/measure` to track DOM parsing, row query, and structure building.
 - **Memory Optimization**: Initial `ModelObject` tree is cleared after enrichment.
 - **O(1) Lookups**: Filtering uses pre-calculated `rowsById` and `childrenMap`.
-- **Virtual Scrolling**: Only visible rows are rendered to the DOM using `@lit-labs/virtualizer`.
+- **ID Stability**: IDs are generated as `${parentId}|${type}-${name}-${indexInParent}` to ensure uniqueness even with duplicate names or deep nesting, essential for `@lit-labs/virtualizer` stability.
+- **Virtual Scrolling**: Only visible rows are rendered to the DOM using `@lit-labs/virtualizer` with unique keys.
 - **Search Debouncing**: Prevents expensive re-filtering on every keystroke.
 - **Single-Pass Visibility**: Hierarchical visibility (cascading hides) is calculated in a single pass O(N).
 
@@ -58,9 +59,9 @@ The project delivers three primary outputs:
 - **Indentation**: 3 spaces = 1 Level. Visualized with dots (`·`).
 - **Calculated Status (C)**: Inherited bottom-up (Parent is calculated only if all descendants are).
 - **UDP Highlighting**: Automatic teal background for User Defined Properties.
+- **NoSQL / Nested Fields**: Recursive support for `Field` objects. Nested fields are treated as sub-objects (Right Click to toggle visibility), while their metadata (e.g., Logical Datatype) remains as properties (Left Click to toggle).
+- **Recursive Visibility**: `Only Ent+Atr` mode recursively shows nested fields if the parent is an Attribute/Field.
 - **Smart Attribute Counting**: Combined child object and Order List property detection.
-- **Explicit Visibility State**: Manual toggles (Right click) are preserved even when switching modes, using a dual-set system (`hiddenSubs` and `shownSubs`).
-- **Type-based Filtering**: Global visibility can be toggled by object type (e.g., hide all Subject Areas) via the Property Drawer.
 
 ## 5. Visual Encoding (Office 2010 Palette)
 
