@@ -46,7 +46,8 @@ The project delivers three primary outputs:
    - **Filter Panel**: Search (300ms debounce), Status filters, Drill-down modes (Only Entities, Only Ent+Atr).
    - **Data Table**: Virtualized list with hierarchy visualization and manual toggle overrides.
 
-### 4.2. Performance Engine (The 50MB Rule)
+### 4.2. Performance Engine & Benchmarking (The 50MB Rule)
+- **Parser Benchmarking**: Instrumented with `performance.mark/measure` to track DOM parsing, row query, and structure building.
 - **Memory Optimization**: Initial `ModelObject` tree is cleared after enrichment.
 - **O(1) Lookups**: Filtering uses pre-calculated `rowsById` and `childrenMap`.
 - **Virtual Scrolling**: Only visible rows are rendered to the DOM using `@lit-labs/virtualizer`.

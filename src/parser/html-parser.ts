@@ -15,9 +15,13 @@ import {
  * @returns A structured ModelObject representing the model hierarchy, or null if no model is found.
  */
 export function parseErwinHtml(html: string): ModelObject | null {
+  performance.mark('parse-start');
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
+  performance.mark('dom-parsed');
+
   const trs = doc.querySelectorAll('tbody tr');
+  performance.mark('rows-queried');
 
   let rootModel: ModelObject | null = null;
   const stack: { obj: ModelObject; level: number; lastGrouping?: GroupingKeyword }[] = [];
@@ -98,6 +102,23 @@ export function parseErwinHtml(html: string): ModelObject | null {
       }
     }
   });
+
+  performance.mark('parse-end');
+  performance.measure('HTML-DOM Parsing', 'parse-start', 'dom-parsed');
+  performance.measure('Rows Gathering', 'dom-parsed', 'rows-queried');
+  performance.measure('Structure Building', 'rows-queried', 'parse-end');
+  performance.measure('Total Parsing Time', 'parse-start', 'parse-end');
+
+  const measures = performance.getEntriesByType('measure');
+  console.table(
+    measures.map(m => ({
+      Task: m.name,
+      'Time (ms)': m.duration.toFixed(2),
+    })),
+  );
+
+  performance.clearMarks();
+  performance.clearMeasures();
 
   return rootModel;
 }
