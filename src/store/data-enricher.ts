@@ -6,6 +6,7 @@ import {
   type EnrichedPropertyRow,
   HEADERS_CONFIG,
   type HeaderKeyword,
+  LIST_TYPES,
   type ModelObject,
   type Prop,
   type View,
@@ -146,7 +147,7 @@ function updateHeaderFromProperties(
     if (p.type === 'Logical Only' && p.left === 'true') header.view = 'L';
     if (p.type === 'Physical Only' && p.left === 'true') header.view = 'P';
 
-    if (['Column Order List', 'Attribute Order List', 'Field Order'].includes(p.type)) {
+    if (LIST_TYPES.includes(p.type)) {
       const count = Math.max(
         p.left ? p.left.split(',').length : 0,
         p.right ? p.right.split(',').length : 0,
@@ -173,19 +174,14 @@ function formatPropertyText(type: string, left: string, right: string) {
         .replace(/<br> *<br>/g, '<br>');
     };
     return { left: format(left), right: format(right) };
-  } else if (['Column Order List', 'Attribute Order List', 'Field Order'].includes(type)) {
+  } else if (LIST_TYPES.includes(type)) {
     const format = (text: string) => {
       if (!text) return text;
       // make html ordered list with multicolumn to save vertical space
 
-      return (
-        '<ol class="multi-column">' +
-        text
-          .split(',')
-          .map(item => `<li>${item.trim()},</li>`)
-          .join('') +
-        '</ol>'
-      );
+      return `<ol class="multi-column">
+                 <li>${text.replaceAll(',', ',</li><li>')}</li>
+              </ol>`;
     };
     return { left: format(left), right: format(right) };
   } else {
