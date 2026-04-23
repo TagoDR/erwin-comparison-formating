@@ -653,7 +653,7 @@
 		init_translate_unsafe_html();
 		init_lang_changed();
 		init_lang_changed_base();
-	})), HEADERS_CONFIG, GROUPING_KEYWORDS;
+	})), HEADERS_CONFIG, GROUPING_KEYWORDS, LIST_TYPES;
 	var init_types = __esmMin((() => {
 		HEADERS_CONFIG = [
 			{
@@ -856,6 +856,18 @@
 			"Tablespaces",
 			"Themes",
 			"Views"
+		];
+		LIST_TYPES = [
+			"Attribute Order",
+			"Attribute Order List",
+			"Column Order",
+			"Column Order List",
+			"Field Order",
+			"Field Order List",
+			"Physical Order",
+			"Physical Order List",
+			"Database Order",
+			"Database Order List"
 		];
 	}));
 	//#endregion
@@ -1139,8 +1151,8 @@
 	*/
 	function flattenAndEnrichModel(model) {
 		const result = [];
-		function process(obj, parentId = "") {
-			const id = parentId ? `${parentId}|${obj.id.type}-${obj.id.left || obj.id.right}` : `root-${obj.id.type}`;
+		function process(obj, parentId = "", indexInParent = 0) {
+			const id = parentId ? `${parentId}|${obj.id.type}-${obj.id.left || obj.id.right || "unnamed"}-${indexInParent}` : `root-${obj.id.type}`;
 			const header = createEnrichedHeader(obj, id, parentId);
 			const properties = (obj.properties || []).map((p, idx) => createEnrichedProperty(p, id, obj.id.type, header.prop, idx));
 			const attrCountFromOrderList = updateHeaderFromProperties(header, properties);
@@ -1151,10 +1163,10 @@
 			if (obj.children) for (const children of Object.values(obj.children)) {
 				if (!children || children.length === 0) continue;
 				hasActualSubObjects = true;
-				for (const child of children) {
-					process(child, id);
+				children.forEach((child, idx) => {
+					process(child, id, idx);
 					if (isAttributeType(child.id.type)) childAttrCount++;
-				}
+				});
 			}
 			header.hasSubObjects = hasActualSubObjects;
 			header.hasProperties = properties.length > 0;
@@ -1219,11 +1231,7 @@
 		for (const p of properties) {
 			if (p.type === "Logical Only" && p.left === "true") header.view = "L";
 			if (p.type === "Physical Only" && p.left === "true") header.view = "P";
-			if ([
-				"Column Order List",
-				"Attribute Order List",
-				"Field Order"
-			].includes(p.type)) {
+			if (LIST_TYPES.includes(p.type)) {
 				const count = Math.max(p.left ? p.left.split(",").length : 0, p.right ? p.right.split(",").length : 0);
 				attrCountFromOrderList = Math.max(attrCountFromOrderList, count);
 			}
@@ -1231,32 +1239,34 @@
 		return attrCountFromOrderList;
 	}
 	/**
+	* Formats flattened text into readable HTML without language-specific keywords.
+	* Uses structural markers (colons, lists, symbols) to determine breaks.
+	*/
+	function formatText(text) {
+		return text.replace(/(^|\s)([A-Z\u00C0-\u00FF][\w\s]{1,20}:)/g, "$1<br>$2<br>").replace(/(\s*[*=-]{3,})\s*/g, "<br>$1<br>").replace(/(^|\s)(\d+\s*[-.)]|-\s+)/g, "<br>$2").replace(/([^0-9]\.{1,3}) (?=[A-Z\u00C0-\u00FF])/g, "$1<br>").replace(/;\s+/g, ";<br>").replace(/(<br>\s*){2,}/g, "<br>").replace(/^<br>/, "").trim();
+	}
+	/**
+	* Formats list of columns separated by commas text into readable HTML ordered list
+	*/
+	function formatList(text) {
+		if (!text) return text;
+		return `<ol class="multi-column">
+                 <li>${text.replaceAll(",", ",</li><li>")}</li>
+              </ol>`;
+	}
+	/**
 	* Formats long text properties with HTML line breaks for better readability.
 	*/
 	function formatPropertyText(type, left, right) {
-		if (["Comments", "Definition"].includes(type)) {
-			const format = (text) => {
-				if (!text) return text;
-				return text.replace(/ ([0-9]+\. \w+)/g, "<br> $1").replace(/\.(^<br>) ([A-Z])/g, ".<br> $1").replace(/;(^<br>) /g, ";<br> ").replace(/ (\d* ?[-•] )/g, "<br> $1").replace(/<br> *<br>/g, "<br>");
-			};
-			return {
-				left: format(left),
-				right: format(right)
-			};
-		} else if ([
-			"Column Order List",
-			"Attribute Order List",
-			"Field Order"
-		].includes(type)) {
-			const format = (text) => {
-				if (!text) return text;
-				return "<ol class=\"multi-column\">" + text.split(",").map((item) => `<li>${item.trim()},</li>`).join("") + "</ol>";
-			};
-			return {
-				left: format(left),
-				right: format(right)
-			};
-		} else return {
+		if (["Comments", "Definition"].includes(type)) return {
+			left: formatText(left),
+			right: formatText(right)
+		};
+		else if (LIST_TYPES.includes(type)) return {
+			left: formatList(left),
+			right: formatList(right)
+		};
+		else return {
 			left,
 			right
 		};
@@ -1409,7 +1419,7 @@
 						if (visibility.onlyEntities && parent.prop === "Ent" && row.prop !== "Ent") isDefaultHidden = true;
 						if (visibility.onlyEntitiesAndAttributes) {
 							if (parent.prop === "Ent" && row.prop !== "Atr") isDefaultHidden = true;
-							if (parent.prop === "Atr" && row.type !== "Field") isDefaultHidden = true;
+							if (parent.prop === "Atr" && row.prop !== "Atr") isDefaultHidden = true;
 						}
 						if (parent.type === "Model" && (row.prop === "Ent" || row.prop === "Atr")) isDefaultHidden = false;
 						if (isDefaultHidden) {
@@ -5239,7 +5249,7 @@
 	//#region src/components/app-table.css?inline
 	var app_table_default;
 	var init_app_table$1 = __esmMin((() => {
-		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n  display: block;\r\n  /* Fixed height is required for virtualizer to work */\r\n  height: calc(100vh - 140px);\r\n  margin-top: 5px;\r\n}\r\n\r\n.virtual-table {\r\n  display: flex;\r\n  flex-direction: column;\r\n  height: 100%;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n}\r\n\r\n.table-header {\r\n  display: flex;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  flex-shrink: 0;\r\n  /* Replicating .table thead styling */\r\n  border-bottom: 2px solid var(--border-color);\r\n}\r\n\r\n.table-body {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  display: block;\r\n}\r\n\r\n/* Row Styling */\r\n.table-row {\r\n  display: flex;\r\n  border-bottom: 1px solid var(--border-color);\r\n  min-height: 28px;\r\n  align-items: stretch;\r\n  width: 100%;\r\n  background-color: var(--row-bg-normal);\r\n}\r\n\r\n.table-header > div,\r\n.table-row > div {\r\n  padding: 4px 8px;\r\n  border-right: 1px solid var(--border-color);\r\n  display: flex;\r\n  align-items: center;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-header > div:last-child,\r\n.table-row > div:last-child {\r\n  border-right: none;\r\n}\r\n\r\n/* Column Widths - matching original table intent */\r\n.col-check {\r\n  width: 35px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-type {\r\n  width: 250px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-left,\r\n.col-right {\r\n  flex: 1;\r\n  min-width: 0;\r\n  /* Support multi-line in value cells */\r\n  word-break: break-all;\r\n  white-space: normal;\r\n  align-items: flex-start;\r\n  padding-top: 4px;\r\n  padding-bottom: 4px;\r\n}\r\n\r\n.col-prop {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-change {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-view {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-cal {\r\n  width: 40px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n/* Indentation & Tree Node */\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n  width: 100%;\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.table-row[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n/* Indicators */\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n/* Row States & Hover */\r\n.clickable-row {\r\n  cursor: pointer;\r\n}\r\n\r\n.clickable-row:hover {\r\n  background-color: var(--hover-bg);\r\n  opacity: 0.9;\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n  color: slategray;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: var(--success-color);\r\n  border-color: var(--success-color);\r\n}\r\n\r\n/* Office 2010 Palette Implementation for Rows */\r\n.table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-40);\r\n}\r\n\r\n[data-theme=\"dark\"] .table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-d25);\r\n}\r\n\r\n.table-row[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Other Header Colors */\r\n.table-row[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"7\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"8\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"9\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n/* Copy Buttons */\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: flex-start;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 4px;\r\n  flex-shrink: 0;\r\n  margin-left: 4px;\r\n}\r\n\r\n/* Badges */\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: var(--success-color);\r\n}\r\n.len-warn {\r\n  background-color: var(--danger-color);\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.empty-container {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  padding: 40px;\r\n  color: var(--text-secondary);\r\n}\r\n\r\nol.multi-column {\r\n  column-count: 3;\r\n  column-gap: 40px;\r\n  list-style-position: inside;\r\n  padding: 0;\r\n  margin: 3px;\r\n}\r\n";
+		app_table_default = ":host {\r\n  --font-mono: monospace;\r\n  --card-bg: transparent;\r\n  --border-color: var(--border-subtle);\r\n  display: block;\r\n  /* Fixed height is required for virtualizer to work */\r\n  height: calc(100vh - 140px);\r\n  margin-top: 5px;\r\n}\r\n\r\n.virtual-table {\r\n  display: flex;\r\n  flex-direction: column;\r\n  height: 100%;\r\n  background-color: var(--card-bg);\r\n  border: 1px solid var(--border-color);\r\n  font-size: 0.85rem;\r\n  line-height: 1.2;\r\n}\r\n\r\n.table-header {\r\n  display: flex;\r\n  background-color: var(--off-blue-base);\r\n  color: var(--text-on-dark);\r\n  font-weight: 600;\r\n  flex-shrink: 0;\r\n  /* Replicating .table thead styling */\r\n  border-bottom: 2px solid var(--border-color);\r\n  position: relative;\r\n  z-index: 10;\r\n}\r\n\r\n.table-body {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  display: block;\r\n}\r\n\r\n/* Row Styling */\r\n.table-row {\r\n  display: flex;\r\n  border-bottom: 1px solid var(--border-color);\r\n  min-height: 28px;\r\n  align-items: stretch;\r\n  width: 100%;\r\n  background-color: var(--row-bg-normal);\r\n}\r\n\r\n.table-header > div,\r\n.table-row > div {\r\n  padding: 4px 8px;\r\n  border-right: 1px solid var(--border-color);\r\n  display: flex;\r\n  align-items: center;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.table-header > div:last-child,\r\n.table-row > div:last-child {\r\n  border-right: none;\r\n}\r\n\r\n/* Column Widths - matching original table intent */\r\n.col-check {\r\n  width: 35px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-type {\r\n  width: 250px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-left,\r\n.col-right {\r\n  flex: 1;\r\n  min-width: 0;\r\n  /* Support multi-line in value cells */\r\n  word-break: break-all;\r\n  white-space: normal;\r\n  align-items: flex-start;\r\n  padding-top: 4px;\r\n  padding-bottom: 4px;\r\n}\r\n\r\n.col-prop {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-change {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-view {\r\n  width: 45px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.col-cal {\r\n  width: 40px;\r\n  justify-content: center;\r\n  flex-shrink: 0;\r\n}\r\n\r\n/* Indentation & Tree Node */\r\n.indent-dots {\r\n  display: flex;\r\n  gap: 2px;\r\n  color: var(--text-secondary);\r\n  opacity: 0.5;\r\n  font-family: monospace;\r\n  margin-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.dot {\r\n  width: 6px;\r\n  text-align: center;\r\n}\r\n\r\n.tree-node {\r\n  display: flex;\r\n  align-items: center;\r\n  position: relative;\r\n  min-height: 24px;\r\n  width: 100%;\r\n}\r\n\r\n.type-text {\r\n  font-family: var(--font-mono, monospace), serif;\r\n  font-size: 0.8rem;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  white-space: nowrap;\r\n}\r\n\r\n.table-row[data-header=\"true\"] .type-text {\r\n  font-weight: bold;\r\n}\r\n\r\n/* Indicators */\r\n.row-indicators {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 6px;\r\n  margin-left: auto;\r\n  padding-right: 4px;\r\n  flex-shrink: 0;\r\n}\r\n\r\n.icon-indicator {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  width: 14px;\r\n  height: 14px;\r\n  opacity: 0.6;\r\n  transition: all 0.2s ease;\r\n}\r\n\r\n.icon-indicator svg {\r\n  width: 12px;\r\n  height: 12px;\r\n  stroke-width: 2.5;\r\n}\r\n\r\n.prop-indicator {\r\n  transform: rotate(-90deg);\r\n}\r\n\r\n.prop-indicator.expanded {\r\n  transform: rotate(0deg);\r\n  opacity: 1;\r\n}\r\n\r\n.sub-indicator path:nth-child(9) {\r\n  color: var(--btn-danger-bg);\r\n}\r\n\r\n/* Row States & Hover */\r\n.clickable-row {\r\n  cursor: pointer;\r\n}\r\n\r\n.clickable-row:hover {\r\n  background-color: var(--hover-bg);\r\n  opacity: 0.9;\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.copy-btn {\r\n  opacity: 0.5;\r\n  transition: all 0.2s;\r\n  padding: 2px 4px;\r\n  height: auto;\r\n  line-height: 1;\r\n  margin-left: 4px;\r\n  border-radius: 4px;\r\n  border: 1px solid transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n  color: slategray;\r\n}\r\n\r\n.copy-btn svg {\r\n  width: 14px;\r\n  height: 14px;\r\n}\r\n\r\n.copy-btn:hover {\r\n  opacity: 1;\r\n  border-color: var(--border-subtle);\r\n  background: var(--bg-panel);\r\n  color: var(--off-aqua-base);\r\n}\r\n\r\n.copy-success {\r\n  opacity: 1;\r\n  color: var(--success-color);\r\n  border-color: var(--success-color);\r\n}\r\n\r\n/* Office 2010 Palette Implementation for Rows */\r\n.table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-40);\r\n}\r\n\r\n[data-theme=\"dark\"] .table-row[data-udp=\"true\"] {\r\n  background-color: var(--off-aqua-d25);\r\n}\r\n\r\n.table-row[data-grouping=\"true\"] {\r\n  background-color: var(--bg-group-l0);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"1\"] {\r\n  background-color: var(--bg-group-l1);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"2\"] {\r\n  background-color: var(--bg-group-l2);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-grouping=\"true\"][data-level=\"3\"] {\r\n  background-color: var(--bg-group-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-base);\r\n  color: var(--text-on-dark);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Ent\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-base);\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"I\"] {\r\n  background-color: var(--off-green-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"A\"] {\r\n  background-color: var(--off-purple-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-change=\"E\"] {\r\n  background-color: var(--off-red-60);\r\n  color: var(--text-on-light);\r\n}\r\n.table-row[data-header=\"true\"][data-prop=\"Atr\"][data-calculated=\"true\"] {\r\n  background-color: var(--off-orange-60);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n/* Other Header Colors */\r\n.table-row[data-header=\"true\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  color: var(--text-on-dark);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"0\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"1\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l1);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"2\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l2);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"3\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l3);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.table-row[data-header=\"true\"][data-level=\"4\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"5\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"6\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"7\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"8\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ),\r\n.table-row[data-header=\"true\"][data-level=\"9\"]:not([data-prop=\"Ent\"]):not([data-prop=\"Atr\"]):not(\r\n    [data-grouping=\"true\"]\r\n  ) {\r\n  background-color: var(--color-obj-l4);\r\n  color: var(--text-on-light);\r\n}\r\n\r\n.checked-row {\r\n  opacity: 0.5;\r\n  filter: grayscale(0.5);\r\n}\r\n\r\n.checked-row .type-text {\r\n  text-decoration: line-through;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.row-left,\r\n.row-right {\r\n  word-break: break-all;\r\n  white-space: normal;\r\n}\r\n/* Copy Buttons */\r\n.content-wrapper {\r\n  display: flex;\r\n  align-items: flex-start;\r\n  justify-content: space-between;\r\n  width: 100%;\r\n}\r\n\r\n.row-actions {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 4px;\r\n  flex-shrink: 0;\r\n  margin-left: 4px;\r\n}\r\n\r\n/* Badges */\r\n.len-badge {\r\n  font-size: 0.85rem;\r\n  padding: 0px 6px;\r\n  border-radius: 4px;\r\n  color: white;\r\n  font-weight: bold;\r\n  min-width: 24px;\r\n  text-align: center;\r\n  line-height: 1.4;\r\n}\r\n\r\n.len-ok {\r\n  background-color: var(--success-color);\r\n}\r\n.len-warn {\r\n  background-color: var(--danger-color);\r\n}\r\n\r\n.attr-badge {\r\n  font-family: Futura, Helvetica, \"JetBrains Mono\", monospace;\r\n  font-size: 0.75rem;\r\n  padding: 1px 6px;\r\n  border-radius: 12px;\r\n  background-color: var(--bg-main);\r\n  border: 1px solid var(--border-subtle);\r\n  color: var(--text-primary);\r\n  font-weight: bold;\r\n  margin-left: auto;\r\n  min-width: 20px;\r\n  text-align: center;\r\n  line-height: 1;\r\n}\r\n\r\n.row-cal {\r\n  font-weight: bold;\r\n  color: var(--off-orange-base);\r\n}\r\n\r\n.empty-container {\r\n  display: flex;\r\n  flex-direction: column;\r\n  align-items: center;\r\n  justify-content: center;\r\n  padding: 40px;\r\n  color: var(--text-secondary);\r\n}\r\n\r\nol.multi-column {\r\n  column-count: 3;\r\n  column-gap: 10px;\r\n  list-style-position: inside;\r\n  padding: 0;\r\n  margin: 3px;\r\n}\r\n";
 	}));
 	//#endregion
 	//#region src/components/app-table.ts
@@ -5295,6 +5305,7 @@
             <lit-virtualizer
               class="table-body"
               .items=${visibleRows}
+              .keyFunction=${(row) => row.id}
               .renderItem=${(row) => this._renderRow(row, flipped, checkedSet)}
             ></lit-virtualizer>
           `}
