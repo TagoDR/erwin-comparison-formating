@@ -229,8 +229,8 @@
 
 .copy-success {
   opacity: 1;
-  color: #5cb85c;
-  border-color: #5cb85c;
+  color: var(--success-color);
+  border-color: var(--success-color);
 }
 
 /* Office 2010 Palette Implementation for Rows */
@@ -393,10 +393,10 @@
 }
 
 .len-ok {
-  background-color: #5cb85c;
+  background-color: var(--success-color);
 }
 .len-warn {
-  background-color: #d9534f;
+  background-color: var(--danger-color);
 }
 
 .attr-badge {

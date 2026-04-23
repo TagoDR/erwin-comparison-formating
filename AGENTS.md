@@ -49,7 +49,7 @@ The project delivers three primary outputs:
 ### 4.2. Performance Engine (The 50MB Rule)
 - **Memory Optimization**: Initial `ModelObject` tree is cleared after enrichment.
 - **O(1) Lookups**: Filtering uses pre-calculated `rowsById` and `childrenMap`.
-- **Virtual Scrolling**: Only visible rows are rendered to the DOM.
+- **Virtual Scrolling**: Only visible rows are rendered to the DOM using `@lit-labs/virtualizer`.
 - **Search Debouncing**: Prevents expensive re-filtering on every keystroke.
 - **Single-Pass Visibility**: Hierarchical visibility (cascading hides) is calculated in a single pass O(N).
 
