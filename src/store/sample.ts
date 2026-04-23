@@ -125,16 +125,16 @@ export const sampleData: ModelObject = {
           level: 3,
           spaces: 3 * INDENT_SIZE,
           type: 'Collection',
-          left: 'DOC',
-          right: 'DOC',
+          left: 'Users',
+          right: 'Users',
         },
         properties: [
           {
             level: 4,
             spaces: 4 * INDENT_SIZE,
             type: 'Name',
-            left: 'Document',
-            right: 'Document Files',
+            left: 'User Profiles',
+            right: 'User Profiles',
           },
         ],
         children: {
@@ -144,16 +144,66 @@ export const sampleData: ModelObject = {
                 level: 5,
                 spaces: 5 * INDENT_SIZE,
                 type: 'Field',
-                left: 'NM_DOC',
-                right: 'NM_DOC_FL',
+                left: '_id',
+                right: '_id',
               },
               properties: [
                 {
                   level: 6,
                   spaces: 6 * INDENT_SIZE,
-                  type: 'Physical Name',
-                  left: 'NM_DOC',
-                  right: 'NM_DOC_FL',
+                  type: 'Logical Datatype',
+                  left: 'ObjectId',
+                  right: 'ObjectId',
+                },
+                {
+                  level: 6,
+                  spaces: 6 * INDENT_SIZE,
+                  type: 'Sample Value',
+                  left: '5effaa5662679b5af2c58829',
+                  right: '5effaa5662679b5af2c58829',
+                },
+              ],
+            },
+            {
+              id: {
+                level: 5,
+                spaces: 5 * INDENT_SIZE,
+                type: 'Field',
+                left: 'email',
+                right: 'email',
+              },
+              properties: [
+                {
+                  level: 6,
+                  spaces: 6 * INDENT_SIZE,
+                  type: 'Logical Datatype',
+                  left: 'String',
+                  right: 'String',
+                },
+                {
+                  level: 6,
+                  spaces: 6 * INDENT_SIZE,
+                  type: 'Sample Value',
+                  left: 'email@example.com',
+                  right: 'email@example.com',
+                },
+              ],
+            },
+            {
+              id: {
+                level: 5,
+                spaces: 5 * INDENT_SIZE,
+                type: 'Field',
+                left: 'addresses',
+                right: 'addresses',
+              },
+              properties: [
+                {
+                  level: 6,
+                  spaces: 6 * INDENT_SIZE,
+                  type: 'Logical Datatype',
+                  left: 'Array',
+                  right: 'Array',
                 },
               ],
               children: {
@@ -163,21 +213,176 @@ export const sampleData: ModelObject = {
                       level: 7,
                       spaces: 7 * INDENT_SIZE,
                       type: 'Field',
-                      left: 'NM_DOC',
-                      right: 'NM_DOC_FL',
+                      left: 'label',
+                      right: 'label',
                     },
                     properties: [
                       {
                         level: 8,
                         spaces: 8 * INDENT_SIZE,
-                        type: 'Physical Name',
-                        left: 'NM_DOC',
-                        right: 'NM_DOC_FL',
+                        type: 'Logical Datatype',
+                        left: 'String',
+                        right: 'String',
+                      },
+                    ],
+                  },
+                  {
+                    id: {
+                      level: 7,
+                      spaces: 7 * INDENT_SIZE,
+                      type: 'Field',
+                      left: 'street',
+                      right: 'street',
+                    },
+                  },
+                  {
+                    id: {
+                      level: 7,
+                      spaces: 7 * INDENT_SIZE,
+                      type: 'Field',
+                      left: 'city',
+                      right: 'city',
+                    },
+                  },
+                  {
+                    id: {
+                      level: 7,
+                      spaces: 7 * INDENT_SIZE,
+                      type: 'Field',
+                      left: 'state',
+                      right: '',
+                    },
+                    properties: [
+                      {
+                        level: 8,
+                        spaces: 8 * INDENT_SIZE,
+                        type: 'Sample Value',
+                        left: 'CA',
+                        right: '',
+                      },
+                    ],
+                  },
+                  {
+                    id: {
+                      level: 7,
+                      spaces: 7 * INDENT_SIZE,
+                      type: 'Field',
+                      left: '',
+                      right: 'province',
+                    },
+                    properties: [
+                      {
+                        level: 8,
+                        spaces: 8 * INDENT_SIZE,
+                        type: 'Sample Value',
+                        left: '',
+                        right: 'Ontario',
+                      },
+                    ],
+                  },
+                  {
+                    id: {
+                      level: 7,
+                      spaces: 7 * INDENT_SIZE,
+                      type: 'Field',
+                      left: 'zip',
+                      right: 'zip',
+                    },
+                  },
+                  {
+                    id: {
+                      level: 7,
+                      spaces: 7 * INDENT_SIZE,
+                      type: 'Field',
+                      left: 'country',
+                      right: 'country',
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              id: {
+                level: 5,
+                spaces: 5 * INDENT_SIZE,
+                type: 'Field',
+                left: 'name',
+                right: 'name',
+              },
+              properties: [
+                {
+                  level: 6,
+                  spaces: 6 * INDENT_SIZE,
+                  type: 'Logical Datatype',
+                  left: 'Object',
+                  right: 'Object',
+                },
+              ],
+              children: {
+                Fields: [
+                  {
+                    id: {
+                      level: 7,
+                      spaces: 7 * INDENT_SIZE,
+                      type: 'Field',
+                      left: 'given',
+                      right: 'given',
+                    },
+                    properties: [
+                      {
+                        level: 8,
+                        spaces: 8 * INDENT_SIZE,
+                        type: 'Sample Value',
+                        left: 'Jesse',
+                        right: 'Jesse',
+                      },
+                    ],
+                  },
+                  {
+                    id: {
+                      level: 7,
+                      spaces: 7 * INDENT_SIZE,
+                      type: 'Field',
+                      left: 'family',
+                      right: 'family',
+                    },
+                    properties: [
+                      {
+                        level: 8,
+                        spaces: 8 * INDENT_SIZE,
+                        type: 'Sample Value',
+                        left: 'Xiao',
+                        right: 'Xiao',
                       },
                     ],
                   },
                 ],
               },
+            },
+            {
+              id: {
+                level: 5,
+                spaces: 5 * INDENT_SIZE,
+                type: 'Field',
+                left: 'age',
+                right: 'age',
+              },
+              properties: [
+                {
+                  level: 6,
+                  spaces: 6 * INDENT_SIZE,
+                  type: 'Logical Datatype',
+                  left: 'Number',
+                  right: 'Number',
+                },
+                {
+                  level: 6,
+                  spaces: 6 * INDENT_SIZE,
+                  type: 'Sample Value',
+                  left: '31',
+                  right: '31',
+                },
+              ],
             },
           ],
         },

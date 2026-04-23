@@ -70,6 +70,7 @@ export class AppTable extends LitElement {
             <lit-virtualizer
               class="table-body"
               .items=${visibleRows}
+              .keyFunction=${(row: EnrichedDiffRow) => row.id}
               .renderItem=${(row: EnrichedDiffRow) => this._renderRow(row, flipped, checkedSet)}
             ></lit-virtualizer>
           `

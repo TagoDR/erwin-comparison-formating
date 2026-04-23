@@ -26,9 +26,9 @@ import {
 export function flattenAndEnrichModel(model: ModelObject): EnrichedDiffRow[] {
   const result: EnrichedDiffRow[] = [];
 
-  function process(obj: ModelObject, parentId = '') {
+  function process(obj: ModelObject, parentId = '', indexInParent = 0) {
     const id = parentId
-      ? `${parentId}|${obj.id.type}-${obj.id.left || obj.id.right}`
+      ? `${parentId}|${obj.id.type}-${obj.id.left || obj.id.right || 'unnamed'}-${indexInParent}`
       : `root-${obj.id.type}`;
 
     const header = createEnrichedHeader(obj, id, parentId);
@@ -50,12 +50,12 @@ export function flattenAndEnrichModel(model: ModelObject): EnrichedDiffRow[] {
       for (const children of Object.values(obj.children)) {
         if (!children || children.length === 0) continue;
         hasActualSubObjects = true;
-        for (const child of children) {
-          process(child, id);
+        children.forEach((child, idx) => {
+          process(child, id, idx);
           if (isAttributeType(child.id.type)) {
             childAttrCount++;
           }
-        }
+        });
       }
     }
 
