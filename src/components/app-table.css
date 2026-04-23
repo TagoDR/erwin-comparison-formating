@@ -26,6 +26,8 @@
   flex-shrink: 0;
   /* Replicating .table thead styling */
   border-bottom: 2px solid var(--border-color);
+  position: relative;
+  z-index: 10;
 }
 
 .table-body {
