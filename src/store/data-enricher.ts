@@ -160,30 +160,60 @@ function updateHeaderFromProperties(
 }
 
 /**
+ * Formats flattened text into readable HTML without language-specific keywords.
+ * Uses structural markers (colons, lists, symbols) to determine breaks.
+ */
+function formatText(text: string): string {
+  return (
+    text
+      // 1. Headers: Bold any capitalized phrase ending in a colon
+      .replace(/(^|\s)([A-Z\u00C0-\u00FF][\w\s]{1,20}:)/g, '$1<br>$2<br>')
+
+      // 2. Horizontal Rules: Replace ASCII dividers (***, ---, ===)
+      .replace(/(\s*[*=-]{3,})\s*/g, '<br>$1<br>')
+
+      // 3. Lists (Combined Rule 4 & 5):
+      // Adds a break BEFORE "1.", "2 -", or "- "
+      // Note: We use a lookahead to ensure the dash is followed by a space (bullet)
+      // to avoid breaking negative numbers or hyphenated words.
+      .replace(/(^|\s)(\d+\s*[-.)]|-\s+)/g, '<br>$2')
+
+      // 4. Sentence Breaks (Rule 2 Refined):
+      // Break after "." ONLY if followed by a space and a Capital letter,
+      // AND ensure it isn't part of a list number (e.g., ignore " 2. ")
+      // This uses a "negative lookbehind" logic to ignore digits before the period
+      .replace(/([^0-9]\.{1,3}) (?=[A-Z\u00C0-\u00FF])/g, '$1<br>')
+
+      // 5. Semicolons: Standard break for list-heavy text
+      .replace(/;\s+/g, ';<br>')
+
+      // 6. Cleanup: Remove duplicate breaks and trim
+      .replace(/(<br>\s*){2,}/g, '<br>')
+      .replace(/^<br>/, '')
+      .trim()
+  );
+}
+
+/**
+ * Formats list of columns separated by commas text into readable HTML ordered list
+ */
+function formatList(text: string) {
+  if (!text) return text;
+  // make html ordered list with multicolumn to save vertical space
+
+  return `<ol class="multi-column">
+                 <li>${text.replaceAll(',', ',</li><li>')}</li>
+              </ol>`;
+}
+
+/**
  * Formats long text properties with HTML line breaks for better readability.
  */
 function formatPropertyText(type: string, left: string, right: string) {
   if (['Comments', 'Definition'].includes(type)) {
-    const format = (text: string) => {
-      if (!text) return text;
-      return text
-        .replace(/ ([0-9]+\. \w+)/g, '<br> $1')
-        .replace(/\.(^<br>) ([A-Z])/g, '.<br> $1')
-        .replace(/;(^<br>) /g, ';<br> ')
-        .replace(/ (\d* ?[-•] )/g, '<br> $1')
-        .replace(/<br> *<br>/g, '<br>');
-    };
-    return { left: format(left), right: format(right) };
+    return { left: formatText(left), right: formatText(right) };
   } else if (LIST_TYPES.includes(type)) {
-    const format = (text: string) => {
-      if (!text) return text;
-      // make html ordered list with multicolumn to save vertical space
-
-      return `<ol class="multi-column">
-                 <li>${text.replaceAll(',', ',</li><li>')}</li>
-              </ol>`;
-    };
-    return { left: format(left), right: format(right) };
+    return { left: formatList(left), right: formatList(right) };
   } else {
     return { left, right };
   }
