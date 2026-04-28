@@ -33,6 +33,7 @@ export function parseErwinHtml(html: string): ModelObject | null {
     const objectTd = tds[0];
     const rawLeft = tds[1].textContent?.trim() || '';
     const rawRight = tds[3].textContent?.trim() || '';
+    if (rawLeft === '' && rawRight === '') return;
     const rawTypeText = objectTd.textContent || '';
     const type = rawTypeText.trim();
 
