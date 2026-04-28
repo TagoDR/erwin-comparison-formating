@@ -198,12 +198,9 @@ function formatText(text: string): string {
  * Formats list of columns separated by commas text into readable HTML ordered list
  */
 function formatList(text: string) {
-  if (!text) return text;
+  if (!text || text.indexOf(',') === -1) return text;
   // make html ordered list with multicolumn to save vertical space
-
-  return `<ol class="multi-column">
-                 <li>${text.replaceAll(',', ',</li><li>')}</li>
-              </ol>`;
+  return `<ol class="multi-column"><li>${text.replaceAll(',', ',</li><li>')}</li></ol>`;
 }
 
 /**
