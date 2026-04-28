@@ -892,6 +892,7 @@
 			const objectTd = tds[0];
 			const rawLeft = tds[1].textContent?.trim() || "";
 			const rawRight = tds[3].textContent?.trim() || "";
+			if (rawLeft === "" && rawRight === "") return;
 			const rawTypeText = objectTd.textContent || "";
 			const type = rawTypeText.trim();
 			const spaces = (rawTypeText.match(/^[\s\u00a0]*/)?.[0] || "").length;
@@ -1249,10 +1250,8 @@
 	* Formats list of columns separated by commas text into readable HTML ordered list
 	*/
 	function formatList(text) {
-		if (!text) return text;
-		return `<ol class="multi-column">
-                 <li>${text.replaceAll(",", ",</li><li>")}</li>
-              </ol>`;
+		if (!text || text.indexOf(",") === -1) return text;
+		return `<ol class="multi-column"><li>${text.replaceAll(",", ",</li><li>")}</li></ol>`;
 	}
 	/**
 	* Formats long text properties with HTML line breaks for better readability.

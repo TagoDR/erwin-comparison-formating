@@ -1332,7 +1332,9 @@ function fn(e) {
 	n.forEach((e) => {
 		let t = e.querySelectorAll("td");
 		if (t.length < 4) return;
-		let n = t[0], a = t[1].textContent?.trim() || "", o = t[3].textContent?.trim() || "", s = n.textContent || "", c = s.trim(), l = (s.match(/^[\s\u00a0]*/)?.[0] || "").length, u = Math.floor(l / 3), d = un.includes(c), f = ln.find((e) => e.object === c && e.indentation.includes(l)), p = {
+		let n = t[0], a = t[1].textContent?.trim() || "", o = t[3].textContent?.trim() || "";
+		if (a === "" && o === "") return;
+		let s = n.textContent || "", c = s.trim(), l = (s.match(/^[\s\u00a0]*/)?.[0] || "").length, u = Math.floor(l / 3), d = un.includes(c), f = ln.find((e) => e.object === c && e.indentation.includes(l)), p = {
 			level: u,
 			spaces: l,
 			type: c,
@@ -1534,9 +1536,7 @@ function En(e) {
 	return e.replace(/(^|\s)([A-Z\u00C0-\u00FF][\w\s]{1,20}:)/g, "$1<br>$2<br>").replace(/(\s*[*=-]{3,})\s*/g, "<br>$1<br>").replace(/(^|\s)(\d+\s*[-.)]|-\s+)/g, "<br>$2").replace(/([^0-9]\.{1,3}) (?=[A-Z\u00C0-\u00FF])/g, "$1<br>").replace(/;\s+/g, ";<br>").replace(/(<br>\s*){2,}/g, "<br>").replace(/^<br>/, "").trim();
 }
 function Dn(e) {
-	return e && `<ol class="multi-column">
-                 <li>${e.replaceAll(",", ",</li><li>")}</li>
-              </ol>`;
+	return !e || e.indexOf(",") === -1 ? e : `<ol class="multi-column"><li>${e.replaceAll(",", ",</li><li>")}</li></ol>`;
 }
 function On(e, t, n) {
 	return ["Comments", "Definition"].includes(e) ? {

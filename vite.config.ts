@@ -58,6 +58,40 @@ function sampleGeneratorPlugin(): Plugin {
   };
 }
 
+/**
+ * Custom Vite Plugin to ensure consistent CRLF line endings.
+ * This fixes inconsistencies between different operating systems and
+ * ensures SVG raw imports (used with CSS) maintain a stable structure.
+ */
+function crlfPlugin(): Plugin {
+  return {
+    name: 'crlf-plugin',
+    enforce: 'pre',
+    transform(code, id) {
+      // Normalize line endings to CRLF for all source files (ts, js, svg, css, html)
+      // but skip node_modules to avoid unnecessary processing
+      if (id.includes('node_modules')) return null;
+
+      const normalized = code.replace(/\r?\n/g, '\r\n');
+      return {
+        code: normalized,
+        map: null,
+      };
+    },
+    renderChunk(code) {
+      // Also ensure the final chunks use CRLF
+      return {
+        code: code.replace(/\r?\n/g, '\r\n'),
+        map: null,
+      };
+    },
+    transformIndexHtml(html) {
+      // Ensure the final HTML uses CRLF
+      return html.replace(/\r?\n/g, '\r\n');
+    },
+  };
+}
+
 export default defineConfig(({ mode }): UserConfig => {
   const appLang = process.env.VITE_APP_LANG || 'pt-BR';
   const translations = JSON.parse(
@@ -72,11 +106,14 @@ export default defineConfig(({ mode }): UserConfig => {
     },
   };
 
+  // COMMON PLUGINS
+  const commonPlugins = [crlfPlugin(), svgLoader({ svgo: false, defaultImport: 'raw' })];
+
   // DEVELOPMENT MODE (Vite Dev Server)
   if (mode === 'development') {
     return {
       ...baseConfig,
-      plugins: [svgLoader({ svgo: false, defaultImport: 'raw' }), sampleGeneratorPlugin()],
+      plugins: [...commonPlugins, sampleGeneratorPlugin()],
     };
   }
 
@@ -85,7 +122,7 @@ export default defineConfig(({ mode }): UserConfig => {
     return {
       ...baseConfig,
       plugins: [
-        svgLoader({ svgo: false, defaultImport: 'raw' }),
+        ...commonPlugins,
         viteSingleFile({ removeViteModuleLoader: true }),
         {
           name: 'rename-index',
@@ -110,7 +147,7 @@ export default defineConfig(({ mode }): UserConfig => {
   if (mode === 'library') {
     return {
       ...baseConfig,
-      plugins: [svgLoader({ svgo: false, defaultImport: 'raw' }), cssInjectedByJsPlugin()],
+      plugins: [...commonPlugins, cssInjectedByJsPlugin()],
       build: {
         target: 'esnext',
         minify: true,
@@ -137,7 +174,7 @@ export default defineConfig(({ mode }): UserConfig => {
   return {
     ...baseConfig,
     plugins: [
-      svgLoader({ svgo: false, defaultImport: 'raw' }),
+      ...commonPlugins,
       cssInjectedByJsPlugin(),
       viteBanner({ content: userscript(metadata), verify: false }),
     ],

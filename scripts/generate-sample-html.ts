@@ -92,7 +92,7 @@ ${rows.join('\n')}
     </tbody>
 </table>
 </body>
-</html>`;
+</html>`.replace(/\r?\n/g, '\r\n');
 }
 
 // Standalone execution logic (for npm run gen:sample)

@@ -19,7 +19,7 @@ A specialized utility to transform raw Erwin Data Modeler HTML difference report
   - **Type Hover**: Full type text visible on mouse hover when truncated.
 - **UDP Awareness**: Automatic teal highlighting for **User Defined Properties** (UDP).
 - **Smart Formatting**: Heuristics automatically format long properties (Description, Comments) with logical line breaks for better readability.
-- **Dynamic Character Counter**: 
+- **Dynamic Character Counter**:
   - **Red warning** threshold dynamically adjusts:
     - **50 chars** for Oracle, MySQL, Mongo, Postgres, and Hive.
     - **18 chars** for other databases.
@@ -31,17 +31,23 @@ A specialized utility to transform raw Erwin Data Modeler HTML difference report
 ## Installation and Usage
 
 ### 1. Standalone Application
+
 A single-file HTML application that works offline.
+
 - **Download:** [Download `Erwin_Complete_Compare_Formatter.html`](./dist/Erwin_Complete_Compare_Formatter.html?raw)
 - **Usage:** Open and drag your Erwin HTML report onto the interface.
 
 ### 2. Tampermonkey Userscript
+
 Automatically transforms Erwin reports opened in your browser.
+
 - **Install:** [Install `erwin_complete_compare_formatter.user.js`](./dist/erwin_complete_compare_formatter.user.js?raw)
 - **Note:** Enable "Allow access to file URLs" in Tampermonkey settings.
 
 ### 3. Web Component Library
+
 Use as a reusable `<erwin-comparison-formatter>` in your own web applications.
+
 - **Build:** `npm run build:lib`
 - **Programmatic Usage:** Use the `.loadHtml(content, name)` method to feed data.
 
