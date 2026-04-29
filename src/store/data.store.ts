@@ -300,13 +300,14 @@ export const toggleSubObjects = (id: string) => {
   if (!row) return;
 
   const onlyEnt = onlyEntities$.get();
-  const onlyEntAtr = onlyEntitiesAndAttributes$.get();
 
   // Determine if children are hidden by default in current mode
   let isDefaultHidden = false;
+  // In "Only Entities" mode, an Entity's children are hidden by default.
   if (onlyEnt && row.prop === 'Ent' && row.hasSubObjects) isDefaultHidden = true;
-  if (onlyEntAtr && (row.prop === 'Ent' || row.prop === 'Atr') && row.hasSubObjects)
-    isDefaultHidden = true;
+
+  // Note: In "Only Ent+Atr" mode, Entities/Attributes show their main children by default,
+  // so they are NOT considered "Default Hidden" for the purpose of the toggle interaction.
 
   if (isDefaultHidden) {
     const current = new Set(shownSubObjectsIds$.get());
@@ -337,26 +338,19 @@ export const toggleCheck = (id: string) => {
   if (becomingChecked) {
     currentChecked.add(id);
     const globalShow = showProperties$.get();
+
+    // 1. Hide properties when checked
     if (globalShow) propsToggled.add(id);
     else propsToggled.delete(id);
 
-    const row = enrichedData$.get().find(r => r.id === id);
-    if (row) {
-      const onlyEnt = onlyEntities$.get();
-      const onlyEntAtr = onlyEntitiesAndAttributes$.get();
-      let isDefaultHidden = false;
-      if (onlyEnt && row.prop === 'Ent' && row.hasSubObjects) isDefaultHidden = true;
-      if (onlyEntAtr && (row.prop === 'Ent' || row.prop === 'Atr') && row.hasSubObjects)
-        isDefaultHidden = true;
-
-      if (isDefaultHidden) {
-        subsShown.add(id);
-      } else {
-        subsHidden.add(id);
-      }
-    }
+    // 2. Hide sub-objects when checked
+    // By adding to hiddenSubs and removing from shownSubs, we ensure everything is hidden
+    // regardless of the current mode's default visibility.
+    subsHidden.add(id);
+    subsShown.delete(id);
   } else {
     currentChecked.delete(id);
+    // Restore default visibility when unchecked
     propsToggled.delete(id);
     subsHidden.delete(id);
     subsShown.delete(id);

@@ -14,7 +14,7 @@
 	//#region \0rolldown/runtime.js
 	var __defProp = Object.defineProperty;
 	var __esmMin = (fn, res) => () => (fn && (res = fn(fn = 0)), res);
-	var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
+	var __commonJSMin = (cb, mod) => () => (mod || (cb((mod = { exports: {} }).exports, mod), cb = null), mod.exports);
 	var __exportAll = (all, no_symbols) => {
 		let target = {};
 		for (var name in all) __defProp(target, name, {
@@ -1417,8 +1417,7 @@
 						let isDefaultHidden = false;
 						if (visibility.onlyEntities && parent.prop === "Ent" && row.prop !== "Ent") isDefaultHidden = true;
 						if (visibility.onlyEntitiesAndAttributes) {
-							if (parent.prop === "Ent" && row.prop !== "Atr") isDefaultHidden = true;
-							if (parent.prop === "Atr" && row.prop !== "Atr") isDefaultHidden = true;
+							if ((parent.prop === "Ent" || parent.prop === "Atr") && row.prop !== "Atr") isDefaultHidden = true;
 						}
 						if (parent.type === "Model" && (row.prop === "Ent" || row.prop === "Atr")) isDefaultHidden = false;
 						if (isDefaultHidden) {
@@ -1608,10 +1607,8 @@
 			const row = rowsById$.get().get(id);
 			if (!row) return;
 			const onlyEnt = onlyEntities$.get();
-			const onlyEntAtr = onlyEntitiesAndAttributes$.get();
 			let isDefaultHidden = false;
 			if (onlyEnt && row.prop === "Ent" && row.hasSubObjects) isDefaultHidden = true;
-			if (onlyEntAtr && (row.prop === "Ent" || row.prop === "Atr") && row.hasSubObjects) isDefaultHidden = true;
 			if (isDefaultHidden) {
 				const current = new Set(shownSubObjectsIds$.get());
 				if (current.has(id)) current.delete(id);
@@ -1634,16 +1631,8 @@
 				currentChecked.add(id);
 				if (showProperties$.get()) propsToggled.add(id);
 				else propsToggled.delete(id);
-				const row = enrichedData$.get().find((r) => r.id === id);
-				if (row) {
-					const onlyEnt = onlyEntities$.get();
-					const onlyEntAtr = onlyEntitiesAndAttributes$.get();
-					let isDefaultHidden = false;
-					if (onlyEnt && row.prop === "Ent" && row.hasSubObjects) isDefaultHidden = true;
-					if (onlyEntAtr && (row.prop === "Ent" || row.prop === "Atr") && row.hasSubObjects) isDefaultHidden = true;
-					if (isDefaultHidden) subsShown.add(id);
-					else subsHidden.add(id);
-				}
+				subsHidden.add(id);
+				subsShown.delete(id);
 			} else {
 				currentChecked.delete(id);
 				propsToggled.delete(id);
@@ -2992,7 +2981,7 @@
 		app_header_default = ":host {\n  display: block;\n  position: sticky;\n  top: 0;\n  z-index: 1000;\n  background: var(--bg-panel);\n  border-bottom: 2px solid var(--border-subtle);\n  padding: 0.5rem 1.5rem;\n  color: var(--text-primary);\n}\n\n.header-layout {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  height: 2.5rem;\n}\n\n.brand {\n  flex-basis: 10%;\n  font-size: 1.125rem;\n  font-weight: 800;\n  letter-spacing: -0.025em;\n  white-space: nowrap;\n  margin-right: 15px;\n}\n\n.file-drop-zone {\n  flex: 1;\n  border: 2px dashed var(--border-subtle);\n  border-radius: 6px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 0.75rem;\n  padding: 0.1rem 1rem;\n  font-size: 0.8125rem;\n  color: var(--text-secondary);\n  transition: all 0.2s ease;\n  position: relative;\n  cursor: pointer;\n}\n\n.file-drop-zone.dragging {\n  border-color: var(--accent-blue);\n  background: var(--hover-bg);\n  color: var(--accent-blue);\n}\n\n.file-drop-zone input[type=\"file\"] {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  opacity: 0;\n  cursor: pointer;\n}\n\n.file-info {\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 2rem;\n  background: var(--bg-main);\n  padding: 0.3rem 1.5rem;\n  border-radius: 4px;\n  border: 1px solid var(--border-subtle);\n}\n\n.file-name {\n  color: var(--accent-blue);\n  font-weight: 600;\n  font-family: monospace;\n  font-size: 0.875rem;\n  max-width: 400px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.close-btn {\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n  padding: 0.2rem 0.8rem;\n  font-weight: 700;\n  text-transform: uppercase;\n  font-size: 0.7rem;\n  letter-spacing: 0.05em;\n}\n\n.close-btn span {\n  line-height: 1;\n}\n\n.header-controls {\n  flex-basis: auto;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 12px;\n  margin-left: 15px;\n}\n\n.version-tag {\n  font-size: 10px;\n  color: var(--text-secondary);\n  opacity: 0.7;\n  font-weight: bold;\n  pointer-events: none;\n  order: 3;\n}\n\n.lang-select {\n  background: var(--bg-main);\n  border: 1px solid var(--border-subtle);\n  color: var(--text-primary);\n  font-size: 11px;\n  font-weight: bold;\n  padding: 2px 4px;\n  border-radius: 4px;\n  cursor: pointer;\n  outline: none;\n}\n\n.theme-toggle {\n  background: transparent;\n  border: none;\n  color: var(--text-primary);\n  cursor: pointer;\n  padding: 2px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 4px;\n  transition: background 0.2s;\n  order: 2;\n}\n\n.theme-toggle:hover {\n  background: var(--hover-bg);\n}\n\n[data-theme=\"dark\"] .theme-toggle:hover {\n  background: var(--hover-bg);\n}\n\n.header-layout svg {\n  width: var(--icon-size);\n  height: var(--icon-size);\n}\n";
 	}));
 	//#endregion
-	//#region \0@oxc-project+runtime@0.124.0/helpers/decorate.js
+	//#region \0@oxc-project+runtime@0.127.0/helpers/decorate.js
 	function __decorate$1(decorators, target, key, desc) {
 		var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 		if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3626,7 +3615,8 @@
 		ScrollerShim = class {
 			constructor(element) {
 				this._element = null;
-				this._node = element ?? window;
+				const node = element ?? window;
+				this._node = node;
 				if (element) this._element = element;
 			}
 			get element() {

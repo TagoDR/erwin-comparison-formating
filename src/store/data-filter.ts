@@ -216,10 +216,10 @@ function applyHierarchicalVisibility(
             isDefaultHidden = true;
           }
           if (visibility.onlyEntitiesAndAttributes) {
-            // General rule: if parent is Entity, only show Attribute children
-            if (parent.prop === 'Ent' && row.prop !== 'Atr') isDefaultHidden = true;
-            // Recursive rule: if parent is Attribute, only show nested Attribute children
-            if (parent.prop === 'Atr' && row.prop !== 'Atr') isDefaultHidden = true;
+            // If parent is an Entity or Attribute, only show its children that are Attributes or Fields.
+            if ((parent.prop === 'Ent' || parent.prop === 'Atr') && row.prop !== 'Atr') {
+              isDefaultHidden = true;
+            }
           }
 
           // Special Rule: Model's direct Entity/Attribute children are always visible by default
