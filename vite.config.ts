@@ -34,7 +34,7 @@ function sampleGeneratorPlugin(): Plugin {
       // Use Vite's SSR module loader to handle TypeScript and imports correctly
       const { sampleData } = await server.ssrLoadModule(sampleTsPath);
       const html = buildSampleHtml(sampleData);
-      fs.writeFileSync(sampleHtmlPath, html);
+      fs.writeFileSync(sampleHtmlPath, html.replace(/\r?\n/g, '\r\n'));
       console.log('[SampleGenerator] Hot-reloaded src/store/sample.html');
     } catch (err) {
       console.error('[SampleGenerator] Error during hot-reload:', err);
@@ -58,6 +58,37 @@ function sampleGeneratorPlugin(): Plugin {
   };
 }
 
+/**
+ * Ensures consistent CRLF line endings for specific file types and the final bundle.
+ */
+function crlfPlugin(): Plugin {
+  const isTargetFile = (id: string) => id.endsWith('.svg') || id.endsWith('.css');
+
+  return {
+    name: 'crlf-plugin',
+    // Transform source files during the build to ensure they have CRLF before being inlined
+    transform(code, id) {
+      if (isTargetFile(id)) {
+        return {
+          code: code.replace(/\r?\n/g, '\r\n'),
+          map: null,
+        };
+      }
+    },
+    // Final pass on all generated assets
+    generateBundle(_options, bundle) {
+      for (const fileName in bundle) {
+        const asset = bundle[fileName];
+        if (asset.type === 'asset' && typeof asset.source === 'string') {
+          asset.source = asset.source.replace(/\r?\n/g, '\r\n');
+        } else if (asset.type === 'chunk') {
+          asset.code = asset.code.replace(/\r?\n/g, '\r\n');
+        }
+      }
+    },
+  };
+}
+
 export default defineConfig(({ mode }): UserConfig => {
   const appLang = process.env.VITE_APP_LANG || 'pt-BR';
   const translations = JSON.parse(
@@ -73,7 +104,7 @@ export default defineConfig(({ mode }): UserConfig => {
   };
 
   // COMMON PLUGINS
-  const commonPlugins = [svgLoader({ svgo: false, defaultImport: 'raw' })];
+  const commonPlugins = [svgLoader({ svgo: false, defaultImport: 'raw' }), crlfPlugin()];
 
   // DEVELOPMENT MODE (Vite Dev Server)
   if (mode === 'development') {

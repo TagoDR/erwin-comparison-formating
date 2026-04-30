@@ -1,11 +1,11 @@
 # Enforce CRLF on all text files
 * text=auto eol=crlf
 
-# Ensure SVGs specifically use CRLF
-*.svg text eol=crlf
-
-# Handle other common web files
+# Ensure specific types use CRLF
 *.ts text eol=crlf
 *.json text eol=crlf
 *.html text eol=crlf
 *.css text eol=crlf
+*.svg text eol=crlf
+*.md text eol=crlf
+*.jsonc text eol=crlf

@@ -10,8 +10,8 @@
     "build:monkey": "vite build --mode monkey",
     "build:lib": "vite build --mode library",
     "preview": "vite preview",
-    "prettier": "prettier --write \"**/*.{md,html,svg}\" \"!dist/**\" \"!node_modules/**\" \"!*.user.js\"",
-    "biome": " biome check --write .",
+    "prettier": "prettier --write \"**/*.md\" \"!dist/**\" \"!node_modules/**\"",
+    "biome": "biome check --write .",
     "gen:sample": "node --loader ts-node/esm scripts/generate-sample-html.ts"
   },
   "dependencies": {
@@ -36,20 +36,11 @@
     "vite-svg-loader": "^5.1.1"
   },
   "prettier": {
-    "overrides": [
-      {
-        "files": "*.svg",
-        "options": {
-          "parser": "html"
-        }
-      }
-    ],
     "semi": true,
     "singleQuote": true,
     "trailingComma": "all",
     "printWidth": 100,
     "arrowParens": "avoid",
-    "endOfLine": "lf",
-    "singleAttributePerLine": true
+    "endOfLine": "crlf"
   }
 }
